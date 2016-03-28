@@ -71,7 +71,7 @@ public abstract class MiniGame extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("setTimer", 1) {
+		new CommandBase("setCounter", 1) {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
 				try {

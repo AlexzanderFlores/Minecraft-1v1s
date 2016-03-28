@@ -1,8 +1,10 @@
 package ostb.gameapi.games.hardcoreelimination;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -32,6 +35,7 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.effects.blocks.CylinderUtil;
 import ostb.server.effects.blocks.HollowCylinderUtil;
@@ -40,38 +44,15 @@ import ostb.server.util.EventUtil;
 
 public class Battles implements Listener {
 	private List<Block> blocks = null;
-	private List<BattleData> battles = null;
+	private Map<String, String> battles = null;
 	
 	public Battles() {
 		blocks = new ArrayList<Block>();
-		battles = new ArrayList<BattleData>();
+		battles = new HashMap<String, String>();
 		HandlerList.unregisterAll(this);
 		EventUtil.register(this);
 		createArenas();
 		OSTB.getSidebar().update("&ePVP");
-	}
-	
-	private class BattleData {
-		private String playerOne = null;
-		private String playerTwo = null;
-		
-		public BattleData(String playerOne, String playerTwo) {
-			this.playerOne = playerOne;
-			this.playerTwo = playerTwo;
-			battles.add(this);
-		}
-		
-		public Player getWinner(Player loser) {
-			if(playerOne.equals(loser.getName())) {
-				playerOne = null;
-				return ProPlugin.getPlayer(playerTwo);
-			} else if(playerTwo.equals(loser.getName())) {
-				playerTwo = null;
-				return ProPlugin.getPlayer(playerOne);
-			} else {
-				return null;
-			}
-		}
 	}
 	
 	private void createArenas() {
@@ -104,13 +85,35 @@ public class Battles implements Listener {
 			Location location = centers[index].clone().add(17, 0, 0);
 			location.setYaw(-270.0f);
 			location.setPitch(0.0f);
-			players.get(a).teleport(location.clone().add(0, 2, 0));
+			players.get(a).teleport(location.clone().add(0, 2.5, 0));
+			String nameOne = players.get(a).getName();
+			battles.put(nameOne, null);
 			if(a + 1 < players.size()) {
 				location = centers[index].clone().add(-17, 0, 0);
 				location.setYaw(-90.0f);
 				location.setPitch(0.0f);
-				players.get(a + 1).teleport(location);
-				new BattleData(players.get(a).getName(), players.get(a + 1).getName());
+				players.get(a + 1).teleport(location.clone().add(0, 2.5, 0));
+				String nameTwo = players.get(a + 1).getName();
+				battles.put(nameOne, nameTwo);
+				battles.put(nameTwo, nameOne);
+			}
+		}
+		List<Block> firstBlocks = new ArrayList<Block>();
+		for(Location center : centers) {
+			for(int a = 1; a <= 5; ++a) {
+				for(Block block : new HollowCylinderUtil(world, center.getBlockX(), center.getBlockY() + a, center.getBlockZ(), 21, 1, Material.GLASS).getBlocks()) {
+					blocks.add(block);
+					if(a == 1) {
+						firstBlocks.add(block);
+					}
+				}
+			}
+			new CylinderUtil(world, center.getBlockX(), center.getBlockY() + 6, center.getBlockZ(), 20, 1, Material.BARRIER);
+		}
+		for(Block block : firstBlocks) {
+			Location ground = WorldHandler.getGround(block.getLocation());
+			for(int y = ground.getBlockY(); y <= block.getY(); ++y) {
+				ground.getBlock().setType(Material.WOOD);
 			}
 		}
 		for(Location center : centers) {
@@ -119,10 +122,15 @@ public class Battles implements Listener {
 				lastUsed = (byte) (lastUsed == 0 ? 1 : 0);
 				for(Block block : new HollowCylinderUtil(world, center.getBlockX(), center.getBlockY() + a, center.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
 					blocks.add(block);
+					if(a == 1) {
+						firstBlocks.add(block);
+					}
 				}
 			}
 			new CylinderUtil(world, center.getBlockX(), center.getBlockY() + 6, center.getBlockZ(), 20, 1, Material.BARRIER);
 		}
+		firstBlocks.clear();
+		firstBlocks = null;
 		final Battles instance = this;
 		new DelayedTask(new Runnable() {
 			@Override
@@ -180,14 +188,22 @@ public class Battles implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		if(blocks.contains(event.getBlock())) {
 			event.setCancelled(true);
+		} else {
+			event.setCancelled(false);
 		}
 	}
 	
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
-		if(blocks.contains(event.getBlock())) {
+		Material type = event.getBlock().getType();
+		if(blocks.contains(event.getBlock()) && type != Material.STATIONARY_WATER && type != Material.STATIONARY_LAVA) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onBlockBurn(BlockBurnEvent event) {
+		event.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -223,16 +239,14 @@ public class Battles implements Listener {
 	
 	@EventHandler
 	public void onGameDeath(GameDeathEvent event) {
-		Iterator<BattleData> iterator = battles.iterator();
-		while(iterator.hasNext()) {
-			BattleData data = iterator.next();
-			Player winner = data.getWinner(event.getPlayer());
-			if(winner != null) {
-				iterator.remove();
-				if(battles.isEmpty()) {
-					
-				}
+		battles.remove(event.getPlayer().getName());
+		battles.put(event.getKiller().getName(), null);
+		for(String battle : battles.keySet()) {
+			if(battles.get(battle) != null) {
+				return;
 			}
 		}
+		MessageHandler.alert("Starting next round...");
+		createArenas();
 	}
 }

@@ -86,6 +86,14 @@ public class Beacon implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("test", true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				player.sendBlockChange(glass.getLocation(), Material.STAINED_GLASS, (byte) random.nextInt(15));
+				return true;
+			}
+		};
 		EventUtil.register(this);
 	}
 	

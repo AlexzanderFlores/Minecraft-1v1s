@@ -49,6 +49,7 @@ import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
@@ -98,7 +99,7 @@ public class SpectatorHandler implements Listener {
 		return enabled;
 	}
 	
-	public static void add(Player player) {
+	public static void add(final Player player) {
 		if(!contains(player)) {
 			PlayerSpectateStartEvent playerSpectateStartEvent = new PlayerSpectateStartEvent(player);
 			Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
@@ -126,8 +127,13 @@ public class SpectatorHandler implements Listener {
 						player.hidePlayer(online);
 					}
 				}
-				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
-				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 10));
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 10));
+					}
+				}, 20);
 				player.setGameMode(GameMode.CREATIVE);
 				player.setAllowFlight(true);
 				player.setFlying(true);
