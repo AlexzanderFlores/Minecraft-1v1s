@@ -53,6 +53,7 @@ public abstract class MiniGame extends ProPlugin {
 		new PostGameStartEvent(true);
 		new PostGameStartingEvent(true);
 		new ServerLogger();
+		new LeaveItem();
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {

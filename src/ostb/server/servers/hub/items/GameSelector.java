@@ -319,7 +319,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&aTwo-Team CTF PVP with unique gameplay",
 			"",
-			"&7Playing: &e" + players.get(Plugins.CTF),
+			"&7Playing: &e" + getPlayers(Plugins.CTF),
 		}).getItemStack();
 		items.put(item, Plugins.CTF);
 		inventory.setItem(1, item);
@@ -328,7 +328,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&aTwo-Team DOM PVP with unique gameplay",
 			"",
-			"&7Playing: &e" + players.get(Plugins.DOM),
+			"&7Playing: &e" + getPlayers(Plugins.DOM),
 		}).getItemStack();
 		items.put(item, Plugins.DOM);
 		inventory.setItem(3, item);
@@ -337,7 +337,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&aClassic Sky Wars PVP mini-game",
 			"",
-			"&7Playing: &e" + players.get(Plugins.SKY_WARS),
+			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS),
 			""
 		}).getItemStack();
 		items.put(item, Plugins.SKY_WARS);
@@ -349,12 +349,20 @@ public class GameSelector extends HubItemBase {
 			"&aand prepare yourself for 1v1 battle",
 			"&aagainst other players. Natural regen is &cOFF",
 			"",
-			"&7Playing: &e" + players.get(Plugins.HE_KITS),
+			"&7Playing: &e" + getPlayers(Plugins.HE_KITS),
 			""
 		}).getItemStack();
 		items.put(item, Plugins.HE_KITS);
 		inventory.setItem(7, item);
 		player.openInventory(inventory);
+	}
+	
+	private int getPlayers(Plugins plugin) {
+		if(players.containsKey(plugin)) {
+			return players.get(plugin);
+		} else {
+			return 0;
+		}
 	}
 	
 	private static byte getWoolColor(int priority) {
