@@ -33,19 +33,35 @@ public class LevelHandler implements Listener {
 	}
 	
 	public static int getLevel(Player player) {
-		return levels.get(player.getName());
+		return getLevel(player.getName());
+	}
+	
+	public static int getLevel(String name) {
+		return levels.get(name);
 	}
 	
 	public static int getExp(Player player) {
-		return exps.get(player.getName());
+		return getExp(player.getName());
+	}
+	
+	public static int getExp(String name) {
+		return exps.get(name);
 	}
 	
 	public static int getNeededForLevelUp(Player player) {
-		return getLevel(player) * 1000;
+		return getNeededForLevelUp(player.getName());
+	}
+	
+	public static int getNeededForLevelUp(String name) {
+		return getLevel(name) * 1000;
 	}
 	
 	public static int getPercentageDone(Player player) {
-		return (int) (getExp(player) * 100.0 / getNeededForLevelUp(player) + 0.5);
+		return getPercentageDone(player.getName());
+	}
+	
+	public static int getPercentageDone(String name) {
+		return (int) (getExp(name) * 100.0 / getNeededForLevelUp(name) + 0.5);
 	}
 	
 	public static void add(Player player, int amount) {

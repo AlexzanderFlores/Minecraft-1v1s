@@ -40,9 +40,9 @@ public class SkyWarsShop implements Listener {
 	private static final int size = 9 * 6;
 	
 	public SkyWarsShop() {
-		name = "Shop - " + Plugins.SKY_WARS.getDisplay();
+		name = "Shop - Sky Wars";
 		permission = "kit.sky_wars";
-		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS);
+		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO);
 		new SkyWarsCrate();
 		new Archer();
 		new Builder();
@@ -79,7 +79,7 @@ public class SkyWarsShop implements Listener {
 			public void run() {
 				SkyWarsCrate.addItem(player, inventory);
 				for(KitBase kit : KitBase.getKits()) {
-					if(kit.getPlugin() == Plugins.SKY_WARS) {
+					if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
 						inventory.setItem(kit.getSlot(), kit.getIcon(player));
 					}
 				}
@@ -93,12 +93,12 @@ public class SkyWarsShop implements Listener {
 	private static void updateCoinsItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
 		if(title != null && title.equals(getName())) {
-			player.getOpenInventory().setItem(size - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS).getItemStack(player));
+			player.getOpenInventory().setItem(size - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO).getItemStack(player));
 		}
 	}
 	
 	private static void updateCoinsItem(Player player, Inventory inventory) {
-		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS).getItemStack(player));
+		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO).getItemStack(player));
 	}
 	
 	private static void updateInfoItem(Player player) {
@@ -107,7 +107,7 @@ public class SkyWarsShop implements Listener {
 			int total = 0;
 			int owned = 0;
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.SKY_WARS) {
+				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
 					++total;
 					if(kit.owns(player)) {
 						++owned;
@@ -123,7 +123,7 @@ public class SkyWarsShop implements Listener {
 		int total = 0;
 		int owned = 0;
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.SKY_WARS) {
+			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
 				++total;
 				if(kit.owns(player)) {
 					++owned;

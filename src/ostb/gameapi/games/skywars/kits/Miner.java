@@ -15,7 +15,7 @@ public class Miner extends KitBase {
 	private static final int price = 1000;
 	
 	public Miner() {
-		super(Plugins.SKY_WARS, new ItemCreator(Material.WOOD_PICKAXE).setName("Miner").setLores(new String [] {
+		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.WOOD_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Sword",

@@ -54,10 +54,10 @@ public class OSTB extends JavaPlugin {
 		HUB("HUB", "Hub"),
 		CTF("CTF", "Capture the Flag"),
 		DOM("DOM", "Domination"),
-		SKY_WARS("SW", "Sky Wars"),
-		SKY_WARS_TEAMS("SWT", "Sky Wars Teams"),
-		HE_NO_KITS("HENK", "Hardcore Elimination"),
-		HE_KITS("HEK", "Hardcore Elimination"),
+		SKY_WARS_SOLO("SW", "Solo Sky Wars"),
+		SKY_WARS_TEAMS("SWT", "Team Sky Wars"),
+		HE_NO_KITS("HENK", "Hardcore Elimination No Kits"),
+		HE_KITS("HEK", "Hardcore Elimination Kits"),
 		BUILDING("Building"),
 		WORKER("Worker"),
 		SLAVE("Slave");
@@ -126,7 +126,7 @@ public class OSTB extends JavaPlugin {
 			proPlugin = new CTF();
 		} else if(plugin == Plugins.DOM) {
 			proPlugin = new DOM();
-		} else if(plugin == Plugins.SKY_WARS || plugin == Plugins.SKY_WARS_TEAMS) {
+		} else if(plugin == Plugins.SKY_WARS_SOLO || plugin == Plugins.SKY_WARS_TEAMS) {
 			proPlugin = new SkyWars();
 		} else if(plugin == Plugins.HE_NO_KITS || plugin == Plugins.HE_KITS) {
 			proPlugin = new HardcoreElimination();

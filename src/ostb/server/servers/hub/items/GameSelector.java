@@ -50,8 +50,8 @@ public class GameSelector extends HubItemBase {
 		items = new HashMap<ItemStack, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		players = new HashMap<Plugins, Integer>();
-		hardcoreEliminationTitle = Plugins.HE_KITS.getDisplay() + " Type";
-		skyWarsTitle = Plugins.SKY_WARS.getDisplay() + " Type";
+		hardcoreEliminationTitle = "Hardcore Elimination Type";
+		skyWarsTitle = "Sky Wars Type";
 		World world = Bukkit.getWorlds().get(0);
 		new NPCEntity(EntityType.SKELETON, "&e&nCapture the Flag", new Location(world, 1681.5, 5, -1296.5), new ItemStack(Material.WOOL, 1, (byte) 14)) {
 			@Override
@@ -70,15 +70,15 @@ public class GameSelector extends HubItemBase {
 		new NPCEntity(EntityType.SKELETON, "&e&nSky Wars", new Location(world, 1685.5, 5, -1297.5), Material.STONE_SWORD) {
 			@Override
 			public void onInteract(Player player) {
-				playSound(player, Plugins.SKY_WARS, Sound.HURT_FLESH);
-				open(player, Plugins.SKY_WARS);
+				playSound(player, Plugins.SKY_WARS_SOLO, Sound.HURT_FLESH);
+				openSkyWars(player);
 			}
 		};
 		new NPCEntity(EntityType.SKELETON, "&e&nHardcore Elimination", new Location(world, 1687.5, 5, -1296.5), Material.GOLDEN_APPLE) {
 			@Override
 			public void onInteract(final Player player) {
 				playSound(player, Plugins.HE_KITS, Sound.EAT);
-				open(player, Plugins.HE_KITS);
+				openHardcoreElimination(player);
 			}
 		};
 	}
@@ -123,13 +123,10 @@ public class GameSelector extends HubItemBase {
 		if(title.equals(ChatColor.stripColor(getName()))) {
 			if(items.containsKey(item)) {
 				Plugins plugin = items.get(item);
-				if(plugin == Plugins.HE_KITS) {
-					openHardcoreElimination(player);
-				} else if(plugin == Plugins.SKY_WARS) {
-					openSkyWars(player);
-				} else {
-					open(player, plugin);
-				}
+				open(player, plugin);
+			} else if(event.getItemTitle().contains("Profile")) {
+				player.closeInventory();
+				Profile.open(player);
 			}
 			event.setCancelled(true);
 		} else if(title.equals(hardcoreEliminationTitle)) {
@@ -143,19 +140,12 @@ public class GameSelector extends HubItemBase {
 			if(item.getType() == Material.WOOD_DOOR) {
 				openMenu(player);
 			} else {
-				open(player, item.getAmount() == 1 ? Plugins.SKY_WARS : Plugins.SKY_WARS_TEAMS);
+				open(player, item.getAmount() == 1 ? Plugins.SKY_WARS_SOLO : Plugins.SKY_WARS_TEAMS);
 			}
 			event.setCancelled(true);
 		} else if(watching.containsKey(player.getName())) {
 			if(item.getType() == Material.WOOD_DOOR) {
-				Plugins plugin = watching.get(player.getName());
-				if(plugin == Plugins.HE_KITS || plugin == Plugins.HE_NO_KITS) {
-					openHardcoreElimination(player);
-				} else if(plugin == Plugins.SKY_WARS || plugin == Plugins.SKY_WARS_TEAMS) {
-					openSkyWars(player);
-				} else {
-					openMenu(player);
-				}
+				openMenu(player);
 			} else {
 				ProPlugin.sendPlayerToServer(player, ChatColor.stripColor(event.getItemTitle()));
 			}
@@ -287,73 +277,103 @@ public class GameSelector extends HubItemBase {
 	
 	private void openSkyWars(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 4, skyWarsTitle);
-		inventory.setItem(11, new ItemCreator(Material.EMERALD).setName("&bSolo Sky Wars").getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.EMERALD).setName("&bSky Wars Teams").setAmount(2).getItemStack());
+		inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).getItemStack());
+		inventory.setItem(15, new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).getItemStack());
 		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 		player.openInventory(inventory);
 	}
 	
 	private void openHardcoreElimination(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 4, hardcoreEliminationTitle);
-		inventory.setItem(11, new ItemCreator(Material.GOLDEN_APPLE).setName("&bNo Kits").getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.GOLDEN_APPLE).setName("&bKits Enabled").setAmount(2).getItemStack());
+		inventory.setItem(11, new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).getItemStack());
+		inventory.setItem(15, new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).getItemStack());
 		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 		player.openInventory(inventory);
 	}
 	
 	private void openMenu(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9, ChatColor.stripColor(getName()));
-		/*ItemStack item = new ItemCreator(Material.DRAGON_EGG).setName("&bDragon Races").setLores(new String [] {
-			"&7Unique game",
-			"",
-			"&aRace against &e7 &aother players",
-			"&awhile riding Ender Dragons!",
-			"",
-			"&7Playing: &e" + players.get(Plugins.DRAGON_RACES),
-			""
-		}).getItemStack();
-		items.put(item, Plugins.DRAGON_RACES);
-		inventory.setItem(0, item);*/
-		ItemStack item = new ItemCreator(Material.DIAMOND_SWORD).setName("&bCapture the Flag").setLores(new String [] {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 6, ChatColor.stripColor(getName()));
+		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&b" + Plugins.CTF.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of CTF",
 			"",
-			"&aTwo-Team CTF PVP with unique gameplay",
+			"&aKills give you levels for the armory",
+			"&aCoins buy items from the shop",
+			"&aFirst team to capture 3 flags wins",
+			"",
+			"&7Team size: &e12 vs 12",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.CTF),
 		}).getItemStack();
 		items.put(item, Plugins.CTF);
-		inventory.setItem(1, item);
-		item = new ItemCreator(Material.DIAMOND_SWORD).setName("&bDomination").setLores(new String [] {
+		inventory.setItem(10, item);
+		item = new ItemCreator(Material.BANNER, 11).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Domination",
 			"",
-			"&aTwo-Team DOM PVP with unique gameplay",
+			"&aKills give you levels for the armory",
+			"&aCoins buy items from the shop",
+			"&aFirst team to 1000 points wins",
+			"",
+			"&7Team size: &e12 vs 12",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.DOM),
 		}).getItemStack();
 		items.put(item, Plugins.DOM);
-		inventory.setItem(3, item);
-		item = new ItemCreator(Material.EMERALD).setName("&bSky Wars").setLores(new String [] {
+		inventory.setItem(12, item);
+		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&aClassic Sky Wars PVP mini-game",
+			"&aLast player standing wins",
 			"",
-			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS),
+			"&7Team size: &eSolo",
+			"",
+			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_SOLO),
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SKY_WARS);
-		inventory.setItem(5, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination").setLores(new String [] {
+		items.put(item, Plugins.SKY_WARS_SOLO);
+		inventory.setItem(14, item);
+		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).setLores(new String [] {
+			"&7Well known game",
+			"",
+			"&aClassic Sky Wars PVP mini-game",
+			"&aLast team standing wins",
+			"",
+			"&7Team size: &e2",
+			"",
+			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_TEAMS),
+			""
+		}).getItemStack();
+		items.put(item, Plugins.SKY_WARS_TEAMS);
+		inventory.setItem(16, item);
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Ultra Hardcore",
 			"",
-			"&aYou have &e10 &aminutes to gather resources",
-			"&aand prepare yourself for 1v1 battle",
-			"&aagainst other players. Natural regen is &cOFF",
+			"&e10 &aminute grace to gather resources",
+			"&aAfterwards you will 1v1 other players",
+			"&aNatural regen is &cOFF",
+			"",
+			"&7Kits: &eEnabled",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.HE_KITS),
 			""
 		}).getItemStack();
 		items.put(item, Plugins.HE_KITS);
-		inventory.setItem(7, item);
+		inventory.setItem(30, item);
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
+			"&7Unique spin-off of Ultra Hardcore",
+			"",
+			"&e10 &aminute grace to gather resources",
+			"&aAfterwards you will 1v1 other players",
+			"&aNatural regen is &cOFF",
+			"",
+			"&7Kits: &cDisabled",
+			"",
+			"&7Playing: &e" + getPlayers(Plugins.HE_KITS),
+			""
+		}).getItemStack();
+		items.put(item, Plugins.HE_NO_KITS);
+		inventory.setItem(32, item);
+		inventory.setItem(49, Profile.getItem(player));
 		player.openInventory(inventory);
 	}
 	

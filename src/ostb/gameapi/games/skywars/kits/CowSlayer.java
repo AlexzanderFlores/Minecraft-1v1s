@@ -15,7 +15,7 @@ public class CowSlayer extends KitBase {
 	private static final int price = 500;
 	
 	public CowSlayer() {
-		super(Plugins.SKY_WARS, new ItemCreator(Material.LEATHER).setName("Cow Slayer").setLores(new String [] {
+		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.LEATHER).setName("Cow Slayer").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aFull Leather Armor",

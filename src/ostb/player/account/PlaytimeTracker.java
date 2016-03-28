@@ -206,8 +206,11 @@ public class PlaytimeTracker implements Listener {
 	}
 	
 	public static Playtime getPlayTime(Player player) {
-		if(!playtime.containsKey(player.getName())) {
-			final String name = player.getName();
+		return getPlayTime(player.getName());
+	}
+	
+	public static Playtime getPlayTime(final String name) {
+		if(!playtime.containsKey(name)) {
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
@@ -219,7 +222,7 @@ public class PlaytimeTracker implements Listener {
 			});
 			return null;
 		}
-		return playtime.get(player.getName());
+		return playtime.get(name);
 	}
 	
 	public static List<String> getTop5(TimeType timeType) {

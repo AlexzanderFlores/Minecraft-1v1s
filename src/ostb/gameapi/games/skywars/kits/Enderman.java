@@ -18,7 +18,7 @@ public class Enderman extends KitBase {
 	private static boolean enabled = false;
 	
 	public Enderman() {
-		super(Plugins.SKY_WARS, new ItemCreator(Material.ENDER_PEARL).setName("Enderman").setLores(new String [] {
+		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.ENDER_PEARL).setName("Enderman").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTake no Enderpearl Damage",

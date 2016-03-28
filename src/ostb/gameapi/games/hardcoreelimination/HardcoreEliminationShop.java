@@ -37,7 +37,7 @@ public class HardcoreEliminationShop implements Listener {
 	private static final int size = 9 * 6;
 	
 	public HardcoreEliminationShop() {
-		name = "Shop - " + Plugins.HE_KITS.getDisplay();
+		name = "Shop - Hardcore Elimination";
 		permission = "kit.hardcore_elimination";
 		new CoinsHandler(DB.PLAYERS_COINS_HE, Plugins.HE_KITS);
 		new HardcoreEliminationCrate();

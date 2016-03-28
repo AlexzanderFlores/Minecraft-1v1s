@@ -51,7 +51,7 @@ public class Shop extends HubItemBase {
 		String name = ChatColor.stripColor(event.getItemTitle());
 		if(title.equals(ChatColor.stripColor(getName()))) {
 			EffectUtil.playSound(player, Sound.CHEST_OPEN);
-			if(name.equals(Plugins.SKY_WARS.getDisplay())) {
+			if(name.equals("Sky Wars")) {
 				SkyWarsShop.openShop(player);
 			} else if(name.equals(Plugins.HE_KITS.getDisplay())) {
 				HardcoreEliminationShop.openShop(player);
@@ -69,13 +69,13 @@ public class Shop extends HubItemBase {
 	private void open(Player player) {
 		EffectUtil.playSound(player, Sound.CHEST_OPEN);
 		Inventory inventory = Bukkit.createInventory(player, 9 * 3, ChatColor.stripColor(name));
-		ItemStack item = new ItemCreator(Material.EMERALD).setName("&bSky Wars").setLores(new String [] {
+		ItemStack item = new ItemCreator(Material.GRASS).setName("&bSky Wars").setLores(new String [] {
 			"",
 			"&7Click to view Shop",
 			""
 		}).getItemStack();
 		inventory.setItem(11, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination").setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
 			"",
 			"&7Click to view Shop",
 			""

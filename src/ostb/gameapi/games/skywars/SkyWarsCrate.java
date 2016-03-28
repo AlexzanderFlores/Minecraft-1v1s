@@ -114,7 +114,7 @@ public class SkyWarsCrate implements Listener {
 					//TODO: Display item options and rarities
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					final Player player = event.getPlayer();
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
