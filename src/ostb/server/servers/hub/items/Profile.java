@@ -1,15 +1,15 @@
 package ostb.server.servers.hub.items;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,59 +18,51 @@ import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.player.LevelHandler;
 import ostb.player.account.AccountHandler;
-import ostb.player.account.PlaytimeTracker;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.player.account.PlaytimeTracker;
 import ostb.player.account.PlaytimeTracker.TimeType;
 import ostb.server.DB;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.tasks.AsyncDelayedTask;
-import ostb.server.tasks.DelayedTask;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
 
 public class Profile extends HubItemBase {
-	private static List<String> delayed = null;
-	private static final int delay = 2;
 	private static String itemName = null;
 	private static ItemStack finalItem = null;
 	
 	public Profile() {
 		super(new ItemCreator(Material.SKULL_ITEM, 3).setName("&eProfile"), 6);
-		delayed = new ArrayList<String>();
 		Profile.itemName = this.getName();
 		finalItem = getItem();
+		//new Settings();
 	}
 
 	@Override
-	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		giveItem(player);
+		
 	}
 
 	@Override
-	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
-		final Player player = event.getPlayer();
-		if(isItem(player)) {
-			if(!delayed.contains(player.getName())) {
-				delayed.add(player.getName());
-				new DelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						delayed.remove(player.getName());
-					}
-				}, 20 * delay);
-				open(player);
-			}
-			player.updateInventory();
-		}
+		
 	}
 
 	@Override
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(ChatColor.stripColor(getName()))) {
+		if(event.getTitle().startsWith(ChatColor.stripColor(getName()))) {
+			Player player = event.getPlayer();
+			String title = event.getTitle();
+			Material type = event.getItem().getType();
+			if(type == Material.EXP_BOTTLE || type == Material.SKULL_ITEM || type == Material.WATCH || type == Material.CHEST) {
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+			} else if(!title.contains(" - " + player.getName())) {
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+			} else {
+				//Settings.open(player);
+			}
 			event.setCancelled(true);
 		}
 	}
@@ -78,6 +70,14 @@ public class Profile extends HubItemBase {
 	@Override
 	public void giveItem(Player player) {
 		player.getInventory().setItem(getSlot(), ItemUtil.getSkull(player.getName(), getItem().clone()));
+	}
+	
+	@EventHandler
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if(event.getRightClicked() instanceof Player && event.getPlayer().isSneaking()) {
+			Player player = (Player) event.getRightClicked();
+			open(event.getPlayer(), player.getName());
+		}
 	}
 	
 	private static String getItemName() {
@@ -105,7 +105,7 @@ public class Profile extends HubItemBase {
 				String uuid = targetUUID.toString();
 				int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
 				int month = Calendar.getInstance().get(Calendar.MONTH);
-				Inventory inventory = Bukkit.createInventory(player, 9 * 5, ChatColor.stripColor(getItemName()));
+				Inventory inventory = Bukkit.createInventory(player, 9 * 5, ChatColor.stripColor(getItemName() + " - " + targetName));
 				inventory.setItem(10, new ItemCreator(Material.EXP_BOTTLE).setName("&bLevel Information").setLores(new String [] {
 					"",
 					"&7Current level: &e" + LevelHandler.getLevel(targetName),

@@ -327,8 +327,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&7Team size: &eSolo",
 			"",
-			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_SOLO),
-			""
+			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_SOLO)
 		}).getItemStack();
 		items.put(item, Plugins.SKY_WARS_SOLO);
 		inventory.setItem(14, item);
@@ -340,8 +339,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&7Team size: &e2",
 			"",
-			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_TEAMS),
-			""
+			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_TEAMS)
 		}).getItemStack();
 		items.put(item, Plugins.SKY_WARS_TEAMS);
 		inventory.setItem(16, item);
@@ -354,8 +352,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&7Kits: &eEnabled",
 			"",
-			"&7Playing: &e" + getPlayers(Plugins.HE_KITS),
-			""
+			"&7Playing: &e" + getPlayers(Plugins.HE_KITS)
 		}).getItemStack();
 		items.put(item, Plugins.HE_KITS);
 		inventory.setItem(30, item);
@@ -368,8 +365,7 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&7Kits: &cDisabled",
 			"",
-			"&7Playing: &e" + getPlayers(Plugins.HE_KITS),
-			""
+			"&7Playing: &e" + getPlayers(Plugins.HE_KITS)
 		}).getItemStack();
 		items.put(item, Plugins.HE_NO_KITS);
 		inventory.setItem(32, item);
