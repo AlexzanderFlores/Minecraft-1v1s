@@ -173,6 +173,11 @@ public class OSTB extends JavaPlugin {
 		for(Databases database : Databases.values()) {
 			database.disconnect();
 		}
+		if(client != null) {
+			client.shutdown(true);
+		} else if(plugin == Plugins.SLAVE && Slave.getServer() != null) {
+			Slave.getServer().shutdown();
+		}
 		FileHandler.checkForUpdates();
 	}
 	
