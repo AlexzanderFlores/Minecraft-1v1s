@@ -42,12 +42,16 @@ public class GameSelector extends HubItemBase {
 	private static Map<ItemStack, Plugins> items = null;
 	private static Map<String, Plugins> watching = null;
 	private static Map<Plugins, Integer> players = null;
+	private String hardcoreEliminationTitle = null;
+	private String skyWarsTitle = null;
 	
 	public GameSelector() {
 		super(new ItemCreator(Material.COMPASS).setName("&eGame Selector"), 0);
 		items = new HashMap<ItemStack, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		players = new HashMap<Plugins, Integer>();
+		hardcoreEliminationTitle = Plugins.HE_KITS.getDisplay() + " Type";
+		skyWarsTitle = Plugins.SKY_WARS.getDisplay() + " Type";
 		World world = Bukkit.getWorlds().get(0);
 		new NPCEntity(EntityType.SKELETON, "&e&nCapture the Flag", new Location(world, 1681.5, 5, -1296.5), new ItemStack(Material.WOOL, 1, (byte) 14)) {
 			@Override
@@ -115,18 +119,44 @@ public class GameSelector extends HubItemBase {
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
 		ItemStack item = event.getItem();
-		if(event.getTitle().equals(ChatColor.stripColor(getName()))) {
+		String title = event.getTitle();
+		if(title.equals(ChatColor.stripColor(getName()))) {
 			if(items.containsKey(item)) {
 				Plugins plugin = items.get(item);
-				open(player, plugin);
+				if(plugin == Plugins.HE_KITS) {
+					openHardcoreElimination(player);
+				} else if(plugin == Plugins.SKY_WARS) {
+					openSkyWars(player);
+				} else {
+					open(player, plugin);
+				}
+			}
+			event.setCancelled(true);
+		} else if(title.equals(hardcoreEliminationTitle)) {
+			if(item.getType() == Material.WOOD_DOOR) {
+				openMenu(player);
+			} else {
+				open(player, item.getAmount() == 1 ? Plugins.HE_NO_KITS : Plugins.HE_KITS);
+			}
+			event.setCancelled(true);
+		} else if(title.equals(skyWarsTitle)) {
+			if(item.getType() == Material.WOOD_DOOR) {
+				openMenu(player);
+			} else {
+				open(player, item.getAmount() == 1 ? Plugins.SKY_WARS : Plugins.SKY_WARS_TEAMS);
 			}
 			event.setCancelled(true);
 		} else if(watching.containsKey(player.getName())) {
 			if(item.getType() == Material.WOOD_DOOR) {
-				EffectUtil.playSound(player, Sound.CHEST_OPEN);
-				openMenu(player);
+				Plugins plugin = watching.get(player.getName());
+				if(plugin == Plugins.HE_KITS || plugin == Plugins.HE_NO_KITS) {
+					openHardcoreElimination(player);
+				} else if(plugin == Plugins.SKY_WARS || plugin == Plugins.SKY_WARS_TEAMS) {
+					openSkyWars(player);
+				} else {
+					openMenu(player);
+				}
 			} else {
-				Bukkit.getLogger().info("1");
 				ProPlugin.sendPlayerToServer(player, ChatColor.stripColor(event.getItemTitle()));
 			}
 			event.setCancelled(true);
@@ -167,7 +197,8 @@ public class GameSelector extends HubItemBase {
 					List<Integer> playerCounts = new ArrayList<Integer>();
 					List<Integer> maxPlayers = new ArrayList<Integer>();
 					int limit = plugin == Plugins.HUB ? 9 * 6 : 9;
-					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY listed_priority, players DESC, server_number LIMIT " + limit).executeQuery();
+					//listed_priority, players DESC, 
+					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY server_number LIMIT " + limit).executeQuery();
 					int playing = 0;
 					while(resultSet.next()) {
 						priorities.add(resultSet.getInt("listed_priority"));
@@ -252,6 +283,22 @@ public class GameSelector extends HubItemBase {
 	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		watching.remove(event.getPlayer().getName());
+	}
+	
+	private void openSkyWars(Player player) {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 4, skyWarsTitle);
+		inventory.setItem(11, new ItemCreator(Material.EMERALD).setName("&bSolo Sky Wars").getItemStack());
+		inventory.setItem(15, new ItemCreator(Material.EMERALD).setName("&bSky Wars Teams").setAmount(2).getItemStack());
+		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
+		player.openInventory(inventory);
+	}
+	
+	private void openHardcoreElimination(Player player) {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 4, hardcoreEliminationTitle);
+		inventory.setItem(11, new ItemCreator(Material.GOLDEN_APPLE).setName("&bNo Kits").getItemStack());
+		inventory.setItem(15, new ItemCreator(Material.GOLDEN_APPLE).setName("&bKits Enabled").setAmount(2).getItemStack());
+		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
+		player.openInventory(inventory);
 	}
 	
 	private void openMenu(Player player) {
