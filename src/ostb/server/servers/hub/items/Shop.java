@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationShop;
@@ -53,7 +52,7 @@ public class Shop extends HubItemBase {
 			EffectUtil.playSound(player, Sound.CHEST_OPEN);
 			if(name.equals("Sky Wars")) {
 				SkyWarsShop.openShop(player);
-			} else if(name.equals(Plugins.HE_KITS.getDisplay())) {
+			} else if(name.equals("Hardcore Elimination")) {
 				HardcoreEliminationShop.openShop(player);
 			}
 			event.setCancelled(true);
@@ -75,7 +74,7 @@ public class Shop extends HubItemBase {
 			""
 		}).getItemStack();
 		inventory.setItem(11, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination").setLores(new String [] {
 			"",
 			"&7Click to view Shop",
 			""
