@@ -1,0 +1,21 @@
+package ostb.server.tasks;
+
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
+
+import ostb.OSTB;
+
+public class DelayedTask implements Listener {
+	public DelayedTask(Runnable runnable) {
+		this(runnable, 1);
+	}
+	
+	public DelayedTask(Runnable runnable, long delay) {
+		OSTB instance = OSTB.getInstance();
+		if(instance.isEnabled()) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, delay);
+		} else {
+			runnable.run();
+		}
+	}
+}

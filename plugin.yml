@@ -1,0 +1,143 @@
+name: OSTB
+main: ostb.OSTB
+version: 1.0
+softdepend: [Votifier, EffectLib, ProtocolLib, HolographicDisplays]
+commands:
+# Global Commands
+  shop:
+    usage: /shop
+
+  elo:
+    usage: /elo [name]
+
+  getLoc:
+    usage: /getLoc
+
+  hub:
+    usage: /hub
+
+  ignore:
+    usage: /ignore <name>
+
+  join:
+    usage: /join <server name>
+
+  killAura:
+    usage: /killAura <name>
+
+  performance:
+    usage: /performance
+
+  list:
+    usage: /list
+
+  msg:
+    usage: /msg <name> <message>
+    aliases: [m]
+
+  ping:
+    usage: /ping [name]
+
+  r:
+    usage: /r <message>
+
+  shout:
+    usage: /shout <message>
+
+  spawn:
+    description: Teleports a player to the spawn of their world
+    usage: /spawn
+
+  report:
+    usage: /report <name> <reason>
+
+  reports:
+    description: Displays open reports
+    usage: /reports
+
+  closeReport:
+    description: Closes a report
+    usage: /closeReport <id>
+
+  vote:
+    usage: /vote
+
+# Hub Commands
+  giveKey:
+    usage: /giveKey <name> <amount>
+
+# Op Only Global Commands
+  alert:
+    usage: /alert <text>
+
+  aa:
+    usage: /aa help
+
+  globalHubUpdate:
+    usage: /globalHubUpdate [stop]
+
+  gmc:
+    usage: /gmc
+
+  gms:
+    usage: /gms
+
+  restartServer:
+    usage: /restartServer <minutes>
+
+  restartIfEmpty:
+    usage: /restartIfEmpty [dispatch]
+
+  say:
+    usage: /say <message>
+
+  setRank:
+    usage: /setRank <name> <rank>
+
+  test:
+    usage: /test
+
+  tpPos:
+    usage: /tpPos <x> <y> <z>
+
+  win:
+   usage: /win
+
+# Staff Commands
+  ban:
+    usage: /ban <name> <reason> <proof>
+
+  mute:
+    usage: /mute <name> <reason> <proof>
+
+  s:
+    usage: /s <message>
+
+  v:
+    usage: /v [tp] [name]
+
+  unban:
+    usage: /unban <name>
+
+  unMute:
+    usage: /unMute <name> <reason>
+
+# Hub Commands
+  rankTransfer:
+    usage: /rankTransfer <target>
+
+  statReset:
+    usage: /statReset
+
+# Mini-Game Commands
+  grace:
+    usage: /grace <seconds>
+
+  startGame:
+    usage: /startGame
+
+  setCounter:
+    usage: /setCounter <seconds>
+
+  spec:
+    usage: /spec <name>
