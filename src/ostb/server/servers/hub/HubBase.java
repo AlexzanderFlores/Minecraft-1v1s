@@ -51,37 +51,6 @@ public class HubBase extends ProPlugin {
 		new Notifications();
 		new LobbySelector();
 		new ServerLogger();
-		//new TrailTest();
-		/*new CommandBase("test", 1, 2, true) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				// /test undo
-				// /test id
-				// /test id data
-				Material material = null;
-				byte data = 0;
-				if(arguments.length == 1) {
-					if(arguments[0].equalsIgnoreCase("undo")) {
-						stands.get(stands.size() - 1).remove();
-						stands.remove(stands.size() - 1);
-					} else {
-						material = Material.valueOf(arguments[0].toUpperCase());
-					}
-				} else if(arguments.length == 2) {
-					material = Material.valueOf(arguments[0].toUpperCase());
-					data = Byte.valueOf(arguments[1]);
-				}
-				if(material != null) {
-					Player player = (Player) sender;
-					ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-					armorStand.setGravity(false);
-					armorStand.setVisible(false);
-					armorStand.setHelmet(new ItemStack(material, 1, data));
-					stands.add(armorStand);
-				}
-				return true;
-			}
-		};*/
 	}
 	
 	public static int getHubNumber() {

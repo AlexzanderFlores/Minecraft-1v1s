@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -18,29 +17,6 @@ import ostb.server.util.EventUtil;
 
 public class CommandDispatcher implements Listener {
 	public CommandDispatcher() {
-		new CommandBase("test", 2, -1) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				String target = arguments[0];
-				String command = "";
-				for(int a = 1; a < arguments.length; ++a) {
-					command += arguments[a] + " ";
-				}
-				if(target.equalsIgnoreCase("all")) {
-					sendToAll(command);
-				} else if(target.equalsIgnoreCase("game")) {
-					String game = arguments[1];
-					command = "";
-					for(int a = 2; a < arguments.length; ++a) {
-						command += arguments[a] + " ";
-					}
-					sendToGame(game, command);
-				} else {
-					sendToServer(target, command);
-				}
-				return true;
-			}
-		};
 		EventUtil.register(this);
 	}
 	

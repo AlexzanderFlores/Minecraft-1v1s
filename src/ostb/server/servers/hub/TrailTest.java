@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
 
 public class TrailTest implements Listener {
@@ -28,13 +26,6 @@ public class TrailTest implements Listener {
 
 	public TrailTest() {
 		stands = new HashMap<String, List<ArmorStand>>();
-		new CommandBase("test", 1) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				material = Material.valueOf(arguments[0].toUpperCase());
-				return true;
-			}
-		};
 		EventUtil.register(this);
 	}
 	

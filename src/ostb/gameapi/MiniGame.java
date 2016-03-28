@@ -41,6 +41,7 @@ public abstract class MiniGame extends ProPlugin {
 	private boolean updateTitleSidebar = true;
 	private boolean updateBossBar = true;
 	private World lobby = null;
+	private World map = null;
 	private GameStates gameState = GameStates.WAITING;
 	
 	public MiniGame(String name) {
@@ -54,6 +55,7 @@ public abstract class MiniGame extends ProPlugin {
 		new PostGameStartingEvent(true);
 		new ServerLogger();
 		new LeaveItem();
+		new MapRating();
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -235,6 +237,14 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public void setLobby(World lobby) {
 		this.lobby = lobby;
+	}
+	
+	public World getMap() {
+		return this.map;
+	}
+	
+	public void setMap(World map) {
+		this.map = map;
 	}
 	
 	public GameStates getGameState() {
