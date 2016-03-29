@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.customevents.RestartAnnounceEvent;
 import ostb.customevents.timed.FiveMinuteTaskEvent;
 import ostb.customevents.timed.FiveSecondTaskEvent;
 import ostb.customevents.timed.OneSecondTaskEvent;
@@ -109,7 +108,6 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 			} else {
 				if(canDisplay()) {
 					MessageHandler.alert("&bServer restarting: " + getCounterAsString());
-					Bukkit.getPluginManager().callEvent(new RestartAnnounceEvent(getCounter()));
 				}
 				decrementCounter();
 			}

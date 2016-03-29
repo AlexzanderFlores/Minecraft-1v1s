@@ -17,7 +17,6 @@ import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.anticheat.killaura.AttackThroughWalls;
 import ostb.anticheat.killaura.InventoryKillAuraDetection;
-import ostb.anticheat.killaura.KillAuraSpectatorCheck;
 import ostb.customevents.player.PlayerBanEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
@@ -50,7 +49,6 @@ public class AntiCheat {
 			new AttackThroughWalls();
 			new AttackDistanceLogger();
 		}
-		new KillAuraSpectatorCheck();
 		new InventoryKillAuraDetection();
 		new HeadlessFix();
 		new SpamBotFix();

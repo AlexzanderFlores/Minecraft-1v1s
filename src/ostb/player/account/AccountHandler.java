@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.customevents.player.NewPlayerJoiningEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
 import ostb.player.MessageHandler;
@@ -277,7 +276,6 @@ public class AccountHandler implements Listener {
 					DB.PLAYERS_ACCOUNTS.insert("'" + uuid + "', '" + name + "', '" + address + "', '" + rank + "', '" + TimeUtil.getTime().substring(0, 10) + "'");
 					DB.PLAYERS_IP_ADDRESSES.insert("'" + uuid + "', '" + address + "', '" + TimeUtil.getTime() + "'");
 					DB.PLAYERS_LEVELS.insert("'" + uuid + "', '1', '0'");
-					Bukkit.getPluginManager().callEvent(new NewPlayerJoiningEvent(player));
 				}
 			});
 		}

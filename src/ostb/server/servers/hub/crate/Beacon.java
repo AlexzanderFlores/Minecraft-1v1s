@@ -25,14 +25,13 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.FiveTickTaskEvent;
-import ostb.customevents.timed.TwoTickTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
+import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
-import ostb.player.TitleDisplayer;
 import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -256,27 +255,27 @@ public class Beacon implements Listener {
 	}
 	
 	@EventHandler
-	public void onTwoTickTask(TwoTickTaskEvent event) {
-		if(running && !displaying) {
-			if(counter <= 12) {
-				armorStand.setCustomName(getName());
-				++counter;
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 2) {
+			if(running && !displaying) {
+				if(counter <= 12) {
+					armorStand.setCustomName(getName());
+					++counter;
+				}
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onFiveTickTask(FiveTickTaskEvent event) {
-		if(running && !displaying) {
-			glass.setData((byte) random.nextInt(15));
-			EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, glass.getLocation());
-			ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
-			if(counter <= 12) {
-				armorStand.setCustomName(getName());
-				++counter;
-			}
-			if(counter > 12) {
-				setItem();
+		} else if(ticks == 5) {
+			if(running && !displaying) {
+				glass.setData((byte) random.nextInt(15));
+				EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, glass.getLocation());
+				ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
+				if(counter <= 12) {
+					armorStand.setCustomName(getName());
+					++counter;
+				}
+				if(counter > 12) {
+					setItem();
+				}
 			}
 		}
 	}

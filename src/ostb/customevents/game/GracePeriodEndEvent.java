@@ -1,9 +1,9 @@
-package ostb.customevents.timed;
+package ostb.customevents.game;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class TwoTickTaskEvent extends Event {
+public class GracePeriodEndEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
  
     @Override

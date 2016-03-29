@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.customevents.timed.TwoTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 public class Flag implements Listener {
@@ -37,10 +37,6 @@ public class Flag implements Listener {
 		public int getCounter() {
 			return this.counter;
 		}
-		
-		/*public Direction getLast() {
-			return this == MIN ? CENTER_GOING_MIN : this == CENTER_GOING_MIN ? MAX : this == CENTER_GOING_MAX ? MIN : CENTER_GOING_MAX;
-		}*/
 		
 		public Direction getNext() {
 			return this == MIN ? CENTER_GOING_MAX : this == CENTER_GOING_MIN ? MIN : this == CENTER_GOING_MAX ? MAX : CENTER_GOING_MIN;
@@ -98,17 +94,20 @@ public class Flag implements Listener {
 	}
 	
 	@EventHandler
-	public void onTwoTickTask(TwoTickTaskEvent event) {
-		for(ArmorStand armorStand : flags.keySet()) {
-			if(flags.get(armorStand) == direction.getCounter()) {
-				armorStand.setHelmet(new ItemStack(Material.WOOL, 1, color));
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 3) {
+			for(ArmorStand armorStand : flags.keySet()) {
+				if(flags.get(armorStand) == direction.getCounter()) {
+					armorStand.setHelmet(new ItemStack(Material.WOOL, 1, color));
+				}
 			}
-		}
-		for(ArmorStand armorStand : flags.keySet()) {
-			if(flags.get(armorStand) != direction.getCounter()) {
-				armorStand.setHelmet(new ItemStack(Material.AIR));
+			for(ArmorStand armorStand : flags.keySet()) {
+				if(flags.get(armorStand) != direction.getCounter()) {
+					armorStand.setHelmet(new ItemStack(Material.AIR));
+				}
 			}
+			direction = direction.getNext();
 		}
-		direction = direction.getNext();
 	}
 }

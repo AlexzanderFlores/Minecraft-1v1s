@@ -11,7 +11,6 @@ import net.minecraft.server.v1_8_R3.EntityGuardian;
 import ostb.OSTB;
 import ostb.server.CommandBase;
 import ostb.server.nms.npcs.NPCEntity;
-import ostb.server.nms.npcs.entities.GuardianNPC;
 import ostb.server.servers.hub.HubBase;
 
 public class MainHub extends HubBase {
@@ -54,12 +53,6 @@ public class MainHub extends HubBase {
 				} else if(arguments[0].equalsIgnoreCase("toggle") && npc.getLivingEntity() instanceof Guardian) {
 					Guardian guardian = (Guardian) npc.getLivingEntity();
 					guardian.setElder(!guardian.isElder());
-				} else if(arguments[0].equalsIgnoreCase("shoot") && npc.getLivingEntity() instanceof Guardian) {
-					Guardian guardian = (Guardian) npc.getLivingEntity();
-					CraftGuardian craftGuardian = (CraftGuardian) guardian;
-					EntityGuardian entityGuardian = (EntityGuardian) craftGuardian.getHandle();
-					GuardianNPC guardianNPC = (GuardianNPC) entityGuardian;
-					guardianNPC.test();
 				}
 				return true;
 			}

@@ -1,21 +1,20 @@
-package ostb.customevents.player.timed;
+package ostb.customevents;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerFiveSecondConnectedOnceEvent extends Event {
+public class TimeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player = null;
+    private long ticks = 0;
     
-    public PlayerFiveSecondConnectedOnceEvent(Player player) {
-    	this.player = player;
+    public TimeEvent(long ticks) {
+    	this.ticks = ticks;
     }
     
-    public Player getPlayer() {
-    	return this.player;
+    public long getTicks() {
+    	return this.ticks;
     }
- 
+    
     @Override
     public HandlerList getHandlers() {
         return handlers;

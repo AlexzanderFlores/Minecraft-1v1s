@@ -5,22 +5,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerStaffModeEvent extends Event {
+public class PlayerStaffVanishEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;
-    private StaffModeEventType type = null;
+    private StaffVanishType type = null;
     private Location target = null;
     private boolean cancelled = false;
     
-    public static enum StaffModeEventType {
+    public static enum StaffVanishType {
     	ENABLE, DISABLE, TELEPORT
     }
  
-    public PlayerStaffModeEvent(Player player, StaffModeEventType type) {
+    public PlayerStaffVanishEvent(Player player, StaffVanishType type) {
         this(player, type, null);
     }
     
-    public PlayerStaffModeEvent(Player player, StaffModeEventType type, Location target) {
+    public PlayerStaffVanishEvent(Player player, StaffVanishType type, Location target) {
     	this.player = player;
     	this.type = type;
     	this.target = target;
@@ -30,7 +30,7 @@ public class PlayerStaffModeEvent extends Event {
     	return player;
     }
     
-    public StaffModeEventType getType() {
+    public StaffVanishType getType() {
     	return type;
     }
     

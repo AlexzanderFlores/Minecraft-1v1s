@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -18,13 +17,9 @@ import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameLossEvent;
-import ostb.customevents.game.GameStatChangeEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerSpectateStartEvent;
-import ostb.customevents.player.PlayerViewStatsEvent;
-import ostb.customevents.player.StatsChangeEvent;
-import ostb.customevents.player.StatsChangeEvent.StatsType;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -269,10 +264,6 @@ public class StatsHandler implements Listener {
 						double kdr = (kills == 0 || deaths == 0 ? 0 : DoubleUtil.round(kills / deaths, 2));
 						double monthlyKdr = (monthlyKills == 0 || monthlyDeaths == 0 ? 0 : DoubleUtil.round(monthlyKills / monthlyDeaths, 2));
 						MessageHandler.sendMessage(sender, "&eKDR: &c" + kdr + " &7/ &b" + monthlyKdr);
-						if(sender instanceof Player) {
-							Player viewer = (Player) sender;
-							Bukkit.getPluginManager().callEvent(new PlayerViewStatsEvent(viewer, player.getUniqueId(), player.getName()));
-						}
 					}
 					return true;
 				}
@@ -381,52 +372,36 @@ public class StatsHandler implements Listener {
 		if(viewOnly) {
 			return;
 		}
-		StatsChangeEvent event = new StatsChangeEvent(player, StatsType.WIN);
-		Bukkit.getPluginManager().callEvent(event);
-		if(!event.isCancelled()) {
-			loadStats(player);
-			gameStats.get(player.getName()).addWins();
-			gameStats.get(player.getName()).addMonthlyWins();
-		}
+		loadStats(player);
+		gameStats.get(player.getName()).addWins();
+		gameStats.get(player.getName()).addMonthlyWins();
 	}
 	
 	public static void addLoss(Player player) {
 		if(viewOnly) {
 			return;
 		}
-		StatsChangeEvent event = new StatsChangeEvent(player, StatsType.LOSS);
-		Bukkit.getPluginManager().callEvent(event);
-		if(!event.isCancelled()) {
-			loadStats(player);
-			gameStats.get(player.getName()).addLosses();
-			gameStats.get(player.getName()).addMonthlyLosses();
-		}
+		loadStats(player);
+		gameStats.get(player.getName()).addLosses();
+		gameStats.get(player.getName()).addMonthlyLosses();
 	}
 	
 	public static void addKill(Player player) {
 		if(viewOnly) {
 			return;
 		}
-		StatsChangeEvent event = new StatsChangeEvent(player, StatsType.KILL);
-		Bukkit.getPluginManager().callEvent(event);
-		if(!event.isCancelled()) {
-			loadStats(player);
-			gameStats.get(player.getName()).addKills();
-			gameStats.get(player.getName()).addMonthlyKills();
-		}
+		loadStats(player);
+		gameStats.get(player.getName()).addKills();
+		gameStats.get(player.getName()).addMonthlyKills();
 	}
 	
 	public static void addDeath(Player player) {
 		if(viewOnly) {
 			return;
 		}
-		StatsChangeEvent event = new StatsChangeEvent(player, StatsType.DEATH);
-		Bukkit.getPluginManager().callEvent(event);
-		if(!event.isCancelled()) {
-			loadStats(player);
-			gameStats.get(player.getName()).addDeaths();
-			gameStats.get(player.getName()).addMonthlyDeaths();
-		}
+		loadStats(player);
+		gameStats.get(player.getName()).addDeaths();
+		gameStats.get(player.getName()).addMonthlyDeaths();
 	}
 	
 	public static void removeDeath(Player player) {
@@ -531,7 +506,6 @@ public class StatsHandler implements Listener {
 					monthly.updateInt("kills", stats.getMonthlyKills(), keys, values);
 					monthly.updateInt("deaths", stats.getMonthlyDeaths(), keys, values);
 				}
-				Bukkit.getPluginManager().callEvent(new GameStatChangeEvent(stats, player));
 			}
 			gameStats.remove(player.getName());
 		}

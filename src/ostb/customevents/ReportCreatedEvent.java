@@ -1,18 +1,20 @@
 package ostb.customevents;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
-public class RestartAnnounceEvent extends Event {
+public class ReportCreatedEvent extends Event implements Listener {
     private static final HandlerList handlers = new HandlerList();
-    private int counter = 0;
-    
-    public RestartAnnounceEvent(int counter) {
-    	this.counter = counter;
+    private Player player = null;
+ 
+    public ReportCreatedEvent(Player player) {
+    	this.player = player;
     }
     
-    public int getCounter() {
-    	return this.counter;
+    public Player getPlayer() {
+    	return this.player;
     }
  
     @Override

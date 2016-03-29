@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.customevents.game.GracePeriodEndingEvent;
+import ostb.customevents.game.GracePeriodEndEvent;
 import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
@@ -55,7 +55,7 @@ public class GracePeriod extends CountDownUtil implements Listener {
 				new TitleDisplayer(player, "&cPVP Enabled").setFadeIn(5).setStay(30).setFadeOut(5).display();
 			}
 			EffectUtil.playSound(Sound.ENDERDRAGON_GROWL);
-			Bukkit.getPluginManager().callEvent(new GracePeriodEndingEvent());
+			Bukkit.getPluginManager().callEvent(new GracePeriodEndEvent());
 		} else {
 			if(getCounter() <= 3) {
 				for(Player player : Bukkit.getOnlinePlayers()) {

@@ -16,7 +16,6 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
-import ostb.customevents.player.NewPlayerJoinEvent;
 import ostb.customevents.player.PlayerAFKEvent;
 import ostb.customevents.player.PlaytimeLoadedEvent;
 import ostb.customevents.player.timed.PlayerDayOfPlaytimeEvent;
@@ -73,12 +72,6 @@ public class PlaytimeTracker implements Listener {
 				setSeconds(0, TimeType.WEEKLY);
 			}
 			Player player = Bukkit.getPlayer(uuid);
-			if(OSTB.getPlugin() != Plugins.HUB && OSTB.getMiniGame() == null) {
-				int required = 10;
-				if(days == 0 && hours == 0 && minutes < required) {
-					Bukkit.getPluginManager().callEvent(new NewPlayerJoinEvent(player));
-				}
-			}
 			Bukkit.getPluginManager().callEvent(new PlaytimeLoadedEvent(player));
 		}
 		
