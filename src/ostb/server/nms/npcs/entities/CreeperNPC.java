@@ -33,16 +33,16 @@ public class CreeperNPC extends EntityCreeper {
 	
 	@Override
 	public void collide(Entity entity) {
-		
+		LivingEntity livingEntity = (LivingEntity) getBukkitEntity();
+		NPCEntity npc = NPCEntity.getNPC(livingEntity);
+		npc.getLivingEntity().teleport(npc.getStartingLocation());
 	}
 	
 	@Override
 	public void move(double x, double y, double z) {
+		super.move(x, y, z);
 		LivingEntity livingEntity = (LivingEntity) getBukkitEntity();
 		NPCEntity npc = NPCEntity.getNPC(livingEntity);
 		npc.teleportArmorStand();
-		if(!npc.isAtTargetPath()) {
-			super.move(x, y, z);
-		}
 	}
 }

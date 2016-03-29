@@ -11,12 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -32,36 +32,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.minecraft.server.v1_8_R3.EntityCreeper;
 import net.minecraft.server.v1_8_R3.EntityLiving;
-import net.minecraft.server.v1_8_R3.EntitySkeleton;
-import net.minecraft.server.v1_8_R3.EntitySnowman;
-import net.minecraft.server.v1_8_R3.EntityVillager;
-import net.minecraft.server.v1_8_R3.EntityZombie;
-import net.minecraft.server.v1_8_R3.PathfinderGoal;
 import ostb.customevents.ServerRestartEvent;
 import ostb.gameapi.SpectatorHandler;
-import ostb.server.nms.PathfinderGoalWalkToLocation;
 import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.nms.npcs.entities.CreeperNPC;
 import ostb.server.nms.npcs.entities.SkeletonNPC;
 import ostb.server.nms.npcs.entities.SnowmanNPC;
 import ostb.server.nms.npcs.entities.VillagerNPC;
 import ostb.server.nms.npcs.entities.ZombieNPC;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
-import ostb.server.util.VectorUtil;
 
 public abstract class NPCEntity implements Listener {
 	private static List<LivingEntity> entities = null;
 	private static Map<LivingEntity, NPCEntity> npcEntities = null;
 	private static Map<EntityType, Double> nameHeight = null;
 	private String name = null;
+	private Location starting = null;
 	private Location location = null;
 	private Location targetView = null;
-	private Location targetPath = null;
+	//private Location targetPath = null;
 	private ItemStack itemStack = null;
 	private LivingEntity livingEntity = null;
 	private ArmorStand armorStand = null;
+	//private boolean pathFinding = false;
 	
 	public NPCEntity(EntityType entityType, String name, Location location) {
 		this(entityType, name, location, new Location(null, 0, 0, 0));
@@ -91,8 +86,9 @@ public abstract class NPCEntity implements Listener {
 		}
 		NPCs.valueOf(entityType.toString()).register();
 		this.name = name == null ? "" : name;
+		this.starting = location.clone();
 		this.location = location;
-		targetPath = location;
+		//targetPath = location;
 		this.targetView = targetView;
 		this.itemStack = itemStack;
 		EventUtil.register(this);
@@ -142,19 +138,26 @@ public abstract class NPCEntity implements Listener {
 		return livingEntity.getCustomName();
 	}
 	
-	public Location getTargetPath() {
+	public Location getStartingLocation() {
+		return starting.clone();
+	}
+	
+	public Location getTargetView() {
+		return targetView;
+	}
+	
+	public NPCEntity setTargetView(Location location) {
+		targetView = location;
+		return this;
+	}
+	
+	/*public Location getTargetPath() {
 		return targetPath;
 	}
 	
 	public boolean isAtTargetPath() {
-		int x1 = getLivingEntity().getLocation().getBlockX();
-		int y1 = getLivingEntity().getLocation().getBlockY();
-		int z1 = getLivingEntity().getLocation().getBlockZ();
-		int x2 = getTargetPath().getBlockX();
-		int y2 = getTargetPath().getBlockY();
-		int z2 = getTargetPath().getBlockZ();
-		return x1 == x2 && y1 == y2 && z1 == z2;
-	}
+		return getLivingEntity().getLocation().equals(getTargetPath());
+	}*/
 	
 	public LivingEntity getLivingEntity() {
 		return livingEntity;
@@ -179,9 +182,15 @@ public abstract class NPCEntity implements Listener {
 		return location;
 	}
 	
-	public NPCEntity setPathfinder(PathfinderGoal path) {
+	/*public NPCEntity setPathfinder(Location location) {
+		return setPathfinder(location, 1.0f);
+	}
+	
+	public NPCEntity setPathfinder(Location location, float speed) {
 		CraftLivingEntity craftLivingEntity = (CraftLivingEntity) getLivingEntity();
 		EntityLiving entityLiving = craftLivingEntity.getHandle();
+		EntityInsentient entityInsentient = (EntityInsentient) entityLiving;
+		PathfinderGoalWalkToLocation path = new PathfinderGoalWalkToLocation(entityInsentient, speed, location);
 		EntityType type = getLivingEntity().getType();
 		if(type == EntityType.CREEPER) {
 			EntityCreeper entityCreeper = (EntityCreeper) entityLiving;
@@ -201,10 +210,36 @@ public abstract class NPCEntity implements Listener {
 		}
 		if(path instanceof PathfinderGoalWalkToLocation) {
 			PathfinderGoalWalkToLocation pathFinder = (PathfinderGoalWalkToLocation) path;
+			starting = location;
 			targetPath = pathFinder.getLocation();
 		}
 		return this;
 	}
+	
+	private void move() {
+		CraftLivingEntity craftLivingEntity = (CraftLivingEntity) getLivingEntity();
+		EntityLiving entityLiving = craftLivingEntity.getHandle();
+		EntityType type = getLivingEntity().getType();
+		double x = getLivingEntity().getLocation().getX();
+		double y = getLivingEntity().getLocation().getY();
+		double z = getLivingEntity().getLocation().getZ();
+		if(type == EntityType.CREEPER) {
+			EntityCreeper entityCreeper = (EntityCreeper) entityLiving;
+			entityCreeper.move(x, y, z);
+		} else if(type == EntityType.SKELETON) {
+			EntitySkeleton entitySkeleton = (EntitySkeleton) entityLiving;
+			entitySkeleton.move(x, y, z);
+		} else if(type == EntityType.SNOWBALL) {
+			EntitySnowman entitySnowman = (EntitySnowman) entityLiving;
+			entitySnowman.move(x, y, z);
+		} else if(type == EntityType.VILLAGER) {
+			EntityVillager entityVillager = (EntityVillager) entityLiving;
+			entityVillager.move(x, y, z);
+		} else if(type == EntityType.ZOMBIE) {
+			EntityZombie entityZombie = (EntityZombie) entityLiving;
+			entityZombie.move(x, y, z);
+		}
+	}*/
 	
 	public abstract void onInteract(Player player);
 	
@@ -212,7 +247,7 @@ public abstract class NPCEntity implements Listener {
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if(!event.isCancelled() && event.getSpawnReason() == SpawnReason.CUSTOM) {
 			Entity entity = event.getEntity();
-			final World world = entity.getWorld();
+			World world = entity.getWorld();
 			CraftWorld craftWorld = (CraftWorld) world;
 			CraftEntity craftEntity = (CraftEntity) entity;
 			EntityLiving entityLiving = null;
@@ -228,15 +263,11 @@ public abstract class NPCEntity implements Listener {
 				entityLiving = new ZombieNPC(craftWorld.getHandle());
 			}
 			if(entityLiving != null) {
-				if(location.getYaw() == 0.0f && location.getPitch() == 0.0f) {
-					if(targetView == null) {
-						targetView = location.getWorld().getSpawnLocation();
-					}
-					location.setDirection(VectorUtil.getDirectionVector(location, targetView, 5));
+				if(targetView == null) {
+					targetView = world.getSpawnLocation();
 				}
 				location.getChunk().load();
 				livingEntity = (LivingEntity) entityLiving.getBukkitEntity();
-				livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 999999999, 1));
 				livingEntity.setRemoveWhenFarAway(false);
 				livingEntity.getEquipment().setItemInHand(itemStack);
 				entityLiving.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
@@ -251,6 +282,21 @@ public abstract class NPCEntity implements Listener {
 				}
 				npcEntities.put(livingEntity, this);
 				setName(ChatColor.translateAlternateColorCodes('&', name));
+				Location loc = livingEntity.getLocation();
+				starting.setDirection(loc.getWorld().getSpawnLocation().toVector().subtract(loc.toVector()));
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						final Pig pig = (Pig) location.getWorld().spawnEntity(getLivingEntity().getLocation().add(0.1, 1.5, 0.1), EntityType.PIG);
+						pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 5));
+						new DelayedTask(new Runnable() {
+							@Override
+							public void run() {
+								pig.remove();
+							}
+						}, 20 * 2);
+					}
+				});
 			}
 		}
 	}

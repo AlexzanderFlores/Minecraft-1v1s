@@ -1,15 +1,12 @@
 package ostb.server.servers.hub.main;
 
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.EntityLiving;
 import ostb.OSTB;
 import ostb.server.CommandBase;
-import ostb.server.nms.PathfinderGoalWalkToLocation;
 import ostb.server.nms.npcs.NPCEntity;
 import ostb.server.servers.hub.HubBase;
 
@@ -25,25 +22,32 @@ public class MainHub extends HubBase {
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				if(arguments[0].equalsIgnoreCase("spawn")) {
+					if(arguments.length == 1) {
+						player.teleport(player.getWorld().getSpawnLocation());
+						return true;
+					}
 					if(npc != null) {
 						npc.remove();
 					}
-					npc = new NPCEntity(EntityType.valueOf(arguments[1].toUpperCase()), "Testing NPC", player.getLocation()) {
+					Location loc = player.getLocation();
+					Location location = new Location(player.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+					npc = new NPCEntity(EntityType.valueOf(arguments[1].toUpperCase()), "Testing NPC", location) {
 						@Override
 						public void onInteract(Player player) {
 							
 						}
 					};
 				} else if(arguments[0].equalsIgnoreCase("walk")) {
-					CraftLivingEntity craftLivingEntity = (CraftLivingEntity) npc.getLivingEntity();
-					EntityLiving entityLiving = (EntityLiving) craftLivingEntity.getHandle();
-					EntityInsentient entityInsentient = (EntityInsentient) entityLiving;
-					npc.setPathfinder(new PathfinderGoalWalkToLocation(entityInsentient, 1.0f, player.getLocation()));
+					
 				} else if(arguments[0].equalsIgnoreCase("kill")) {
 					if(npc != null) {
 						npc.remove();
 						npc = null;
 					}
+				} else if(arguments[0].equalsIgnoreCase("yaw")) {
+					Location loc = player.getLocation();
+					loc.setDirection(loc.getWorld().getSpawnLocation().toVector().subtract(loc.toVector()));
+					player.teleport(loc);
 				}
 				return true;
 			}
