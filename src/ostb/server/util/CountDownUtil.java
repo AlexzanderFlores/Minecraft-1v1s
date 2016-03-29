@@ -31,12 +31,14 @@ public class CountDownUtil {
 	
 	public String getCounterAsString() {
 		String seconds = String.valueOf(counter % 60 < 10 ? "0" + counter % 60 : counter % 60);
-		return ChatColor.YELLOW + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
+		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : ChatColor.YELLOW;
+		return chatColor + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
 	}
 	
 	public static String getCounterAsString(int counter) {
 		String seconds = String.valueOf(counter % 60 < 10 ? "0" + counter % 60 : counter % 60);
-		return ChatColor.YELLOW + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
+		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : ChatColor.YELLOW;
+		return chatColor + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
 	}
 	
 	public boolean canDisplay() {
