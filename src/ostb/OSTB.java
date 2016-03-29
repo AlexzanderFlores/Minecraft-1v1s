@@ -95,7 +95,6 @@ public class OSTB extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		//testing
 		instance = this;
 		Bukkit.getMessenger().registerOutgoingPluginChannel(getInstance(), "BungeeCord");
 		sidebar = new SidebarScoreboardUtil("");

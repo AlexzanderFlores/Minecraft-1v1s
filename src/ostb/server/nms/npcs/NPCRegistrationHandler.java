@@ -7,12 +7,14 @@ import org.bukkit.entity.EntityType;
 
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityCreeper;
+import net.minecraft.server.v1_8_R3.EntityGuardian;
 import net.minecraft.server.v1_8_R3.EntitySkeleton;
 import net.minecraft.server.v1_8_R3.EntitySnowman;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.EntityVillager;
 import net.minecraft.server.v1_8_R3.EntityZombie;
 import ostb.server.nms.npcs.entities.CreeperNPC;
+import ostb.server.nms.npcs.entities.GuardianNPC;
 import ostb.server.nms.npcs.entities.SkeletonNPC;
 import ostb.server.nms.npcs.entities.SnowmanNPC;
 import ostb.server.nms.npcs.entities.VillagerNPC;
@@ -25,7 +27,8 @@ public class NPCRegistrationHandler {
 		SKELETON(EntitySkeleton.class, SkeletonNPC.class),
 		SNOWMAN(EntitySnowman.class, SnowmanNPC.class),
 		VILLAGER(EntityVillager.class, VillagerNPC.class),
-		ZOMBIE(EntityZombie.class, ZombieNPC.class);
+		ZOMBIE(EntityZombie.class, ZombieNPC.class),
+		GUARDIAN(EntityGuardian.class, GuardianNPC.class);
 		
 		private Class<? extends Entity> defaultClass = null;
 		private Class<? extends Entity> customClass = null;

@@ -2,12 +2,16 @@ package ostb.server.servers.hub.main;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftGuardian;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 
+import net.minecraft.server.v1_8_R3.EntityGuardian;
 import ostb.OSTB;
 import ostb.server.CommandBase;
 import ostb.server.nms.npcs.NPCEntity;
+import ostb.server.nms.npcs.entities.GuardianNPC;
 import ostb.server.servers.hub.HubBase;
 
 public class MainHub extends HubBase {
@@ -17,7 +21,7 @@ public class MainHub extends HubBase {
 		super("MainHub");
 		addGroup("mainhub");
 		new MainHubTop5();
-		new CommandBase("test", 1, 2, true) {
+		new CommandBase("test", 1, 3, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
@@ -37,17 +41,25 @@ public class MainHub extends HubBase {
 							
 						}
 					};
-				} else if(arguments[0].equalsIgnoreCase("walk")) {
-					
 				} else if(arguments[0].equalsIgnoreCase("kill")) {
 					if(npc != null) {
 						npc.remove();
 						npc = null;
 					}
-				} else if(arguments[0].equalsIgnoreCase("yaw")) {
-					Location loc = player.getLocation();
-					loc.setDirection(loc.getWorld().getSpawnLocation().toVector().subtract(loc.toVector()));
-					player.teleport(loc);
+				} else if(arguments[0].equalsIgnoreCase("setSize") && npc.getLivingEntity() instanceof Guardian) {
+					Guardian guardian = (Guardian) npc.getLivingEntity();
+					CraftGuardian craftGuardian = (CraftGuardian) guardian;
+					EntityGuardian entityGuardian = (EntityGuardian) craftGuardian.getHandle();
+					entityGuardian.setSize(Float.valueOf(arguments[1]), Float.valueOf(arguments[2]));
+				} else if(arguments[0].equalsIgnoreCase("toggle") && npc.getLivingEntity() instanceof Guardian) {
+					Guardian guardian = (Guardian) npc.getLivingEntity();
+					guardian.setElder(!guardian.isElder());
+				} else if(arguments[0].equalsIgnoreCase("shoot") && npc.getLivingEntity() instanceof Guardian) {
+					Guardian guardian = (Guardian) npc.getLivingEntity();
+					CraftGuardian craftGuardian = (CraftGuardian) guardian;
+					EntityGuardian entityGuardian = (EntityGuardian) craftGuardian.getHandle();
+					GuardianNPC guardianNPC = (GuardianNPC) entityGuardian;
+					guardianNPC.test();
 				}
 				return true;
 			}

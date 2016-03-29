@@ -37,6 +37,7 @@ import ostb.customevents.ServerRestartEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.nms.npcs.entities.CreeperNPC;
+import ostb.server.nms.npcs.entities.GuardianNPC;
 import ostb.server.nms.npcs.entities.SkeletonNPC;
 import ostb.server.nms.npcs.entities.SnowmanNPC;
 import ostb.server.nms.npcs.entities.VillagerNPC;
@@ -172,7 +173,7 @@ public abstract class NPCEntity implements Listener {
 		EntityType type = getLivingEntity().getType();
 		if(type == EntityType.CREEPER) {
 			y = -.25;
-		} else if(type == EntityType.BAT) {
+		} else if(type == EntityType.GUARDIAN) {
 			y = -1;
 		}
 		Location location = getLivingEntity().getLocation().add(0, y, 0);
@@ -261,6 +262,8 @@ public abstract class NPCEntity implements Listener {
 				entityLiving = new VillagerNPC(craftWorld.getHandle());
 			} else if(entity.getType() == EntityType.ZOMBIE && !(craftEntity.getHandle() instanceof ZombieNPC)) {
 				entityLiving = new ZombieNPC(craftWorld.getHandle());
+			} else if(entity.getType() == EntityType.GUARDIAN && !(craftEntity.getHandle() instanceof GuardianNPC)) {
+				entityLiving = new GuardianNPC(craftWorld.getHandle());
 			}
 			if(entityLiving != null) {
 				if(targetView == null) {
