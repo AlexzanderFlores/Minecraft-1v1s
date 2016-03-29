@@ -98,7 +98,6 @@ public class Battles implements Listener {
 			location.setPitch(0.0f);
 			players.get(a).teleport(location.clone().add(0, 2.5, 0));
 			String nameOne = players.get(a).getName();
-			battles.put(nameOne, null);
 			if(a + 1 < players.size()) {
 				location = centers[index].clone().add(-17, 0, 0);
 				location.setYaw(-90.0f);
@@ -107,6 +106,8 @@ public class Battles implements Listener {
 				String nameTwo = players.get(a + 1).getName();
 				battles.put(nameOne, nameTwo);
 				battles.put(nameTwo, nameOne);
+			} else {
+				battles.put(nameOne, null);
 			}
 		}
 		final Battles instance = this;

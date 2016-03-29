@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -38,27 +37,25 @@ public class EloHandler implements Listener {
 	}
 	
 	public static void calculateWin(Player winner, Player loser) {
-		if(OSTB.getMiniGame().getStoreStats()) {
-			int elo1 = getElo(loser);
-			int elo2 = getElo(winner);
-			int K = 32;
-			int diff = elo1 - elo2;
-			double percentage = 1 / (1 + Math.pow(10, diff / 400));
-			int amount = (int) Math.round(K * (1 - percentage));
-			if(amount < 1) {
-				amount = 1;
-			}
-			//int draw = (int) Math.round(K * (0.5 - percentage));
-			int winnerResult = add(winner, amount);
-			int loserResult = add(loser, -amount);
-			String newWinner = AccountHandler.getPrefix(winner) + " &6" + winnerResult + " &a(+" + amount + ")";
-			String newLoser = AccountHandler.getPrefix(loser) + " &6" + loserResult + " &c(" + amount * -1 + ")";
-			for(Player player : new Player [] {winner, loser}) {
-				MessageHandler.sendLine(player);
-				MessageHandler.sendMessage(player, newWinner);
-				MessageHandler.sendMessage(player, newLoser);
-				MessageHandler.sendLine(player);
-			}
+		int elo1 = getElo(loser);
+		int elo2 = getElo(winner);
+		int K = 32;
+		int diff = elo1 - elo2;
+		double percentage = 1 / (1 + Math.pow(10, diff / 400));
+		int amount = (int) Math.round(K * (1 - percentage));
+		if(amount < 1) {
+			amount = 1;
+		}
+		//int draw = (int) Math.round(K * (0.5 - percentage));
+		int winnerResult = add(winner, amount);
+		int loserResult = add(loser, -amount);
+		String newWinner = AccountHandler.getPrefix(winner) + " &6" + winnerResult + " &a(+" + amount + ")";
+		String newLoser = AccountHandler.getPrefix(loser) + " &6" + loserResult + " &c(" + amount * -1 + ")";
+		for(Player player : new Player [] {winner, loser}) {
+			MessageHandler.sendLine(player);
+			MessageHandler.sendMessage(player, newWinner);
+			MessageHandler.sendMessage(player, newLoser);
+			MessageHandler.sendLine(player);
 		}
 	}
 	

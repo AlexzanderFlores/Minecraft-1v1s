@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,20 +13,22 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameLossEvent;
+import ostb.customevents.game.GameStartEvent;
+import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.game.GameVotingEvent;
+import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
-import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
@@ -50,7 +53,7 @@ public class MiniGameEvents implements Listener {
 					miniGame.setGameState(GameStates.VOTING);
 				} else {
 					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-						OSTB.getSidebar().setName("&e" + ProPlugin.getPlayers().size() + "&8/&e" + waitingFor + " Needed");
+						OSTB.getSidebar().setName("&e" + ProPlugin.getPlayers().size() + "&8/&e" + getMiniGame().getRequiredPlayers() + " Needed");
 					}
 				}
 			} else if(gameState == GameStates.VOTING) {
@@ -70,12 +73,12 @@ public class MiniGameEvents implements Listener {
 					}
 				}
 			} else if(gameState == GameStates.STARTING) {
-				if(miniGame.getStoreStats() && miniGame.getCounter() == 10) {
+				if(miniGame.getCounter() == 10) {
 					if(StatsHandler.isEnabled()) {
 						for(Player player : ProPlugin.getPlayers()) {
 							try {
 								StatsHandler.loadStats(player);
-							} catch(NullPointerException e) {
+							} catch(Exception e) {
 								
 							}
 						}
@@ -95,7 +98,7 @@ public class MiniGameEvents implements Listener {
 					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
 						OSTB.getSidebar().update(miniGame.getCounterAsString());
 					}
-					if(miniGame.getCounter() <= 5) {
+					/*if(miniGame.getCounter() <= 5) {
 						for(Player player : Bukkit.getOnlinePlayers()) {
 							String color = "&e";
 							if(miniGame.getCounter() == 2) {
@@ -105,6 +108,17 @@ public class MiniGameEvents implements Listener {
 							}
 							new TitleDisplayer(player, "&2Starting", color + miniGame.getCounter()).setFadeIn(0).setStay(15).setFadeOut(60).display();
 						}
+					}*/
+				}
+			} else if(gameState == GameStates.STARTED) {
+				
+			} else if(gameState == GameStates.ENDING) {
+				if(miniGame.getCounter() <= 0) {
+					ProPlugin.restartServer();
+				} else {
+					MessageHandler.alert("Server restarting in " + miniGame.getCounterAsString());
+					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
+						OSTB.getSidebar().update(miniGame.getCounterAsString());
 					}
 				}
 			}
@@ -113,46 +127,64 @@ public class MiniGameEvents implements Listener {
 		getMiniGame().decrementCounter();
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPreGameEnding(GameEndingEvent event) {
-		getMiniGame().setCounter(5);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onGameEnding(GameEndingEvent event) {
-		if(event.isCancelled()) {
-			getMiniGame().setGameState(GameStates.STARTED, false);
-		} else {
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					ProPlugin.restartServer();
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameWaiting(GameWaitingEvent event) {
+		MiniGame miniGame = getMiniGame();
+		miniGame.resetFlags();
+		World lobby = miniGame.getLobby();
+		if(lobby != null) {
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				if(!player.getWorld().getName().equals(lobby.getName())) {
+					player.teleport(lobby.getSpawnLocation());
 				}
-			}, 20 * getMiniGame().getCounter());
+			}
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameVoting(GameVotingEvent event) {
+		getMiniGame().setCounter(getMiniGame().getVotingCounter());
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameStarting(GameStartingEvent event) {
+		getMiniGame().setCounter(getMiniGame().getStartingCounter());
+		for(NPCs npc : NPCs.values()) {
+			npc.unregister();
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameStart(GameStartEvent event) {
+		getMiniGame().setCounter(0);
+		for(Player player : ProPlugin.getPlayers()) {
+			player.getInventory().clear();
+			player.getInventory().setHeldItemSlot(0);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameEnding(GameEndingEvent event) {
+		getMiniGame().setCounter(getMiniGame().getEndingCounter());
+	}
+	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if(OSTB.getMiniGame().getJoiningPreGame()) {
+		MiniGame miniGame = getMiniGame();
+		if(miniGame.getJoiningPreGame()) {
+			GameStates gameState = miniGame.getGameState();
 			Player player = event.getPlayer();
-			if(getMiniGame().getGameState() == GameStates.STARTING && getMiniGame().getCanJoinWhileStarting() && ProPlugin.getPlayers().size() > 0) {
-				player.teleport(ProPlugin.getPlayers().get(0));
+			List<Player> players = ProPlugin.getPlayers();
+			if(gameState == GameStates.STARTING && miniGame.getCanJoinWhileStarting() && players.size() > 0) {
+				player.teleport(players.get(0).getWorld().getSpawnLocation());
 			} else {
-				player.teleport(getMiniGame().getLobby().getSpawnLocation());
+				player.teleport(miniGame.getLobby().getSpawnLocation());
 			}
-			if(OSTB.getMiniGame().getGameState() == GameStates.WAITING && ProPlugin.getPlayers().size() >= OSTB.getMiniGame().getRequiredPlayers()) {
-				OSTB.getMiniGame().setGameState(GameStates.VOTING);
+			if(gameState == GameStates.WAITING && players.size() >= miniGame.getRequiredPlayers()) {
+				miniGame.setGameState(GameStates.VOTING);
 			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		GameStates state = getMiniGame().getGameState();
-		if(Ranks.PREMIUM_PLUS.hasRank(player) && (state == GameStates.WAITING || state == GameStates.VOTING)) {
-			player.setAllowFlight(true);
-			player.setFlying(true);
+			players.clear();
+			players = null;
 		}
 	}
 	
@@ -161,40 +193,44 @@ public class MiniGameEvents implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				GameStates gameState = OSTB.getMiniGame().getGameState();
+				MiniGame miniGame = getMiniGame();
+				GameStates gameState = miniGame.getGameState();
 				List<Player> players = ProPlugin.getPlayers();
 				int playing = players.size();
 				Player leaving = event.getPlayer();
-				if(gameState == GameStates.VOTING && playing < OSTB.getMiniGame().getRequiredPlayers()) {
-					MessageHandler.alert("&cNot enough players");
-					OSTB.getMiniGame().setGameState(GameStates.WAITING);
+				if(gameState == GameStates.VOTING && playing < miniGame.getRequiredPlayers()) {
+					for(Player player : players) {
+						new TitleDisplayer(player, "&eWaiting for Players").display();
+					}
+					miniGame.setGameState(GameStates.WAITING);
 				} else if(gameState == GameStates.STARTING && playing == 1) {
-					MessageHandler.alert("&cNot enough players");
-					OSTB.getMiniGame().setGameState(GameStates.ENDING);
+					for(Player player : players) {
+						new TitleDisplayer(player, "&eWaiting for Players").display();
+					}
+					miniGame.setGameState(GameStates.WAITING);
 				}
 				if(gameState == GameStates.STARTING || gameState == GameStates.STARTED) {
-					if(OSTB.getMiniGame() != null) {
-						if(playing == 1 && OSTB.getMiniGame().getRestartWithOnePlayerLeft()) {
-							Player winner = players.get(0);
-							if(winner.getName().equals(leaving.getName())) {
-								winner = players.get(1);
-							}
-							Bukkit.getPluginManager().callEvent(new GameWinEvent(winner));
-						} else if(playing == 0) {
-							OSTB.getMiniGame().setGameState(GameStates.ENDING);
+					if(playing == 1 && miniGame.getRestartWithOnePlayerLeft()) {
+						Player winner = players.get(0);
+						if(winner.getName().equals(leaving.getName())) {
+							winner = players.get(1);
 						}
+						Bukkit.getPluginManager().callEvent(new GameWinEvent(winner));
+					} else if(playing == 0) {
+						miniGame.setGameState(GameStates.ENDING);
 					}
 				}
+				players.clear();
+				players = null;
 			}
 		});
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		if(OSTB.getMiniGame().getPlayersHaveOneLife()) {
-			if(OSTB.getMiniGame() != null) {
-				Bukkit.getPluginManager().callEvent(new GameLossEvent(event.getPlayer()));
-			}
+		MiniGame miniGame = getMiniGame();
+		if(miniGame.getPlayersHaveOneLife()) {
+			Bukkit.getPluginManager().callEvent(new GameLossEvent(event.getPlayer()));
 			new DelayedTask(new Runnable() {
 				@Override
 				public void run() {
@@ -204,6 +240,8 @@ public class MiniGameEvents implements Listener {
 					} else if(players.size() == 0) {
 						OSTB.getMiniGame().setGameState(GameStates.ENDING);
 					}
+					players.clear();
+					players = null;
 				}
 			});
 		}
@@ -219,19 +257,8 @@ public class MiniGameEvents implements Listener {
 	
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
-		if(event.getSpawnReason() != SpawnReason.CUSTOM && event.getEntity().getWorld().getName().equals("lobby")) {
+		if(event.getSpawnReason() != SpawnReason.CUSTOM && event.getEntity().getWorld().equals(getMiniGame().getLobby())) {
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		GameStates gameState = getMiniGame().getGameState();
-		if(gameState == GameStates.WAITING || gameState == GameStates.VOTING || gameState == GameStates.STARTING) {
-			if(!event.getTo().getWorld().getName().equals(event.getFrom().getWorld().getName()) && event.getPlayer().getAllowFlight() && !SpectatorHandler.contains(event.getPlayer())) {
-				event.getPlayer().setFlying(false);
-				event.getPlayer().setAllowFlight(false);
-			}
 		}
 	}
 }

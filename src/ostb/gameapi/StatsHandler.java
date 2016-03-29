@@ -212,7 +212,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public StatsHandler(DB table, DB monthly) {
-		if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getStoreStats()) {
+		if(OSTB.getMiniGame() != null) {
 			return;
 		}
 		StatsHandler.table = table;

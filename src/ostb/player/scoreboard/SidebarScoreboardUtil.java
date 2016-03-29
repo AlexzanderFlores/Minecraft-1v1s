@@ -53,7 +53,7 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	}
 	
 	public void setText(String [] list) {
-		setText(list, -1);
+		setText(list, list.length);
 	}
 	
 	public void setText(String [] list, int startingScore) {

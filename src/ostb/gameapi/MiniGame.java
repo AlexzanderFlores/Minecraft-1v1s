@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -22,26 +23,42 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
-import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
-import ostb.server.tasks.DelayedTask;
 import ostb.server.util.FileHandler;
 
 public abstract class MiniGame extends ProPlugin {
-	public enum GameStates {WAITING, VOTING, STARTING, STARTED, ENDING}
 	private int requiredPlayers = 4;
-	private int votingCounter = 61;
+	private int votingCounter = 60;
 	private int startingCounter = 30;
 	private int endingCounter = 5;
 	private boolean autoJoin = true;
 	private boolean canJoinWhileStarting = true;
 	private boolean useSpectatorChatChannel = true;
 	private boolean playersHaveOneLife = true;
-	private boolean storeStats = true;
 	private boolean restartWithOnePlayerLeft = true;
 	private boolean updateTitleSidebar = true;
-	private boolean updateBossBar = true;
 	private World lobby = null;
 	private World map = null;
+	public enum GameStates {
+		WAITING(new GameWaitingEvent()),
+		VOTING(new GameVotingEvent()),
+		STARTING(new GameStartingEvent()),
+		STARTED(new GameStartEvent()),
+		ENDING(new GameEndingEvent());
+		
+		private Event event = null;
+		
+		private GameStates(Event event) {
+			this.event = event;
+		}
+		
+		public Event getEvent() {
+			return this.event;
+		}
+		
+		public void enable() {
+			Bukkit.getPluginManager().callEvent(getEvent());
+		}
+	}
 	private GameStates gameState = GameStates.WAITING;
 	
 	public MiniGame(String name) {
@@ -56,14 +73,9 @@ public abstract class MiniGame extends ProPlugin {
 		new ServerLogger();
 		new LeaveItem();
 		new MapRating();
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				setGameState(GameStates.WAITING);
-			}
-		});
 		setLobby(Bukkit.getWorlds().get(0));
 		lobby.setTime(12250);
+		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
@@ -114,13 +126,18 @@ public abstract class MiniGame extends ProPlugin {
 	@Override
 	public void resetFlags() {
 		super.resetFlags();
+		setRequiredPlayers(4);
+		setVotingCounter(60);
+		setStartingCounter(30);
+		setEndingCounter(5);
 		setAutoJoin(true);
 		setCanJoinWhileStarting(true);
 		setUseSpectatorChatChannel(true);
 		setPlayersHaveOneLife(true);
-		setStoreStats(true);
+		setRestartWithOnePlayerLeft(true);
 		setUpdateTitleSidebar(true);
-		setUpdateBossBar(true);
+		map = null;
+		setCounter(0);
 	}
 	
 	public int getVotingCounter() {
@@ -133,14 +150,6 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public void setUpdateTitleSidebar(boolean updateTitleSidebar) {
 		this.updateTitleSidebar = updateTitleSidebar;
-	}
-	
-	public boolean getUpdateBossBar() {
-		return updateBossBar;
-	}
-	
-	public void setUpdateBossBar(boolean updateBossBar) {
-		this.updateBossBar = updateBossBar;
 	}
 	
 	public void setVotingCounter(int votingCounter) {
@@ -177,20 +186,12 @@ public abstract class MiniGame extends ProPlugin {
 		this.requiredPlayers = requiredPlayers;
 	}
 	
-	public void setStoreStats(boolean storeStats) {
-		this.storeStats = storeStats;
-	}
-	
-	public boolean getStoreStats() {
-		return storeStats;
+	public boolean getAutoJoin() {
+		return this.autoJoin;
 	}
 	
 	public void setAutoJoin(boolean autoJoin) {
 		this.autoJoin = autoJoin;
-	}
-	
-	public boolean getAutoJoin() {
-		return this.autoJoin;
 	}
 	
 	public boolean getCanJoinWhileStarting() {
@@ -202,8 +203,7 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public boolean getJoiningPreGame() {
-		MiniGame miniGame = OSTB.getMiniGame();
-		GameStates gameState = miniGame.getGameState();
+		GameStates gameState = getGameState();
 		return gameState == GameStates.WAITING || gameState == GameStates.VOTING || (gameState == GameStates.STARTING && getCanJoinWhileStarting());
 	}
 	
@@ -252,52 +252,21 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public void setGameState(GameStates gameState) {
-		setGameState(gameState, true);
-	}
-	
-	public void setGameState(GameStates gameState, boolean callEvents) {
 		this.gameState = gameState;
-		if(callEvents) {
-			if(getGameState() == GameStates.WAITING) {
-				setCounter(0);
-				Bukkit.getPluginManager().callEvent(new GameWaitingEvent());
-				World lobby = Bukkit.getWorld("lobby");
-				if(lobby != null) {
-					for(Player player : Bukkit.getOnlinePlayers()) {
-						if(!player.getWorld().getName().equals(lobby.getName())) {
-							player.teleport(lobby.getSpawnLocation());
-						}
-					}
-				}
-			} else if(getGameState() == GameStates.VOTING) {
-				setCounter(getVotingCounter());
-				Bukkit.getPluginManager().callEvent(new GameVotingEvent());
-			} else if(getGameState() == GameStates.STARTING) {
-				for(NPCs npc : NPCs.values()) {
-					npc.unregister();
-				}
-				setCounter(getStartingCounter());
-				Bukkit.getPluginManager().callEvent(new GameStartingEvent());
-			} else if(getGameState() == GameStates.STARTED) {
-				setCounter(0);
-				for(Player player : getPlayers()) {
-					player.getInventory().clear();
-					player.getInventory().setHeldItemSlot(0);
-				}
-				Bukkit.getPluginManager().callEvent(new GameStartEvent());
-			} else if(getGameState() == GameStates.ENDING) {
-				setCounter(getEndingCounter());
-				Bukkit.getPluginManager().callEvent(new GameEndingEvent());
-			}
-		}
+		getGameState().enable();
 	}
 	
 	public void setToDefaultSidebar() {
 		OSTB.setSidebar(new SidebarScoreboardUtil(ChatColor.AQUA + getDisplayName()) {
 			@Override
 			public void update() {
-				setText("Playing:", ProPlugin.getPlayers().size());
-				setText(new String [] {" ", "Server #" + OSTB.getServerName().replaceAll("[^\\d.]", "")}, -1);
+				int players = ProPlugin.getPlayers().size();
+				String playersString = ChatColor.YELLOW + "" + players;
+				String current = getText(3);
+				if(current != null && !current.equals(playersString)) {
+					removeText(current);
+				}
+				setText(new String [] {"Playing:", playersString, " ", "Server #" + OSTB.getServerName().replaceAll("[^\\d.]", "")});
 				super.update();
 			}
 		});
