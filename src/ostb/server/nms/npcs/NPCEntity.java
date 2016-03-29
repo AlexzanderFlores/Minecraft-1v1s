@@ -5,20 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.server.v1_8_R3.EntityLiving;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -34,30 +32,36 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.minecraft.server.v1_8_R3.EntityCreeper;
+import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_8_R3.EntitySkeleton;
+import net.minecraft.server.v1_8_R3.EntitySnowman;
+import net.minecraft.server.v1_8_R3.EntityVillager;
+import net.minecraft.server.v1_8_R3.EntityZombie;
+import net.minecraft.server.v1_8_R3.PathfinderGoal;
 import ostb.customevents.ServerRestartEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.server.nms.PathfinderGoalWalkToLocation;
 import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.nms.npcs.entities.CreeperNPC;
 import ostb.server.nms.npcs.entities.SkeletonNPC;
 import ostb.server.nms.npcs.entities.SnowmanNPC;
 import ostb.server.nms.npcs.entities.VillagerNPC;
 import ostb.server.nms.npcs.entities.ZombieNPC;
-import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.VectorUtil;
 
 public abstract class NPCEntity implements Listener {
-	public static final int ableToMove = 20;
 	private static List<LivingEntity> entities = null;
 	private static Map<LivingEntity, NPCEntity> npcEntities = null;
 	private static Map<EntityType, Double> nameHeight = null;
 	private String name = null;
 	private Location location = null;
-	private Location target = null;
+	private Location targetView = null;
+	private Location targetPath = null;
 	private ItemStack itemStack = null;
 	private LivingEntity livingEntity = null;
 	private ArmorStand armorStand = null;
-	private boolean spawnMover = true;
 	
 	public NPCEntity(EntityType entityType, String name, Location location) {
 		this(entityType, name, location, new Location(null, 0, 0, 0));
@@ -79,7 +83,7 @@ public abstract class NPCEntity implements Listener {
 		this(entityType, name, location, target, new ItemStack(material));
 	}
 	
-	public NPCEntity(EntityType entityType, String name, Location location, Location target, ItemStack itemStack) {
+	public NPCEntity(EntityType entityType, String name, Location location, Location targetView, ItemStack itemStack) {
 		if(nameHeight == null) {
 			nameHeight = new HashMap<EntityType, Double>();
 			nameHeight.put(EntityType.CREEPER, 2.0);
@@ -88,7 +92,8 @@ public abstract class NPCEntity implements Listener {
 		NPCs.valueOf(entityType.toString()).register();
 		this.name = name == null ? "" : name;
 		this.location = location;
-		this.target = target;
+		targetPath = location;
+		this.targetView = targetView;
 		this.itemStack = itemStack;
 		EventUtil.register(this);
 		location.getChunk().load();
@@ -125,18 +130,30 @@ public abstract class NPCEntity implements Listener {
 	
 	public void setName(String text) {
 		if(armorStand == null) {
-			armorStand = (ArmorStand) livingEntity.getWorld().spawnEntity(livingEntity.getLocation(), EntityType.ARMOR_STAND);
+			armorStand = (ArmorStand) livingEntity.getWorld().spawnEntity(teleportArmorStand(), EntityType.ARMOR_STAND);
 			armorStand.setVisible(false);
 			armorStand.setGravity(false);
 			armorStand.setCustomNameVisible(true);
 		}
 		armorStand.setCustomName(text);
-		//livingEntity.setCustomNameVisible(true);
-		//livingEntity.setCustomName(text);
 	}
 	
 	public String getName() {
 		return livingEntity.getCustomName();
+	}
+	
+	public Location getTargetPath() {
+		return targetPath;
+	}
+	
+	public boolean isAtTargetPath() {
+		int x1 = getLivingEntity().getLocation().getBlockX();
+		int y1 = getLivingEntity().getLocation().getBlockY();
+		int z1 = getLivingEntity().getLocation().getBlockZ();
+		int x2 = getTargetPath().getBlockX();
+		int y2 = getTargetPath().getBlockY();
+		int z2 = getTargetPath().getBlockZ();
+		return x1 == x2 && y1 == y2 && z1 == z2;
 	}
 	
 	public LivingEntity getLivingEntity() {
@@ -147,13 +164,46 @@ public abstract class NPCEntity implements Listener {
 		return armorStand;
 	}
 	
-	public NPCEntity setSpawnMover(boolean spawnMover) {
-		this.spawnMover = spawnMover;
-		return this;
+	public Location teleportArmorStand() {
+		double y = 0;
+		EntityType type = getLivingEntity().getType();
+		if(type == EntityType.CREEPER) {
+			y = -.25;
+		} else if(type == EntityType.BAT) {
+			y = -1;
+		}
+		Location location = getLivingEntity().getLocation().add(0, y, 0);
+		if(armorStand != null) {
+			armorStand.teleport(location);
+		}
+		return location;
 	}
 	
-	public boolean getSpawnMover() {
-		return spawnMover;
+	public NPCEntity setPathfinder(PathfinderGoal path) {
+		CraftLivingEntity craftLivingEntity = (CraftLivingEntity) getLivingEntity();
+		EntityLiving entityLiving = craftLivingEntity.getHandle();
+		EntityType type = getLivingEntity().getType();
+		if(type == EntityType.CREEPER) {
+			EntityCreeper entityCreeper = (EntityCreeper) entityLiving;
+			entityCreeper.goalSelector.a(0, path);
+		} else if(type == EntityType.SKELETON) {
+			EntitySkeleton entitySkeleton = (EntitySkeleton) entityLiving;
+			entitySkeleton.goalSelector.a(0, path);
+		} else if(type == EntityType.SNOWBALL) {
+			EntitySnowman entitySnowman = (EntitySnowman) entityLiving;
+			entitySnowman.goalSelector.a(0, path);
+		} else if(type == EntityType.VILLAGER) {
+			EntityVillager entityVillager = (EntityVillager) entityLiving;
+			entityVillager.goalSelector.a(0, path);
+		} else if(type == EntityType.ZOMBIE) {
+			EntityZombie entityZombie = (EntityZombie) entityLiving;
+			entityZombie.goalSelector.a(0, path);
+		}
+		if(path instanceof PathfinderGoalWalkToLocation) {
+			PathfinderGoalWalkToLocation pathFinder = (PathfinderGoalWalkToLocation) path;
+			targetPath = pathFinder.getLocation();
+		}
+		return this;
 	}
 	
 	public abstract void onInteract(Player player);
@@ -179,13 +229,14 @@ public abstract class NPCEntity implements Listener {
 			}
 			if(entityLiving != null) {
 				if(location.getYaw() == 0.0f && location.getPitch() == 0.0f) {
-					if(target == null) {
-						target = location.getWorld().getSpawnLocation();
+					if(targetView == null) {
+						targetView = location.getWorld().getSpawnLocation();
 					}
-					location.setDirection(VectorUtil.getDirectionVector(location, target, 5));
+					location.setDirection(VectorUtil.getDirectionVector(location, targetView, 5));
 				}
 				location.getChunk().load();
 				livingEntity = (LivingEntity) entityLiving.getBukkitEntity();
+				livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 999999999, 1));
 				livingEntity.setRemoveWhenFarAway(false);
 				livingEntity.getEquipment().setItemInHand(itemStack);
 				entityLiving.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
@@ -199,28 +250,7 @@ public abstract class NPCEntity implements Listener {
 					npcEntities = new HashMap<LivingEntity, NPCEntity>();
 				}
 				npcEntities.put(livingEntity, this);
-				if(spawnMover && name != "") {
-					new DelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							final Pig pig = (Pig) world.spawnEntity(location.add(0.5, 1, 0.5), EntityType.PIG);
-							pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 10));
-							new DelayedTask(new Runnable() {
-								@Override
-								public void run() {
-									pig.remove();
-									setName(ChatColor.translateAlternateColorCodes('&', name));
-									new DelayedTask(new Runnable() {
-										@Override
-										public void run() {
-											//setName(ChatColor.translateAlternateColorCodes('&', name));
-										}
-									}, 20);
-								}
-							}, ableToMove);
-						}
-					});
-				}
+				setName(ChatColor.translateAlternateColorCodes('&', name));
 			}
 		}
 	}

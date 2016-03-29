@@ -3,6 +3,8 @@ package ostb.server.nms.npcs;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import org.bukkit.entity.EntityType;
+
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityCreeper;
 import net.minecraft.server.v1_8_R3.EntitySkeleton;
@@ -10,9 +12,6 @@ import net.minecraft.server.v1_8_R3.EntitySnowman;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.EntityVillager;
 import net.minecraft.server.v1_8_R3.EntityZombie;
-
-import org.bukkit.entity.EntityType;
-
 import ostb.server.nms.npcs.entities.CreeperNPC;
 import ostb.server.nms.npcs.entities.SkeletonNPC;
 import ostb.server.nms.npcs.entities.SnowmanNPC;

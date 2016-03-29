@@ -2,13 +2,13 @@ package ostb.server.nms.npcs.entities;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.server.v1_8_R3.EntitySkeleton;
-import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
-import net.minecraft.server.v1_8_R3.World;
-
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
 import org.bukkit.entity.LivingEntity;
 
+import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_8_R3.EntitySkeleton;
+import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
+import net.minecraft.server.v1_8_R3.World;
 import ostb.server.nms.npcs.NPCEntity;
 
 public class SkeletonNPC extends EntitySkeleton {
@@ -32,17 +32,16 @@ public class SkeletonNPC extends EntitySkeleton {
 	}
 	
 	@Override
-	public void g(double x, double y, double z) {
-		LivingEntity livingEntity = (LivingEntity) getBukkitEntity();
-		if(getBukkitEntity().getTicksLived() <= NPCEntity.ableToMove && NPCEntity.getNPC(livingEntity).getSpawnMover()) {
-			super.g(x, y, z);
-		}
+	public void collide(Entity entity) {
+		
 	}
 	
 	@Override
 	public void move(double x, double y, double z) {
 		LivingEntity livingEntity = (LivingEntity) getBukkitEntity();
-		if(getBukkitEntity().getTicksLived() <= NPCEntity.ableToMove && NPCEntity.getNPC(livingEntity).getSpawnMover()) {
+		NPCEntity npc = NPCEntity.getNPC(livingEntity);
+		npc.teleportArmorStand();
+		if(!npc.isAtTargetPath()) {
 			super.move(x, y, z);
 		}
 	}
