@@ -22,12 +22,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.ProPlugin;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerBanEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -167,19 +166,6 @@ public class BanHandler extends Punishment {
 				player.closeInventory();
 				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 100));
 				player.teleport(new Location(player.getWorld(), -123.5, 126, -123.5));
-			}
-		} else {
-			AsyncPostPlayerJoinEvent.getHandlerList().unregister(this);
-		}
-	}
-	
-	//@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB) {
-			for(Player player : Bukkit.getOnlinePlayers()) {
-				if(checkForBanned(player)) {
-					player.teleport(new Location(player.getWorld(), -123.5, 126, -123.5));
-				}
 			}
 		} else {
 			AsyncPostPlayerJoinEvent.getHandlerList().unregister(this);

@@ -18,8 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.PlaytimeTracker;
@@ -269,23 +269,26 @@ public class MainHubTop5 implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(!Bukkit.getOnlinePlayers().isEmpty()) {
-			if(counter >= 10) {
-				setNext();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(!Bukkit.getOnlinePlayers().isEmpty()) {
+				if(counter >= 10) {
+					setNext();
+				}
+				String text = "&4&l";
+				int size = 0;
+				for(int a = 0; a <= counter; ++a, ++size) {
+					text += "|";
+				}
+				text += "&7&l";
+				for(; size < 10; ++size) {
+					text += "|";
+				}
+				bar.setCustomName(StringUtil.color(text));
+				bar.setCustomNameVisible(true);
+				++counter;
 			}
-			String text = "&4&l";
-			int size = 0;
-			for(int a = 0; a <= counter; ++a, ++size) {
-				text += "|";
-			}
-			text += "&7&l";
-			for(; size < 10; ++size) {
-				text += "|";
-			}
-			bar.setCustomName(StringUtil.color(text));
-			bar.setCustomNameVisible(true);
-			++counter;
 		}
 	}
 	

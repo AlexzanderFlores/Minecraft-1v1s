@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import ostb.customevents.timed.OneTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 
@@ -42,12 +42,15 @@ public class PostPlayerJoinEvent extends Event implements Listener {
     }
     
     @EventHandler
-    public void onOneTickTask(OneTickTaskEvent event) {
-    	for(Player player : Bukkit.getOnlinePlayers()) {
-    		if(!players.contains(player.getName()) && player.getTicksLived() >= 20) {
-    			players.add(player.getName());
-    			Bukkit.getPluginManager().callEvent(new PostPlayerJoinEvent(player));
-    		}
+    public void onTime(TimeEvent event) {
+    	long ticks = event.getTicks();
+    	if(ticks == 1) {
+    		for(Player player : Bukkit.getOnlinePlayers()) {
+        		if(!players.contains(player.getName()) && player.getTicksLived() >= 20) {
+        			players.add(player.getName());
+        			Bukkit.getPluginManager().callEvent(new PostPlayerJoinEvent(player));
+        		}
+        	}
     	}
     }
     

@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.server.util.EventUtil;
@@ -65,9 +65,12 @@ public class ServerLogger implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(!shuttingDown) {
-			updateStatus(false);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(!shuttingDown) {
+				updateStatus(false);
+			}
 		}
 	}
 	

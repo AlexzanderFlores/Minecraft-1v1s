@@ -20,11 +20,10 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.TwoSecondTaskEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
@@ -173,89 +172,89 @@ public class CTF extends ModeBase {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		MiniGame miniGame = OSTB.getMiniGame();
-		GameStates gameState = miniGame.getGameState();
-		if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
-			World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
-			ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/ctf_flags.yml");
-			if(config.getFile().exists()) {
-				for(Teams team : Teams.values()) {
-					double x = config.getConfig().getDouble(team.toString().toLowerCase() + ".x");
-					double y = config.getConfig().getDouble(team.toString().toLowerCase() + ".y");
-					double z = config.getConfig().getDouble(team.toString().toLowerCase() + ".z");
-					Location location = new Location(world, x, y, z);
-					if(team == Teams.RED) {
-						startingRed = location;
-						redFlag = startingRed;
-						spawnFlag(team);
-					} else if(team == Teams.BLUE) {
-						startingBlue = location;
-						blueFlag = startingBlue;
-						spawnFlag(team);
-					}
-				}
-			} else {
-				MessageHandler.alert("&4ERROR: &cNo flags found for this map... closing game");
-				miniGame.setGameState(GameStates.ENDING);
-			}
-		} else if(gameState == GameStates.STARTED) {
-			for(Player player : ProPlugin.getPlayers()) {
-				if(player.getLevel() == 9) {
-					Teams team = getTeam(player);
-					String text = " Flag Tracker " + ChatColor.GRAY + "(Must be holding)";
-					String title = team == Teams.RED ? ChatColor.BLUE + "Blue" + text : team == Teams.BLUE ? ChatColor.RED + "Red" + text : "";
-					//player.getInventory().addItem(ItemHandler.getItem(compass, title));
-					player.getInventory().addItem(new ItemCreator(compass).setName(title).getItemStack());
-				}
-				if(player.getItemInHand().getType() == Material.COMPASS) {
-					String title = ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName());
-					if(title != null) {
-						if(title.startsWith("Red")) {
-							player.setCompassTarget(redFlag);
-						} else if(title.startsWith("Blue")) {
-							player.setCompassTarget(blueFlag);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			MiniGame miniGame = OSTB.getMiniGame();
+			GameStates gameState = miniGame.getGameState();
+			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
+				World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/ctf_flags.yml");
+				if(config.getFile().exists()) {
+					for(Teams team : Teams.values()) {
+						double x = config.getConfig().getDouble(team.toString().toLowerCase() + ".x");
+						double y = config.getConfig().getDouble(team.toString().toLowerCase() + ".y");
+						double z = config.getConfig().getDouble(team.toString().toLowerCase() + ".z");
+						Location location = new Location(world, x, y, z);
+						if(team == Teams.RED) {
+							startingRed = location;
+							redFlag = startingRed;
+							spawnFlag(team);
+						} else if(team == Teams.BLUE) {
+							startingBlue = location;
+							blueFlag = startingBlue;
+							spawnFlag(team);
 						}
 					}
+				} else {
+					MessageHandler.alert("&4ERROR: &cNo flags found for this map... closing game");
+					miniGame.setGameState(GameStates.ENDING);
 				}
-			}
-			if(redFlagPickedUp && blueFlagPickedUp) {
-				if(standStillCounter == 10) {
-					Bukkit.broadcastMessage(StringUtil.color("&e&lBoth teams are holding flags... Stand still started"));
-				}
-				int max = 3;
-				if(++standStillCounter >= (60 * max)) {
-					giveArmor();
-					redFlagPickedUp = false;
-					blueFlagPickedUp = false;
-					redFlag = startingRed;
-					blueFlag = startingBlue;
-					new DelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							for(Teams team : Teams.values()) {
-								spawnFlag(team);
+			} else if(gameState == GameStates.STARTED) {
+				for(Player player : ProPlugin.getPlayers()) {
+					if(player.getLevel() == 9) {
+						Teams team = getTeam(player);
+						String text = " Flag Tracker " + ChatColor.GRAY + "(Must be holding)";
+						String title = team == Teams.RED ? ChatColor.BLUE + "Blue" + text : team == Teams.BLUE ? ChatColor.RED + "Red" + text : "";
+						//player.getInventory().addItem(ItemHandler.getItem(compass, title));
+						player.getInventory().addItem(new ItemCreator(compass).setName(title).getItemStack());
+					}
+					if(player.getItemInHand().getType() == Material.COMPASS) {
+						String title = ChatColor.stripColor(player.getItemInHand().getItemMeta().getDisplayName());
+						if(title != null) {
+							if(title.startsWith("Red")) {
+								player.setCompassTarget(redFlag);
+							} else if(title.startsWith("Blue")) {
+								player.setCompassTarget(blueFlag);
 							}
 						}
-					});
-					Bukkit.broadcastMessage(StringUtil.color("&c&l" + standStillCounter / 60 + "&e&l/&c&l" + max + " &e&lminutes of Stand Still have passed"));
-					Bukkit.broadcastMessage(StringUtil.color("&c&lFlags returned to their original location"));
-				} else if(standStillCounter % 60 == 0) {
-					Bukkit.broadcastMessage(StringUtil.color("&c&l" + standStillCounter / 60 + "&e&l/&c&l" + max + " &e&lminutes of Stand Still have passed"));
-					Bukkit.broadcastMessage(StringUtil.color("&e&lOnce all " + max + " minutes have passed flags respawn"));
+					}
 				}
-			} else {
-				standStillCounter = 0;
+				if(redFlagPickedUp && blueFlagPickedUp) {
+					if(standStillCounter == 10) {
+						Bukkit.broadcastMessage(StringUtil.color("&e&lBoth teams are holding flags... Stand still started"));
+					}
+					int max = 3;
+					if(++standStillCounter >= (60 * max)) {
+						giveArmor();
+						redFlagPickedUp = false;
+						blueFlagPickedUp = false;
+						redFlag = startingRed;
+						blueFlag = startingBlue;
+						new DelayedTask(new Runnable() {
+							@Override
+							public void run() {
+								for(Teams team : Teams.values()) {
+									spawnFlag(team);
+								}
+							}
+						});
+						Bukkit.broadcastMessage(StringUtil.color("&c&l" + standStillCounter / 60 + "&e&l/&c&l" + max + " &e&lminutes of Stand Still have passed"));
+						Bukkit.broadcastMessage(StringUtil.color("&c&lFlags returned to their original location"));
+					} else if(standStillCounter % 60 == 0) {
+						Bukkit.broadcastMessage(StringUtil.color("&c&l" + standStillCounter / 60 + "&e&l/&c&l" + max + " &e&lminutes of Stand Still have passed"));
+						Bukkit.broadcastMessage(StringUtil.color("&e&lOnce all " + max + " minutes have passed flags respawn"));
+					}
+				} else {
+					standStillCounter = 0;
+				}
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onTwoSecondTask(TwoSecondTaskEvent event) {
-		GameStates state = OSTB.getMiniGame().getGameState();
-		if(state == GameStates.STARTED || state == GameStates.ENDING) {
-			ParticleTypes.DRIP_LAVA.displaySpiral(redFlag, 7, 3.5);
-			ParticleTypes.DRIP_WATER.displaySpiral(blueFlag, 7, 3.5);
+		} else if(ticks == 20 * 2) {
+			GameStates state = OSTB.getMiniGame().getGameState();
+			if(state == GameStates.STARTED || state == GameStates.ENDING) {
+				ParticleTypes.DRIP_LAVA.displaySpiral(redFlag, 7, 3.5);
+				ParticleTypes.DRIP_WATER.displaySpiral(blueFlag, 7, 3.5);
+			}
 		}
 	}
 	

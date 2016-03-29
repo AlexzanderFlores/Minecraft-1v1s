@@ -14,8 +14,7 @@ import org.bukkit.event.EventHandler;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.ThirtySecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
@@ -170,36 +169,30 @@ public class DOM extends ModeBase {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		MiniGame miniGame = OSTB.getMiniGame();
-		GameStates gameState = miniGame.getGameState();
-		if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
-			World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
-			ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/command_posts.yml");
-			if(config.getFile().exists()) {
-				for(String key : config.getConfig().getKeys(false)) {
-					int x = config.getConfig().getInt(key + ".x");
-					int y = config.getConfig().getInt(key + ".y");
-					int z = config.getConfig().getInt(key + ".z");
-					new CommandPost(world, x, y, z);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			MiniGame miniGame = OSTB.getMiniGame();
+			GameStates gameState = miniGame.getGameState();
+			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
+				World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/command_posts.yml");
+				if(config.getFile().exists()) {
+					for(String key : config.getConfig().getKeys(false)) {
+						int x = config.getConfig().getInt(key + ".x");
+						int y = config.getConfig().getInt(key + ".y");
+						int z = config.getConfig().getInt(key + ".z");
+						new CommandPost(world, x, y, z);
+					}
+				} else {
+					MessageHandler.alert("&4ERROR: &cNo command posts found for this map... closing game");
+					miniGame.setGameState(GameStates.ENDING);
 				}
-			} else {
-				MessageHandler.alert("&4ERROR: &cNo command posts found for this map... closing game");
-				miniGame.setGameState(GameStates.ENDING);
-			}
-		} else if(gameState == GameStates.STARTED) {
-			for(CommandPost commandPost : commandPosts) {
-				commandPost.update();
+			} else if(gameState == GameStates.STARTED) {
+				for(CommandPost commandPost : commandPosts) {
+					commandPost.update();
+				}
 			}
 		}
-	}
-	
-	@EventHandler
-	public void onThirtySecondTask(ThirtySecondTaskEvent event) {
-		MessageHandler.alert("");
-		MessageHandler.alert("");
-		MessageHandler.alert("&c&lSTAND NEAR THE COMMAND POSTS TO CAPTURE THEM!");
-		MessageHandler.alert("");
-		MessageHandler.alert("");
 	}
 }

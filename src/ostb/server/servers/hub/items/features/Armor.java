@@ -16,10 +16,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.TenTickTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -488,26 +488,29 @@ public class Armor extends FeatureBase {
 	}
 	
 	@EventHandler
-	public void onTenTickTask(TenTickTaskEvent event) {
-		if(queue != null && !queue.isEmpty()) {
-			final UUID uuid = queue.get(0);
-			queue.remove(0);
-			final Player player = Bukkit.getPlayer(uuid);
-			if(player != null) {
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						for(String armorName : DB.HUB_ARMOR.getAllStrings("name", new String [] {"uuid", "active"}, new String [] {uuid.toString(), "1"})) {
-							Bukkit.getLogger().info("armor: " + player.getName() + " queue");
-							PlayerArmor armor = PlayerArmor.valueOf(armorName);
-							if(armor == null) {
-								DB.HUB_ARMOR.delete(new String [] {"uuid", "name"}, new String [] {uuid.toString(), armorName});
-							} else {
-								armor.equipArmor(player);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 10) {
+			if(queue != null && !queue.isEmpty()) {
+				final UUID uuid = queue.get(0);
+				queue.remove(0);
+				final Player player = Bukkit.getPlayer(uuid);
+				if(player != null) {
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							for(String armorName : DB.HUB_ARMOR.getAllStrings("name", new String [] {"uuid", "active"}, new String [] {uuid.toString(), "1"})) {
+								Bukkit.getLogger().info("armor: " + player.getName() + " queue");
+								PlayerArmor armor = PlayerArmor.valueOf(armorName);
+								if(armor == null) {
+									DB.HUB_ARMOR.delete(new String [] {"uuid", "name"}, new String [] {uuid.toString(), armorName});
+								} else {
+									armor.equipArmor(player);
+								}
 							}
 						}
-					}
-				});
+					});
+				}
 			}
 		}
 	}

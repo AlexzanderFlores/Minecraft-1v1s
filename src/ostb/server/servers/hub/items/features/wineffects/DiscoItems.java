@@ -18,8 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import ostb.ProPlugin;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.OneTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -49,14 +48,23 @@ public class DiscoItems implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		for(Player player : ProPlugin.getPlayers()) {
-			if(WinEffects.getActiveEffect(player) == WinEffect.DISCO_ITEMS) {
-				Item item = player.getWorld().dropItem(player.getLocation().add(0, 3, 0), new ItemStack(Material.WOOL, 1, (byte) random.nextInt(15)));
-				double x = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
-				double z = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
-				item.setVelocity(new Vector(x, 0.5, z));
-				items.add(item);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1) {
+			for(Player player : ProPlugin.getPlayers()) {
+				if(WinEffects.getActiveEffect(player) == WinEffect.DISCO_ITEMS) {
+					Item item = player.getWorld().dropItem(player.getLocation().add(0, 3, 0), new ItemStack(Material.WOOL, 1, (byte) random.nextInt(15)));
+					double x = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
+					double z = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
+					item.setVelocity(new Vector(x, 0.5, z));
+					items.add(item);
+				}
+			}
+		} else if(ticks == 20) {
+			for(Item item : items) {
+				if(item.getTicksLived() > 10) {
+					item.remove();
+				}
 			}
 		}
 	}
@@ -65,15 +73,6 @@ public class DiscoItems implements Listener {
 	public void onItemSpawn(ItemSpawnEvent event) {
 		if(event.getEntity().getItemStack().getType() == Material.WOOL) {
 			event.setCancelled(false);
-		}
-	}
-	
-	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		for(Item item : items) {
-			if(item.getTicksLived() > 10) {
-				item.remove();
-			}
 		}
 	}
 }

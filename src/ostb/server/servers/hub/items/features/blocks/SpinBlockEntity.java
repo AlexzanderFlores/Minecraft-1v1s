@@ -10,7 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
-import ostb.customevents.timed.OneTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 @SuppressWarnings("deprecation")
@@ -85,47 +85,50 @@ public class SpinBlockEntity implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		if(block != null) {
-			CraftFallingSand craftFallingSand = (CraftFallingSand) block;
-			craftFallingSand.getHandle().ticksLived = 1;
-			if(player != null && player.isOnline()) {
-				location = player.getLocation().add(0, 2, 0);
-			} else if(location == null) {
-				remove();
-			}
-			if(decreaseCounter > 0) {
-				location = location.add(0, decreaseCounter * -1, 0);
-				decreaseCounter -= 0.10;
-			}
-			if(location != null) {
-				if(counter >= 360) {
-					counter = 0;
-				} else {
-					counter += 6;
-					double angle = counter * Math.PI / 180;
-					double x = (double) (location.getX() + radius * Math.cos(angle));
-					double z = (double) (location.getZ() + radius * Math.sin(angle));
-					Location newLoc = new Location(location.getWorld(), x, location.getY() + 2, z);
-					if(block.isValid()) {
-						double directionX = newLoc.getX() - block.getLocation().getX();
-						double directionY = block.isOnGround() ? 1 : location.getY() - block.getLocation().getY();
-						double directionZ = newLoc.getZ() - block.getLocation().getZ();
-						double factor = Math.sqrt(Math.pow(directionX, 2) + Math.pow(directionY, 2) + Math.pow(directionZ, 2));
-						double velocityX = directionX * factor;
-						double velocityY = directionY * factor;
-						double velocityZ = directionZ * factor;
-						Vector vector = new Vector(velocityX, velocityY, velocityZ);
-						block.setVelocity(vector);
-						if(block.getLocation().distance(newLoc) >= 3) {
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1) {
+			if(block != null) {
+				CraftFallingSand craftFallingSand = (CraftFallingSand) block;
+				craftFallingSand.getHandle().ticksLived = 1;
+				if(player != null && player.isOnline()) {
+					location = player.getLocation().add(0, 2, 0);
+				} else if(location == null) {
+					remove();
+				}
+				if(decreaseCounter > 0) {
+					location = location.add(0, decreaseCounter * -1, 0);
+					decreaseCounter -= 0.10;
+				}
+				if(location != null) {
+					if(counter >= 360) {
+						counter = 0;
+					} else {
+						counter += 6;
+						double angle = counter * Math.PI / 180;
+						double x = (double) (location.getX() + radius * Math.cos(angle));
+						double z = (double) (location.getZ() + radius * Math.sin(angle));
+						Location newLoc = new Location(location.getWorld(), x, location.getY() + 2, z);
+						if(block.isValid()) {
+							double directionX = newLoc.getX() - block.getLocation().getX();
+							double directionY = block.isOnGround() ? 1 : location.getY() - block.getLocation().getY();
+							double directionZ = newLoc.getZ() - block.getLocation().getZ();
+							double factor = Math.sqrt(Math.pow(directionX, 2) + Math.pow(directionY, 2) + Math.pow(directionZ, 2));
+							double velocityX = directionX * factor;
+							double velocityY = directionY * factor;
+							double velocityZ = directionZ * factor;
+							Vector vector = new Vector(velocityX, velocityY, velocityZ);
+							block.setVelocity(vector);
+							if(block.getLocation().distance(newLoc) >= 3) {
+								block.remove();
+								block = newLoc.getWorld().spawnFallingBlock(newLoc, material, data);
+								block.setDropItem(false);
+							}
+						} else {
 							block.remove();
 							block = newLoc.getWorld().spawnFallingBlock(newLoc, material, data);
 							block.setDropItem(false);
 						}
-					} else {
-						block.remove();
-						block = newLoc.getWorld().spawnFallingBlock(newLoc, material, data);
-						block.setDropItem(false);
 					}
 				}
 			}

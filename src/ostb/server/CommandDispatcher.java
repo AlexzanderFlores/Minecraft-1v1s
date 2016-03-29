@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.DB.Databases;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
@@ -75,17 +75,20 @@ public class CommandDispatcher implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				String server = OSTB.getServerName();
-				for(String command : DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.getAllStrings("command", "server", server)) {
-					Bukkit.getLogger().info("Command Dispatcher: Running \"" + command + "\" for \"" + server + "\"");
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					String server = OSTB.getServerName();
+					for(String command : DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.getAllStrings("command", "server", server)) {
+						Bukkit.getLogger().info("Command Dispatcher: Running \"" + command + "\" for \"" + server + "\"");
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+					}
+					DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.delete("server", server);
 				}
-				DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.delete("server", server);
-			}
-		});
+			});
+		}
 	}
 }

@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import ostb.customevents.timed.TwoSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 public class AutoCritFix extends AntiCheat implements Listener {
@@ -40,9 +40,12 @@ public class AutoCritFix extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onTwoSecondTask(TwoSecondTaskEvent event) {
-		if(isEnabled()) {
-			counters.clear();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 2) {
+			if(isEnabled()) {
+				counters.clear();
+			}
 		}
 	}
 }

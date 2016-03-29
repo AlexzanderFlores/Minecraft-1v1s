@@ -8,9 +8,7 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.customevents.timed.FiveMinuteTaskEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.CountDownUtil;
@@ -86,30 +84,27 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 	}
 	
 	@EventHandler
-	public void onFiveMinuteTask(FiveMinuteTaskEvent event) {
-		if(Bukkit.getOnlinePlayers().isEmpty() && OSTB.getMiniGame() != null) {
-			ProPlugin.restartServer();
-		}
-	}
-	
-	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent evnet) {
-		if(PerformanceHandler.getMemory() >= 70 && !running && OSTB.getMiniGame() == null) {
-			setCounter(60);
-			running = true;
-		}
-	}
-	
-	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(running) {
-			if(getCounter() <= 0) {
-				ProPlugin.restartServer();
-			} else {
-				if(canDisplay()) {
-					MessageHandler.alert("&bServer restarting: " + getCounterAsString());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(running) {
+				if(getCounter() <= 0) {
+					ProPlugin.restartServer();
+				} else {
+					if(canDisplay()) {
+						MessageHandler.alert("&bServer restarting: " + getCounterAsString());
+					}
+					decrementCounter();
 				}
-				decrementCounter();
+			}
+		} else if(ticks == 20 * 5) {
+			if(PerformanceHandler.getMemory() >= 70 && !running && OSTB.getMiniGame() == null) {
+				setCounter(60);
+				running = true;
+			}
+		} else if(ticks == 20 * 60 * 5) {
+			if(Bukkit.getOnlinePlayers().isEmpty() && OSTB.getMiniGame() != null) {
+				ProPlugin.restartServer();
 			}
 		}
 	}

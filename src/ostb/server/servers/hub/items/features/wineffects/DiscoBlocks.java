@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.util.Vector;
 
 import ostb.ProPlugin;
-import ostb.customevents.timed.OneTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -48,15 +48,18 @@ public class DiscoBlocks implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		for(Player player : ProPlugin.getPlayers()) {
-			if(WinEffects.getActiveEffect(player) == WinEffect.DISCO_BLOCKS) {
-				FallingBlock block = player.getWorld().spawnFallingBlock(player.getLocation().add(0, 3, 0), Material.WOOL, (byte) random.nextInt(15));
-				block.setDropItem(false);
-				double x = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
-				double z = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
-				block.setVelocity(new Vector(x, 0.5, z));
-				blocks.add(block);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1) {
+			for(Player player : ProPlugin.getPlayers()) {
+				if(WinEffects.getActiveEffect(player) == WinEffect.DISCO_BLOCKS) {
+					FallingBlock block = player.getWorld().spawnFallingBlock(player.getLocation().add(0, 3, 0), Material.WOOL, (byte) random.nextInt(15));
+					block.setDropItem(false);
+					double x = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
+					double z = random.nextBoolean() ? random.nextDouble() : random.nextDouble() * -1;
+					block.setVelocity(new Vector(x, 0.5, z));
+					blocks.add(block);
+				}
 			}
 		}
 	}

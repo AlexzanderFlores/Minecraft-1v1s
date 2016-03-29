@@ -12,9 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
@@ -59,13 +59,16 @@ public class CoinsHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent event) {
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				
-			}
-		});
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 5) {
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					
+				}
+			});
+		}
 	}
 	
 	@EventHandler

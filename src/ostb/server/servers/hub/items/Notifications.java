@@ -10,11 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.TenTickTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.HubItemBase;
@@ -57,36 +56,36 @@ public class Notifications extends HubItemBase {
 	}
 	
 	@EventHandler
-	public void onTenTickTask(TenTickTaskEvent event) {
-		if(queue != null && !queue.isEmpty()) {
-			String name = queue.get(0);
-			queue.remove(0);
-			Player player = ProPlugin.getPlayer(name);
-			if(player != null) {
-				final UUID uuid = player.getUniqueId();
-				final String playerName = player.getName();
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						if(DB.PLAYERS_NOTIFICATIONS.isUUIDSet(uuid)) {
-							hasNotifications.add(playerName);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 10) {
+			if(queue != null && !queue.isEmpty()) {
+				String name = queue.get(0);
+				queue.remove(0);
+				Player player = ProPlugin.getPlayer(name);
+				if(player != null) {
+					final UUID uuid = player.getUniqueId();
+					final String playerName = player.getName();
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							if(DB.PLAYERS_NOTIFICATIONS.isUUIDSet(uuid)) {
+								hasNotifications.add(playerName);
+							}
 						}
-					}
-				});
+					});
+				}
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		for(String name : hasNotifications) {
-			Player player = ProPlugin.getPlayer(name);
-			if(player != null) {
-				String itemName = getName();
-				if(player.getInventory().getItem(getSlot()).getData().getData() == 8) {
-					player.getInventory().setItem(getSlot(), new ItemCreator(Material.WOOL, 14).setName(itemName).getItemStack());
-				} else {
-					player.getInventory().setItem(getSlot(), new ItemCreator(Material.WOOL, 8).setName(itemName).getItemStack());
+		} else if(ticks == 20) {
+			for(String name : hasNotifications) {
+				Player player = ProPlugin.getPlayer(name);
+				if(player != null) {
+					String itemName = getName();
+					if(player.getInventory().getItem(getSlot()).getData().getData() == 8) {
+						player.getInventory().setItem(getSlot(), new ItemCreator(Material.WOOL, 14).setName(itemName).getItemStack());
+					} else {
+						player.getInventory().setItem(getSlot(), new ItemCreator(Material.WOOL, 8).setName(itemName).getItemStack());
+					}
 				}
 			}
 		}

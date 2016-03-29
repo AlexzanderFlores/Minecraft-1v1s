@@ -22,10 +22,9 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
@@ -47,19 +46,46 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		MiniGame game = OSTB.getMiniGame();
-		if(game.getGameState() == GameStates.STARTED) {
-			if(game.getCounter() <= 0) {
-				HandlerList.unregisterAll(this);
-				new Battles();
-			} else {
-				if(game.canDisplay()) {
-					for(Player player : Bukkit.getOnlinePlayers()) {
-						new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(30).display();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			MiniGame game = OSTB.getMiniGame();
+			if(game.getGameState() == GameStates.STARTED) {
+				if(game.getCounter() <= 0) {
+					HandlerList.unregisterAll(this);
+					new Battles();
+				} else {
+					if(game.canDisplay()) {
+						for(Player player : Bukkit.getOnlinePlayers()) {
+							new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(30).display();
+						}
+					}
+					OSTB.getSidebar().update(game.getCounterAsString());
+				}
+			}
+		} else if(ticks == 20 * 5) {
+			if(spawns != null && !spawns.isEmpty()) {
+				String name = null;
+				for(String spawn : spawns.keySet()) {
+					if(!scattered.contains(spawn)) {
+						name = spawn;
+						break;
 					}
 				}
-				OSTB.getSidebar().update(game.getCounterAsString());
+				Player player = ProPlugin.getPlayer(name);
+				if(player != null) {
+					scattered.add(name);
+					Location location = spawns.get(name);
+					player.teleport(location);
+					MessageHandler.alert("Scattered " + AccountHandler.getRank(player).getColor() + player.getName());
+					if(scattered.size() >= ProPlugin.getPlayers().size()) {
+						logSpawns = false;
+						scattered.clear();
+						scattered = null;
+						spawns.clear();
+						spawns = null;
+					}
+				}
 			}
 		}
 	}
@@ -92,33 +118,6 @@ public class Events implements Listener {
 		if(logSpawns && !spawns.containsKey(player.getName()) && !SpectatorHandler.contains(player)) {
 			spawns.put(player.getName(), event.getTo());
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent event) {
-		if(spawns != null && !spawns.isEmpty()) {
-			String name = null;
-			for(String spawn : spawns.keySet()) {
-				if(!scattered.contains(spawn)) {
-					name = spawn;
-					break;
-				}
-			}
-			Player player = ProPlugin.getPlayer(name);
-			if(player != null) {
-				scattered.add(name);
-				Location location = spawns.get(name);
-				player.teleport(location);
-				MessageHandler.alert("Scattered " + AccountHandler.getRank(player).getColor() + player.getName());
-				if(scattered.size() >= ProPlugin.getPlayers().size()) {
-					logSpawns = false;
-					scattered.clear();
-					scattered = null;
-					spawns.clear();
-					spawns = null;
-				}
-			}
 		}
 	}
 	

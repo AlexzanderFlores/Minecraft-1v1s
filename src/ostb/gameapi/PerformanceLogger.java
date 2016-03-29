@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameStartEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.PerformanceHandler;
 import ostb.server.util.EventUtil;
@@ -30,15 +30,18 @@ public class PerformanceLogger implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		double memory = PerformanceHandler.getMemory();
-		if(memory >= maxMemory) {
-			maxMemory = memory;
-			maxMemoryTime = PerformanceHandler.getUptimeString();
-		}
-		double tps = PerformanceHandler.getTicksPerSecond();
-		if(PerformanceHandler.getUptime() >= 10 && tps <= lowestTPS) {
-			lowestTPS = tps;
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			double memory = PerformanceHandler.getMemory();
+			if(memory >= maxMemory) {
+				maxMemory = memory;
+				maxMemoryTime = PerformanceHandler.getUptimeString();
+			}
+			double tps = PerformanceHandler.getTicksPerSecond();
+			if(PerformanceHandler.getUptime() >= 10 && tps <= lowestTPS) {
+				lowestTPS = tps;
+			}
 		}
 	}
 	

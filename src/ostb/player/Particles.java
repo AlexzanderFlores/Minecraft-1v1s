@@ -3,9 +3,6 @@ package ostb.player;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.server.v1_8_R3.EnumParticle;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -18,17 +15,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.slikey.effectlib.util.ParticleEffect;
+import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerAFKEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.TenTickTaskEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
-import de.slikey.effectlib.util.ParticleEffect;
 
 public class Particles implements Listener {
 	private static String name = null;
@@ -158,12 +157,15 @@ public class Particles implements Listener {
 	}
 	
 	@EventHandler
-	public void onTenTickTask(TenTickTaskEvent event) {
-		if(types != null && !types.isEmpty()) {
-			for(String name : types.keySet()) {
-				Player player = ProPlugin.getPlayer(name);
-				if(player != null && !PlayerAFKEvent.isAFK(player) && !SpectatorHandler.contains(player)) {
-					types.get(name).display(player.getLocation());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 10) {
+			if(types != null && !types.isEmpty()) {
+				for(String name : types.keySet()) {
+					Player player = ProPlugin.getPlayer(name);
+					if(player != null && !PlayerAFKEvent.isAFK(player) && !SpectatorHandler.contains(player)) {
+						types.get(name).display(player.getLocation());
+					}
 				}
 			}
 		}

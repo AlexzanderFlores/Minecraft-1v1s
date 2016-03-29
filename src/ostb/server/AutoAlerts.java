@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -216,12 +216,15 @@ public class AutoAlerts implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(alerts != null) {
-			for(AutoAlert alert : alerts.values()) {
-				if(alert.getHowOften() > 0) {
-					if(alert.incrementCounter() % (alert.getHowOften() * 60) == 0) {
-						AlertHandler.alert(alert.getText());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(alerts != null) {
+				for(AutoAlert alert : alerts.values()) {
+					if(alert.getHowOften() > 0) {
+						if(alert.incrementCounter() % (alert.getHowOften() * 60) == 0) {
+							AlertHandler.alert(alert.getText());
+						}
 					}
 				}
 			}

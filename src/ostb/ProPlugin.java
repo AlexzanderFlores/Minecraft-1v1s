@@ -73,6 +73,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
 import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand.EnumClientCommand;
 import ostb.OSTB.Plugins;
 import ostb.customevents.ServerRestartEvent;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
@@ -81,9 +82,6 @@ import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerHeadshotEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
-import ostb.customevents.timed.FiveMinuteTaskEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
-import ostb.customevents.timed.TenSecondTaskEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -1102,28 +1100,25 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	}
 	
 	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent event) {
-		for(Databases database : Databases.values()) {
-			database.connect();
-		}
-	}
-	
-	@EventHandler
-	public void onFiveMinuteTask(FiveMinuteTaskEvent event) {
-		try {
-			FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/logs"));
-		} catch(Exception e) {
-			
-		}
-	}
-	
-	@EventHandler
-	public void onTenSecondTask(TenSecondTaskEvent event) {
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				numberOfHubs = DB.NETWORK_SERVER_STATUS.getSize("game_name", "HUB");
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 5) {
+			for(Databases database : Databases.values()) {
+				database.connect();
 			}
-		});
+		} else if(ticks == 20 * 10) {
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					numberOfHubs = DB.NETWORK_SERVER_STATUS.getSize("game_name", "HUB");
+				}
+			});
+		} else if(ticks == 20 * 60 * 5) {
+			try {
+				FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/logs"));
+			} catch(Exception e) {
+				
+			}
+		}
 	}
 }

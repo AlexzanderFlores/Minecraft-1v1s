@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneMinuteTaskEvent;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
@@ -45,8 +45,11 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneMinuteTask(OneMinuteTaskEvent event) {
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 60) {
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+		}
 	}
 	
 	@EventHandler

@@ -19,10 +19,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.potion.PotionEffectType;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.PerformanceHandler;
 import ostb.server.util.EventUtil;
@@ -54,62 +53,69 @@ public class SpeedFix extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(isEnabled()) {
-			Iterator<String> iterator = disabledCounters.keySet().iterator();
-			while(iterator.hasNext()) {
-				String name = iterator.next();
-				int counter = disabledCounters.get(name);
-				if(--counter <= 0) {
-					iterator.remove();
-				} else {
-					disabledCounters.put(name, counter);
-				}
-			}
-			for(Player player : Bukkit.getOnlinePlayers()) {
-				if(PerformanceHandler.getPing(player) < getMaxPing()) {
-					Location from = player.getLocation();
-					if(lastLocations.containsKey(player.getName())) {
-						from = lastLocations.get(player.getName());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(isEnabled()) {
+				Iterator<String> iterator = disabledCounters.keySet().iterator();
+				while(iterator.hasNext()) {
+					String name = iterator.next();
+					int counter = disabledCounters.get(name);
+					if(--counter <= 0) {
+						iterator.remove();
+					} else {
+						disabledCounters.put(name, counter);
 					}
-					Location to = player.getLocation();
-					double x1 = to.getX();
-					double y1 = to.getY();
-					double z1 = to.getZ();
-					double x2 = from.getX();
-					double y2 = from.getY();
-					double z2 = from.getZ();
-					double distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
-					speeds.put(player.getName(), distance);
-					if(!player.getAllowFlight() && !player.isFlying() && player.getVehicle() == null && to.getWorld().getName().equals(from.getWorld().getName()) && !player.hasPotionEffect(PotionEffectType.SPEED)) {
-						if(to.getY() >= from.getY() && !disabledCounters.containsKey(player.getName()) && notIgnored(player) && (to.getX() != from.getX() || to.getY() != from.getY() || to.getZ() != from.getZ())) {
-							if(player.getWalkSpeed() == 0.2f) {
-								if(distance >= 5.0d && player.isSneaking()) {
-									player.setSneaking(false);
-								}
-								boolean somethingAbove = player.getLocation().add(0, 2, 0).getBlock().getType() != Material.AIR;
-								if(!somethingAbove && distance >= 8.5) {
-									List<Double> logging = loggings.get(player.getName());
-									if(logging == null) {
-										logging = new ArrayList<Double>();
+				}
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					if(PerformanceHandler.getPing(player) < getMaxPing()) {
+						Location from = player.getLocation();
+						if(lastLocations.containsKey(player.getName())) {
+							from = lastLocations.get(player.getName());
+						}
+						Location to = player.getLocation();
+						double x1 = to.getX();
+						double y1 = to.getY();
+						double z1 = to.getZ();
+						double x2 = from.getX();
+						double y2 = from.getY();
+						double z2 = from.getZ();
+						double distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
+						speeds.put(player.getName(), distance);
+						if(!player.getAllowFlight() && !player.isFlying() && player.getVehicle() == null && to.getWorld().getName().equals(from.getWorld().getName()) && !player.hasPotionEffect(PotionEffectType.SPEED)) {
+							if(to.getY() >= from.getY() && !disabledCounters.containsKey(player.getName()) && notIgnored(player) && (to.getX() != from.getX() || to.getY() != from.getY() || to.getZ() != from.getZ())) {
+								if(player.getWalkSpeed() == 0.2f) {
+									if(distance >= 5.0d && player.isSneaking()) {
+										player.setSneaking(false);
 									}
-									logging.add(distance);
-									loggings.put(player.getName(), logging);
-									int counter = 0;
-									if(counters.containsKey(player.getName())) {
-										counter = counters.get(player.getName());
-									}
-									if(++counter >= 3) {
-										ban(player);
-									} else {
-										counters.put(player.getName(), counter);
+									boolean somethingAbove = player.getLocation().add(0, 2, 0).getBlock().getType() != Material.AIR;
+									if(!somethingAbove && distance >= 8.5) {
+										List<Double> logging = loggings.get(player.getName());
+										if(logging == null) {
+											logging = new ArrayList<Double>();
+										}
+										logging.add(distance);
+										loggings.put(player.getName(), logging);
+										int counter = 0;
+										if(counters.containsKey(player.getName())) {
+											counter = counters.get(player.getName());
+										}
+										if(++counter >= 3) {
+											ban(player);
+										} else {
+											counters.put(player.getName(), counter);
+										}
 									}
 								}
 							}
 						}
+						lastLocations.put(player.getName(), to);
 					}
-					lastLocations.put(player.getName(), to);
 				}
+			}
+		} else if(ticks == 20 * 5) {
+			if(isEnabled()) {
+				counters.clear();
 			}
 		}
 	}
@@ -148,13 +154,6 @@ public class SpeedFix extends AntiCheat implements Listener {
 				lastLocations.remove(event.getPlayer().getName());
 				counters.remove(event.getPlayer().getName());
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent event) {
-		if(isEnabled()) {
-			counters.clear();
 		}
 	}
 	

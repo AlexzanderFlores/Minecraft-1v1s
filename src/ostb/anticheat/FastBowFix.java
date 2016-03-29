@@ -12,8 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.PerformanceHandler;
 import ostb.server.util.EventUtil;
@@ -31,9 +31,12 @@ public class FastBowFix extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(isEnabled()) {
-			timesFired.clear();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(isEnabled()) {
+				timesFired.clear();
+			}
 		}
 	}
 	

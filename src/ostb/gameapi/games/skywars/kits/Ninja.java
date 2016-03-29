@@ -17,9 +17,9 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
-import ostb.customevents.timed.OneTickTaskEvent;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.games.skywars.SkyWarsShop;
 import ostb.server.tasks.DelayedTask;
@@ -99,24 +99,27 @@ public class Ninja extends KitBase {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		if(enabled) {
-			Iterator<Item> iterator = stars.iterator();
-			while(iterator.hasNext()) {
-				Item item = iterator.next();
-				if(item.isOnGround() || item.getLocation().getY() <= 0) {
-					item.remove();
-					iterator.remove();
-				} else {
-					for(Entity near : item.getNearbyEntities(0.5, 0.5, 0.5)) {
-						if(near instanceof Player) {
-							Player nearPlayer = (Player) near;
-							if(random.nextBoolean()) {
-								nearPlayer.damage(1.0d);
-							} else {
-								nearPlayer.damage(0.0d);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1) {
+			if(enabled) {
+				Iterator<Item> iterator = stars.iterator();
+				while(iterator.hasNext()) {
+					Item item = iterator.next();
+					if(item.isOnGround() || item.getLocation().getY() <= 0) {
+						item.remove();
+						iterator.remove();
+					} else {
+						for(Entity near : item.getNearbyEntities(0.5, 0.5, 0.5)) {
+							if(near instanceof Player) {
+								Player nearPlayer = (Player) near;
+								if(random.nextBoolean()) {
+									nearPlayer.damage(1.0d);
+								} else {
+									nearPlayer.damage(0.0d);
+								}
+								nearPlayer.setVelocity(item.getVelocity().multiply(.50d));
 							}
-							nearPlayer.setVelocity(item.getVelocity().multiply(.50d));
 						}
 					}
 				}

@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 
@@ -66,15 +66,18 @@ public class PlayerAFKEvent extends Event implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			if(counters.containsKey(player.getName())) {
-				counters.put(player.getName(), counters.get(player.getName()) + 1);
-				if(player.getTicksLived() >= (20 * 10) && counters.get(player.getName()) % 30 == 0) {
-					Bukkit.getPluginManager().callEvent(new PlayerAFKEvent(player, counters.get(player.getName())));
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				if(counters.containsKey(player.getName())) {
+					counters.put(player.getName(), counters.get(player.getName()) + 1);
+					if(player.getTicksLived() >= (20 * 10) && counters.get(player.getName()) % 30 == 0) {
+						Bukkit.getPluginManager().callEvent(new PlayerAFKEvent(player, counters.get(player.getName())));
+					}
+				} else {
+					counters.put(player.getName(), 1);
 				}
-			} else {
-				counters.put(player.getName(), 1);
 			}
 		}
 	}

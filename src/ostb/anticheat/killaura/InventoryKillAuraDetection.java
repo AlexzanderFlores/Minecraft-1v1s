@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.anticheat.AntiCheat;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.PerformanceHandler;
 import ostb.server.util.EventUtil;
 
@@ -93,13 +93,16 @@ public class InventoryKillAuraDetection extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(isEnabled()) {
-			attacksPerSecond.clear();
-			for(Player player : Bukkit.getOnlinePlayers()) {
-				secondsLived.put(player.getName(), secondsLived.get(player.getName()) + 1);
-				if(getSecondsLived(player) >= maxSeconds && spawningLocation.containsKey(player.getName())) {
-					spawningLocation.remove(player.getName());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(isEnabled()) {
+				attacksPerSecond.clear();
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					secondsLived.put(player.getName(), secondsLived.get(player.getName()) + 1);
+					if(getSecondsLived(player) >= maxSeconds && spawningLocation.containsKey(player.getName())) {
+						spawningLocation.remove(player.getName());
+					}
 				}
 			}
 		}

@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import ostb.anticheat.AntiCheat;
-import ostb.customevents.timed.FiveSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -50,7 +50,10 @@ public class AttackThroughWalls extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onFiveSecondTask(FiveSecondTaskEvent event) {
-		counters.clear();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 5) {
+			counters.clear();
+		}
 	}
 }

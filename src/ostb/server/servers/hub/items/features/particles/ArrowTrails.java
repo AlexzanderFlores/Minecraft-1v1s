@@ -23,11 +23,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import de.slikey.effectlib.util.ParticleEffect;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneTickTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features;
@@ -37,7 +38,6 @@ import ostb.server.servers.hub.items.features.FeatureItem;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.TimeUtil;
-import de.slikey.effectlib.util.ParticleEffect;
 
 public class ArrowTrails extends FeatureBase {
 	private static int max = 22;
@@ -458,16 +458,19 @@ public class ArrowTrails extends FeatureBase {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		Iterator<Arrow> iterator = particles.keySet().iterator();
-		while(iterator.hasNext()) {
-			Arrow arrow = iterator.next();
-			if(arrow == null || arrow.isDead() || arrow.isOnGround()) {
-				iterator.remove();
-				Bukkit.getLogger().info("1");
-			} else {
-				particles.get(arrow).display(arrow.getLocation());
-				Bukkit.getLogger().info("2");
+	public void onTime(TimeEvent event) {
+		long time = event.getTicks();
+		if(time == 1) {
+			Iterator<Arrow> iterator = particles.keySet().iterator();
+			while(iterator.hasNext()) {
+				Arrow arrow = iterator.next();
+				if(arrow == null || arrow.isDead() || arrow.isOnGround()) {
+					iterator.remove();
+					Bukkit.getLogger().info("1");
+				} else {
+					particles.get(arrow).display(arrow.getLocation());
+					Bukkit.getLogger().info("2");
+				}
 			}
 		}
 	}

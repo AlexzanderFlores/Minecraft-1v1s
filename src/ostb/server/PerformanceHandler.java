@@ -14,24 +14,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
-import ostb.customevents.timed.FifteenTickTaskEvent;
-import ostb.customevents.timed.FiveMinuteTaskEvent;
-import ostb.customevents.timed.FiveSecondTaskEvent;
-import ostb.customevents.timed.FiveTickTaskEvent;
-import ostb.customevents.timed.OneAndAHalfSecondTask;
-import ostb.customevents.timed.OneMinuteTaskEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.OneTickTaskEvent;
-import ostb.customevents.timed.SevenSecondTaskEvent;
-import ostb.customevents.timed.TenSecondTaskEvent;
-import ostb.customevents.timed.TenTickTaskEvent;
-import ostb.customevents.timed.ThirtySecondTaskEvent;
-import ostb.customevents.timed.ThreeSecondTaskEvent;
-import ostb.customevents.timed.ThreeTickTaskEvent;
-import ostb.customevents.timed.TwentyFiveSecondTaskEvent;
-import ostb.customevents.timed.TwentyMinuteTaskEvent;
-import ostb.customevents.timed.TwoMinuteTaskEvent;
-import ostb.customevents.timed.TwoSecondTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
@@ -41,7 +23,7 @@ public class PerformanceHandler implements Listener {
 	private static double ticksPerSecond = 0;
 	private long seconds = 0;
 	private long currentSecond = 0;
-	private int ticks = 0;
+	private int tickCounter = 0;
 	private static int uptimeCounter = 0;
 	
 	public PerformanceHandler() {
@@ -103,79 +85,39 @@ public class PerformanceHandler implements Listener {
 			@Override
 			public void run() {
 				++counter;
-				if(counter % (20 * 60 * 20) == 0) {
-					Bukkit.getPluginManager().callEvent(new TwentyMinuteTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 60 * 20));
-				}
-				if(counter % (20 * 60 * 5) == 0) {
-					Bukkit.getPluginManager().callEvent(new FiveMinuteTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 60 * 5));
-				}
-				if(counter % (20 * 60 * 2) == 0) {
-					Bukkit.getPluginManager().callEvent(new TwoMinuteTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 60 * 2));
-				}
 				if(counter % (20 * 60) == 0) {
-					Bukkit.getPluginManager().callEvent(new OneMinuteTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 60));
 				}
-				if(counter % (20 * 30) == 0) {
-					Bukkit.getPluginManager().callEvent(new ThirtySecondTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 30));
-				}
-				if(counter % (20 * 25) == 0) {
-					Bukkit.getPluginManager().callEvent(new TwentyFiveSecondTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 25));
-				}
 				if(counter % (20 * 10) == 0) {
-					Bukkit.getPluginManager().callEvent(new TenSecondTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 10));
 				}
-				if(counter % (20 * 7) == 0) {
-					Bukkit.getPluginManager().callEvent(new SevenSecondTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 7));
-				}
 				if(counter % (20 * 5) == 0) {
-					Bukkit.getPluginManager().callEvent(new FiveSecondTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 5));
 				}
-				if(counter % (20 * 3) == 0) {
-					Bukkit.getPluginManager().callEvent(new ThreeSecondTaskEvent());
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 3));
-				}
 				if(counter % (20 * 2) == 0) {
-					Bukkit.getPluginManager().callEvent(new TwoSecondTaskEvent());
+					//Bukkit.getPluginManager().callEvent(new TwoSecondTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 2));
 				}
-				if(counter % 30 == 0) {
-					Bukkit.getPluginManager().callEvent(new OneAndAHalfSecondTask());
-					Bukkit.getPluginManager().callEvent(new TimeEvent((int) (20 * 1.5)));
-				}
 				if(counter % 20 == 0) {
-					Bukkit.getPluginManager().callEvent(new OneSecondTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20));
 				}
 				if(counter % 15 == 0) {
-					Bukkit.getPluginManager().callEvent(new FifteenTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(15));
 				}
 				if(counter % 10 == 0) {
-					Bukkit.getPluginManager().callEvent(new TenTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(10));
 				}
 				if(counter % 5 == 0) {
-					Bukkit.getPluginManager().callEvent(new FiveTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(5));
 				}
 				if(counter % 3 == 0) {
-					Bukkit.getPluginManager().callEvent(new ThreeTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(3));
 				}
 				if(counter % 2 == 0) {
 					//Bukkit.getPluginManager().callEvent(new TwoTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(2));
 				}
-				Bukkit.getPluginManager().callEvent(new OneTickTaskEvent());
+				Bukkit.getPluginManager().callEvent(new TimeEvent(1));
 			}
 		}, 1, 1);
 		EventUtil.register(this);
@@ -230,43 +172,26 @@ public class PerformanceHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		seconds = (System.currentTimeMillis() / 1000);
-		if(currentSecond == seconds) {
-			++ticks;
-		} else {
-			currentSecond = seconds;
-			ticksPerSecond = (ticksPerSecond == 0 ? ticks : ((ticksPerSecond + ticks) / 2));
-			if(ticksPerSecond < 19.0d) {
-				++ticksPerSecond;
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1) {
+			seconds = (System.currentTimeMillis() / 1000);
+			if(currentSecond == seconds) {
+				++tickCounter;
+			} else {
+				currentSecond = seconds;
+				ticksPerSecond = (ticksPerSecond == 0 ? tickCounter : ((ticksPerSecond + tickCounter) / 2));
+				if(ticksPerSecond < 19.0d) {
+					++ticksPerSecond;
+				}
+				if(ticksPerSecond > 20.0d) {
+					ticksPerSecond = 20.0d;
+				}
+				ticksPerSecond = new BigDecimal(ticksPerSecond).setScale(2, RoundingMode.HALF_UP).doubleValue();
+				tickCounter = 0;
 			}
-			if(ticksPerSecond > 20.0d) {
-				ticksPerSecond = 20.0d;
-			}
-			ticksPerSecond = new BigDecimal(ticksPerSecond).setScale(2, RoundingMode.HALF_UP).doubleValue();
-			ticks = 0;
+		} else if(ticks == 20) {
+			++uptimeCounter;
 		}
-		/*for(Player player : Bukkit.getOnlinePlayers()) {
-			if(player.getTicksLived() % (20 * 60 * 60) == 0) {
-				Bukkit.getPluginManager().callEvent(new PlayerOneHourConnectedEvent(player));
-			}
-			if(player.getTicksLived() % (20 * 60 * 5) == 0) {
-				Bukkit.getPluginManager().callEvent(new PlayerFiveMinuteConnectedEvent(player));
-			}
-			if(player.getTicksLived() % (20 * 60) == 0) {
-				Bukkit.getPluginManager().callEvent(new PlayerOneMinuteConnectedEvent(player));
-			}
-			if(player.getTicksLived() % (20 * 10) == 0) {
-				Bukkit.getPluginManager().callEvent(new PlayerTenSecondConnectedEvent(player));
-			}
-			if(player.getTicksLived() == (20 * 5)) {
-				Bukkit.getPluginManager().callEvent(new PlayerFiveSecondConnectedOnceEvent(player));
-			}
-		}*/
-	}
-	
-	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		++uptimeCounter;
 	}
 }

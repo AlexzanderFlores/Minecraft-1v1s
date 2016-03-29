@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import ostb.ProPlugin;
-import ostb.customevents.timed.TenSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -125,19 +125,22 @@ public class ReportHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onTenSecondTask(TenSecondTaskEvent event) {
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				if(DB.STAFF_REPORTS.getSize() > 0) {
-					for(Player player : Bukkit.getOnlinePlayers()) {
-						if(Ranks.isStaff(player)) {
-							ChatClickHandler.sendMessageToRunCommand(player, "&eClick here", "Click to view", "/reports", "&bThere are open reports ");
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 10) {
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					if(DB.STAFF_REPORTS.getSize() > 0) {
+						for(Player player : Bukkit.getOnlinePlayers()) {
+							if(Ranks.isStaff(player)) {
+								ChatClickHandler.sendMessageToRunCommand(player, "&eClick here", "Click to view", "/reports", "&bThere are open reports ");
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	@EventHandler

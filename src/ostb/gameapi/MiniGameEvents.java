@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -24,7 +25,6 @@ import ostb.customevents.game.GameVotingEvent;
 import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
@@ -43,88 +43,91 @@ public class MiniGameEvents implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(ProPlugin.getPlayers().size() > 0) {
-			MiniGame miniGame = getMiniGame();
-			GameStates gameState = miniGame.getGameState();
-			if(gameState == GameStates.WAITING) {
-				int waitingFor = miniGame.getRequiredPlayers() - ProPlugin.getPlayers().size();
-				if(waitingFor <= 0) {
-					miniGame.setGameState(GameStates.VOTING);
-				} else {
-					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-						OSTB.getSidebar().setName("&e" + ProPlugin.getPlayers().size() + "&8/&e" + getMiniGame().getRequiredPlayers() + " Needed");
-					}
-				}
-			} else if(gameState == GameStates.VOTING) {
-				if(miniGame.getCounter() <= 0) {
-					miniGame.setGameState(GameStates.STARTING);
-				} else {
-					if(miniGame.getCounter() <= 5) {
-						for(Player player : Bukkit.getOnlinePlayers()) {
-							new TitleDisplayer(player, "&2Voting Ends", miniGame.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(60).display();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(ProPlugin.getPlayers().size() > 0) {
+				MiniGame miniGame = getMiniGame();
+				GameStates gameState = miniGame.getGameState();
+				if(gameState == GameStates.WAITING) {
+					int waitingFor = miniGame.getRequiredPlayers() - ProPlugin.getPlayers().size();
+					if(waitingFor <= 0) {
+						miniGame.setGameState(GameStates.VOTING);
+					} else {
+						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
+							OSTB.getSidebar().setName("&e" + ProPlugin.getPlayers().size() + "&8/&e" + getMiniGame().getRequiredPlayers() + " Needed");
 						}
 					}
-					if(miniGame.getCounter() <= 3) {
-						EffectUtil.playSound(Sound.CLICK);
+				} else if(gameState == GameStates.VOTING) {
+					if(miniGame.getCounter() <= 0) {
+						miniGame.setGameState(GameStates.STARTING);
+					} else {
+						if(miniGame.getCounter() <= 5) {
+							for(Player player : Bukkit.getOnlinePlayers()) {
+								new TitleDisplayer(player, "&2Voting Ends", miniGame.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(60).display();
+							}
+						}
+						if(miniGame.getCounter() <= 3) {
+							EffectUtil.playSound(Sound.CLICK);
+						}
+						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
+							OSTB.getSidebar().update(miniGame.getCounterAsString());
+						}
 					}
-					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-						OSTB.getSidebar().update(miniGame.getCounterAsString());
-					}
-				}
-			} else if(gameState == GameStates.STARTING) {
-				if(miniGame.getCounter() == 10) {
-					if(StatsHandler.isEnabled()) {
-						for(Player player : ProPlugin.getPlayers()) {
-							try {
-								StatsHandler.loadStats(player);
-							} catch(Exception e) {
-								
+				} else if(gameState == GameStates.STARTING) {
+					if(miniGame.getCounter() == 10) {
+						if(StatsHandler.isEnabled()) {
+							for(Player player : ProPlugin.getPlayers()) {
+								try {
+									StatsHandler.loadStats(player);
+								} catch(Exception e) {
+									
+								}
 							}
 						}
 					}
-				}
-				if(miniGame.getCounter() <= 0) {
-					miniGame.setGameState(GameStates.STARTED);
-				} else {
-					if(miniGame.getCounter() <= 5) {
-						for(Player player : Bukkit.getOnlinePlayers()) {
-							new TitleDisplayer(player, "&2Starting", miniGame.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(60).display();
-						}
-					}
-					if(miniGame.getCounter() <= 3) {
-						EffectUtil.playSound(Sound.CLICK);
-					}
-					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-						OSTB.getSidebar().update(miniGame.getCounterAsString());
-					}
-					/*if(miniGame.getCounter() <= 5) {
-						for(Player player : Bukkit.getOnlinePlayers()) {
-							String color = "&e";
-							if(miniGame.getCounter() == 2) {
-								color = "&c";
-							} else if(miniGame.getCounter() == 1) {
-								color = "&4";
+					if(miniGame.getCounter() <= 0) {
+						miniGame.setGameState(GameStates.STARTED);
+					} else {
+						if(miniGame.getCounter() <= 5) {
+							for(Player player : Bukkit.getOnlinePlayers()) {
+								new TitleDisplayer(player, "&2Starting", miniGame.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(60).display();
 							}
-							new TitleDisplayer(player, "&2Starting", color + miniGame.getCounter()).setFadeIn(0).setStay(15).setFadeOut(60).display();
 						}
-					}*/
-				}
-			} else if(gameState == GameStates.STARTED) {
-				
-			} else if(gameState == GameStates.ENDING) {
-				if(miniGame.getCounter() <= 0) {
-					ProPlugin.restartServer();
-				} else {
-					MessageHandler.alert("Server restarting in " + miniGame.getCounterAsString());
-					if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-						OSTB.getSidebar().update(miniGame.getCounterAsString());
+						if(miniGame.getCounter() <= 3) {
+							EffectUtil.playSound(Sound.CLICK);
+						}
+						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
+							OSTB.getSidebar().update(miniGame.getCounterAsString());
+						}
+						/*if(miniGame.getCounter() <= 5) {
+							for(Player player : Bukkit.getOnlinePlayers()) {
+								String color = "&e";
+								if(miniGame.getCounter() == 2) {
+									color = "&c";
+								} else if(miniGame.getCounter() == 1) {
+									color = "&4";
+								}
+								new TitleDisplayer(player, "&2Starting", color + miniGame.getCounter()).setFadeIn(0).setStay(15).setFadeOut(60).display();
+							}
+						}*/
+					}
+				} else if(gameState == GameStates.STARTED) {
+					
+				} else if(gameState == GameStates.ENDING) {
+					if(miniGame.getCounter() <= 0) {
+						ProPlugin.restartServer();
+					} else {
+						MessageHandler.alert("Server restarting in " + miniGame.getCounterAsString());
+						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
+							OSTB.getSidebar().update(miniGame.getCounterAsString());
+						}
 					}
 				}
 			}
+			OSTB.getSidebar().update();
+			getMiniGame().decrementCounter();
 		}
-		OSTB.getSidebar().update();
-		getMiniGame().decrementCounter();
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

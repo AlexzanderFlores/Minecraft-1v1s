@@ -19,10 +19,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.FiveTickTaskEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features;
@@ -310,36 +310,39 @@ public class WinEffects extends FeatureBase {
 	}
 	
 	@EventHandler
-	public void onFiveTickTask(FiveTickTaskEvent event) {
-		byte color = colors[0];
-		do {
-			color = colors[random.nextInt(colors.length)];
-		} while(color == last);
-		last = color;
-		byte fireColor = fireColors[0];
-		do {
-			fireColor = fireColors[random.nextInt(fireColors.length)];
-		} while(fireColor == lastFireColor);
-		lastFireColor = fireColor;
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			InventoryView inventory = opened(player);
-			if(inventory != null) {
-				for(WinEffect effect : new WinEffect [] {WinEffect.DISCO_BLOCKS, WinEffect.DISCO_ITEMS, WinEffect.FIRE_DISCO_ITEMS}) {
-					ItemStack item = inventory.getItem(effect.getSlot());
-					if(item != null && item.getType() != Material.INK_SACK) {
-						ItemStack newItem = new ItemStack(Material.WOOL, effect.getItemStack().getAmount(), effect == WinEffect.FIRE_DISCO_ITEMS ? fireColor : color);
-						ItemMeta meta = effect.getItemStack().getItemMeta();
-						if(meta.getLore() != null && !meta.getLore().isEmpty()) {
-							List<String> lores = new ArrayList<String>();
-							for(String lore : effect.getItemStack().getItemMeta().getLore()) {
-								lores.add(lore);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 5) {
+			byte color = colors[0];
+			do {
+				color = colors[random.nextInt(colors.length)];
+			} while(color == last);
+			last = color;
+			byte fireColor = fireColors[0];
+			do {
+				fireColor = fireColors[random.nextInt(fireColors.length)];
+			} while(fireColor == lastFireColor);
+			lastFireColor = fireColor;
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				InventoryView inventory = opened(player);
+				if(inventory != null) {
+					for(WinEffect effect : new WinEffect [] {WinEffect.DISCO_BLOCKS, WinEffect.DISCO_ITEMS, WinEffect.FIRE_DISCO_ITEMS}) {
+						ItemStack item = inventory.getItem(effect.getSlot());
+						if(item != null && item.getType() != Material.INK_SACK) {
+							ItemStack newItem = new ItemStack(Material.WOOL, effect.getItemStack().getAmount(), effect == WinEffect.FIRE_DISCO_ITEMS ? fireColor : color);
+							ItemMeta meta = effect.getItemStack().getItemMeta();
+							if(meta.getLore() != null && !meta.getLore().isEmpty()) {
+								List<String> lores = new ArrayList<String>();
+								for(String lore : effect.getItemStack().getItemMeta().getLore()) {
+									lores.add(lore);
+								}
+								meta.setLore(lores);
+								newItem.setItemMeta(meta);
+								lores.clear();
+								lores = null;
 							}
-							meta.setLore(lores);
-							newItem.setItemMeta(meta);
-							lores.clear();
-							lores = null;
+							inventory.setItem(effect.getSlot(), new ItemCreator(newItem).setName(item.getItemMeta().getDisplayName()).getItemStack());
 						}
-						inventory.setItem(effect.getSlot(), new ItemCreator(newItem).setName(item.getItemMeta().getDisplayName()).getItemStack());
 					}
 				}
 			}

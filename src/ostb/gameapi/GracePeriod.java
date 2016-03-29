@@ -10,8 +10,8 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GracePeriodEndEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -44,26 +44,29 @@ public class GracePeriod extends CountDownUtil implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(getCounter() <= 0) {
-			isRunning = false;
-			HandlerList.unregisterAll(instance);
-			OSTB.getProPlugin().setAllowEntityDamage(true);
-			OSTB.getProPlugin().setAllowEntityDamageByEntities(true);
-			OSTB.getProPlugin().setAllowBowShooting(true);
-			for(Player player : ProPlugin.getPlayers()) {
-				new TitleDisplayer(player, "&cPVP Enabled").setFadeIn(5).setStay(30).setFadeOut(5).display();
-			}
-			EffectUtil.playSound(Sound.ENDERDRAGON_GROWL);
-			Bukkit.getPluginManager().callEvent(new GracePeriodEndEvent());
-		} else {
-			if(getCounter() <= 3) {
-				for(Player player : Bukkit.getOnlinePlayers()) {
-					new TitleDisplayer(player, "&cPVP Enabled in", "&e0:0" + getCounter()).setFadeIn(5).setStay(15).setFadeOut(5).display();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(getCounter() <= 0) {
+				isRunning = false;
+				HandlerList.unregisterAll(instance);
+				OSTB.getProPlugin().setAllowEntityDamage(true);
+				OSTB.getProPlugin().setAllowEntityDamageByEntities(true);
+				OSTB.getProPlugin().setAllowBowShooting(true);
+				for(Player player : ProPlugin.getPlayers()) {
+					new TitleDisplayer(player, "&cPVP Enabled").setFadeIn(5).setStay(30).setFadeOut(5).display();
+				}
+				EffectUtil.playSound(Sound.ENDERDRAGON_GROWL);
+				Bukkit.getPluginManager().callEvent(new GracePeriodEndEvent());
+			} else {
+				if(getCounter() <= 3) {
+					for(Player player : Bukkit.getOnlinePlayers()) {
+						new TitleDisplayer(player, "&cPVP Enabled in", "&e0:0" + getCounter()).setFadeIn(5).setStay(15).setFadeOut(5).display();
+					}
 				}
 			}
+			decrementCounter();
 		}
-		decrementCounter();
 	}
 	
 	public static boolean isRunning() {

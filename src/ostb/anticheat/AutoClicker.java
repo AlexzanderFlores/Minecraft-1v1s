@@ -12,9 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
-import ostb.customevents.timed.TenSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -36,16 +35,16 @@ public class AutoClicker extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(isEnabled()) {
-			clicks.clear();
-		}
-	}
-	
-	@EventHandler
-	public void onTenSecondTask(TenSecondTaskEvent event) {
-		if(isEnabled()) {
-			logs.clear();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(isEnabled()) {
+				clicks.clear();
+			}
+		} else if(ticks == 20 * 10) {
+			if(isEnabled()) {
+				logs.clear();
+			}
 		}
 	}
 	

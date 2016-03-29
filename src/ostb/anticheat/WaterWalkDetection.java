@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.customevents.timed.OneSecondTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
 public class WaterWalkDetection extends AntiCheat implements Listener {
@@ -19,9 +19,12 @@ public class WaterWalkDetection extends AntiCheat implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		if(isEnabled()) {
-			counters.clear();
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			if(isEnabled()) {
+				counters.clear();
+			}
 		}
 	}
 	

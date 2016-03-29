@@ -15,13 +15,13 @@ import org.bukkit.event.Listener;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.PlayerAFKEvent;
 import ostb.customevents.player.PlaytimeLoadedEvent;
 import ostb.customevents.player.timed.PlayerDayOfPlaytimeEvent;
 import ostb.customevents.player.timed.PlayerFirstThirtyMinutesOfPlaytimeEvent;
 import ostb.customevents.player.timed.PlayerHourOfPlaytimeEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
@@ -245,30 +245,33 @@ public class PlaytimeTracker implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			if((afk != null && afk.contains(player.getName())) || player.getVehicle() != null || player.getTicksLived() <= 40) {
-				continue;
-			}
-			if(OSTB.getPlugin() == Plugins.HUB && BanHandler.checkForBanned(player)) {
-				continue;
-			}
-			if(playtime.containsKey(player.getName())) {
-				Playtime playtime = getPlayTime(player);
-				if(playtime != null) {
-					playtime.addSecond(player);
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				if((afk != null && afk.contains(player.getName())) || player.getVehicle() != null || player.getTicksLived() <= 40) {
+					continue;
 				}
-			} else if(!queue.contains(player.getName())) {
-				queue.add(player.getName());
+				if(OSTB.getPlugin() == Plugins.HUB && BanHandler.checkForBanned(player)) {
+					continue;
+				}
+				if(playtime.containsKey(player.getName())) {
+					Playtime playtime = getPlayTime(player);
+					if(playtime != null) {
+						playtime.addSecond(player);
+					}
+				} else if(!queue.contains(player.getName())) {
+					queue.add(player.getName());
+				}
 			}
-		}
-		if(!queue.isEmpty()) {
-			String name = queue.get(0);
-			Player player = ProPlugin.getPlayer(name);
-			if(player != null) {
-				getPlayTime(player);
+			if(!queue.isEmpty()) {
+				String name = queue.get(0);
+				Player player = ProPlugin.getPlayer(name);
+				if(player != null) {
+					getPlayTime(player);
+				}
+				queue.remove(0);
 			}
-			queue.remove(0);
 		}
 	}
 	

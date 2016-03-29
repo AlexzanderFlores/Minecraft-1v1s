@@ -24,10 +24,10 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneSecondTaskEvent;
 import ostb.server.DB.Databases;
 import ostb.server.nms.npcs.NPCEntity;
 import ostb.server.servers.hub.HubBase;
@@ -154,12 +154,15 @@ public class GameSelector extends HubItemBase {
 	}
 	
 	@EventHandler
-	public void onOneSecondTask(OneSecondTaskEvent event) {
-		for(Plugins plugin : Plugins.values()) {
-			for(String name : watching.keySet()) {
-				if(watching.get(name) == plugin) {
-					update(plugin);
-					break;
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(Plugins plugin : Plugins.values()) {
+				for(String name : watching.keySet()) {
+					if(watching.get(name) == plugin) {
+						update(plugin);
+						break;
+					}
 				}
 			}
 		}

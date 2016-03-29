@@ -5,9 +5,6 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,7 +19,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.customevents.timed.TenTickTaskEvent;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
@@ -98,15 +94,5 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryClick(InventoryClickEvent event) {
 		event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onTenTickTask(TenTickTaskEvent event) {
-		for(Entity entity : Bukkit.getWorlds().get(0).getEntities()) {
-			if(entity instanceof FallingBlock) {
-				CraftFallingSand craftFallingSand = (CraftFallingSand) entity;
-				craftFallingSand.getHandle().ticksLived = 1;
-			}
-		}
 	}
 }

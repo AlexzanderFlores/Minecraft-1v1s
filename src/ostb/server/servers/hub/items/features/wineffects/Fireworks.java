@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import ostb.ProPlugin;
-import ostb.customevents.timed.FifteenTickTaskEvent;
+import ostb.customevents.TimeEvent;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -25,10 +25,13 @@ public class Fireworks implements Listener {
 	}
 	
 	@EventHandler
-	public void onFifteenTickTask(FifteenTickTaskEvent event) {
-		for(Player player : ProPlugin.getPlayers()) {
-			if(WinEffects.getActiveEffect(player) == WinEffect.FIREWORKS) {
-				EffectUtil.launchFirework(player.getLocation().add(0, 2, 0));
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 15) {
+			for(Player player : ProPlugin.getPlayers()) {
+				if(WinEffects.getActiveEffect(player) == WinEffect.FIREWORKS) {
+					EffectUtil.launchFirework(player.getLocation().add(0, 2, 0));
+				}
 			}
 		}
 	}

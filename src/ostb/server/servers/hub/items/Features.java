@@ -15,10 +15,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.FiveTickTaskEvent;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.servers.hub.items.features.Armor;
 import ostb.server.servers.hub.items.features.FeatureBase;
@@ -112,20 +112,23 @@ public class Features extends HubItemBase {
 	}
 	
 	@EventHandler
-	public void onFiveTickTask(FiveTickTaskEvent event) {
-		if(opened != null && !opened.isEmpty()) {
-			Random random = new Random();
-			byte data = colors[0];
-			do {
-				data = colors[random.nextInt(colors.length)];
-			} while(last == data);
-			last = data;
-			for(String name : opened) {
-				Player player = ProPlugin.getPlayer(name);
-				if(player != null) {
-					InventoryView inventory = player.getOpenInventory();
-					for(int slot : slots) {
-						inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, (byte) data).setName(" ").getItemStack());
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 5) {
+			if(opened != null && !opened.isEmpty()) {
+				Random random = new Random();
+				byte data = colors[0];
+				do {
+					data = colors[random.nextInt(colors.length)];
+				} while(last == data);
+				last = data;
+				for(String name : opened) {
+					Player player = ProPlugin.getPlayer(name);
+					if(player != null) {
+						InventoryView inventory = player.getOpenInventory();
+						for(int slot : slots) {
+							inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, (byte) data).setName(" ").getItemStack());
+						}
 					}
 				}
 			}

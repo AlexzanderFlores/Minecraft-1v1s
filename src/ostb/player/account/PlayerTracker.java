@@ -11,9 +11,9 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
-import ostb.customevents.timed.FifteenTickTaskEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -29,22 +29,25 @@ public class PlayerTracker implements Listener {
 	}
 	
 	@EventHandler
-	public void onFifteenTickTask(FifteenTickTaskEvent event) {
-		if(!queue.isEmpty()) {
-			new AsyncDelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					String name = queue.get(0);
-					Player player = ProPlugin.getPlayer(name);
-					if(player != null) {
-						UUID uuid = player.getUniqueId();
-						//OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_LOG_PLAYER.toString(), uuid.toString(), OSTB.getServerName()}));
-						String location = AccountHandler.getPrefix(player, false, true) + ChatColor.YELLOW + " is on " + ChatColor.RED + OSTB.getServerName();
-						DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + location + "'");
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 15) {
+			if(!queue.isEmpty()) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						String name = queue.get(0);
+						Player player = ProPlugin.getPlayer(name);
+						if(player != null) {
+							UUID uuid = player.getUniqueId();
+							//OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_LOG_PLAYER.toString(), uuid.toString(), OSTB.getServerName()}));
+							String location = AccountHandler.getPrefix(player, false, true) + ChatColor.YELLOW + " is on " + ChatColor.RED + OSTB.getServerName();
+							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + location + "'");
+						}
+						queue.remove(0);
 					}
-					queue.remove(0);
-				}
-			});
+				});
+			}
 		}
 	}
 	

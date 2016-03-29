@@ -14,8 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.timed.OneTickTaskEvent;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -46,21 +46,24 @@ public class FlyEnderDragon implements Listener {
 	}
 	
 	@EventHandler
-	public void onOneTickTask(OneTickTaskEvent event) {
-		for(Player player : ProPlugin.getPlayers()) {
-			if(WinEffects.getActiveEffect(player) == WinEffect.FLY_ENDER_DRAGON) {
-				if(player.getVehicle() != null && player.getVehicle() instanceof EnderDragon) {
-					EnderDragon dragon = (EnderDragon) player.getVehicle();
-					dragon.setVelocity(player.getLocation().getDirection());
-					Location location = dragon.getLocation();
-					CraftEnderDragon craftEnderDragon = (CraftEnderDragon) dragon;
-					craftEnderDragon.getHandle().setPositionRotation(location.getX(), location.getY(), location.getZ(), player.getLocation().getYaw() + 180, player.getLocation().getPitch() * -1);
-				} else {
-					for(Entity near : player.getNearbyEntities(10, 10, 10)) {
-						if(near instanceof EnderDragon) {
-							EnderDragon dragon = (EnderDragon) near;
-							if(dragon.getPassenger() == null) {
-								dragon.setPassenger(player);
+	public void onTime(TimeEvent event) {
+		long time = event.getTicks();
+		if(time == 1) {
+			for(Player player : ProPlugin.getPlayers()) {
+				if(WinEffects.getActiveEffect(player) == WinEffect.FLY_ENDER_DRAGON) {
+					if(player.getVehicle() != null && player.getVehicle() instanceof EnderDragon) {
+						EnderDragon dragon = (EnderDragon) player.getVehicle();
+						dragon.setVelocity(player.getLocation().getDirection());
+						Location location = dragon.getLocation();
+						CraftEnderDragon craftEnderDragon = (CraftEnderDragon) dragon;
+						craftEnderDragon.getHandle().setPositionRotation(location.getX(), location.getY(), location.getZ(), player.getLocation().getYaw() + 180, player.getLocation().getPitch() * -1);
+					} else {
+						for(Entity near : player.getNearbyEntities(10, 10, 10)) {
+							if(near instanceof EnderDragon) {
+								EnderDragon dragon = (EnderDragon) near;
+								if(dragon.getPassenger() == null) {
+									dragon.setPassenger(player);
+								}
 							}
 						}
 					}
