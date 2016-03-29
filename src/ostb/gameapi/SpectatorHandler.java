@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,14 +40,12 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.player.PlayerSpectateCommandEvent;
 import ostb.customevents.player.PlayerSpectateEndEvent;
 import ostb.customevents.player.PlayerSpectateStartEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -70,27 +67,6 @@ public class SpectatorHandler implements Listener {
 			exit = new ItemCreator(Material.GLOWSTONE_DUST).setName("&aReturn to Hub").getItemStack();
 		}
 		nextGame = new ItemCreator(Material.DIAMOND).setName("&6Join Next Game").getItemStack();
-		new CommandBase("spectate", 1, true) {
-			@Override
-			public boolean execute(CommandSender sender, String[] arguments) {
-				Player player = (Player) sender;
-				if(contains(player)) {
-					PlayerSpectateCommandEvent event = new PlayerSpectateCommandEvent(player);
-					Bukkit.getPluginManager().callEvent(event);
-					if(!event.isCancelled()) {
-						Player target = ProPlugin.getPlayer(arguments[0]);
-						if(target == null || contains(target)) {
-							MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not playing");
-						} else {
-							player.teleport(target);
-						}
-					}
-				} else {
-					MessageHandler.sendMessage(player, "&cYou are not a spectator");
-				}
-				return true;
-			}
-		}.setRequiredRank(Ranks.PREMIUM);
 		enabled = true;
 		EventUtil.register(this);
 	}

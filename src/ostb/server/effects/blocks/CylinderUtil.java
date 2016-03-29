@@ -33,7 +33,7 @@ public class CylinderUtil {
 		int y2 = centerY + height - 1;
 		int z2 = centerZ + radius;
 		for(int x = x1; x <= x2; ++x) {
-			for(int y = y1; y <= y2; ++y) {
+			for(int y = y2; y >= y1; --y) {
 				for(int z = z1; z <= z2; ++z) {
 					if(Math.sqrt((x - centerX) * (x - centerX) + (z - centerZ) * (z - centerZ)) <= radius) {
 						Block block = world.getBlockAt(x, y, z);

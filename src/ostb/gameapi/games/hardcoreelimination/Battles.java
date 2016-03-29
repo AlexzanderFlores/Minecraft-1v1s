@@ -64,18 +64,29 @@ public class Battles implements Listener {
 		}
 		List<Player> players = ProPlugin.getPlayers();
 		int toCreate = (int) (players.size() + 1 / 2 + 0.5);
-		Location [] centers = new Location [toCreate];
+		Location [] centers = new Location[toCreate];
 		for(int a = 0; a < toCreate; ++a) {
 			Location location = new Location(world, 50 * a, 0, 0);
 			location.setY(WorldHandler.getGround(location).getBlockY());
 			centers[a] = location;
-			new HollowCylinderUtil(world, centers[a].getBlockX(), centers[a].getBlockY() + 1, centers[a].getBlockZ(), 5, 1, Material.LEAVES);
-			new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 1, location.getBlockZ(), 25, 40, Material.AIR, (byte) 0);
-			for(int b = -1; b <= 0; ++b) {
-				for(Block block : new CylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 20, 1, Material.WOOD).getBlocks()) {
-					blocks.add(block);
+			new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 1, location.getBlockZ(), 25, world.getMaxHeight() - location.getBlockY(), Material.AIR);
+			new CylinderUtil(world, location.getBlockX(), 1, location.getBlockZ(), 25, location.getBlockY() - 1, Material.SPONGE);
+			byte lastUsed = 0;
+			for(int b = -1; b <= 5; ++b) {
+				lastUsed = (byte) (lastUsed == 0 ? 1 : 0);
+				if(b <= 0) {
+					for(Block block : new CylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
+						blocks.add(block);
+					}
+				} else {
+					for(Block block : new HollowCylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
+						if(block.getType() != Material.AIR) {
+							blocks.add(block);
+						}
+					}
 				}
 			}
+			new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 6, location.getBlockZ(), 20, 1, Material.BARRIER);
 		}
 		for(int a = 0; ; a += 2) {
 			if(a >= players.size()) {
@@ -98,39 +109,6 @@ public class Battles implements Listener {
 				battles.put(nameTwo, nameOne);
 			}
 		}
-		List<Block> firstBlocks = new ArrayList<Block>();
-		for(Location center : centers) {
-			for(int a = 1; a <= 5; ++a) {
-				for(Block block : new HollowCylinderUtil(world, center.getBlockX(), center.getBlockY() + a, center.getBlockZ(), 21, 1, Material.GLASS).getBlocks()) {
-					blocks.add(block);
-					if(a == 1) {
-						firstBlocks.add(block);
-					}
-				}
-			}
-			new CylinderUtil(world, center.getBlockX(), center.getBlockY() + 6, center.getBlockZ(), 20, 1, Material.BARRIER);
-		}
-		for(Block block : firstBlocks) {
-			Location ground = WorldHandler.getGround(block.getLocation());
-			for(int y = ground.getBlockY(); y <= block.getY(); ++y) {
-				ground.getBlock().setType(Material.WOOD);
-			}
-		}
-		for(Location center : centers) {
-			byte lastUsed = 0;
-			for(int a = 1; a <= 5; ++a) {
-				lastUsed = (byte) (lastUsed == 0 ? 1 : 0);
-				for(Block block : new HollowCylinderUtil(world, center.getBlockX(), center.getBlockY() + a, center.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
-					blocks.add(block);
-					if(a == 1) {
-						firstBlocks.add(block);
-					}
-				}
-			}
-			new CylinderUtil(world, center.getBlockX(), center.getBlockY() + 6, center.getBlockZ(), 20, 1, Material.BARRIER);
-		}
-		firstBlocks.clear();
-		firstBlocks = null;
 		final Battles instance = this;
 		new DelayedTask(new Runnable() {
 			@Override
@@ -188,8 +166,6 @@ public class Battles implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		if(blocks.contains(event.getBlock())) {
 			event.setCancelled(true);
-		} else {
-			event.setCancelled(false);
 		}
 	}
 	

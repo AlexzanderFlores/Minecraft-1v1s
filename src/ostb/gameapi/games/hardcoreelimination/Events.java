@@ -56,7 +56,7 @@ public class Events implements Listener {
 			} else {
 				if(game.canDisplay()) {
 					for(Player player : Bukkit.getOnlinePlayers()) {
-						new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(60).display();
+						new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(30).display();
 					}
 				}
 				OSTB.getSidebar().update(game.getCounterAsString());
