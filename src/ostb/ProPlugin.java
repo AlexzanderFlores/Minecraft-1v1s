@@ -514,7 +514,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	}
 	
 	public static boolean isServerFull() {
-		return Bukkit.getOnlinePlayers().size() >= Bukkit.getMaxPlayers();
+		return Bukkit.getOnlinePlayers().size() >= OSTB.getMaxPlayers();
 	}
 	
 	public static List<Player> getPlayers() {

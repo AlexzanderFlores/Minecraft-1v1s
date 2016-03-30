@@ -92,6 +92,7 @@ public class OSTB extends JavaPlugin {
 	private static String serverName = null;
 	private static SidebarScoreboardUtil sidebar = null;
 	private static BelowNameScoreboardUtil belowName = null;
+	private static int maxPlayers = 0;
 	
 	@Override
 	public void onEnable() {
@@ -138,6 +139,7 @@ public class OSTB extends JavaPlugin {
 			proPlugin = new Slave();
 		}
 		DB.values(); // Call the enumeration constructors for each item to initialize them
+		maxPlayers = Bukkit.getMaxPlayers();
 		new LevelHandler();
 		new AccountHandler();
 		new AntiCheat();
@@ -243,5 +245,13 @@ public class OSTB extends JavaPlugin {
 	
 	public static Client getClient() {
 		return client;
+	}
+	
+	public static int getMaxPlayers() {
+		return maxPlayers;
+	}
+	
+	public static void setMaxPlayers(int max) {
+		maxPlayers = max;
 	}
 }

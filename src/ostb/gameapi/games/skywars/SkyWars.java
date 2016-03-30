@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import ostb.OSTB;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.games.skywars.cages.BigCage;
 import ostb.gameapi.games.skywars.cages.ColoredBigCage;
@@ -83,6 +84,8 @@ public class SkyWars extends MiniGame {
 						return false;
 					}
 					new ColoredSpinningCage(player, spinningMaterial, spinningData, cageMaterial, cageData);
+				} else if(arguments[0].equalsIgnoreCase("setMax")) {
+					OSTB.setMaxPlayers(Integer.valueOf(arguments[1]));
 				} else {
 					return false;
 				}

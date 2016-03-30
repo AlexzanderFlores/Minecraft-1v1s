@@ -35,7 +35,7 @@ import ostb.server.util.EventUtil;
 public abstract class ModeBase implements Listener {
 	private String name = null;
 	private String abbreviation = null;
-	private int maxTeamSize = Bukkit.getMaxPlayers() / 2;
+	private int maxTeamSize = -1;
 	protected int comeBackPercentage = 80;
 	protected Teams comebackEffect = null;
 	public static enum Teams {RED, BLUE}
@@ -47,6 +47,7 @@ public abstract class ModeBase implements Listener {
 	public ModeBase(String name, String abbreviation) {
 		this.name = name;
 		this.abbreviation = abbreviation;
+		maxTeamSize = OSTB.getMaxPlayers() / 2;
 		teamRed = new ArrayList<String>();
 		teamBlue = new ArrayList<String>();
 		EventUtil.register(this);

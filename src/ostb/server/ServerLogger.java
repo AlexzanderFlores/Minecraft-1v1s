@@ -14,6 +14,7 @@ import ostb.server.util.EventUtil;
 
 public class ServerLogger implements Listener {
 	private static int players = -1;
+	private static int max = -1;
 	private static GameStates state = null;
 	private static boolean shuttingDown = false;
 	
@@ -36,8 +37,10 @@ public class ServerLogger implements Listener {
 			if(miniGame != null) {
 				gameState = miniGame.getGameState();
 			}
-			if(current != players || gameState != state) {
+			int serverMax = OSTB.getMaxPlayers();
+			if(current != players || gameState != state || serverMax != max) {
 				players = current;
+				max = serverMax;
 				state = gameState;
 				int priority = 2;
 				if(miniGame != null) {
@@ -56,9 +59,9 @@ public class ServerLogger implements Listener {
 					DB.NETWORK_SERVER_STATUS.updateInt("listed_priority", priority, keys, values);
 					DB.NETWORK_SERVER_STATUS.updateString("lore", lore, keys, values);
 					DB.NETWORK_SERVER_STATUS.updateInt("players", players, keys, values);
-					DB.NETWORK_SERVER_STATUS.updateInt("max_players", Bukkit.getMaxPlayers(), keys, values);
+					DB.NETWORK_SERVER_STATUS.updateInt("max_players", OSTB.getMaxPlayers(), keys, values);
 				} else {
-					DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + Bukkit.getMaxPlayers() + "'");
+					DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + OSTB.getMaxPlayers() + "'");
 				}
 			}
 		}

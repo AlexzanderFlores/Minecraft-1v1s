@@ -25,6 +25,7 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB.Databases;
 import ostb.server.servers.hub.HubBase;
 import ostb.server.servers.hub.HubItemBase;
@@ -105,7 +106,13 @@ public class GameSelector extends HubItemBase {
 	public static void open(Player player, Plugins plugin) {
 		Inventory inventory = Bukkit.createInventory(player, (plugin == Plugins.HUB ? ItemUtil.getInventorySize(ProPlugin.getNumberOfHubs()) : 9 * 3), plugin.getDisplay());
 		if(plugin != Plugins.HUB) {
-			inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
+			inventory.setItem(inventory.getSize() - 7, new ItemCreator(Material.EYE_OF_ENDER).setName("&bAuto Join").setLores(new String [] {
+				"",
+				"&7Click to join the best available game",
+				"&7Requires " + Ranks.PREMIUM.getPrefix(),
+				""
+			}).getItemStack());
+			inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 		}
 		player.openInventory(inventory);
 		watching.put(player.getName(), plugin);
