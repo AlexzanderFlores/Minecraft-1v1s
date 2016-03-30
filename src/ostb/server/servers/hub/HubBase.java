@@ -52,7 +52,7 @@ public class HubBase extends ProPlugin {
 		new HubSelector();
 		new ServerLogger();
 		new Tutorial();
-		new RewardVillager();
+		new DailyRewards();
 	}
 	
 	public static int getHubNumber() {

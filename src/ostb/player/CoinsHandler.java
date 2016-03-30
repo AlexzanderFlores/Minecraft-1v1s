@@ -55,7 +55,11 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public ItemStack getItemStack(Player player) {
-		return new ItemCreator(Material.GOLD_INGOT).setName("&7Coins: &a" + getCoins(player)).getItemStack();
+		return new ItemCreator(Material.GOLD_INGOT).setName("&7Coins: &a" + getCoins(player)).setLores(new String [] {
+			"",
+			"&eGet more coins daily through &a/vote",
+			""
+		}).getItemStack();
 	}
 	
 	@EventHandler

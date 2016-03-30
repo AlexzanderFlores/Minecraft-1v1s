@@ -139,3 +139,7 @@ commands:
 
   spec:
     usage: /spec <name>
+
+# Building Commands
+  setGameSpawn:
+    usage: /setGameSpawn [number]
