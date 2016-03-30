@@ -37,60 +37,13 @@ public class GameSelector extends HubItemBase {
 	private static Map<ItemStack, Plugins> items = null;
 	private static Map<String, Plugins> watching = null;
 	private static Map<Plugins, Integer> players = null;
-	/*private String hardcoreEliminationTitle = null;
-	private String skyWarsTitle = null;*/
 	
 	public GameSelector() {
 		super(new ItemCreator(Material.COMPASS).setName("&eGame Selector"), 0);
 		items = new HashMap<ItemStack, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		players = new HashMap<Plugins, Integer>();
-		/*hardcoreEliminationTitle = "Hardcore Elimination Type";
-		skyWarsTitle = "Sky Wars Type";
-		World world = Bukkit.getWorlds().get(0);
-		new NPCEntity(EntityType.SKELETON, "&e&nPVP Battles CTF", new Location(world, 1681.5, 5, -1296.5), new ItemStack(Material.WOOL, 1, (byte) 14)) {
-			@Override
-			public void onInteract(Player player) {
-				playSound(player, Plugins.CTF, Sound.HURT_FLESH);
-				open(player, Plugins.CTF);
-			}
-		};
-		new NPCEntity(EntityType.SKELETON, "&e&nPVP Battles DOM", new Location(world, 1683.5, 5, -1297.5), new ItemStack(Material.WOOL, 1, (byte) 4)) {
-			@Override
-			public void onInteract(Player player) {
-				playSound(player, Plugins.DOM, Sound.HURT_FLESH);
-				open(player, Plugins.DOM);
-			}
-		};
-		new NPCEntity(EntityType.SKELETON, "&e&nSky Wars", new Location(world, 1685.5, 5, -1297.5), Material.STONE_SWORD) {
-			@Override
-			public void onInteract(Player player) {
-				playSound(player, Plugins.SKY_WARS_SOLO, Sound.HURT_FLESH);
-				openSkyWars(player);
-			}
-		};
-		new NPCEntity(EntityType.SKELETON, "&e&nHardcore Elimination", new Location(world, 1687.5, 5, -1296.5), Material.GOLDEN_APPLE) {
-			@Override
-			public void onInteract(final Player player) {
-				playSound(player, Plugins.HE_KITS, Sound.EAT);
-				openHardcoreElimination(player);
-			}
-		};*/
 	}
-	
-	/*private void playSound(final Player player, final Plugins plugin, final Sound sound) {
-		for(long delay : new long [] {3, 7, 12}) {
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					String title = player.getOpenInventory().getTitle();
-					if(title != null && title.equals(plugin.getDisplay())) {
-						EffectUtil.playSound(player, sound);
-					}
-				}
-			}, delay);
-		}
-	}*/
 
 	@Override
 	@EventHandler
@@ -124,21 +77,7 @@ public class GameSelector extends HubItemBase {
 				Profile.open(player);
 			}
 			event.setCancelled(true);
-		}/* else if(title.equals(hardcoreEliminationTitle)) {
-			if(item.getType() == Material.WOOD_DOOR) {
-				openMenu(player);
-			} else {
-				open(player, item.getAmount() == 1 ? Plugins.HE_NO_KITS : Plugins.HE_KITS);
-			}
-			event.setCancelled(true);
-		} else if(title.equals(skyWarsTitle)) {
-			if(item.getType() == Material.WOOD_DOOR) {
-				openMenu(player);
-			} else {
-				open(player, item.getAmount() == 1 ? Plugins.SKY_WARS_SOLO : Plugins.SKY_WARS_TEAMS);
-			}
-			event.setCancelled(true);
-		} */else if(watching.containsKey(player.getName())) {
+		} else if(watching.containsKey(player.getName())) {
 			if(item.getType() == Material.WOOD_DOOR) {
 				openMenu(player);
 			} else {
@@ -185,7 +124,6 @@ public class GameSelector extends HubItemBase {
 					List<Integer> playerCounts = new ArrayList<Integer>();
 					List<Integer> maxPlayers = new ArrayList<Integer>();
 					int limit = plugin == Plugins.HUB ? 9 * 6 : 9;
-					//listed_priority, players DESC, 
 					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY server_number LIMIT " + limit).executeQuery();
 					int playing = 0;
 					while(resultSet.next()) {
@@ -273,31 +211,15 @@ public class GameSelector extends HubItemBase {
 		watching.remove(event.getPlayer().getName());
 	}
 	
-	/*private void openSkyWars(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9 * 4, skyWarsTitle);
-		inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).getItemStack());
-		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
-		player.openInventory(inventory);
-	}
-	
-	private void openHardcoreElimination(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9 * 4, hardcoreEliminationTitle);
-		inventory.setItem(11, new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).getItemStack());
-		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
-		player.openInventory(inventory);
-	}*/
-	
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 6, ChatColor.stripColor(getName()));
 		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&bPVP Battles - " + Plugins.CTF.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of CTF",
+			"&7Unique spin-off of Capture the Flag",
 			"",
-			"&aKills give you levels for the armory",
+			/*"&aKills give you levels for the armory",
 			"&aCoins buy items from the shop",
 			"&aFirst team to capture 3 flags wins",
-			"",
+			"",*/
 			"&7Team size: &e12 vs 12",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.CTF),
@@ -307,10 +229,10 @@ public class GameSelector extends HubItemBase {
 		item = new ItemCreator(Material.BANNER, 11).setName("&bPVP Battles - " + Plugins.DOM.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Domination",
 			"",
-			"&aKills give you levels for the armory",
+			/*"&aKills give you levels for the armory",
 			"&aCoins buy items from the shop",
 			"&aFirst team to 1000 points wins",
-			"",
+			"",*/
 			"&7Team size: &e12 vs 12",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.DOM),
@@ -320,9 +242,9 @@ public class GameSelector extends HubItemBase {
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
-			"&aClassic Sky Wars PVP mini-game",
+			/*"&aClassic Sky Wars PVP mini-game",
 			"&aLast player standing wins",
-			"",
+			"",*/
 			"&7Team size: &eSolo",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_SOLO)
@@ -332,9 +254,9 @@ public class GameSelector extends HubItemBase {
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Well known game",
 			"",
-			"&aClassic Sky Wars PVP mini-game",
+			/*"&aClassic Sky Wars PVP mini-game",
 			"&aLast team standing wins",
-			"",
+			"",*/
 			"&7Team size: &e2",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.SKY_WARS_TEAMS)
@@ -344,10 +266,10 @@ public class GameSelector extends HubItemBase {
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Ultra Hardcore",
 			"",
-			"&e10 &aminute grace to gather resources",
+			/*"&e10 &aminute grace to gather resources",
 			"&aAfterwards you will 1v1 other players",
 			"&aNatural regen is &cOFF",
-			"",
+			"",*/
 			"&7Kits: &eEnabled",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.HE_KITS)
@@ -357,10 +279,10 @@ public class GameSelector extends HubItemBase {
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Unique spin-off of Ultra Hardcore",
 			"",
-			"&e10 &aminute grace to gather resources",
+			/*"&e10 &aminute grace to gather resources",
 			"&aAfterwards you will 1v1 other players",
 			"&aNatural regen is &cOFF",
-			"",
+			"",*/
 			"&7Kits: &cDisabled",
 			"",
 			"&7Playing: &e" + getPlayers(Plugins.HE_KITS)

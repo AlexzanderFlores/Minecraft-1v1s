@@ -12,9 +12,9 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.util.ItemCreator;
 
-public class LobbySelector extends HubItemBase {
-	public LobbySelector() {
-		super(new ItemCreator(Material.WATCH).setName("&eLobby Selector"), 8);
+public class HubSelector extends HubItemBase {
+	public HubSelector() {
+		super(new ItemCreator(Material.WATCH).setName("&eHub Selector"), 8);
 	}
 
 	@Override

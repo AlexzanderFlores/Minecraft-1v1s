@@ -15,7 +15,7 @@ import ostb.server.ServerLogger;
 import ostb.server.servers.hub.crate.Crate;
 import ostb.server.servers.hub.items.Features;
 import ostb.server.servers.hub.items.GameSelector;
-import ostb.server.servers.hub.items.LobbySelector;
+import ostb.server.servers.hub.items.HubSelector;
 import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
@@ -49,7 +49,7 @@ public class HubBase extends ProPlugin {
 		new Shop();
 		new Profile();
 		new Notifications();
-		new LobbySelector();
+		new HubSelector();
 		new ServerLogger();
 		new Tutorial();
 		new RewardVillager();
