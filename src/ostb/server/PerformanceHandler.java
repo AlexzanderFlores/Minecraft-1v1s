@@ -27,7 +27,6 @@ public class PerformanceHandler implements Listener {
 	private static int uptimeCounter = 0;
 	
 	public PerformanceHandler() {
-		//TODO: Rename this to /performance, make it for myself only
 		new CommandBase("performance") {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
@@ -95,7 +94,6 @@ public class PerformanceHandler implements Listener {
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 5));
 				}
 				if(counter % (20 * 2) == 0) {
-					//Bukkit.getPluginManager().callEvent(new TwoSecondTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 2));
 				}
 				if(counter % 20 == 0) {
@@ -114,7 +112,6 @@ public class PerformanceHandler implements Listener {
 					Bukkit.getPluginManager().callEvent(new TimeEvent(3));
 				}
 				if(counter % 2 == 0) {
-					//Bukkit.getPluginManager().callEvent(new TwoTickTaskEvent());
 					Bukkit.getPluginManager().callEvent(new TimeEvent(2));
 				}
 				Bukkit.getPluginManager().callEvent(new TimeEvent(1));

@@ -22,9 +22,6 @@ commands:
   join:
     usage: /join <server name>
 
-  killAura:
-    usage: /killAura <name>
-
   performance:
     usage: /performance
 

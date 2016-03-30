@@ -37,7 +37,6 @@ import ostb.server.util.ItemCreator;
 public class SkyWarsShop implements Listener {
 	private static String name = null;
 	private static String permission = null;
-	private static final int size = 9 * 6;
 	
 	public SkyWarsShop() {
 		name = "Shop - Sky Wars";
@@ -72,7 +71,7 @@ public class SkyWarsShop implements Listener {
 	}
 	
 	public static void openShop(final Player player) {
-		final Inventory inventory = Bukkit.createInventory(player, size, getName());
+		final Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
 		player.openInventory(inventory);
 		new AsyncDelayedTask(new Runnable() {
 			@Override
@@ -93,7 +92,7 @@ public class SkyWarsShop implements Listener {
 	private static void updateCoinsItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
 		if(title != null && title.equals(getName())) {
-			player.getOpenInventory().setItem(size - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO).getItemStack(player));
+			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 4, CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO).getItemStack(player));
 		}
 	}
 	
@@ -115,7 +114,7 @@ public class SkyWarsShop implements Listener {
 				}
 			}
 			int percentage = (int) (owned * 100.0 / total + 0.5);
-			player.getOpenInventory().setItem(size - 6, new ItemCreator(Material.DIAMOND).setName("&7Kits Owned: &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack());
+			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 6, new ItemCreator(Material.DIAMOND).setName("&7Kits Owned: &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack());
 		}
 	}
 	
