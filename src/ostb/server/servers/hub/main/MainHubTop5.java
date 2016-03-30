@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import npc.ostb.NPCEntity;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
@@ -25,7 +26,6 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.PlaytimeTracker;
 import ostb.player.account.PlaytimeTracker.TimeType;
 import ostb.server.DB;
-import ostb.server.nms.npcs.NPCEntity;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;

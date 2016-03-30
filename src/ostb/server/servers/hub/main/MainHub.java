@@ -8,9 +8,9 @@ import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.v1_8_R3.EntityGuardian;
+import npc.ostb.NPCEntity;
 import ostb.OSTB;
 import ostb.server.CommandBase;
-import ostb.server.nms.npcs.NPCEntity;
 import ostb.server.servers.hub.HubBase;
 
 public class MainHub extends HubBase {

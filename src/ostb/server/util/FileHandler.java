@@ -21,7 +21,7 @@ public class FileHandler {
 	public static void checkForUpdates() {
 		String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
 		Bukkit.getLogger().info("Path: " + path);
-		for(String plugin : new String [] {"OSTB.jar", "EffectLib.jar", "ViaVersion.jar"}) {
+		for(String plugin : new String [] {"OSTB.jar", "NPC_OSTB.jar", "EffectLib.jar", "ViaVersion.jar"}) {
 			File file = new File(path + plugin);
 			Bukkit.getLogger().info(file.toString());
 			if(file.exists()) {

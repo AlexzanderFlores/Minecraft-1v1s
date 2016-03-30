@@ -9,8 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 
+import npc.ostb.NPCEntity;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.server.nms.npcs.NPCEntity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 

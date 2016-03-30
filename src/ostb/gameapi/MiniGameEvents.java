@@ -14,6 +14,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import npc.ostb.NPCRegistrationHandler.NPCs;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -28,7 +29,6 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
-import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
