@@ -1,7 +1,8 @@
-name: OSTB
+name: OSTB_Base
 main: ostb.OSTB
 version: 1.0
-softdepend: [Votifier, EffectLib, ProtocolLib, HolographicDisplays]
+softdepend: [Votifier, EffectLib]
+authors: [Outside The Block Development Team]
 commands:
 # Global Commands
   shop:

@@ -1,4 +1,4 @@
-package ostb.gameapi.games.battles;
+package ostb.gameapi.games.pvpbattles;
 
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;

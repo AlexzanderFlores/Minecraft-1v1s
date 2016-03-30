@@ -33,8 +33,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.minecraft.server.v1_8_R3.EntityLiving;
-import ostb.customevents.ServerRestartEvent;
-import ostb.gameapi.SpectatorHandler;
 import ostb.server.nms.npcs.NPCRegistrationHandler.NPCs;
 import ostb.server.nms.npcs.entities.CreeperNPC;
 import ostb.server.nms.npcs.entities.GuardianNPC;
@@ -319,9 +317,9 @@ public abstract class NPCEntity implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getDamager() instanceof Player && (event.getEntity().equals(getLivingEntity()) || event.getEntity().equals(getArmorStand()))) {
 			Player player = (Player) event.getDamager();
-			if(!SpectatorHandler.contains(player)) {
+			//if(!SpectatorHandler.contains(player)) {
 				onInteract(player);
-			}
+			//}
 			event.setCancelled(true);
 		}
 	}
@@ -330,9 +328,9 @@ public abstract class NPCEntity implements Listener {
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.getRightClicked().equals(getLivingEntity())) {
 			Player player = event.getPlayer();
-			if(!SpectatorHandler.contains(player)) {
+			//if(!SpectatorHandler.contains(player)) {
 				onInteract(player);
-			}
+			//}
 			event.setCancelled(true);
 		}
 	}
@@ -341,9 +339,9 @@ public abstract class NPCEntity implements Listener {
 	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 		if(event.getRightClicked().equals(getArmorStand())) {
 			Player player = event.getPlayer();
-			if(!SpectatorHandler.contains(player)) {
+			//if(!SpectatorHandler.contains(player)) {
 				onInteract(player);
-			}
+			//}
 			event.setCancelled(true);
 		}
 	}
@@ -358,8 +356,8 @@ public abstract class NPCEntity implements Listener {
 		}
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onServerRestart(ServerRestartEvent event) {
 		remove();
-	}
+	}*/
 }

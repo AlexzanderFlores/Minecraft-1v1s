@@ -1,6 +1,6 @@
-package ostb.gameapi.games.battles.ctf;
+package ostb.gameapi.games.pvpbattles.ctf;
 
-import ostb.gameapi.games.battles.Battles;
+import ostb.gameapi.games.pvpbattles.Battles;
 
 public class CTF extends Battles {
 	public CTF() {

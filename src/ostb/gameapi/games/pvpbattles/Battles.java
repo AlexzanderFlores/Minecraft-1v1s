@@ -1,4 +1,4 @@
-package ostb.gameapi.games.battles;
+package ostb.gameapi.games.pvpbattles;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
