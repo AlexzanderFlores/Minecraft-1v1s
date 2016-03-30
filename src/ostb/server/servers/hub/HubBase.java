@@ -51,6 +51,8 @@ public class HubBase extends ProPlugin {
 		new Notifications();
 		new LobbySelector();
 		new ServerLogger();
+		new Tutorial();
+		new RewardVillager();
 	}
 	
 	public static int getHubNumber() {

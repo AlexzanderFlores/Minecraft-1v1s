@@ -15,8 +15,8 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -44,6 +44,7 @@ import ostb.server.nms.npcs.entities.VillagerNPC;
 import ostb.server.nms.npcs.entities.ZombieNPC;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
+import ostb.server.util.StringUtil;
 
 public abstract class NPCEntity implements Listener {
 	private static List<LivingEntity> entities = null;
@@ -132,7 +133,7 @@ public abstract class NPCEntity implements Listener {
 			armorStand.setGravity(false);
 			armorStand.setCustomNameVisible(true);
 		}
-		armorStand.setCustomName(text);
+		armorStand.setCustomName(StringUtil.color(text));
 	}
 	
 	public String getName() {
@@ -174,7 +175,7 @@ public abstract class NPCEntity implements Listener {
 		if(type == EntityType.CREEPER) {
 			y = -.25;
 		} else if(type == EntityType.GUARDIAN) {
-			y = -1;
+			y = -.75;
 		}
 		Location location = getLivingEntity().getLocation().add(0, y, 0);
 		if(armorStand != null) {
@@ -290,12 +291,12 @@ public abstract class NPCEntity implements Listener {
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {
-						final Pig pig = (Pig) location.getWorld().spawnEntity(getLivingEntity().getLocation().add(0.1, 1.5, 0.1), EntityType.PIG);
-						pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 5));
+						final IronGolem ironGolem = (IronGolem) location.getWorld().spawnEntity(getLivingEntity().getLocation().add(0.1, 1.5, 0.1), EntityType.IRON_GOLEM);
+						ironGolem.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 5));
 						new DelayedTask(new Runnable() {
 							@Override
 							public void run() {
-								pig.remove();
+								ironGolem.remove();
 							}
 						}, 20 * 2);
 					}
