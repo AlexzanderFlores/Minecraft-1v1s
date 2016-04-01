@@ -65,6 +65,8 @@ public abstract class MiniGame extends ProPlugin {
 		super(name);
 		OSTB.setMiniGame(this);
 		addGroup("mini-game");
+		setLobby(Bukkit.getWorlds().get(0));
+		lobby.setTime(12250);
 		new MiniGameEvents();
 		new SpectatorHandler();
 		new PerformanceLogger();
@@ -73,8 +75,7 @@ public abstract class MiniGame extends ProPlugin {
 		new ServerLogger();
 		new LeaveItem();
 		new MapRating();
-		setLobby(Bukkit.getWorlds().get(0));
-		lobby.setTime(12250);
+		new VotingHandler();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override

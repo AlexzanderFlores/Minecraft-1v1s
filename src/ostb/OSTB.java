@@ -93,7 +93,7 @@ public class OSTB extends JavaPlugin {
 	private static String serverName = null;
 	private static SidebarScoreboardUtil sidebar = null;
 	private static BelowNameScoreboardUtil belowName = null;
-	private static int maxPlayers = 0;
+	private static int maxPlayers = -1;
 	
 	@Override
 	public void onEnable() {
@@ -250,10 +250,12 @@ public class OSTB extends JavaPlugin {
 	}
 	
 	public static int getMaxPlayers() {
-		return maxPlayers;
+		return maxPlayers == -1 ? Bukkit.getMaxPlayers() : maxPlayers;
 	}
 	
 	public static void setMaxPlayers(int max) {
-		maxPlayers = max;
+		if(max != Bukkit.getMaxPlayers()) {
+			maxPlayers = max;
+		}
 	}
 }
