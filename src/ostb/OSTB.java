@@ -46,6 +46,7 @@ import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.slave.Slave;
 import ostb.server.servers.worker.Worker;
 import ostb.server.util.FileHandler;
+import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
 import ostb.staff.Punishment;
 
@@ -161,6 +162,7 @@ public class OSTB extends JavaPlugin {
 		new Particles();
 		new AutoAlerts();
 		new CommandDispatcher();
+		Glow.register();
 		client = new Client("192.198.207.74", 4500, 5000);
 		client.start();
 	}

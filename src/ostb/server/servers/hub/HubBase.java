@@ -21,7 +21,6 @@ import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
 
 public class HubBase extends ProPlugin {
-	//private static List<ArmorStand> stands = new ArrayList<ArmorStand>();
 	private static int hubNumber = 0;
 	
 	public HubBase(String name) {

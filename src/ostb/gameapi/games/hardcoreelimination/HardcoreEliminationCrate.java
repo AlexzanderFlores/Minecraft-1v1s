@@ -28,7 +28,7 @@ import ostb.server.util.StringUtil;
 
 public class HardcoreEliminationCrate implements Listener {
 	private static String name = null;
-	private static final int cost = 25;
+	private static final int cost = 40;
 	private static Map<String, Integer> keys = null;
 	
 	public HardcoreEliminationCrate() {

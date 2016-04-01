@@ -257,7 +257,7 @@ public class GameSelector extends HubItemBase {
 			"&eBe the last team standing!",
 			"",
 			"&7Playing: &a" + getPlayers(Plugins.SKY_WARS_TEAMS),
-			"&7Taem size: &a2",
+			"&7Team size: &a2",
 			""
 		}).getItemStack();
 		items.put(item, Plugins.SKY_WARS_TEAMS);
