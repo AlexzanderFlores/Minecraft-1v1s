@@ -69,10 +69,12 @@ public class LevelHandler implements Listener {
 			toUpdate.add(player.getName());
 		}
 		int current = getExp(player) + amount;
-		int needed = getNeededForLevelUp(player);
-		if(current >= needed) {
-			levels.put(player.getName(), getLevel(player) + 1);
-			exps.put(player.getName(), current - needed);
+		if(current >= getNeededForLevelUp(player)) {
+			while(current >= getNeededForLevelUp(player)) {
+				current -= getNeededForLevelUp(player);
+				levels.put(player.getName(), levels.get(player.getName()) + 1);
+				exps.put(player.getName(), current);
+			}
 		} else {
 			exps.put(player.getName(), current);
 		}
@@ -91,6 +93,10 @@ public class LevelHandler implements Listener {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		int level = DB.PLAYERS_LEVELS.getInt("uuid", uuid.toString(), "level");
+		if(level == 0) {
+			DB.PLAYERS_LEVELS.insert("'" + uuid.toString() + "', '1', '0'");
+			level = 1;
+		}
 		int exp = DB.PLAYERS_LEVELS.getInt("uuid", uuid.toString(), "exp");
 		levels.put(player.getName(), level);
 		exps.put(player.getName(), exp);

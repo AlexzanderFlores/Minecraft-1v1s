@@ -4,12 +4,14 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 
 import ostb.player.account.AccountHandler;
+import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -17,6 +19,13 @@ import ostb.server.util.EventUtil;
 
 public class Voting implements Listener {
 	public Voting() {
+		new CommandBase("test", 1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Voting.execute(arguments[0]);
+				return true;
+			}
+		};
 		EventUtil.register(this);
 	}
 	
@@ -32,11 +41,21 @@ public class Voting implements Listener {
 				UUID playerUUID = AccountHandler.getUUID(name);
 				if(playerUUID != null) {
 					String uuid = playerUUID.toString();
+					int streak = 1;
+					int multiplier = 1;
+					int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 					if(DB.PLAYERS_LIFETIME_VOTES.isUUIDSet(playerUUID)) {
 						int amount = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "amount") + 1;
+						int day = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "day");
+						if(day == currentDay) {
+							streak = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "streak") + 1;
+						}
+						multiplier = streak <= 5 ? 1 : streak <= 10 ? 2 : streak <= 15 ? 3 : streak <= 20 ? 4 : streak <= 25 ? 5 : 6;
 						DB.PLAYERS_LIFETIME_VOTES.updateInt("amount", amount, "uuid", uuid);
+						DB.PLAYERS_LIFETIME_VOTES.updateInt("day", currentDay, "uuid", uuid);
+						DB.PLAYERS_LIFETIME_VOTES.updateInt("streak", streak, "uuid", uuid);
 					} else {
-						DB.PLAYERS_LIFETIME_VOTES.insert("'" + uuid + "', '1'");
+						DB.PLAYERS_LIFETIME_VOTES.insert("'" + uuid + "', '1', '" + currentDay + "', '1'");
 					}
 					Bukkit.getLogger().info("voting: update lifetime votes");
 					Calendar calendar = Calendar.getInstance();
@@ -60,13 +79,7 @@ public class Voting implements Listener {
 						DB.PLAYERS_WEEKLY_VOTES.insert("'" + uuid + "', '1', '" + week + "'");
 					}
 					Bukkit.getLogger().info("voting: update weekly votes");
-					if(DB.PLAYERS_VOTE_PASSES.isUUIDSet(playerUUID)) {
-						int amount = DB.PLAYERS_VOTE_PASSES.getInt("uuid", uuid, "amount") + 1;
-						DB.PLAYERS_VOTE_PASSES.updateInt("amount", amount, "uuid", uuid);
-					} else {
-						DB.PLAYERS_VOTE_PASSES.insert("'" + uuid + "', '1'");
-					}
-					Beacon.giveKey(playerUUID, 1);
+					Beacon.giveKey(playerUUID, 1 * multiplier);
 				}
 			}
 		});

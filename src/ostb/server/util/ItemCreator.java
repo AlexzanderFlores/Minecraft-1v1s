@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @SuppressWarnings("deprecation")
 public class ItemCreator {
+	private static Glow glow = null;
 	private ItemStack itemStack = null;
 	
 	public ItemCreator(Material material) {
@@ -138,5 +139,19 @@ public class ItemCreator {
 	
 	public String getName() {
 		return getItemStack().getItemMeta().getDisplayName();
+	}
+	
+	public ItemCreator setGlow(boolean hasGlow) {
+		ItemMeta meta = itemStack.getItemMeta();
+		if(glow == null) {
+			glow = new Glow(70);
+		}
+		if(hasGlow) {
+			meta.addEnchant(glow, 1, true);
+		} else if(meta.hasEnchant(glow)) {
+			meta.removeEnchant(glow);
+		}
+		itemStack.setItemMeta(meta);
+		return this;
 	}
 }

@@ -56,7 +56,7 @@ public class Profile extends HubItemBase {
 			Player player = event.getPlayer();
 			String title = event.getTitle();
 			Material type = event.getItem().getType();
-			if(type == Material.EXP_BOTTLE || type == Material.SKULL_ITEM || type == Material.WATCH || type == Material.CHEST) {
+			if(type == Material.EXP_BOTTLE || type == Material.SKULL_ITEM || type == Material.WATCH || type == Material.CHEST || type == Material.NAME_TAG) {
 				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			} else if(!title.contains(" - " + player.getName())) {
 				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
@@ -165,9 +165,6 @@ public class Profile extends HubItemBase {
 				}).getItemStack());
 				inventory.setItem(34, new ItemCreator(Material.NAME_TAG).setName("&bVote Stats").setLores(new String [] {
 					"",
-					"&eClick to view the vote shop",
-					"",
-					"&7Vote passes: &e" + DB.PLAYERS_VOTE_PASSES.getInt("uuid", uuid, "amount"),
 					"&7Lifetime votes: &e" + DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "amount"),
 					"&7Monthly votes: &e" + DB.PLAYERS_MONTHLY_VOTES.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
 					"&7Weekly votes: &e" + DB.PLAYERS_WEEKLY_VOTES.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),

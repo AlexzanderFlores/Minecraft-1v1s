@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import net.minecraft.server.v1_8_R3.EntityGuardian;
 import npc.ostb.NPCEntity;
 import ostb.OSTB;
+import ostb.player.LevelHandler;
 import ostb.server.CommandBase;
 import ostb.server.servers.hub.HubBase;
 
@@ -53,6 +54,8 @@ public class MainHub extends HubBase {
 				} else if(arguments[0].equalsIgnoreCase("toggle") && npc.getLivingEntity() instanceof Guardian) {
 					Guardian guardian = (Guardian) npc.getLivingEntity();
 					guardian.setElder(!guardian.isElder());
+				} else if(arguments[0].equalsIgnoreCase("exp")) {
+					LevelHandler.add(player, Integer.valueOf(arguments[1]));
 				}
 				return true;
 			}

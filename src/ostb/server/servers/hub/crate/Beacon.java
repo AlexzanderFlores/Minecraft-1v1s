@@ -1,9 +1,8 @@
 package ostb.server.servers.hub.crate;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -26,7 +25,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.TimeEvent;
-import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
 import ostb.player.TitleDisplayer;
@@ -54,7 +52,9 @@ public class Beacon implements Listener {
 	private boolean running = false;
 	private boolean displaying = false;
 	private List<FeatureItem> items = null;
-	private static Map<String, Integer> keys = null;
+	private List<String> delayed = null;
+	private static final int delay = 2;
+	//private static Map<String, Integer> keys = null;
 	
 	public Beacon() {
 		random = new Random();
@@ -69,7 +69,8 @@ public class Beacon implements Listener {
 		armorStand.setVisible(false);
 		armorStand.setCustomName(getName());
 		armorStand.setCustomNameVisible(true);
-		keys = new HashMap<String, Integer>();
+		delayed = new ArrayList<String>();
+		//keys = new HashMap<String, Integer>();
 		setWood();
 		new DelayedTask(new Runnable() {
 			@Override
@@ -85,22 +86,22 @@ public class Beacon implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", true) {
+		/*new CommandBase("test", true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				player.sendBlockChange(glass.getLocation(), Material.STAINED_GLASS, (byte) random.nextInt(15));
 				return true;
 			}
-		};
+		};*/
 		EventUtil.register(this);
 	}
 	
 	public static void giveKey(final UUID uuid, final int toAdd) {
-		Player player = Bukkit.getPlayer(uuid);
-		if(player != null && keys.containsKey(player.getName())) {
+		//Player player = Bukkit.getPlayer(uuid);
+		/*if(player != null && keys.containsKey(player.getName())) {
 			keys.put(player.getName(), toAdd + keys.get(player.getName()));
-		}
+		}*/
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -121,11 +122,23 @@ public class Beacon implements Listener {
 	}
 	
 	private void activate(final Player player) {
-		if(!keys.containsKey(player.getName())) {
+		/*if(!keys.containsKey(player.getName())) {
 			keys.put(player.getName(), DB.HUB_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount"));
 			Bukkit.getLogger().info("beacon: load crate keys");
+		}*/
+		//if(keys.get(player.getName()) <= 0) {
+		if(delayed.contains(player.getName())) {
+			return;
+		} else {
+			delayed.add(player.getName());
+			new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					delayed.remove(player.getName());
+				}
+			}, 20 * delay);
 		}
-		if(keys.get(player.getName()) <= 0) {
+		if(DB.HUB_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount") <= 0) {
 			ChatClickHandler.sendMessageToRunCommand(player, "&6click here", "Click to vote", "/vote", "&cYou do not have any &2Crate Keys&c! Get some by voting, ");
 			return;
 		}
@@ -157,7 +170,7 @@ public class Beacon implements Listener {
 								DB.HUB_CRATE_KEYS.updateInt("amount", owned, "uuid", uuid);
 							}
 							Bukkit.getLogger().info("beacon: update key amount");
-							keys.put(player.getName(), owned);
+							//keys.put(player.getName(), owned);
 							MessageHandler.sendMessage(player, "You now have &e" + owned + " &xCrate Key" + (owned == 1 ? "" : "s"));
 							if(DB.HUB_LIFETIME_CRATES_OPENED.isUUIDSet(player.getUniqueId())) {
 								int amount = DB.HUB_LIFETIME_CRATES_OPENED.getInt("uuid", uuid, "amount") + 1;
@@ -306,8 +319,8 @@ public class Beacon implements Listener {
 		}
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		keys.remove(event.getPlayer().getName());
-	}
+	}*/
 }

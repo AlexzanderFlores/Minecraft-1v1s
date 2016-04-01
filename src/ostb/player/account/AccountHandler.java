@@ -275,7 +275,6 @@ public class AccountHandler implements Listener {
 					String rank = Ranks.PLAYER.toString();
 					DB.PLAYERS_ACCOUNTS.insert("'" + uuid + "', '" + name + "', '" + address + "', '" + rank + "', '" + TimeUtil.getTime().substring(0, 10) + "'");
 					DB.PLAYERS_IP_ADDRESSES.insert("'" + uuid + "', '" + address + "', '" + TimeUtil.getTime() + "'");
-					DB.PLAYERS_LEVELS.insert("'" + uuid + "', '1', '0'");
 				}
 			});
 		}

@@ -4,13 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-
 import ostb.OSTB;
-import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
-import ostb.server.CommandBase;
 import ostb.server.networking.Instruction;
 import ostb.server.networking.Instruction.Inst;
 
@@ -19,7 +14,7 @@ public class PlayerLogger {
 	
 	public PlayerLogger() {
 		locations = new HashMap<UUID, String>();
-		new CommandBase("test") {
+		/*new CommandBase("test") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				MessageHandler.sendMessage(sender, "Logged players:");
@@ -28,7 +23,7 @@ public class PlayerLogger {
 				}
 				return true;
 			}
-		};
+		};*/
 	}
 	
 	public static void log(UUID uuid, String name) {
