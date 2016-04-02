@@ -61,6 +61,7 @@ public class SpawnPointHandler implements Listener {
 				counter = 0;
 			}
 			Location location = getSpawns().get(counter);
+			Bukkit.getLogger().info(location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
 			player.teleport(location);
 			locatedAt.put(player.getName(), counter++);
 		}
@@ -81,12 +82,11 @@ public class SpawnPointHandler implements Listener {
 		if(spawns == null || spawns.isEmpty()) {
 			spawns = new ArrayList<Location>();
 			for(String key : config.getConfig().getKeys(false)) {
-				double x = config.getConfig().getDouble(key + ".x");
-				double y = config.getConfig().getDouble(key + ".y");
-				double z = config.getConfig().getDouble(key + ".z");
-				float yaw = (float) config.getConfig().getDouble(key + ".yaw");
-				float pitch = (float) config.getConfig().getDouble(key + ".pitch");
-				spawns.add(new Location(world, x, y, z, yaw, pitch));
+				String [] location = config.getConfig().getString(key).split(",");
+				double x = Double.valueOf(location[0]);
+				double y = Double.valueOf(location[1]);
+				double z = Double.valueOf(location[2]);
+				spawns.add(new Location(world, x, y, z));
 			}
 			return spawns;
 		}

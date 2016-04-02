@@ -46,7 +46,7 @@ public class Building extends ProPlugin {
 						return false;
 					}
 				}
-				String loc = (location.getBlockX() + "0.5,") + (location.getBlockY() + 1) + "," + (location.getBlockZ() + "0.5,");
+				String loc = (location.getBlockX() + ".5,") + (location.getBlockY() + 1) + "," + (location.getBlockZ() + ".5,");
 				config.getConfig().set(index + "", loc);
 				config.save();
 				MessageHandler.sendMessage(player, "Set spawn " + index);

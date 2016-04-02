@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -20,10 +21,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
+import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartEvent;
+import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.server.tasks.DelayedTask;
@@ -138,6 +142,14 @@ public class Events implements Listener {
 		for(int a = 0; a < (rarity == Rarity.COMMON ? 4 : rarity == Rarity.UNCOMMON ? 3 : rarity == Rarity.RARE ? 2 : 1); ++a) {
 			possibleItems.add(itemStack);
 		}
+	}
+	
+	@EventHandler
+	public void onGameStarting(GameStartingEvent event) {
+		World world = OSTB.getMiniGame().getMap();
+		SpawnPointHandler spawnPointHandler = new SpawnPointHandler(world);
+		//List<Location> spawns = spawnPointHandler.getSpawns();
+		spawnPointHandler.teleport(ProPlugin.getPlayers());
 	}
 	
 	@EventHandler

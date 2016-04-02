@@ -10,18 +10,26 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import npc.ostb.util.EventUtil;
 import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.customevents.game.GameStartingEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.FileHandler;
 import ostb.server.util.ImageMap;
 
 public class VotingHandler implements Listener {
@@ -36,11 +44,7 @@ public class VotingHandler implements Listener {
 		itemFrames = new HashMap<ItemFrame, String>(15);
 		maps = new ArrayList<String>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/";
-		String name = OSTB.getMiniGame().getDisplayName().toLowerCase();
-		Plugins plugin = OSTB.getPlugin();
-		if(plugin == Plugins.SKY_WARS_SOLO || plugin == Plugins.SKY_WARS_TEAMS) {
-			name = "sky_wars";
-		}
+		String name = OSTB.getPlugin().getData();
 		name = path + name.replace(" ", "_");
 		File file = new File(name);
 		String [] folders = file.list(new FilenameFilter() {
@@ -108,5 +112,44 @@ public class VotingHandler implements Listener {
 				vote(event.getPlayer(), map);
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onGameStarting(GameStartingEvent event) {
+		String winner = null;
+		for(String map : mapVotes.keySet()) {
+			if(winner == null || mapVotes.get(map) > mapVotes.get(winner) || (mapVotes.get(map) == mapVotes.get(winner) && new Random().nextBoolean())) {
+				winner = map;
+			}
+		}
+		final String worldName = winner.replace(" ", "_");
+		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/" + OSTB.getPlugin().getData() + "/" + worldName;
+		File world = new File(Bukkit.getWorldContainer().getPath() + "/" + worldName);
+		if(world.exists()) {
+			FileHandler.delete(world);
+		}
+		FileHandler.copyFolder(path, world.getPath());
+		World map = Bukkit.createWorld(new WorldCreator(worldName));
+		for(Entity entity : map.getEntities()) {
+			if(entity instanceof LivingEntity && !(entity instanceof Player)) {
+				entity.remove();
+			}
+		}
+		OSTB.getMiniGame().setMap(map);
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				String game = OSTB.getPlugin().toString();
+				String [] keys = new String [] {"game_name", "map"};
+				String [] values = new String [] {game, worldName};
+				if(DB.NETWORK_MAP_VOTES.isKeySet(keys, values)) {
+					int times = DB.NETWORK_MAP_VOTES.getInt(keys, values, "times_voted") + 1;
+					DB.NETWORK_MAP_VOTES.updateInt("times_voted", times, keys, values);
+				} else {
+					DB.NETWORK_MAP_VOTES.insert("'" + game + "', '" + worldName + "', '1'");
+				}
+			}
+		});
+		HandlerList.unregisterAll(this);
 	}
 }

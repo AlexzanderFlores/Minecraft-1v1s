@@ -52,32 +52,39 @@ import ostb.staff.Punishment;
 
 public class OSTB extends JavaPlugin {
 	public enum Plugins {
-		HUB("HUB", "Hub"),
-		CTF("CTF", "Capture the Flag"),
-		DOM("DOM", "Domination"),
-		SKY_WARS_SOLO("SW", "Solo Sky Wars"),
-		SKY_WARS_TEAMS("SWT", "Team Sky Wars"),
-		HE_NO_KITS("HENK", "Hardcore Elimination No Kits"),
-		HE_KITS("HEK", "Hardcore Elimination Kits"),
-		BUILDING("Building"),
-		WORKER("Worker"),
-		SLAVE("Slave");
+		HUB("HUB", "hub", "Hub"),
+		CTF("CTF", "pvp_battles", "Capture the Flag"),
+		DOM("DOM", "pvp_battles", "Domination"),
+		SKY_WARS_SOLO("SW", "sky_wars", "Solo Sky Wars"),
+		SKY_WARS_TEAMS("SWT", "sky_wars", "Team Sky Wars"),
+		HE_NO_KITS("HENK", "hardcore_elimination", "Hardcore Elimination No Kits"),
+		HE_KITS("HEK", "hardcore_elimination", "Hardcore Elimination Kits"),
+		BUILDING("Building", "building"),
+		WORKER("Worker", "worker"),
+		SLAVE("Slave", "slave");
 		
 		private String server = null;
 		private String display = null;
+		private String data = null;
 		
-		private Plugins(String server) {
+		private Plugins(String server, String data) {
 			this.server = server;
+			this.data = data;
 			this.display = server;
 		}
 		
-		private Plugins(String server, String display) {
+		private Plugins(String server, String data, String display) {
 			this.server = server;
+			this.data = data;
 			this.display = display;
 		}
 		
 		public String getServer() {
 			return server;
+		}
+		
+		public String getData() {
+			return data;
 		}
 		
 		public String getDisplay() {

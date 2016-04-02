@@ -13,8 +13,6 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 
-import com.google.common.io.Files;
-
 import ostb.OSTB;
 
 public class FileHandler {
@@ -84,7 +82,8 @@ public class FileHandler {
 	
 	public static boolean copyFile(File source, File target) {
 		try {
-			Files.copy(source, target);
+			//Files.copy(source, target);
+			FileUtils.copyFile(source, target);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +96,8 @@ public class FileHandler {
 	
 	public static boolean copyFolder(File source, File target) {
 		try {
-			Files.copy(source, target);
+			//Files.copy(source, target);
+			FileUtils.copyDirectory(source, target);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
