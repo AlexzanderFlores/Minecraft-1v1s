@@ -21,7 +21,7 @@ public class Tutorial implements Listener {
 			public void onInteract(Player player) {
 				EffectUtil.playSound(player, Sound.SWIM);
 			}
-		}.getLivingEntity();
+		};
 		EventUtil.register(this);
 	}
 }

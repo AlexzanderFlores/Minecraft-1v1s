@@ -51,6 +51,12 @@ public class Events implements Listener {
 		player.getInventory().setArmorContents(new ItemStack [] {});
 		player.getInventory().setHeldItemSlot(0);
 		player.teleport(getSpawn());
+		/*new CircleUtil(player, .85, 6) {
+			@Override
+			public void run(Vector vector, Location location) {
+				ParticleEffect.FIREWORKS_SPARK.display(location.add(0, 1.90, 0), 20);
+			}
+		};*/
 	}
 	
 	@EventHandler

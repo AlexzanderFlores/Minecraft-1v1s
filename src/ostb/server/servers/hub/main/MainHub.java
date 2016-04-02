@@ -1,6 +1,7 @@
 package ostb.server.servers.hub.main;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftGuardian;
 import org.bukkit.entity.EntityType;
@@ -13,6 +14,8 @@ import ostb.OSTB;
 import ostb.player.LevelHandler;
 import ostb.server.CommandBase;
 import ostb.server.servers.hub.HubBase;
+import ostb.server.servers.hub.TrailTest;
+import ostb.server.servers.hub.items.features.blocks.SpinBlockEntity;
 
 public class MainHub extends HubBase {
 	private NPCEntity npc = null;
@@ -56,6 +59,10 @@ public class MainHub extends HubBase {
 					guardian.setElder(!guardian.isElder());
 				} else if(arguments[0].equalsIgnoreCase("exp")) {
 					LevelHandler.add(player, Integer.valueOf(arguments[1]));
+				} else if(arguments[0].equalsIgnoreCase("block")) {
+					new SpinBlockEntity(Material.valueOf(arguments[1]), Byte.valueOf(arguments[2]), player);
+				} else if(arguments[0].equalsIgnoreCase("trail")) {
+					new TrailTest();
 				}
 				return true;
 			}

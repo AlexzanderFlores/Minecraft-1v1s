@@ -1,4 +1,4 @@
-package ostb.player.trophies;
+package ostb.player.achivements;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,13 +13,11 @@ import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 
-
-
-public abstract class Trophy implements Listener {
+public abstract class Achievements implements Listener {
 	private Plugins plugin = null;
 	private int slot = 0;
 	
-	public Trophy(Plugins plugin, int slot) {
+	public Achievements(Plugins plugin, int slot) {
 		this.plugin = plugin;
 		this.slot = slot;
 	}
