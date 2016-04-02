@@ -33,6 +33,10 @@ public abstract class KitBase implements Listener {
 	private static int lastSlot = -1;
 	private Plugins plugin = null;
 	private ItemStack icon = null;
+	private ItemStack helmet = null;
+	private ItemStack chestplate = null;
+	private ItemStack leggings = null;
+	private ItemStack boots = null;
 	private int slot = 0;
 	private int price = 0;
 	private List<String> users = null;
@@ -58,6 +62,42 @@ public abstract class KitBase implements Listener {
 		icon = new ItemCreator(icon).setName(meta.getDisplayName()).getItemStack();
 		this.icon = icon;
 		kits.add(this);
+	}
+	
+	public ItemStack getHelmet() {
+		return helmet;
+	}
+	
+	public KitBase setHelmet(ItemStack helmet) {
+		this.helmet = helmet;
+		return this;
+	}
+	
+	public ItemStack getChestplate() {
+		return chestplate;
+	}
+	
+	public KitBase setChestplate(ItemStack chestplate) {
+		this.chestplate = chestplate;
+		return this;
+	}
+	
+	public ItemStack getLeggings() {
+		return leggings;
+	}
+	
+	public KitBase setLeggings(ItemStack leggings) {
+		this.leggings = leggings;
+		return this;
+	}
+	
+	public ItemStack getBoots() {
+		return boots;
+	}
+	
+	public KitBase setBoots(ItemStack boots) {
+		this.boots = boots;
+		return this;
 	}
 	
 	public boolean owns(Player player) {
