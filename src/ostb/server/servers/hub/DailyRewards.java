@@ -1,7 +1,5 @@
 package ostb.server.servers.hub;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,12 +13,9 @@ import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 import npc.ostb.NPCEntity;
-import ostb.ProPlugin;
-import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;
@@ -35,13 +30,11 @@ public class DailyRewards implements Listener {
 	private String name = null;
 	private String rewardsName = null;
 	private String streakName = null;
-	private List<String> players = null;
 	
 	public DailyRewards() {
 		name = "Daily Rewards";
 		rewardsName = "Rewards";
 		streakName = "Streaks";
-		players = new ArrayList<String>();
 		Villager villager = (Villager) new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), 1686.5, 5, -1295.5)) {
 			@Override
 			public void onInteract(Player player) {
@@ -162,9 +155,6 @@ public class DailyRewards implements Listener {
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 					player.openInventory(inventory);
-					if(!players.contains(player.getName())) {
-						players.add(player.getName());
-					}
 				}
 			} else if(slot == 13) {
 				final Inventory inventory = Bukkit.createInventory(player, 9 * 6, streakName);
@@ -233,29 +223,6 @@ public class DailyRewards implements Listener {
 			open(player);
 		} else if(event.getTitle().equals(streakName)) {
 			open(player);
-		}
-	}
-	
-	@EventHandler
-	public void onTime(TimeEvent event) {
-		long ticks = event.getTicks();
-		if(ticks == 20) {
-			for(String name : players) {
-				Player player = ProPlugin.getPlayer(name);
-				if(player != null) {
-					
-				}
-			}
-		}
-	}
-	
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getPlayer() instanceof Player) {
-			Player player = (Player) event.getPlayer();
-			if(players.contains(player.getName())) {
-				players.remove(player.getName());
-			}
 		}
 	}
 }

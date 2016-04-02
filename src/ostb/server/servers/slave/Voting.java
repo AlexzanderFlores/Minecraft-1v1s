@@ -47,8 +47,10 @@ public class Voting implements Listener {
 					if(DB.PLAYERS_LIFETIME_VOTES.isUUIDSet(playerUUID)) {
 						int amount = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "amount") + 1;
 						int day = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "day");
-						if(day == currentDay) {
+						if(day == currentDay - 1) {
 							streak = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "streak") + 1;
+						} else {
+							streak = 1;
 						}
 						multiplier = streak <= 5 ? 1 : streak <= 10 ? 2 : streak <= 15 ? 3 : streak <= 20 ? 4 : streak <= 25 ? 5 : 6;
 						DB.PLAYERS_LIFETIME_VOTES.updateInt("amount", amount, "uuid", uuid);
