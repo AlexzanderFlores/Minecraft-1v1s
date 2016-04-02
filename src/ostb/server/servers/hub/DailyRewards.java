@@ -1,5 +1,7 @@
 package ostb.server.servers.hub;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -13,9 +15,12 @@ import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 import npc.ostb.NPCEntity;
+import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;
@@ -30,11 +35,13 @@ public class DailyRewards implements Listener {
 	private String name = null;
 	private String rewardsName = null;
 	private String streakName = null;
+	private List<String> players = null;
 	
 	public DailyRewards() {
 		name = "Daily Rewards";
 		rewardsName = "Rewards";
 		streakName = "Streaks";
+		players = new ArrayList<String>();
 		Villager villager = (Villager) new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), 1686.5, 5, -1295.5)) {
 			@Override
 			public void onInteract(Player player) {
@@ -89,55 +96,75 @@ public class DailyRewards implements Listener {
 					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
+					// Crate keys
 					inventory.setItem(10, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bReward Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Reward crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(11, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
+					inventory.setItem(19, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bPVP Battles Crate Key").setLores(new String [] {
+						"",
+						"&e+1 &aKey to the PVP Battles crate",
+						"&7(Capture the Flag & Domination)",
+						""
+					}).getItemStack()));
+					inventory.setItem(28, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Sky Wars crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(12, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
+					inventory.setItem(37, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Hardcore Elimination crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
+					
+					// Coins
+					inventory.setItem(16, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
 						"",
-						"&e+50 &aPVP Battles Coins",
+						"&e+25 &aPVP Battles Coins",
 						"&7(Capture the Flag & Domination)",
 						"",
 						""
 					}).getItemStack());
-					inventory.setItem(15, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
+					inventory.setItem(25, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
 						"",
 						"&e+25 &aSky Wars Coins",
 						""
 					}).getItemStack());
-					inventory.setItem(16, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
+					inventory.setItem(34, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
 						"",
 						"&e+25 &aHardcore Elimination Coins",
 						""
 					}).getItemStack());
-					inventory.setItem(28, new ItemCreator(Material.DIAMOND_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
+					
+					// Other
+					inventory.setItem(12, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter").setLores(new String [] {
 						"",
-						"&e+20 &aHub Parkour Checkpoints",
+						"&e+2 &aHardcore Elimination Rescatter",
 						""
 					}).getItemStack());
-					inventory.setItem(31, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
+					inventory.setItem(14, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
+						"",
+						"&e+30 &aPVP Battles Fast Respawn",
+						"&7(Capture the Flag & Domination)",
+						""
+					}).getItemStack());
+					inventory.setItem(30, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
 						"",
 						"&e+250 &aNetwork Experience",
 						""
 					}).getItemStack());
-					inventory.setItem(34, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter Passes").setLores(new String [] {
+					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
 						"",
-						"&e+2 &aHardcore Elimination Rescatter Passes",
+						"&e+20 &aHub Parkour Checkpoints",
 						""
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 					player.openInventory(inventory);
+					if(!players.contains(player.getName())) {
+						players.add(player.getName());
+					}
 				}
 			} else if(slot == 13) {
 				final Inventory inventory = Bukkit.createInventory(player, 9 * 6, streakName);
@@ -206,6 +233,29 @@ public class DailyRewards implements Listener {
 			open(player);
 		} else if(event.getTitle().equals(streakName)) {
 			open(player);
+		}
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(String name : players) {
+				Player player = ProPlugin.getPlayer(name);
+				if(player != null) {
+					
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent event) {
+		if(event.getPlayer() instanceof Player) {
+			Player player = (Player) event.getPlayer();
+			if(players.contains(player.getName())) {
+				players.remove(player.getName());
+			}
 		}
 	}
 }
