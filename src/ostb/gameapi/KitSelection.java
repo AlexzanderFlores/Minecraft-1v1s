@@ -102,9 +102,6 @@ public class KitSelection implements Listener {
 				} else if(a == 2) {
 					armorStand.setCustomName(StringUtil.color("&7MOVE RIGHT TO VIEW"));
 				}
-				if(a != 1) {
-					setToNone(armorStand);
-				}
 				armorStand.setCustomNameVisible(true);
 				stands.add(armorStand);
 				aboveStands.add(aboveStand);
@@ -115,6 +112,7 @@ public class KitSelection implements Listener {
 	
 	private void updateKit(KitBase kit) {
 		if(!stands.isEmpty()) {
+			// Front armor stand
 			ArmorStand armorStand = stands.get(1);
 			ArmorStand aboveStand = aboveStands.get(1);
 			if(kit.owns(getPlayer())) {
@@ -123,20 +121,31 @@ public class KitSelection implements Listener {
 				aboveStand.setCustomName(StringUtil.color("&8&lLOCKED"));
 			}
 			armorStand.setCustomName(StringUtil.color("&e&n" + kit.getName()));
+			kit.executeArt(armorStand, true);
 			viewing = kit;
+			
+			// Left armor stand
+			armorStand = stands.get(0);
 			aboveStand = aboveStands.get(0);
 			if(index > 0) {
-				aboveStand.setCustomName(StringUtil.color("&6" + KitBase.getKits().get(index - 1).getName()));
+				KitBase leftKit = KitBase.getKits().get(index - 1);
+				aboveStand.setCustomName(StringUtil.color("&6" + leftKit.getName()));
+				leftKit.executeArt(armorStand, false);
 			} else {
 				aboveStand.setCustomName(StringUtil.color("&f"));
-				setToNone(stands.get(0));
+				setToNone(armorStand);
 			}
+			
+			// Right armor stand
+			armorStand = stands.get(2);
 			aboveStand = aboveStands.get(2);
 			if(index < KitBase.getKits().size() - 2) {
-				aboveStand.setCustomName(StringUtil.color("&6" + KitBase.getKits().get(index + 1).getName()));
+				KitBase rightKit = KitBase.getKits().get(index + 1);
+				aboveStand.setCustomName(StringUtil.color("&6" + rightKit.getName()));
+				rightKit.executeArt(armorStand, false);
 			} else {
 				aboveStand.setCustomName(StringUtil.color("&f"));
-				setToNone(stands.get(2));
+				setToNone(armorStand);
 			}
 			indexStand.setCustomName(StringUtil.color("&a&l" + (index + 1) + "&e&l/&a&l" + (KitBase.getKits().size() - 1)));
 		}

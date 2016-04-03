@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -117,7 +118,7 @@ public abstract class KitBase implements Listener {
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
 				setDefaultKit(player);
-				//if(getPlugin() == OSTB.getPlugin()) {
+				if(getPlugin() == OSTB.getPlugin()) {
 					for(KitBase kit : kits) {
 						kit.remove(player);
 					}
@@ -127,7 +128,7 @@ public abstract class KitBase implements Listener {
 					users.add(player.getName());
 					MessageHandler.sendMessage(player, "Selected &e" + getName());
 					return true;
-				//}
+				}
 			}
 		} else if(price > 0) {
 			if(CoinsHandler.getCoinsHandler(getPlugin()).getCoins(player) >= getPrice()) {
@@ -233,6 +234,16 @@ public abstract class KitBase implements Listener {
 	
 	public static int getLastSlot() {
 		return lastSlot;
+	}
+	
+	public void executeArt(ArmorStand armorStand, boolean all) {
+		armorStand.setHelmet(getHelmet());
+		armorStand.setChestplate(getChestplate());
+		armorStand.setLeggings(getLeggings());
+		armorStand.setBoots(getBoots());
+		if(all) {
+			
+		}
 	}
 	
 	public abstract String getPermission();
