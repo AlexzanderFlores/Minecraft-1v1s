@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -236,14 +237,20 @@ public abstract class KitBase implements Listener {
 		return lastSlot;
 	}
 	
-	public void executeArt(ArmorStand armorStand, boolean all) {
+	public void executeArt(ArmorStand armorStand, boolean all, Player player) {
 		armorStand.setHelmet(getHelmet());
 		armorStand.setChestplate(getChestplate());
 		armorStand.setLeggings(getLeggings());
 		armorStand.setBoots(getBoots());
-		if(all) {
-			
-		}
+		armorStand.setItemInHand(getIcon());
+	}
+	
+	public void disableArt(ArmorStand armorStand) {
+		armorStand.setHelmet(new ItemStack(Material.AIR));
+		armorStand.setChestplate(new ItemStack(Material.AIR));
+		armorStand.setLeggings(new ItemStack(Material.AIR));
+		armorStand.setBoots(new ItemStack(Material.AIR));
+		armorStand.setItemInHand(new ItemStack(Material.AIR));
 	}
 	
 	public abstract String getPermission();

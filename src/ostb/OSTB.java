@@ -53,6 +53,7 @@ import ostb.staff.Punishment;
 public class OSTB extends JavaPlugin {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
+		PVP_BATTLES("PVPBattles", "pvp_battles", "PVP Battles"), // Not used on server
 		CTF("CTF", "pvp_battles", "Capture the Flag"),
 		DOM("DOM", "pvp_battles", "Domination"),
 		SKY_WARS_SOLO("SW", "sky_wars", "Solo Sky Wars"),

@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.EulerAngle;
 
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
@@ -88,6 +89,9 @@ public class KitSelection implements Listener {
 				ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 				armorStand.setGravity(false);
 				armorStand.setBasePlate(false);
+				armorStand.setArms(true);
+				armorStand.setLeftArmPose(new EulerAngle(50, 0, 50));
+				armorStand.setRightArmPose(new EulerAngle(250, 0, 50));
 				ArmorStand aboveStand = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, 0.35, 0), EntityType.ARMOR_STAND);
 				aboveStand.setGravity(false);
 				aboveStand.setVisible(false);
@@ -112,6 +116,8 @@ public class KitSelection implements Listener {
 	
 	private void updateKit(KitBase kit) {
 		if(!stands.isEmpty()) {
+			Player player = getPlayer();
+			
 			// Front armor stand
 			ArmorStand armorStand = stands.get(1);
 			ArmorStand aboveStand = aboveStands.get(1);
@@ -121,7 +127,7 @@ public class KitSelection implements Listener {
 				aboveStand.setCustomName(StringUtil.color("&8&lLOCKED"));
 			}
 			armorStand.setCustomName(StringUtil.color("&e&n" + kit.getName()));
-			kit.executeArt(armorStand, true);
+			kit.executeArt(armorStand, true, player);
 			viewing = kit;
 			
 			// Left armor stand
@@ -130,7 +136,7 @@ public class KitSelection implements Listener {
 			if(index > 0) {
 				KitBase leftKit = KitBase.getKits().get(index - 1);
 				aboveStand.setCustomName(StringUtil.color("&6" + leftKit.getName()));
-				leftKit.executeArt(armorStand, false);
+				leftKit.executeArt(armorStand, false, player);
 			} else {
 				aboveStand.setCustomName(StringUtil.color("&f"));
 				setToNone(armorStand);
@@ -139,15 +145,15 @@ public class KitSelection implements Listener {
 			// Right armor stand
 			armorStand = stands.get(2);
 			aboveStand = aboveStands.get(2);
-			if(index < KitBase.getKits().size() - 2) {
+			if(index < KitBase.getKits().size() - 1) {
 				KitBase rightKit = KitBase.getKits().get(index + 1);
 				aboveStand.setCustomName(StringUtil.color("&6" + rightKit.getName()));
-				rightKit.executeArt(armorStand, false);
+				rightKit.executeArt(armorStand, false, player);
 			} else {
 				aboveStand.setCustomName(StringUtil.color("&f"));
 				setToNone(armorStand);
 			}
-			indexStand.setCustomName(StringUtil.color("&a&l" + (index + 1) + "&e&l/&a&l" + (KitBase.getKits().size() - 1)));
+			indexStand.setCustomName(StringUtil.color("&a&l" + (index + 1) + "&e&l/&a&l" + (KitBase.getKits().size())));
 		}
 	}
 	
@@ -156,6 +162,9 @@ public class KitSelection implements Listener {
 		armorStand.setChestplate(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.fromRGB(0, 0, 0)));
 		armorStand.setLeggings(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), Color.fromRGB(0, 0, 0)));
 		armorStand.setBoots(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_BOOTS), Color.fromRGB(0, 0, 0)));
+		armorStand.setItemInHand(new ItemStack(Material.AIR));
+		armorStand.setLeftArmPose(new EulerAngle(50, 0, 50));
+		armorStand.setRightArmPose(new EulerAngle(50, 0, 50));
 	}
 	
 	public void delete() {
@@ -205,13 +214,15 @@ public class KitSelection implements Listener {
 					}
 					if(leftDistance < rightDistance) {
 						if(index > 0) {
+							KitBase.getKits().get(index).disableArt(stands.get(0));
 							--index;
 							EffectUtil.playSound(player, Sound.NOTE_BASS);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
 					} else {
-						if(index < KitBase.getKits().size() - 2) {
+						if(index < KitBase.getKits().size() - 1) {
+							KitBase.getKits().get(index).disableArt(stands.get(2));
 							++index;
 							EffectUtil.playSound(player, Sound.NOTE_BASS);
 						} else {

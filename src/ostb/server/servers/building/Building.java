@@ -5,24 +5,19 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.util.EulerAngle;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.KitSelection;
-import ostb.gameapi.games.skywars.kits.Archer;
-import ostb.gameapi.games.skywars.kits.Bomber;
-import ostb.gameapi.games.skywars.kits.Builder;
-import ostb.gameapi.games.skywars.kits.CowSlayer;
-import ostb.gameapi.games.skywars.kits.Enchanter;
-import ostb.gameapi.games.skywars.kits.Enderman;
-import ostb.gameapi.games.skywars.kits.Fisherman;
-import ostb.gameapi.games.skywars.kits.Looter;
-import ostb.gameapi.games.skywars.kits.Medic;
-import ostb.gameapi.games.skywars.kits.Miner;
-import ostb.gameapi.games.skywars.kits.Ninja;
-import ostb.gameapi.games.skywars.kits.Pyro;
-import ostb.gameapi.games.skywars.kits.Spiderman;
+import ostb.gameapi.games.pvpbattles.kits.Bomber;
+import ostb.gameapi.games.pvpbattles.kits.Default;
+import ostb.gameapi.games.pvpbattles.kits.Healer;
+import ostb.gameapi.games.pvpbattles.kits.Ninja;
+import ostb.gameapi.games.pvpbattles.kits.Tracker;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -31,6 +26,7 @@ import ostb.server.util.FileHandler;
 
 public class Building extends ProPlugin {
 	private KitSelection selection = null;
+	private ArmorStand armorStand = null;
 	
 	public Building() {
 		super("Building");
@@ -62,34 +58,45 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", true) {
+		new CommandBase("test", -1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
-				if(selection == null) {
-					selection = new KitSelection(player);
+				if(arguments.length == 0) {
+					if(selection == null) {
+						selection = new KitSelection(player);
+					} else {
+						selection.delete();
+						selection = null;
+						return true;
+					}
+					selection.update();
 				} else {
-					selection.delete();
-					selection = null;
-					return true;
+					String cmd = arguments[0];
+					if(cmd.equalsIgnoreCase("spawn")) {
+						if(armorStand != null) {
+							armorStand.remove();
+							armorStand = null;
+						}
+						armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+						armorStand.setArms(true);
+					} else if(cmd.equalsIgnoreCase("remove") && armorStand != null) {
+						armorStand.remove();
+						armorStand = null;
+					} else if(cmd.equalsIgnoreCase("leftArm")) {
+						armorStand.setLeftArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
+					} else if(cmd.equalsIgnoreCase("rightArm")) {
+						armorStand.setRightArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
+					}
 				}
-				selection.update();
 				return true;
 			}
 		};
-		new Archer();
-		new Builder();
-		new Looter();
-		new Enchanter();
+		new Default();
 		new Bomber();
 		new Ninja();
-		new Medic();
-		new CowSlayer();
-		new Enderman();
-		new Fisherman();
-		new Spiderman();
-		new Pyro();
-		new Miner();
+		new Healer();
+		new Tracker();
 	}
 	
 	@Override
