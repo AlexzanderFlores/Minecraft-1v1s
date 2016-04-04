@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -97,10 +96,6 @@ public class MuteHandler extends Punishment {
 				MessageHandler.sendMessage(player, "Muted at: " + time);
 				MessageHandler.sendMessage(player, "Expires on: " + expires);
 				MessageHandler.sendMessage(player, "Appeal your mute: " + appeal);
-				if(reason.equals(Punishment.ChatViolations.SERVER_ADVERTISEMENT.toString())) {
-					MessageHandler.sendMessage(player, "&bThis type of mute can be undone through an unmute pass:");
-					MessageHandler.sendMessage(player, "&6http://store.promcgames.com/category/359455");
-				}
 				MessageHandler.sendLine(player);
 			}
 		}
@@ -155,12 +150,10 @@ public class MuteHandler extends Punishment {
 								if(muteLengths == null) {
 									muteLengths = new HashMap<ChatViolations, String>();
 									muteLengths.put(ChatViolations.DISRESPECT, "0/1");
-									muteLengths.put(ChatViolations.RACISM, "0/1");
 									muteLengths.put(ChatViolations.DEATH_COMMENTS, "0/1");
-									muteLengths.put(ChatViolations.INAPPROPRIATE_COMMENTS, "0/1");
-									muteLengths.put(ChatViolations.SPAMMING, "0/1");
-									muteLengths.put(ChatViolations.SOCIAL_MEDIA_ADVERTISEMENT, "0/1");
-									muteLengths.put(ChatViolations.SERVER_ADVERTISEMENT, "15/0");
+									muteLengths.put(ChatViolations.INAPPROPRIATE, "0/1");
+									muteLengths.put(ChatViolations.SPAM, "0/1");
+									muteLengths.put(ChatViolations.ADVERTISEMENT, "0/1");
 									muteLengths.put(ChatViolations.DDOS_THREATS, "1/0");
 								}
 								String expires = "NEVER";
@@ -238,8 +231,7 @@ public class MuteHandler extends Punishment {
 	
 	public static void unMute(Player player, boolean editDatabase) {
 		MessageHandler.sendLine(player);
-		player.sendMessage(ChatColor.YELLOW + "Your mute has expired! Be sure to follow all rules please!");
-		player.sendMessage(ChatColor.AQUA + "/rules");
+		MessageHandler.sendMessage(player, "&eYour mute has expired! Be sure to follow all rules please! &b/rules");
 		MessageHandler.sendLine(player);
 		remove(player);
 		String time = TimeUtil.getTime();

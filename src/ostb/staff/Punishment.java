@@ -3,7 +3,6 @@ package ostb.staff;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -16,7 +15,6 @@ import ostb.server.ChatClickHandler;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
 import ostb.staff.ban.BanHandler;
-import ostb.staff.ban.BanHandler.Violations;
 import ostb.staff.ban.UnBanHandler;
 import ostb.staff.mute.MuteHandler;
 import ostb.staff.mute.UnMuteHandler;
@@ -24,12 +22,10 @@ import ostb.staff.mute.UnMuteHandler;
 public class Punishment implements Listener {
 	public enum ChatViolations {
 		DISRESPECT,
-		RACISM,
 		DEATH_COMMENTS,
-		INAPPROPRIATE_COMMENTS,
-		SPAMMING,
-		SOCIAL_MEDIA_ADVERTISEMENT,
-		SERVER_ADVERTISEMENT,
+		INAPPROPRIATE,
+		SPAM,
+		ADVERTISEMENT,
 		DDOS_THREATS,
 	}
 	
@@ -51,7 +47,7 @@ public class Punishment implements Listener {
 		}
 	}
 	
-	public static final String appeal = "https://promcgames.com/forum/view_forum/?fid=12";
+	public static final String appeal = "Coming soon";
 	private String name = null;
 	
 	public Punishment() {
@@ -80,16 +76,9 @@ public class Punishment implements Listener {
 	
 	protected String getReason(Ranks rank, String [] arguments, String reason, PunishmentExecuteReuslts result, boolean reversingPunishment) {
 		Ranks playerRank = AccountHandler.getRank(result.getUUID());
-		String proof = "";
-		if(!(reversingPunishment || arguments.length == 1 || arguments.length == 2 || !reason.equals(Violations.HACKING.toString()))) {
-			proof = " " + ChatColor.DARK_GREEN + arguments[2];
-		}
-		String message = ChatColor.WHITE + playerRank.getPrefix() + arguments[0] + ChatColor.WHITE + " was " + getName();
+		String message = playerRank.getColor() + arguments[0] + "&x was &c" + getName();
 		if(reason != null && !reason.equals("")) {
-			message += ": " + ChatColor.RED + reason;
-		}
-		if(proof != null && !proof.equals("")) {
-			message += proof;
+			message += "&x for " + reason;
 		}
 		return message;
 	}
@@ -106,14 +95,12 @@ public class Punishment implements Listener {
 			MessageHandler.sendMessage(sender, "&cNo player data found for " + arguments[0]);
 		} else {
 			if(Bukkit.getPlayer(uuid) == null && DB.PLAYERS_LOCATIONS.isUUIDSet(uuid)) {
-				MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is online on another server");
-				String text = DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location");
+				String server = DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location");
 				if(sender instanceof Player) {
 					Player staff = (Player) sender;
-					String server = text.split(ChatColor.RED.toString())[1];
-					ChatClickHandler.sendMessageToRunCommand(staff, " &c&lCLICK TO JOIN", "Click to teleport to " + server, "/join " + server, text);
+					ChatClickHandler.sendMessageToRunCommand(staff, "&6" + server, "Click to be sent to " + server, "/join " + server, "&cThat player is connected to ");
 				} else {
-					MessageHandler.sendMessage(sender, text);
+					MessageHandler.sendMessage(sender, "&cThat player is connected to &6" + server);
 				}
 			} else {
 				return new PunishmentExecuteReuslts(true, uuid);

@@ -1,54 +1,36 @@
 package ostb.staff.ban;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerBanEvent;
-import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
-import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
-
-public class BanHandler extends Punishment {
-	private static List<String> checkedForBanned = null;
-	private static List<String> hasBeenBanned = null;
-	public enum Violations {HACKING, XRAY, BLACK_LISTED_MODS, COMBAT_MACROS, CHARGING_BACK, EXPLOITING_BUGS, FAKE_PROOF}
+public class BanHandler extends Punishment implements Listener {
+	public enum Violations {CHEATING, CHARGING_BACK}
+	//private String invName = null;
 	
 	public BanHandler() {
 		super("Banned");
-		checkedForBanned = new ArrayList<String>();
-		hasBeenBanned = new ArrayList<String>();
-		// Command syntax: /ban <player name> <reason> <proof>
+		//invName = "Select Ban Type";
+		// Command syntax: /ban <name> <reason> <proof>
 		new CommandBase("ban", 2, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -59,16 +41,6 @@ public class BanHandler extends Punishment {
 				// Use a try/catch to view if the given reason is valid
 				try {
 					Violations reason = Violations.valueOf(arguments[1].toUpperCase());
-					if(reason == Violations.HACKING) {
-						// Be sure that the link is a youtube URL, if so remove the &featured part after (not needed)
-						if(arguments.length == 3 && !arguments[2].toLowerCase().contains("youtube.com/") && !arguments[2].toLowerCase().contains("youtu.be/")) {
-							MessageHandler.sendMessage(sender, "&cYour proof must be a youtube URL");
-							return true;
-						}
-						if(arguments.length == 3 && arguments[2].contains("&")) {
-							arguments[2] = arguments[2].split("&")[0];
-						}
-					}
 					// Detect if the command should be activated
 					PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
 					if(result.isValid()) {
@@ -77,7 +49,7 @@ public class BanHandler extends Punishment {
 						String [] keys = new String [] {"uuid", "active"};
 						String [] values = new String [] {uuid.toString(), "1"};
 						if(DB.STAFF_BAN.isKeySet(keys, values)) {
-							MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is already " + getName());
+							MessageHandler.sendMessage(sender, "&cThat player is already banned");
 							return true;
 						}
 						// Get the staff data
@@ -120,15 +92,13 @@ public class BanHandler extends Punishment {
 							MessageHandler.alert("&cBanning &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
 						}
 						// Execute the ban if the player is online
-						Player player = ProPlugin.getPlayer(arguments[0]);
+						final Player player = ProPlugin.getPlayer(arguments[0]);
 						if(player != null) {
 							ProPlugin.sendPlayerToServer(player, "slave");
-							final String name = player.getName();
 							new DelayedTask(new Runnable() {
 								@Override
 								public void run() {
-									Player player = ProPlugin.getPlayer(name);
-									if(player != null && player.isOnline()) {
+									if(player.isOnline()) {
 										player.kickPlayer(message);
 									}
 								}
@@ -151,68 +121,17 @@ public class BanHandler extends Punishment {
 	
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
-		if(OSTB.getPlugin() != Plugins.HUB && OSTB.getPlugin() != Plugins.SLAVE && checkForBanned(event.getPlayer())) {
-			event.setKickMessage(ChatColor.RED + "Failed to connect: You are banned");
+		if(checkForBanned(event.getPlayer())) {
+			event.setKickMessage(ChatColor.RED + "You are banned");
 			event.setResult(Result.KICK_OTHER);
 		}
 	}
 	
-	@EventHandler
-	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB) {
-			Player player = event.getPlayer();
-			if(checkForBanned(player)) {
-				player.getInventory().clear();
-				player.closeInventory();
-				player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 100));
-				player.teleport(new Location(player.getWorld(), -123.5, 126, -123.5));
-			}
-		} else {
-			AsyncPostPlayerJoinEvent.getHandlerList().unregister(this);
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerLeave(PlayerLeaveEvent event) {
-		checkedForBanned.remove(event.getPlayer().getName());
-		hasBeenBanned.remove(event.getPlayer().getName());
-	}
-	
-	@EventHandler
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB && checkForBanned(event.getPlayer()) && !event.getMessage().toLowerCase().contains("verify")) {
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB && checkForBanned(event.getPlayer())) {
-			event.setCancelled(true);
-		}
-	}
-	
 	public static boolean checkForBanned(Player player) {
-		if(Ranks.isStaff(player)) {
-			return false;
-		}
-		if(!checkedForBanned.contains(player.getName())) {
-			String [] keys = new String [] {"uuid", "active"};
-			String [] values = new String [] {player.getUniqueId().toString(), "1"};
-			boolean uuidBanned = DB.STAFF_BAN.isKeySet(keys, values);
-			if(OSTB.getPlugin() != Plugins.HUB && uuidBanned) {
-				return true;
-			}
-			checkedForBanned.add(player.getName());
-			if(uuidBanned) {
-				hasBeenBanned.add(player.getName());
-				display(player.getUniqueId(), player);
-			}
-		}
-		return hasBeenBanned.contains(player.getName());
+		return DB.STAFF_BAN.isKeySet(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"});
 	}
 	
-	private static void display(final UUID uuid, final Player viewer) {
+	/*private static void display(final UUID uuid, final Player viewer) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -278,5 +197,5 @@ public class BanHandler extends Punishment {
 				}
 			}
 		});
-	}
+	}*/
 }

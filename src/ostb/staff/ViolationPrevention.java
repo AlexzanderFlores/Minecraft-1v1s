@@ -357,7 +357,6 @@ public class ViolationPrevention implements Listener {
 		mutes.add("horny");
 		mutes.add("aimbot");
 		mutes.add("macro");
-		mutes.add("team");
 		extentions = new ArrayList<String>();
 		extentions.add("s");
 		extentions.add("ist");

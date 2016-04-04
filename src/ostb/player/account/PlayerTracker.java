@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,8 +40,7 @@ public class PlayerTracker implements Listener {
 						if(player != null) {
 							UUID uuid = player.getUniqueId();
 							//OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_LOG_PLAYER.toString(), uuid.toString(), OSTB.getServerName()}));
-							String location = AccountHandler.getPrefix(player, false, true) + ChatColor.YELLOW + " is on " + ChatColor.RED + OSTB.getServerName();
-							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + location + "'");
+							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + OSTB.getServerName() + "'");
 						}
 						queue.remove(0);
 					}
@@ -55,11 +53,11 @@ public class PlayerTracker implements Listener {
 	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if(Ranks.isStaff(player)) {
-			String location = AccountHandler.getPrefix(player, true, true) + ChatColor.YELLOW + " is on " + ChatColor.RED;
+			String location = null;
 			if(SpectatorHandler.contains(player)) {
-				location += "VANISHED";
+				location = "VANISHED";
 			} else {
-				location += OSTB.getServerName();
+				location = OSTB.getServerName();
 			}
 			DB.STAFF_ONLINE.insert("'" + player.getUniqueId().toString() + "', '" + location + "'");
 			queue.add(player.getName());
