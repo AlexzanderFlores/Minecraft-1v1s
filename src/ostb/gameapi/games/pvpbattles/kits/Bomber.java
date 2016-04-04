@@ -61,7 +61,7 @@ public class Bomber extends KitBase {
 				public void run() {
 					EffectUtil.playSound(player, Sound.EXPLODE, 0.5f);
 				}
-			}, 20, 20 * 2);
+			}, 20, 30);
 			Location loc = armorStand.getLocation();
 			Random random = new Random();
 			double distance = 1;
