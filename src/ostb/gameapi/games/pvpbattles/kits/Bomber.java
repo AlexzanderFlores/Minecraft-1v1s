@@ -85,6 +85,8 @@ public class Bomber extends KitBase {
 			for(ArmorStand tntStand : tntStands) {
 				tntStand.remove();
 			}
+			tntStands.clear();
+			tntStands = null;
 		}
 		cancel();
 	}

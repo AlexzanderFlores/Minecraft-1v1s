@@ -64,7 +64,9 @@ public class Healer extends KitBase {
 	@Override
 	public void disableArt(ArmorStand armorStand) {
 		super.disableArt(armorStand);
-		circle.delete();
-		circle = null;
+		if(circle != null) {
+			circle.delete();
+			circle = null;
+		}
 	}
 }

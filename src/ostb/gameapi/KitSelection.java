@@ -90,8 +90,8 @@ public class KitSelection implements Listener {
 				armorStand.setGravity(false);
 				armorStand.setBasePlate(false);
 				armorStand.setArms(true);
-				armorStand.setLeftArmPose(new EulerAngle(50, 0, 50));
-				armorStand.setRightArmPose(new EulerAngle(250, 0, 50));
+				armorStand.setLeftArmPose(new EulerAngle(300f, 0f, 0f));
+				armorStand.setRightArmPose(new EulerAngle(300f, 0f, 0f));
 				ArmorStand aboveStand = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, 0.35, 0), EntityType.ARMOR_STAND);
 				aboveStand.setGravity(false);
 				aboveStand.setVisible(false);
@@ -163,12 +163,15 @@ public class KitSelection implements Listener {
 		armorStand.setLeggings(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), Color.fromRGB(0, 0, 0)));
 		armorStand.setBoots(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_BOOTS), Color.fromRGB(0, 0, 0)));
 		armorStand.setItemInHand(new ItemStack(Material.AIR));
-		armorStand.setLeftArmPose(new EulerAngle(50, 0, 50));
-		armorStand.setRightArmPose(new EulerAngle(50, 0, 50));
+		armorStand.setLeftArmPose(new EulerAngle(300f, 0f, 0f));
+		armorStand.setRightArmPose(new EulerAngle(300f, 0f, 0f));
 	}
 	
 	public void delete() {
 		HandlerList.unregisterAll(this);
+		for(KitBase kit : KitBase.getKits()) {
+			kit.disableArt(stands.get(1));
+		}
 		Player player = getPlayer();
 		if(player != null) {
 			player.removePotionEffect(PotionEffectType.JUMP);
