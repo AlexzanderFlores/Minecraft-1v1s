@@ -18,6 +18,7 @@ import ostb.gameapi.games.pvpbattles.kits.Default;
 import ostb.gameapi.games.pvpbattles.kits.Healer;
 import ostb.gameapi.games.pvpbattles.kits.Ninja;
 import ostb.gameapi.games.pvpbattles.kits.Tracker;
+import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -87,6 +88,8 @@ public class Building extends ProPlugin {
 						armorStand.setLeftArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
 					} else if(cmd.equalsIgnoreCase("rightArm")) {
 						armorStand.setRightArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
+					} else if(cmd.equalsIgnoreCase("levelUp")) {
+						new LevelGiver(player);
 					}
 				}
 				return true;
