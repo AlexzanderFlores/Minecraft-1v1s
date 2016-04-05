@@ -90,7 +90,7 @@ public class Beacon implements Listener {
 					int amount = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") + toAdd;
 					DB.HUB_CRATE_KEYS.updateInt("amount", amount, keys, values);
 				} else {
-					DB.HUB_CRATE_KEYS.insert("'" + uuid + "', '" + type + "', '1'");
+					DB.HUB_CRATE_KEYS.insert("'" + uuid + "', '" + type + "', '" + toAdd + "'");
 				}
 				Bukkit.getLogger().info(type + ": give player key");
 			}
@@ -169,8 +169,8 @@ public class Beacon implements Listener {
 							}
 							Bukkit.getLogger().info(type + ": update monthly crates used");
 							String week = calendar.get(Calendar.WEEK_OF_YEAR) + "";
-							keys[1] = "week";
-							values[1] = week;
+							keys[2] = "week";
+							values[2] = week;
 							if(DB.HUB_WEEKLY_CRATES_OPENED.isKeySet(keys, values)) {
 								int amount = DB.HUB_WEEKLY_CRATES_OPENED.getInt(keys, values, "amount") + 1;
 								DB.HUB_WEEKLY_CRATES_OPENED.updateInt("amount", amount, keys, values);

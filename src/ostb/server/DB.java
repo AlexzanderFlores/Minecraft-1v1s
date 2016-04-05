@@ -43,6 +43,8 @@ public enum DB {
 	// Coins
 	PLAYERS_COINS_SKY_WARS("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
 	PLAYERS_COINS_HE("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
+	// Keys
+	PLAYERS_KEY_FRAGMENTS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	
 	NETWORK_PROXIES("server VARCHAR(25), PRIMARY KEY(server)"),
 	NETWORK_POPULATIONS("server VARCHAR(25), population INT, PRIMARY KEY(server)"),

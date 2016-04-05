@@ -13,6 +13,8 @@ import ostb.ProPlugin;
 import ostb.player.LevelHandler;
 import ostb.server.ServerLogger;
 import ostb.server.servers.hub.crate.Crate;
+import ostb.server.servers.hub.crate.KeyExchange;
+import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features;
 import ostb.server.servers.hub.items.GameSelector;
 import ostb.server.servers.hub.items.HubSelector;
@@ -43,6 +45,8 @@ public class HubBase extends ProPlugin {
 		new Events();
 		new Flag();
 		new Crate();
+		new KeyExchange();
+		new KeyFragments();
 		new GameSelector();
 		new Features();
 		new Shop();
