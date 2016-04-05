@@ -323,7 +323,7 @@ public class HaloParticles extends FeatureBase {
 		circles.put(player.getName(), new CircleUtil(player, .85, 6) {
 			@Override
 			public void run(Vector vector, Location location) {
-				ParticleEffect.valueOf(type.toString()).display(location.add(0, 2.10, 0), 20);
+				ParticleEffect.valueOf(type.toString()).display(location.add(0, 2.20, 0), 20);
 			}
 		});
 	}
