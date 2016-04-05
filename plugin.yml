@@ -62,7 +62,7 @@ commands:
 
 # Hub Commands
   giveKey:
-    usage: /giveKey <name> <amount>
+    usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
   alert:

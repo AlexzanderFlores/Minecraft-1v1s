@@ -81,7 +81,7 @@ public class Voting implements Listener {
 						DB.PLAYERS_WEEKLY_VOTES.insert("'" + uuid + "', '1', '" + week + "'");
 					}
 					Bukkit.getLogger().info("voting: update weekly votes");
-					Beacon.giveKey(playerUUID, 1 * multiplier);
+					Beacon.giveKey(playerUUID, 1 * multiplier, "voting");
 				}
 			}
 		});

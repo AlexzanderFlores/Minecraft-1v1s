@@ -90,9 +90,9 @@ public class DailyRewards implements Listener {
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
 					// Crate keys
-					inventory.setItem(10, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bReward Crate Key").setLores(new String [] {
+					inventory.setItem(10, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key").setLores(new String [] {
 						"",
-						"&e+1 &aKey to the Reward crate",
+						"&e+1 &aKey to the Voting crate",
 						""
 					}).getItemStack()));
 					inventory.setItem(19, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bPVP Battles Crate Key").setLores(new String [] {

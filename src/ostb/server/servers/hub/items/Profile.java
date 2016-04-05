@@ -23,6 +23,7 @@ import ostb.player.account.PlaytimeTracker;
 import ostb.player.account.PlaytimeTracker.TimeType;
 import ostb.server.DB;
 import ostb.server.servers.hub.HubItemBase;
+import ostb.server.servers.hub.crate.Crate;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
@@ -155,12 +156,14 @@ public class Profile extends HubItemBase {
 					"&7&mClick to view your settings",
 					""
 				}).getItemStack());
+				String [] keys = new String [] {"uuid", "type"};
+				String [] values = new String [] {player.getUniqueId().toString(), Crate.getVoting().getType()};
 				inventory.setItem(32, new ItemCreator(Material.CHEST).setName("&bReward Crate Stats").setLores(new String [] {
 					"",
-					"&7Reward crate keys owned: &e" + DB.HUB_CRATE_KEYS.getInt("uuid", uuid, "amount"),
-					"&7Reward crates opened lifetime: &e" + DB.HUB_LIFETIME_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-					"&7Reward crates opened this month: &e" + DB.HUB_MONTHLY_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-					"&7Reward crates opened this week: &e" + DB.HUB_WEEKLY_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+					"&7Reward crate keys owned: &e" + DB.HUB_CRATE_KEYS.getInt(keys, values, "amount"),
+					"&7Reward crates opened lifetime: &e" + DB.HUB_LIFETIME_CRATES_OPENED.getInt(keys, values, "amount"),
+					"&7Reward crates opened this month: &e" + DB.HUB_MONTHLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "month"}, new String [] {uuid, "voting", month + ""}, "amount"),
+					"&7Reward crates opened this week: &e" + DB.HUB_WEEKLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "week"}, new String [] {uuid, "voting", week + ""}, "amount"),
 					"",
 				}).getItemStack());
 				inventory.setItem(34, new ItemCreator(Material.NAME_TAG).setName("&bVote Stats").setLores(new String [] {
