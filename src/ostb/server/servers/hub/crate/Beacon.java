@@ -230,7 +230,7 @@ public class Beacon implements Listener {
 					}
 				}, 20 * 5);
 			}
-		}, 20 * 10);
+		}, 20 * 7 + 10);
 	}
 	
 	private String getName() {
