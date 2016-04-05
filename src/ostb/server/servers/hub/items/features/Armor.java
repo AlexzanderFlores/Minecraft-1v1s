@@ -153,41 +153,14 @@ public class Armor extends FeatureBase {
 					String [] keys = new String [] {"uuid", "name"};
 					String [] values = new String [] {player.getUniqueId().toString(), toString()};
 					int owned = DB.HUB_ARMOR.getInt(keys, values, "amount_owned");
-					/*if(KeyMerchant.isSelling(player)) {
-						if(owned > 1) {
-							item.setLores(new String [] {
-								"",
-								"&7Status: &eUnlocked",
-								"&7You own &e" + owned + " &7of these",
-								"&7Unlocked on &e" + DB.HUB_ARMOR.getString(keys, values, "unlocked_time"),
-								"&7Rarity: &e" + getRarity().getName(),
-								"",
-								"&eClick to &6sell &ethis item",
-								""
-							});
-						} else {
-							item.setLores(new String [] {
-								"",
-								"&7Status: &eUnlocked",
-								"&7You own &e" + owned + " &7of these",
-								"&7Unlocked on &e" + DB.HUB_ARMOR.getString(keys, values, "unlocked_time"),
-								"&7Rarity: &e" + getRarity().getName(),
-								"",
-								"&cYou cannot sell rewards",
-								"&cthat you only have &e1 &cof",
-								""
-							});
-						}
-					} else {*/
-						item.setLores(new String [] {
-							"",
-							"&7Status: &eUnlocked",
-							"&7You own &e" + owned + " &7of these",
-							"&7Unlocked on &e" + DB.HUB_ARMOR.getString(keys, values, "unlocked_time"),
-							"&7Rarity: &e" + getRarity().getName(),
-							""
-						});
-					//}
+					item.setLores(new String [] {
+						"",
+						"&7Status: &eUnlocked",
+						"&7You own &e" + owned + " &7of these",
+						"&7Unlocked on &e" + DB.HUB_ARMOR.getString(keys, values, "unlocked_time"),
+						"&7Rarity: &e" + getRarity().getName(),
+						""
+					});
 					Bukkit.getLogger().info("armor: getItem");
 				}
 			} else {
@@ -333,25 +306,23 @@ public class Armor extends FeatureBase {
 		}
 	}
 	
-	private void remove(Player player) {
-		if(opened(player) != null) {
-			final UUID uuid = player.getUniqueId();
-			for(ItemStack itemStack : player.getInventory().getArmorContents()) {
-				final PlayerArmor armor = getPlayerArmor(itemStack);
-				if(armor != null) {
-					new AsyncDelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							String armorType = armor.getType();
-							DB.HUB_ARMOR.updateInt("active", 0, new String [] {"uuid", "type"}, new String [] {uuid.toString(), armorType});
-							DB.HUB_ARMOR.updateInt("active", 1, new String [] {"uuid", "name"}, new String [] {uuid.toString(), armor.toString()});
-							Bukkit.getLogger().info("armor: selected");
-						}
-					});
-				}
+	private void select(Player player) {
+		final UUID uuid = player.getUniqueId();
+		for(ItemStack itemStack : player.getInventory().getArmorContents()) {
+			final PlayerArmor armor = getPlayerArmor(itemStack);
+			if(armor != null) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						String armorType = armor.getType();
+						DB.HUB_ARMOR.updateInt("active", 0, new String [] {"uuid", "type"}, new String [] {uuid.toString(), armorType});
+						DB.HUB_ARMOR.updateInt("active", 1, new String [] {"uuid", "name"}, new String [] {uuid.toString(), armor.toString()});
+						Bukkit.getLogger().info("armor: selected");
+					}
+				});
 			}
-			saveSetting(player);
 		}
+		saveSetting(player);
 	}
 	
 	@Override
@@ -481,7 +452,7 @@ public class Armor extends FeatureBase {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
-		if(DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
+		if(Ranks.PREMIUM.hasRank(player) && DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
 			Bukkit.getLogger().info("armor: queue");
 			queue.add(uuid);
 		}
@@ -517,9 +488,9 @@ public class Armor extends FeatureBase {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getPlayer() instanceof Player) {
+		if(event.getPlayer() instanceof Player && event.getInventory().getTitle().equals(getName())) {
 			Player player = (Player) event.getPlayer();
-			remove(player);
+			select(player);
 		}
 	}
 	
@@ -527,6 +498,6 @@ public class Armor extends FeatureBase {
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		owned.remove(event.getPlayer().getName());
 		queue.remove(event.getPlayer().getUniqueId());
-		remove(event.getPlayer());
+		select(event.getPlayer());
 	}
 }

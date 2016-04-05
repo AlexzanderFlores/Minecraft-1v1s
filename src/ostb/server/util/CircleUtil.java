@@ -2,12 +2,14 @@ package ostb.server.util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import ostb.customevents.TimeEvent;
+import ostb.customevents.player.PlayerAFKEvent;
 
 public abstract class CircleUtil implements Listener {
 	private Entity entity = null;
@@ -34,6 +36,15 @@ public abstract class CircleUtil implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 1) {
+			if(entity instanceof Player) {
+				Player player = (Player) entity;
+				if(!player.isOnline()) {
+					delete();
+					return;
+				} else if(PlayerAFKEvent.isAFK(player)) {
+					return;
+				}
+			}
 			if(counter >= 360) {
 				counter = 0;
 			} else {

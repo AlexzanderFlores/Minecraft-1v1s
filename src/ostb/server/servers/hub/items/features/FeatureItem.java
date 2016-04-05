@@ -9,7 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.Armor.PlayerArmor;
 import ostb.server.servers.hub.items.features.blocks.SpinningBlocks.SpinBlock;
-import ostb.server.servers.hub.items.features.particles.ArrowTrails.TrailParticles;
+import ostb.server.servers.hub.items.features.particles.ArrowTrails.ArrowTrailParticleTypes;
+import ostb.server.servers.hub.items.features.particles.HaloParticles.HaloParticleTypes;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 
 public class FeatureItem {
@@ -54,13 +55,19 @@ public class FeatureItem {
 	}
 	
 	public void give(Player player) {
+		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
+			if(halo.getName().equals(getName())) {
+				halo.give(player);
+				return;
+			}
+		}
 		for(PlayerArmor armor : PlayerArmor.values()) {
 			if(armor.getName().equals(getName())) {
 				armor.give(player);
 				return;
 			}
 		}
-		for(TrailParticles trail : TrailParticles.values()) {
+		for(ArrowTrailParticleTypes trail : ArrowTrailParticleTypes.values()) {
 			if(trail.getName().equals(getName())) {
 				trail.give(player);
 				return;
@@ -79,25 +86,4 @@ public class FeatureItem {
 			}
 		}
 	}
-	
-	/*public void decrementAmount(Player player) {
-		for(PlayerArmor armor : PlayerArmor.values()) {
-			if(armor.getName().equals(getName())) {
-				armor.decrenentAmount(player);
-				return;
-			}
-		}
-		for(TrailParticles trail : TrailParticles.values()) {
-			if(trail.getName().equals(getName())) {
-				trail.decrenentAmount(player);
-				return;
-			}
-		}
-		for(WinEffect effect : WinEffect.values()) {
-			if(effect.getName().equals(getName())) {
-				effect.decrenentAmount(player);
-				return;
-			}
-		}
-	}*/
 }

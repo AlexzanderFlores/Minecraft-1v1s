@@ -62,6 +62,7 @@ public enum DB {
 	
 	HUB_ARMOR("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), name VARCHAR(25), type VARCHAR(15), active INT, amount_owned INT, unlocked_time VARCHAR(10), PRIMARY KEY(id)"),
 	HUB_SPINNING_BLOCKS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), name VARCHAR(25), amount_owned INT, unlocked_time VARCHAR(10), PRIMARY KEY(id)"),
+	HUB_HALO_PARTICLES("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), name VARCHAR(25), active INT, amount_owned INT, unlocked_time VARCHAR(10), PRIMARY KEY(id)"),
 	HUB_PARKOUR("uuid VARCHAR(40), check_point VARCHAR(200), PRIMARY KEY(uuid)"),
 	HUB_PARKOUR_FREE_CHECKPOINTS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	HUB_PARKOUR_TIMES("uuid VARCHAR(40), seconds INT, PRIMARY KEY(uuid)"),

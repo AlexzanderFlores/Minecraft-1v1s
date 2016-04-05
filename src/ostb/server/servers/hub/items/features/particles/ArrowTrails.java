@@ -42,35 +42,34 @@ import ostb.server.util.TimeUtil;
 public class ArrowTrails extends FeatureBase {
 	private static int max = 22;
 	private static Map<String, Integer> owned = null;
-	private static Map<String, TrailParticles> selected = null;
-	private static Map<Arrow, TrailParticles> particles = null;
+	private static Map<String, ArrowTrailParticleTypes> selected = null;
+	private static Map<Arrow, ArrowTrailParticleTypes> particles = null;
 	private static List<String> settingsChanged = null;
 	private static Random random = null;
 	
-	public enum TrailParticles {
-		CRIT(1, "Crit Trail", Rarity.COMMON, Material.ARROW),
-		CRIT_MAGIC(2, "Magic Crit Trail", Rarity.COMMON, Material.ARROW),
-		SMOKE_NORMAL(3, "Smoke Trail", Rarity.COMMON, Material.ARROW),
-		SPELL(4, "Spell Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_INSTANT(5, "Instant Spell Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_MOB(6, "Mob Spell Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_WITCH(10, "Witch Spell Trail", Rarity.COMMON, Material.ARROW),
-		DRIP_WATER(11, "Drip Water Trail", Rarity.UNCOMMON, Material.ARROW),
-		DRIP_LAVA(12, "Drip Lava Trail", Rarity.UNCOMMON, Material.ARROW),
-		VILLAGER_ANGRY(13, "Angry Villager Trail", Rarity.COMMON, Material.ARROW),
-		VILLAGER_HAPPY(14, "Happy Villager Trail", Rarity.COMMON, Material.ARROW),
-		NOTE(15, "Note Trail", Rarity.UNCOMMON, Material.ARROW),
-		FLAME(16, "Flame Trail", Rarity.RARE, Material.ARROW),
-		CLOUD(19, "Cloud Trail", Rarity.COMMON, Material.ARROW),
-		REDSTONE(20, "Redstone Trail", Rarity.COMMON, Material.ARROW),
-		SNOWBALL(21, "Snowball Trail", Rarity.COMMON, Material.ARROW),
-		SNOW_SHOVEL(22, "Shovel Snow Trail", Rarity.COMMON, Material.ARROW),
-		SLIME(23, "Slime Trail", Rarity.COMMON, Material.ARROW),
-		HEART(24, "Heart Trail", Rarity.UNCOMMON, Material.ARROW),
-		WATER_DROP(25, "Water Trail", Rarity.COMMON, Material.ARROW),
-		RANDOM(25, "Random Trail", Rarity.RARE, Material.ARROW),
-		NONE(33, "&cSet No Trail", Rarity.COMMON, Material.BARRIER, false)
+	public enum ArrowTrailParticleTypes {
+		CRIT(1, "Crit Arrow Trail", Rarity.COMMON, Material.ARROW),
+		CRIT_MAGIC(2, "Magic Crit Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SMOKE_NORMAL(3, "Smoke Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SPELL(4, "Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SPELL_INSTANT(5, "Instant Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SPELL_MOB(6, "Mob Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SPELL_WITCH(10, "Witch Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		DRIP_WATER(11, "Drip Water Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
+		DRIP_LAVA(12, "Drip Lava Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
+		VILLAGER_ANGRY(13, "Angry Villager Arrow Trail", Rarity.COMMON, Material.ARROW),
+		VILLAGER_HAPPY(14, "Happy Villager Arrow Trail", Rarity.COMMON, Material.ARROW),
+		NOTE(15, "Note Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
+		FLAME(16, "Flame Arrow Trail", Rarity.RARE, Material.ARROW),
+		CLOUD(19, "Cloud Arrow Trail", Rarity.COMMON, Material.ARROW),
+		REDSTONE(20, "Redstone Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SNOWBALL(21, "Snowball Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SNOW_SHOVEL(22, "Shovel Snow Arrow Trail", Rarity.COMMON, Material.ARROW),
+		SLIME(23, "Slime Arrow Trail", Rarity.COMMON, Material.ARROW),
+		HEART(24, "Heart Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
+		RANDOM(25, "Random Arrow Trail", Rarity.RARE, Material.ARROW),
+		NONE(33, "&cSet No Arrow Trail", Rarity.COMMON, Material.BARRIER, false)
 		
 		;
 		
@@ -80,19 +79,19 @@ public class ArrowTrails extends FeatureBase {
 		private boolean store = true;
 		private Rarity rarity = Rarity.COMMON;
 		
-		private TrailParticles(int slot, String name, Rarity rarity, Material material) {
+		private ArrowTrailParticleTypes(int slot, String name, Rarity rarity, Material material) {
 			this(slot, name, rarity, new ItemStack(material));
 		}
 		
-		private TrailParticles(int slot, String name, Rarity rarity, ItemStack itemStack) {
+		private ArrowTrailParticleTypes(int slot, String name, Rarity rarity, ItemStack itemStack) {
 			this(slot, name, rarity, itemStack, true);
 		}
 		
-		private TrailParticles(int slot, String name, Rarity rarity, Material material, boolean store) {
+		private ArrowTrailParticleTypes(int slot, String name, Rarity rarity, Material material, boolean store) {
 			this(slot, name, rarity, new ItemStack(material), store);
 		}
 		
-		private TrailParticles(int slot, String name, Rarity rarity, ItemStack itemStack, boolean store) {
+		private ArrowTrailParticleTypes(int slot, String name, Rarity rarity, ItemStack itemStack, boolean store) {
 			this.slot = slot;
 			this.name = name;
 			this.rarity = rarity;
@@ -196,7 +195,7 @@ public class ArrowTrails extends FeatureBase {
 			try {
 				effect = ParticleEffect.valueOf(toString());
 			} catch(IllegalArgumentException e) {
-				effect = ParticleEffect.valueOf(TrailParticles.values()[random.nextInt(TrailParticles.values().length)].toString());
+				effect = ParticleEffect.valueOf(ArrowTrailParticleTypes.values()[random.nextInt(ArrowTrailParticleTypes.values().length)].toString());
 			}
 			effect.display(0, 0, 0, 0, 1, location, 20);
 		}
@@ -213,11 +212,11 @@ public class ArrowTrails extends FeatureBase {
 			""
 		});
 		owned = new HashMap<String, Integer>();
-		selected = new HashMap<String, TrailParticles>();
-		particles = new HashMap<Arrow, TrailParticles>();
+		selected = new HashMap<String, ArrowTrailParticleTypes>();
+		particles = new HashMap<Arrow, ArrowTrailParticleTypes>();
 		settingsChanged = new ArrayList<String>();
 		random = new Random();
-		TrailParticles.values();
+		ArrowTrailParticleTypes.values();
 	}
 	
 	private static String getInvName() {
@@ -231,11 +230,11 @@ public class ArrowTrails extends FeatureBase {
 	
 	private void load(Player player) {
 		Bukkit.getLogger().info("arrow trails: load");
-		selected.put(player.getName(), TrailParticles.valueOf(DB.PLAYERS_ARROW_TRAILS.getString(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"}, "name")));
+		selected.put(player.getName(), ArrowTrailParticleTypes.valueOf(DB.PLAYERS_ARROW_TRAILS.getString(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"}, "name")));
 	}
 	
-	private TrailParticles getParticles(int slot) {
-		for(TrailParticles particle : TrailParticles.values()) {
+	private ArrowTrailParticleTypes getParticles(int slot) {
+		for(ArrowTrailParticleTypes particle : ArrowTrailParticleTypes.values()) {
 			if(particle.getSlot() == slot) {
 				return particle;
 			}
@@ -339,22 +338,20 @@ public class ArrowTrails extends FeatureBase {
 		}
 	}
 	
-	private void remove(Player player) {
-		if(opened(player) != null) {
-			final TrailParticles type = selected.get(player.getName());
-			if(type != null) {
-				final UUID uuid = player.getUniqueId();
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						DB.PLAYERS_ARROW_TRAILS.updateInt("active", 0, "uuid", uuid.toString());
-						DB.PLAYERS_ARROW_TRAILS.updateInt("active", 1, new String [] {"uuid", "name"}, new String [] {uuid.toString(), type.toString()});
-						Bukkit.getLogger().info("arrow trails: selected");
-					}
-				});
-			}
-			saveSetting(player);
+	private void select(Player player) {
+		final ArrowTrailParticleTypes type = selected.get(player.getName());
+		if(type != null) {
+			final UUID uuid = player.getUniqueId();
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					DB.PLAYERS_ARROW_TRAILS.updateInt("active", 0, "uuid", uuid.toString());
+					DB.PLAYERS_ARROW_TRAILS.updateInt("active", 1, new String [] {"uuid", "name"}, new String [] {uuid.toString(), type.toString()});
+					Bukkit.getLogger().info("arrow trails: selected");
+				}
+			});
 		}
+		saveSetting(player);
 	}
 	
 	@Override
@@ -377,7 +374,7 @@ public class ArrowTrails extends FeatureBase {
 			@Override
 			public void run() {
 				Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
-				for(TrailParticles particle : TrailParticles.values()) {
+				for(ArrowTrailParticleTypes particle : ArrowTrailParticleTypes.values()) {
 					inventory.setItem(particle.getSlot(), particle.getItem(player, getAction()));
 				}
 				inventory.setItem(29, getDisplaySettingItem(player));
@@ -436,7 +433,7 @@ public class ArrowTrails extends FeatureBase {
 				displayLocked(player);
 			} else {
 				String name = event.getItemTitle();
-				final TrailParticles type = getParticles(event.getSlot());
+				final ArrowTrailParticleTypes type = getParticles(event.getSlot());
 				if(type != null && !(selected.containsKey(player.getName()) && selected.get(player.getName()) == type)) {
 					selected.put(player.getName(), type);
 					MessageHandler.sendMessage(player, "You have enabled &e" + ChatColor.stripColor(name));
@@ -485,9 +482,9 @@ public class ArrowTrails extends FeatureBase {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getPlayer() instanceof Player) {
+		if(event.getPlayer() instanceof Player && event.getInventory().getTitle().equals(getName())) {
 			Player player = (Player) event.getPlayer();
-			remove(player);
+			select(player);
 		}
 	}
 	
@@ -495,6 +492,6 @@ public class ArrowTrails extends FeatureBase {
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		owned.remove(event.getPlayer().getName());
 		selected.remove(event.getPlayer().getName());
-		remove(event.getPlayer());
+		select(event.getPlayer());
 	}
 }
