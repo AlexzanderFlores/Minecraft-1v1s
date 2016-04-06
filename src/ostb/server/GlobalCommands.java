@@ -17,6 +17,19 @@ import ostb.server.util.StringUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("sendCommand", 2, -1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				String server = arguments[0];
+				String command = "";
+				for(int a = 1; a < arguments.length; ++a) {
+					command += arguments[a] + " ";
+				}
+				ProPlugin.dispatchCommandToServer(server, command);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		
 		new CommandBase("join", 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

@@ -16,6 +16,7 @@ import ostb.customevents.player.PlayerLocationEvent;
 import ostb.server.networking.Instruction.Inst;
 
 public class Client {
+	private Client instance = null;
 	private String ip = null;
 	private int port = 0;
 	private int timeout = 5000; // connection timeout in milliseconds
@@ -25,6 +26,7 @@ public class Client {
 	public Client(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
+		instance = this;
 	}
 	
 	public Client(String ip, int port, int timeout) {
@@ -87,19 +89,14 @@ public class Client {
 							Instruction inst = (Instruction) object;
 							// If true, the connection to the server will be terminated.
 							if(inst.getData()[0].equalsIgnoreCase(Inst.SERVER_SHUTDOWN.toString()) || inst.getData()[0].equalsIgnoreCase(Inst.CLIENT_FORCE_SHUTDOWN.toString())) {
-								shutdown(false);
-								start();
 								break;
 							} else {
 								process(inst);
 							}
 						}
-					} catch (IOException e) {
-						if(!e.getMessage().equalsIgnoreCase("Socket closed")) {
-							e.printStackTrace();
-						}
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+					} catch(Exception e) {
+						shutdown(false);
+						instance.start();
 					}
 				}
 			}

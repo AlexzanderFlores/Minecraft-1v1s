@@ -65,6 +65,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  sendCommand:
+    usage: /sendCommand <server> <command>
+
   alert:
     usage: /alert <text>
 
