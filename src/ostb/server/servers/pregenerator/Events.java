@@ -56,6 +56,9 @@ public class Events implements Listener {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set 1500 1500 0 0");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 60");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName());
+		config.getConfig().set("test_number", getWorlds() + "");
+		config.save();
 	}
 	
 	@EventHandler
@@ -71,9 +74,6 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName());
-		config.getConfig().set("test_number", getWorlds() + "");
-		config.save();
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {

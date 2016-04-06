@@ -56,8 +56,8 @@ public class PrivateMessaging implements Listener {
 									for(int a = 1; a < arguments.length; ++a) {
 										message += arguments[a] + " ";
 									}
-									MessageHandler.sendMessage(player, "&eMe > " + target.getName() + ": &f" + message);
-									MessageHandler.sendMessage(target, "&e" + player.getName() + " > Me: &f" + message);
+									MessageHandler.sendMessage(player, "&3Me -> " + target.getName() + ": &f" + message);
+									MessageHandler.sendMessage(target, "&3" + player.getName() + " > Me: &f" + message);
 									lastMessaged.put(player.getName(), target.getName());
 									lastMessaged.put(target.getName(), player.getName());
 								}
@@ -95,8 +95,8 @@ public class PrivateMessaging implements Listener {
 									for(String argument : arguments) {
 										message += argument + " ";
 									}
-									MessageHandler.sendMessage(player, "&eMe -> " + target.getName() + ": &f" + message);
-									MessageHandler.sendMessage(target, "&e" + player.getName() + " > Me: &f" + message);
+									MessageHandler.sendMessage(player, "&3Me -> " + target.getName() + ": &f" + message);
+									MessageHandler.sendMessage(target, "&3" + player.getName() + " -> Me: &f" + message);
 									lastMessaged.put(player.getName(), target.getName());
 									lastMessaged.put(target.getName(), player.getName());
 								}
