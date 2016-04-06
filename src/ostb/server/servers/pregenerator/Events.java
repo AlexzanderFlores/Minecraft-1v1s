@@ -17,6 +17,7 @@ import npc.ostb.util.DelayedTask;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
+import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
@@ -70,6 +71,9 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName());
+		config.getConfig().set("test_number", getWorlds() + "");
+		config.save();
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -81,6 +85,7 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onServerRestart(ServerRestartEvent event) {
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill cancel");
 		World world = Bukkit.getWorlds().get(0);
 		Bukkit.unloadWorld(world, false);
 		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world.getName()));

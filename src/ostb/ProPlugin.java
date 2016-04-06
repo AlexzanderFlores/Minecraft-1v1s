@@ -146,8 +146,12 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	}
 	
 	public void disable() {
-		for(NPCs npc : NPCs.values()) {
-			npc.unregister();
+		try {
+			for(NPCs npc : NPCs.values()) {
+				npc.unregister();
+			}
+		} catch(NullPointerException e) {
+			
 		}
 	}
 	

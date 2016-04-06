@@ -8,27 +8,28 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
+import ostb.ProPlugin;
 import ostb.server.BiomeSwap;
 import ostb.server.util.FileHandler;
+import ostb.server.util.ZipUtil;
 
 public class WorldHandler {
 	private static World world = null;
 	
 	public WorldHandler() {
 		BiomeSwap.setUpUHC();
-		generateWorld();
-	}
-	
-	private void generateWorld() {
-		if(world != null) {
-			Bukkit.unloadWorld(world, false);
-			FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world.getName()));
+		File [] files = new File(Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/").listFiles();
+		if(files.length == 0) {
+			ProPlugin.restartServer();
+		} else {
+			File file = files[files.length - 1];
+			File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
+			FileHandler.copyFile(file, zip);
+			ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/world");
+			world = Bukkit.createWorld(new WorldCreator("world"));
+			FileHandler.delete(file);
+			FileHandler.delete(zip);
 		}
-		world = Bukkit.createWorld(new WorldCreator("world"));
-		world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
-		world.setGameRuleValue("naturalRegeneration", "false");
-		world.setGameRuleValue("doDaylightCycle", "false");
-		world.setTime(6000);
 	}
 	
 	public static Location getGround(Location location) {

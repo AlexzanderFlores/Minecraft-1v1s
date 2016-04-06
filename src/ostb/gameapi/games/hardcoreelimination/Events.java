@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
@@ -25,6 +26,7 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
@@ -79,6 +81,8 @@ public class Events implements Listener {
 					player.teleport(location);
 					MessageHandler.alert("Scattered " + AccountHandler.getRank(player).getColor() + player.getName());
 					if(scattered.size() >= ProPlugin.getPlayers().size()) {
+						ChunkUnloadEvent.getHandlerList().unregister(this);
+						PlayerLeaveEvent.getHandlerList().unregister(this);
 						logSpawns = false;
 						scattered.clear();
 						scattered = null;
@@ -88,6 +92,17 @@ public class Events implements Listener {
 				}
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onChunkUnload(ChunkUnloadEvent event) {
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		spawns.remove(event.getPlayer().getName());
+		scattered.remove(event.getPlayer().getName());
 	}
 	
 	@EventHandler
@@ -117,6 +132,7 @@ public class Events implements Listener {
 		Player player = event.getPlayer();
 		if(logSpawns && !spawns.containsKey(player.getName()) && !SpectatorHandler.contains(player)) {
 			spawns.put(player.getName(), event.getTo());
+			event.getTo().getChunk().load(true);
 			event.setCancelled(true);
 		}
 	}

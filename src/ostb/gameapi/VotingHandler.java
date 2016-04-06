@@ -53,6 +53,9 @@ public class VotingHandler implements Listener {
 				return new File(current, name).isDirectory();
 			}
 		});
+		if(folders == null) {
+			return;
+		}
 		for(String folder : folders) {
 			if(new File(file.getPath() + "/" + folder + "/Render.png").exists()) {
 				maps.add(folder);
