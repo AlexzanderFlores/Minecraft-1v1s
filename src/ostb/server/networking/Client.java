@@ -45,9 +45,8 @@ public class Client {
 				while(true) {
 					try {
 						socket = new Socket();
-						Bukkit.getLogger().info("Attempting to connect to server...");
 						socket.connect(new InetSocketAddress(ip, port), timeout);
-						Bukkit.getLogger().info("Connected!");
+						Bukkit.getLogger().info("Connected to the server!");
 						List<String> groups = ProPlugin.getGroups();
 						if(groups == null || groups.isEmpty()) {
 							sendMessageToServer(new Instruction(new String [] {Inst.CLIENT_INIT.toString(), OSTB.getServerName()}));
@@ -64,8 +63,8 @@ public class Client {
 						}
 						listen();
 						break;
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch(IOException e) {
+						
 					}
 					try {
 						Thread.sleep(attemptInterval);

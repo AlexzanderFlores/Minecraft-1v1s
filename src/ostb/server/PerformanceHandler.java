@@ -2,6 +2,8 @@ package ostb.server;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -80,41 +82,27 @@ public class PerformanceHandler implements Listener {
 				return true;
 			}
 		};
+		final List<Integer> counters = new ArrayList<Integer>();
+		counters.add(1);
+		counters.add(2);
+		counters.add(3);
+		counters.add(5);
+		counters.add(10);
+		counters.add(15);
+		counters.add(20);
+		counters.add(20 * 2);
+		counters.add(20 * 5);
+		counters.add(20 * 10);
+		counters.add(20 * 60);
 		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				++counter;
-				if(counter % (20 * 60) == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 60));
+				for(int a : counters) {
+					if(counter % a == 0) {
+						Bukkit.getPluginManager().callEvent(new TimeEvent(a));
+					}
 				}
-				if(counter % (20 * 10) == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 10));
-				}
-				if(counter % (20 * 5) == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 5));
-				}
-				if(counter % (20 * 2) == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20 * 2));
-				}
-				if(counter % 20 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(20));
-				}
-				if(counter % 15 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(15));
-				}
-				if(counter % 10 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(10));
-				}
-				if(counter % 5 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(5));
-				}
-				if(counter % 3 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(3));
-				}
-				if(counter % 2 == 0) {
-					Bukkit.getPluginManager().callEvent(new TimeEvent(2));
-				}
-				Bukkit.getPluginManager().callEvent(new TimeEvent(1));
 			}
 		}, 1, 1);
 		EventUtil.register(this);

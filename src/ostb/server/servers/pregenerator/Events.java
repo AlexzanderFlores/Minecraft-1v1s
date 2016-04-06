@@ -3,33 +3,86 @@ package ostb.server.servers.pregenerator;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
+
+import npc.ostb.util.DelayedTask;
+import ostb.ProPlugin;
+import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
+import ostb.server.util.FileHandler;
+import ostb.server.util.ZipUtil;
 
 public class Events implements Listener {
 	private boolean running = false;
+	private World world = null;
 	
 	public Events() {
 		EventUtil.register(this);
 	}
 	
 	private int getWorlds() {
-		return new File(OSTB.getInstance().getDataFolder().getPath() + "../resources/maps/pregen/").listFiles().length;
+		return new File(getPath()).listFiles().length;
+	}
+	
+	private String getPath() {
+		return Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/";
+	}
+	
+	private Location getGround(Location location) {
+		location.setY(250);
+        while(location.getBlock().getType() == Material.AIR) {
+        	location.setY(location.getBlockY() - 1);
+        }
+        return location.add(0, 1, 0);
+	}
+	
+	private void run() {
+		running = true;
+		world = Bukkit.createWorld(new WorldCreator("world"));
+		world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
+		world.setTime(0);
+		world.setGameRuleValue("naturalRegeneration", "false");
+		world.setDifficulty(Difficulty.HARD);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set 1500 1500 0 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 60");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
 	}
 	
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(!running && ticks == 20 * 30 && getWorlds() < 20) {
-			running = true;
-			File worldFile = new File(Bukkit.getWorldContainer().getPath() + "/world");
-			if(worldFile.exists()) {
-				
+		if(!running && ticks == (20 * 5)) {
+			int worlds = getWorlds();
+			if(worlds < 20) {
+				run();
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), getPath() + "/world" + getWorlds() + ".zip");
+				ProPlugin.restartServer();
+			}
+		}, 20 * 3);
+	}
+	
+	@EventHandler
+	public void onServerRestart(ServerRestartEvent event) {
+		World world = Bukkit.getWorlds().get(0);
+		Bukkit.unloadWorld(world, false);
+		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world.getName()));
 	}
 }
