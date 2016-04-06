@@ -25,7 +25,7 @@ public class WorldHandler {
 			File file = files[files.length - 1];
 			File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
 			FileHandler.copyFile(file, zip);
-			ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/world");
+			ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/");
 			world = Bukkit.createWorld(new WorldCreator("world"));
 			FileHandler.delete(file);
 			FileHandler.delete(zip);
