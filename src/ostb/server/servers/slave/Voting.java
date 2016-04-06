@@ -49,6 +49,9 @@ public class Voting implements Listener {
 						int day = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "day");
 						if(day == currentDay - 1) {
 							streak = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "streak") + 1;
+							if(streak > DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "highest_streak")) {
+								DB.PLAYERS_LIFETIME_VOTES.updateInt("highest_streak", streak, "uuid", uuid);
+							}
 						} else {
 							streak = 1;
 						}
@@ -57,7 +60,7 @@ public class Voting implements Listener {
 						DB.PLAYERS_LIFETIME_VOTES.updateInt("day", currentDay, "uuid", uuid);
 						DB.PLAYERS_LIFETIME_VOTES.updateInt("streak", streak, "uuid", uuid);
 					} else {
-						DB.PLAYERS_LIFETIME_VOTES.insert("'" + uuid + "', '1', '" + currentDay + "', '1'");
+						DB.PLAYERS_LIFETIME_VOTES.insert("'" + uuid + "', '1', '" + currentDay + "', '1', '1'");
 					}
 					Bukkit.getLogger().info("voting: update lifetime votes");
 					Calendar calendar = Calendar.getInstance();

@@ -158,12 +158,14 @@ public class Profile extends HubItemBase {
 				}).getItemStack());
 				String [] keys = new String [] {"uuid", "type"};
 				String [] values = new String [] {player.getUniqueId().toString(), Crate.getVoting().getType()};
-				inventory.setItem(32, new ItemCreator(Material.CHEST).setName("&bReward Crate Stats").setLores(new String [] {
+				inventory.setItem(32, new ItemCreator(Material.CHEST).setName("&bCrate Stats").setLores(new String [] {
 					"",
-					"&7Reward crate keys owned: &e" + DB.HUB_CRATE_KEYS.getInt(keys, values, "amount"),
-					"&7Reward crates opened lifetime: &e" + DB.HUB_LIFETIME_CRATES_OPENED.getInt(keys, values, "amount"),
-					"&7Reward crates opened this month: &e" + DB.HUB_MONTHLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "month"}, new String [] {uuid, "voting", month + ""}, "amount"),
-					"&7Reward crates opened this week: &e" + DB.HUB_WEEKLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "week"}, new String [] {uuid, "voting", week + ""}, "amount"),
+					"&7Voting Crate Keys owned: &e" + DB.HUB_CRATE_KEYS.getInt(keys, values, "amount"),
+					"&7Key Fragments owned: &e" + DB.PLAYERS_KEY_FRAGMENTS.getInt("uuid", uuid, "amount"),
+					"",
+					"&7Voting Crates opened lifetime: &e" + DB.HUB_LIFETIME_CRATES_OPENED.getInt(keys, values, "amount"),
+					"&7Voting Crates opened this month: &e" + DB.HUB_MONTHLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "month"}, new String [] {uuid, "voting", month + ""}, "amount"),
+					"&7Voting Crates opened this week: &e" + DB.HUB_WEEKLY_CRATES_OPENED.getInt(new String [] {"uuid", "type", "week"}, new String [] {uuid, "voting", week + ""}, "amount"),
 					"",
 				}).getItemStack());
 				inventory.setItem(34, new ItemCreator(Material.NAME_TAG).setName("&bVote Stats").setLores(new String [] {
@@ -171,6 +173,9 @@ public class Profile extends HubItemBase {
 					"&7Lifetime votes: &e" + DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "amount"),
 					"&7Monthly votes: &e" + DB.PLAYERS_MONTHLY_VOTES.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
 					"&7Weekly votes: &e" + DB.PLAYERS_WEEKLY_VOTES.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+					"",
+					"&7Vote streak: &e" + DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "streak"),
+					"&7Best streak: &e" + DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "highest_streak"),
 					""
 				}).getItemStack());
 				player.openInventory(inventory);

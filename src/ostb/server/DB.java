@@ -37,7 +37,7 @@ public enum DB {
 	// Statistics
 	PLAYERS_STAT_RESETS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Votes
-	PLAYERS_LIFETIME_VOTES("uuid VARCHAR(40), amount INT, day INT, streak INT, PRIMARY KEY(uuid)"),
+	PLAYERS_LIFETIME_VOTES("uuid VARCHAR(40), amount INT, day INT, streak INT, highest_streak INT, PRIMARY KEY(uuid)"),
 	PLAYERS_MONTHLY_VOTES("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), amount INT, month INT, PRIMARY KEY(id)"),
 	PLAYERS_WEEKLY_VOTES("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), amount INT, week INT, PRIMARY KEY(id)"),
 	// Coins

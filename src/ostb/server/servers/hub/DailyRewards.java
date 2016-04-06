@@ -52,7 +52,7 @@ public class DailyRewards implements Listener {
 			"",
 			"&eVote each day for cool rewards",
 			"",
-			"&7Left click - &aView voting link",
+			"&7Left click - &aView voting links",
 			"&7Right click - &aView voting rewards",
 			""
 		}).getItemStack());
@@ -89,68 +89,68 @@ public class DailyRewards implements Listener {
 					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
+					// Coins
+					inventory.setItem(11, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
+						"",
+						"&e+15 &aPVP Battles Coins",
+						"&7(Capture the Flag & Domination)",
+						""
+					}).getItemStack());
+					inventory.setItem(13, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
+						"",
+						"&e+15 &aSky Wars Coins",
+						""
+					}).getItemStack());
+					inventory.setItem(15, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
+						"",
+						"&e+15 &aHardcore Elimination Coins",
+						""
+					}).getItemStack());
+					
 					// Crate keys
-					inventory.setItem(10, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key").setLores(new String [] {
+					inventory.setItem(19, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Voting crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(19, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bPVP Battles Crate Key").setLores(new String [] {
+					inventory.setItem(21, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key Fragment").setLores(new String [] {
 						"",
-						"&e+1 &aKey to the PVP Battles crate",
-						"&7(Capture the Flag & Domination)",
+						"&e+1 &aKey Fragment to the Voting crate",
+						"&7(Collect 3 of these for a full Key)",
 						""
 					}).getItemStack()));
-					inventory.setItem(28, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
+					inventory.setItem(23, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Sky Wars crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(37, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
+					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Hardcore Elimination crate",
 						""
 					}).getItemStack()));
 					
-					// Coins
-					inventory.setItem(16, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
-						"",
-						"&e+25 &aPVP Battles Coins",
-						"&7(Capture the Flag & Domination)",
-						"",
-						""
-					}).getItemStack());
-					inventory.setItem(25, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
-						"",
-						"&e+25 &aSky Wars Coins",
-						""
-					}).getItemStack());
-					inventory.setItem(34, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
-						"",
-						"&e+25 &aHardcore Elimination Coins",
-						""
-					}).getItemStack());
-					
 					// Other
-					inventory.setItem(12, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter").setLores(new String [] {
+					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
 						"",
-						"&e+2 &aHardcore Elimination Rescatter",
-						""
-					}).getItemStack());
-					inventory.setItem(14, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
-						"",
-						"&e+30 &aPVP Battles Fast Respawn",
+						"&e+15 &aPVP Battles Fast Respawn",
 						"&7(Capture the Flag & Domination)",
 						""
 					}).getItemStack());
-					inventory.setItem(30, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
+					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter").setLores(new String [] {
 						"",
-						"&e+250 &aNetwork Experience",
+						"&e+1 &aHardcore Elimination Rescatter",
+						"&7(Rescatter yourself with /rescatter)",
 						""
 					}).getItemStack());
 					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
 						"",
-						"&e+20 &aHub Parkour Checkpoints",
+						"&e+10 &aHub Parkour Checkpoints",
+						""
+					}).getItemStack());
+					inventory.setItem(34, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
+						"",
+						"&e+125 &aNetwork Experience",
 						""
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
