@@ -43,6 +43,7 @@ import ostb.server.RestarterHandler;
 import ostb.server.networking.Client;
 import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
+import ostb.server.servers.pregenerator.Pregenerator;
 import ostb.server.servers.slave.Slave;
 import ostb.server.servers.worker.Worker;
 import ostb.server.util.FileHandler;
@@ -60,6 +61,7 @@ public class OSTB extends JavaPlugin {
 		SKY_WARS_TEAMS("SWT", "sky_wars", "Team Sky Wars"),
 		HE_NO_KITS("HENK", "hardcore_elimination", "Hardcore Elimination No Kits"),
 		HE_KITS("HEK", "hardcore_elimination", "Hardcore Elimination Kits"),
+		PREGENERATOR("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
 		WORKER("Worker", "worker"),
 		SLAVE("Slave", "slave");
@@ -139,10 +141,11 @@ public class OSTB extends JavaPlugin {
 			proPlugin = new SkyWars();
 		} else if(plugin == Plugins.HE_NO_KITS || plugin == Plugins.HE_KITS) {
 			proPlugin = new HardcoreElimination();
+		} else if(plugin == Plugins.PREGENERATOR) {
+			proPlugin = new Pregenerator();
 		} else if(plugin == Plugins.BUILDING) {
 			proPlugin = new Building();
-		} 
-		else if(plugin == Plugins.WORKER) {
+		} else if(plugin == Plugins.WORKER) {
 			proPlugin = new Worker();
 		} else if(plugin == Plugins.SLAVE) {
 			proPlugin = new Slave();

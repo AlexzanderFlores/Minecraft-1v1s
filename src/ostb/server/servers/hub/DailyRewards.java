@@ -30,6 +30,7 @@ public class DailyRewards implements Listener {
 	private String name = null;
 	private String rewardsName = null;
 	private String streakName = null;
+	private final int coins = 20;
 	
 	public DailyRewards() {
 		name = "Daily Rewards";
@@ -92,18 +93,18 @@ public class DailyRewards implements Listener {
 					// Coins
 					inventory.setItem(11, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
 						"",
-						"&e+15 &aPVP Battles Coins",
+						"&e+" + coins + " &aPVP Battles Coins",
 						"&7(Capture the Flag & Domination)",
 						""
 					}).getItemStack());
 					inventory.setItem(13, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
 						"",
-						"&e+15 &aSky Wars Coins",
+						"&e+" + coins + " &aSky Wars Coins",
 						""
 					}).getItemStack());
 					inventory.setItem(15, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
 						"",
-						"&e+15 &aHardcore Elimination Coins",
+						"&e+" + coins + " &aHardcore Elimination Coins",
 						""
 					}).getItemStack());
 					
