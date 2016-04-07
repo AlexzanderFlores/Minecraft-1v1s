@@ -9,8 +9,6 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.server.util.UnicodeUtil;
 
-
-
 public class BelowNameHealthScoreboardUtil extends BelowNameScoreboardUtil {
 	public BelowNameHealthScoreboardUtil() {
 		this(OSTB.getSidebar().getScoreboard());

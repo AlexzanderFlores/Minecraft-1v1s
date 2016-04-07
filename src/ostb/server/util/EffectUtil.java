@@ -158,6 +158,12 @@ public class EffectUtil {
 		}
 	}
 	
+	public static void playSound(Sound sound, Location location, float volume, float pitch) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			player.playSound(location == null ? player.getLocation() : location, sound, volume, pitch);
+		}
+	}
+	
 	public static void playSound(Player player, Sound sound) {
 		player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
 	}

@@ -61,7 +61,7 @@ public class ParkourNPC implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 10) {
+		if(ticks == 10 && livingEntity.getTicksLived() >= (20 * 2)) {
 			livingEntity.setVelocity(new Vector(0, 0.25, 0));
 		}
 	}

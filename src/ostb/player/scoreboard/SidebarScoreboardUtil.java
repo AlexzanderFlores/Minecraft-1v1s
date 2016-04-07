@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import ostb.server.util.StringUtil;
-
 
 public class SidebarScoreboardUtil extends ScoreboardBase {
 	private boolean enabled = true;
@@ -44,7 +42,6 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	
 	public void setText(String text, int score) {
 		text = StringUtil.color(text);
-		text = StringUtil.color((text.startsWith(ChatColor.WHITE.toString().substring(0, 1)) ? text : "&9" + text));
 		if(text.length() > 16) {
 			text = text.substring(0, 16);
 		}
@@ -162,6 +159,10 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 		enabled = !enabled;
 	}
 	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
 	public Map<String, Integer> getScores() {
 		return scores;
 	}
@@ -172,6 +173,7 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 				getScoreboard().resetScores(score);
 			}
 			scores.clear();
+			scores = null;
 		}
 		getObjective().unregister();
 	}
