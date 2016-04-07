@@ -30,6 +30,14 @@ public class GlobalCommands {
 			}
 		}.setRequiredRank(Ranks.OWNER);
 		
+		new CommandBase("colorCodes") {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				MessageHandler.sendMessage(sender, "Edit the color of your chat with \"&&xx\" where 'x' is a number from 0-9 or a letter from a-f. Example: \"&&xa&aHey!&x\"");
+				return true;
+			}
+		};
+		
 		new CommandBase("join", 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -61,7 +69,7 @@ public class GlobalCommands {
 			}
 		}.setRequiredRank(Ranks.OWNER);
 		
-		new CommandBase("shop") {
+		new CommandBase("buy") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				MessageHandler.sendMessage(sender, "&cComing soon");

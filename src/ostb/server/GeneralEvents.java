@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -130,6 +131,7 @@ public class GeneralEvents implements Listener {
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		
+		// Chat delay for non premium players
 		if(delayed.contains(player.getName())) {
 			MessageHandler.sendMessage(player, "&cSlow down! Non " + Ranks.PREMIUM.getPrefix() + "&cchat delay of &e" + delay + " &cseconds");
 			event.setCancelled(true);
@@ -144,7 +146,20 @@ public class GeneralEvents implements Listener {
 				}
 			}, 20 * delay);
 		}
-		event.setMessage(event.getMessage().replace("%", "%%"));
+		
+		// Color codes for premium and above
+		if(Ranks.PREMIUM.hasRank(player)) {
+			event.setMessage(StringUtil.color(event.getMessage()));
+			
+			// Be sure owner rank has all color codes, do not remove any bad ones
+			if(!Ranks.OWNER.hasRank(player)) {
+				for(ChatColor badColor : new ChatColor [] {ChatColor.BOLD, ChatColor.MAGIC, ChatColor.UNDERLINE, ChatColor.STRIKETHROUGH}) {
+					event.setMessage(event.getMessage().replace(badColor + "", ""));
+				}
+			}
+		}
+		
+		// Prevent too many capital letters
 		if(!Ranks.isStaff(player)) {
 			int numberOfCaps = 0;
 			for(char character : event.getMessage().toCharArray()) {
@@ -156,6 +171,9 @@ public class GeneralEvents implements Listener {
 				}
 			}
 		}
+		
+		// Final formatting
+		event.setMessage(event.getMessage().replace("%", "%%"));
 		event.setFormat(AccountHandler.getPrefix(player, false) + ": " + event.getMessage());
 	}
 	

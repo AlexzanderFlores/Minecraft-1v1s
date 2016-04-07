@@ -27,6 +27,7 @@ public enum DB {
 	PLAYERS_WIN_EFFECTS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), name VARCHAR(25), active INT, amount_owned INT, unlocked_time VARCHAR(10), PRIMARY KEY(id)"),
 	PLAYERS_NOTIFICATIONS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), text VARCHAR(250), seen INT, PRIMARY KEY(id)"),
 	PLAYERS_LEVELS("uuid VARCHAR(40), level INT, exp INT, PRIMARY KEY(uuid)"),
+	PLAYERS_CHAT_COLOR("uuid VARCHAR(40), color VARCHAR(2), PRIMARY KEY(uuid)"),
 	// Play time
 	PLAYERS_LIFETIME_PLAYTIME("uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, PRIMARY KEY(uuid)"),
 	PLAYERS_MONTHLY_PLAYTIME("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, month INT,  PRIMARY KEY(id)"),

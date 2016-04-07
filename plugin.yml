@@ -5,8 +5,14 @@ softdepend: [NPC_OSTB, Votifier, EffectLib]
 authors: [Outside The Block Development Team]
 commands:
 # Global Commands
-  shop:
-    usage: /shop
+  defaultChatColor:
+    usage: /defaultChatColor
+
+  colorCodes:
+    usage: /colorCodes
+
+  buy:
+    usage: /buy
 
   elo:
     usage: /elo [name]
