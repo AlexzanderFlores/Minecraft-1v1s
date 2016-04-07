@@ -17,6 +17,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
 import de.slikey.effectlib.util.ParticleEffect;
@@ -47,28 +49,28 @@ public class HaloParticles extends FeatureBase {
 	private static Random random = null;
 	
 	public enum HaloParticleTypes {
-		CRIT(1, "Crit Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		CRIT_MAGIC(2, "Magic Crit Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SMOKE_NORMAL(3, "Smoke Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SPELL(4, "Spell Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SPELL_INSTANT(5, "Instant Spell Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SPELL_MOB(6, "Mob Spell Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
+		CRIT(1, "Crit Halo Particles", Rarity.COMMON, Material.DIAMOND_SWORD),
+		CRIT_MAGIC(2, "Magic Crit Halo Particles", Rarity.COMMON, new ItemCreator(Material.DIAMOND_SWORD).setGlow(true).getItemStack()),
+		SMOKE_NORMAL(3, "Smoke Halo Particles", Rarity.COMMON, Material.WEB),
+		SPELL(4, "Spell Halo Particles", Rarity.COMMON, new Potion(PotionType.REGEN, 1, true).toItemStack(1)),
+		SPELL_INSTANT(5, "Instant Spell Halo Particles", Rarity.COMMON, Material.BEACON),
+		SPELL_MOB(6, "Mob Spell Halo Particles", Rarity.COMMON, new ItemStack(Material.SKULL_ITEM, 1, (byte) 4)),
+		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Halo Particles", Rarity.COMMON, new ItemStack(Material.MONSTER_EGG, 1, (byte) 66)),
 		SPELL_WITCH(10, "Witch Spell Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		DRIP_WATER(11, "Drip Water Halo Particles", Rarity.UNCOMMON, Material.DIAMOND_HELMET),
-		DRIP_LAVA(12, "Drip Lava Halo Particles", Rarity.UNCOMMON, Material.DIAMOND_HELMET),
-		VILLAGER_ANGRY(13, "Angry Villager Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		VILLAGER_HAPPY(14, "Happy Villager Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		NOTE(15, "Note Halo Particles", Rarity.UNCOMMON, Material.DIAMOND_HELMET),
-		FLAME(16, "Flame Halo Particles", Rarity.RARE, Material.DIAMOND_HELMET),
-		CLOUD(19, "Cloud Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		REDSTONE(20, "Redstone Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SNOWBALL(21, "Snowball Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SNOW_SHOVEL(22, "Shovel Snow Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		SLIME(23, "Slime Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		HEART(24, "Heart Halo Particles", Rarity.UNCOMMON, Material.DIAMOND_HELMET),
-		WATER_DROP(25, "Water Halo Particles", Rarity.COMMON, Material.DIAMOND_HELMET),
-		FIREWORKS_SPARK(25, "Firework Spark Halo Particles", Rarity.RARE, Material.DIAMOND_HELMET),
+		DRIP_WATER(11, "Drip Water Halo Particles", Rarity.UNCOMMON, Material.WATER_BUCKET),
+		DRIP_LAVA(12, "Drip Lava Halo Particles", Rarity.UNCOMMON, Material.LAVA_BUCKET),
+		VILLAGER_ANGRY(13, "Angry Villager Halo Particles", Rarity.COMMON, new ItemStack(Material.MONSTER_EGG, 1, (byte) 120)),
+		VILLAGER_HAPPY(14, "Happy Villager Halo Particles", Rarity.COMMON, Material.NETHER_STAR),
+		NOTE(15, "Note Halo Particles", Rarity.UNCOMMON, Material.JUKEBOX),
+		FLAME(16, "Flame Halo Particles", Rarity.RARE, Material.BLAZE_POWDER),
+		CLOUD(19, "Cloud Halo Particles", Rarity.COMMON, Material.FEATHER),
+		REDSTONE(20, "Redstone Halo Particles", Rarity.COMMON, Material.REDSTONE),
+		SNOWBALL(21, "Snowball Halo Particles", Rarity.COMMON, Material.SNOW_BALL),
+		SNOW_SHOVEL(22, "Shovel Snow Halo Particles", Rarity.COMMON, Material.SNOW_BLOCK),
+		SLIME(23, "Slime Halo Particles", Rarity.COMMON, Material.SLIME_BALL),
+		HEART(24, "Heart Halo Particles", Rarity.UNCOMMON, Material.RED_ROSE),
+		WATER_DROP(25, "Water Halo Particles", Rarity.COMMON, Material.WATER_BUCKET),
+		FIREWORKS_SPARK(25, "Firework Spark Halo Particles", Rarity.RARE, Material.FIREWORK),
 		NONE(33, "&cSet No Halo Particles", Rarity.COMMON, Material.BARRIER, false)
 		
 		;

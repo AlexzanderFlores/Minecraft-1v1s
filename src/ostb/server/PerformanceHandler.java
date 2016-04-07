@@ -29,7 +29,7 @@ public class PerformanceHandler implements Listener {
 	private static int uptimeCounter = 0;
 	
 	public PerformanceHandler() {
-		new CommandBase("performance") {
+		new CommandBase("lag") {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
 				if(sender instanceof Player) {

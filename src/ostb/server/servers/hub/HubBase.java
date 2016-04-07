@@ -56,6 +56,7 @@ public class HubBase extends ProPlugin {
 		new ServerLogger();
 		new Tutorial();
 		new DailyRewards();
+		new ParkourNPC();
 	}
 	
 	public static int getHubNumber() {

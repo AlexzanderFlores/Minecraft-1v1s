@@ -22,6 +22,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import de.slikey.effectlib.util.ParticleEffect;
 import ostb.ProPlugin;
@@ -39,6 +41,7 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.TimeUtil;
 
+@SuppressWarnings("deprecation")
 public class ArrowTrails extends FeatureBase {
 	private static int max = 22;
 	private static Map<String, Integer> owned = null;
@@ -48,26 +51,26 @@ public class ArrowTrails extends FeatureBase {
 	private static Random random = null;
 	
 	public enum ArrowTrailParticleTypes {
-		CRIT(1, "Crit Arrow Trail", Rarity.COMMON, Material.ARROW),
-		CRIT_MAGIC(2, "Magic Crit Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SMOKE_NORMAL(3, "Smoke Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SPELL(4, "Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_INSTANT(5, "Instant Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_MOB(6, "Mob Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
+		CRIT(1, "Crit Arrow Trail", Rarity.COMMON, Material.DIAMOND_SWORD),
+		CRIT_MAGIC(2, "Magic Crit Arrow Trail", Rarity.COMMON, new ItemCreator(Material.DIAMOND_SWORD).setGlow(true).getItemStack()),
+		SMOKE_NORMAL(3, "Smoke Arrow Trail", Rarity.COMMON, Material.WEB),
+		SPELL(4, "Spell Arrow Trail", Rarity.COMMON, new Potion(PotionType.REGEN, 1, true).toItemStack(1)),
+		SPELL_INSTANT(5, "Instant Spell Arrow Trail", Rarity.COMMON, Material.BEACON),
+		SPELL_MOB(6, "Mob Spell Arrow Trail", Rarity.COMMON, new ItemStack(Material.SKULL_ITEM, 1, (byte) 4)),
+		SPELL_MOB_AMBIENT(7, "Ambient Mob Spell Arrow Trail", Rarity.COMMON, new ItemStack(Material.MONSTER_EGG, 1, (byte) 66)),
 		SPELL_WITCH(10, "Witch Spell Arrow Trail", Rarity.COMMON, Material.ARROW),
-		DRIP_WATER(11, "Drip Water Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
-		DRIP_LAVA(12, "Drip Lava Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
-		VILLAGER_ANGRY(13, "Angry Villager Arrow Trail", Rarity.COMMON, Material.ARROW),
-		VILLAGER_HAPPY(14, "Happy Villager Arrow Trail", Rarity.COMMON, Material.ARROW),
-		NOTE(15, "Note Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
-		FLAME(16, "Flame Arrow Trail", Rarity.RARE, Material.ARROW),
-		CLOUD(19, "Cloud Arrow Trail", Rarity.COMMON, Material.ARROW),
-		REDSTONE(20, "Redstone Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SNOWBALL(21, "Snowball Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SNOW_SHOVEL(22, "Shovel Snow Arrow Trail", Rarity.COMMON, Material.ARROW),
-		SLIME(23, "Slime Arrow Trail", Rarity.COMMON, Material.ARROW),
-		HEART(24, "Heart Arrow Trail", Rarity.UNCOMMON, Material.ARROW),
+		DRIP_WATER(11, "Drip Water Arrow Trail", Rarity.UNCOMMON, Material.WATER_BUCKET),
+		DRIP_LAVA(12, "Drip Lava Arrow Trail", Rarity.UNCOMMON, Material.LAVA_BUCKET),
+		VILLAGER_ANGRY(13, "Angry Villager Arrow Trail", Rarity.COMMON, new ItemStack(Material.MONSTER_EGG, 1, (byte) 120)),
+		VILLAGER_HAPPY(14, "Happy Villager Arrow Trail", Rarity.COMMON, Material.NETHER_STAR),
+		NOTE(15, "Note Arrow Trail", Rarity.UNCOMMON, Material.JUKEBOX),
+		FLAME(16, "Flame Arrow Trail", Rarity.RARE, Material.BLAZE_POWDER),
+		CLOUD(19, "Cloud Arrow Trail", Rarity.COMMON, Material.FEATHER),
+		REDSTONE(20, "Redstone Arrow Trail", Rarity.COMMON, Material.REDSTONE),
+		SNOWBALL(21, "Snowball Arrow Trail", Rarity.COMMON, Material.SNOW_BALL),
+		SNOW_SHOVEL(22, "Shovel Snow Arrow Trail", Rarity.COMMON, Material.SNOW_BLOCK),
+		SLIME(23, "Slime Arrow Trail", Rarity.COMMON, Material.SLIME_BALL),
+		HEART(24, "Heart Arrow Trail", Rarity.UNCOMMON, Material.RED_ROSE),
 		RANDOM(25, "Random Arrow Trail", Rarity.RARE, Material.ARROW),
 		NONE(33, "&cSet No Arrow Trail", Rarity.COMMON, Material.BARRIER, false)
 		
