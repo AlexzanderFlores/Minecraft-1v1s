@@ -51,6 +51,8 @@ public class Beacon implements Listener {
 	private List<FeatureItem> items = null;
 	private List<String> delayed = null;
 	private static final int delay = 2;
+	private static String keyFragmentName;
+	private static String votingKeyx2Name;
 	
 	public Beacon(String originalName, String type, Block glass, Vector standOffset) {
 		random = new Random();
@@ -67,13 +69,25 @@ public class Beacon implements Listener {
 		armorStand.setCustomNameVisible(true);
 		delayed = new ArrayList<String>();
 		setWood();
+		keyFragmentName = "Key Fragment";
+		votingKeyx2Name = "Voting Key x2";
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				items = FeatureItem.getItems();
+				items.add(new FeatureItem(keyFragmentName, new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
+				items.add(new FeatureItem(votingKeyx2Name, new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE));
 			}
 		});
 		EventUtil.register(this);
+	}
+	
+	public static String getKeyFragmentName() {
+		return keyFragmentName;
+	}
+	
+	public static String getVotingKeyx2() {
+		return votingKeyx2Name;
 	}
 	
 	public String getType() {

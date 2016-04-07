@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.server.servers.hub.crate.Beacon;
+import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.Armor.PlayerArmor;
 import ostb.server.servers.hub.items.features.blocks.SpinningBlocks.SpinBlock;
@@ -55,6 +57,14 @@ public class FeatureItem {
 	}
 	
 	public void give(Player player) {
+		if(getName().equals(Beacon.getKeyFragmentName())) {
+			KeyFragments.give(player, 1);
+			return;
+		}
+		if(getName().equals(Beacon.getVotingKeyx2())) {
+			Beacon.giveKey(player.getUniqueId(), 2, "voting");
+			return;
+		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
 			if(halo.getName().equals(getName())) {
 				halo.give(player);

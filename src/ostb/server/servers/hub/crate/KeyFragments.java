@@ -54,6 +54,21 @@ public class KeyFragments implements Listener {
 		EventUtil.register(this);
 	}
 	
+	public static void give(Player player, final int toAdd) {
+		final UUID uuid = player.getUniqueId();
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				int amount = DB.PLAYERS_KEY_FRAGMENTS.getInt("uuid", uuid.toString(), "amount") + toAdd;
+				if(DB.PLAYERS_KEY_FRAGMENTS.isUUIDSet(uuid)) {
+					DB.PLAYERS_KEY_FRAGMENTS.updateInt("amount", amount, "uuid", uuid.toString());
+				} else {
+					DB.PLAYERS_KEY_FRAGMENTS.insert("'" + uuid.toString() + "', '" + amount + "'");
+				}
+			}
+		});
+	}
+	
 	private void open(Player player) {
 		final Inventory inventory = Bukkit.createInventory(player, 9 * 5, name);
 		player.openInventory(inventory);
