@@ -1,5 +1,7 @@
 package ostb.server.servers.hub;
 
+import java.io.File;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
@@ -21,6 +23,7 @@ import ostb.server.servers.hub.items.HubSelector;
 import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
+import ostb.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {
 	private static int hubNumber = 0;
@@ -62,5 +65,14 @@ public class HubBase extends ProPlugin {
 	
 	public static int getHubNumber() {
 		return hubNumber;
+	}
+	
+	@Override
+	public void disable() {
+		String container = Bukkit.getWorldContainer().getPath();
+		Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
+		FileHandler.delete(new File(container + "/spawn"));
+		FileHandler.copyFolder(new File(container + "/../resources/maps/hub"), new File(container + "/spawn"));
+		super.disable();
 	}
 }

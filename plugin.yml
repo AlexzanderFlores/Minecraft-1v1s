@@ -23,8 +23,8 @@ commands:
   join:
     usage: /join <server name>
 
-  performance:
-    usage: /performance
+  lag:
+    usage: /lag
 
   list:
     usage: /list
