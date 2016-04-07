@@ -17,7 +17,6 @@ import npc.ostb.util.DelayedTask;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
-import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
@@ -25,6 +24,7 @@ import ostb.server.util.ZipUtil;
 public class Events implements Listener {
 	private boolean running = false;
 	private World world = null;
+	private final int max = 20;
 	
 	public Events() {
 		EventUtil.register(this);
@@ -56,9 +56,6 @@ public class Events implements Listener {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set 1500 1500 0 0");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 60");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/config.yml");
-		config.getConfig().set("test_number", getWorlds() + "");
-		config.save();
 	}
 	
 	@EventHandler
@@ -66,7 +63,7 @@ public class Events implements Listener {
 		long ticks = event.getTicks();
 		if(!running && ticks == (20 * 5)) {
 			int worlds = getWorlds();
-			if(worlds < 20) {
+			if(worlds < max) {
 				run();
 			}
 		}
@@ -77,7 +74,14 @@ public class Events implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), getPath() + "/world" + getWorlds() + ".zip");
+				String target = "";
+				for(int a = 0; a < max; ++a) {
+					target = getPath() + "/world" + a + ".zip";
+					if(!new File(target).exists()) {
+						break;
+					}
+				}
+				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				ProPlugin.restartServer();
 			}
 		}, 20 * 3);

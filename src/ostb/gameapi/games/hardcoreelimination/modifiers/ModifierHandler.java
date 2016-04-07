@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination;
+package ostb.gameapi.games.hardcoreelimination.modifiers;
 
 import java.util.HashMap;
 import java.util.Map;
