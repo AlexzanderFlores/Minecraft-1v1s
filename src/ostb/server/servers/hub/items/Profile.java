@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.player.LevelHandler;
@@ -44,10 +45,19 @@ public class Profile extends HubItemBase {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		
 	}
+	
+	@EventHandler
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+		giveItem(event.getPlayer());
+	}
 
 	@Override
+	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
-		
+		if(isItem(event.getPlayer())) {
+			open(event.getPlayer());
+			event.setCancelled(true);
+		}
 	}
 
 	@Override

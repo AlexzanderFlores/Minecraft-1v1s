@@ -1,6 +1,5 @@
 package ostb.server.servers.hub;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import ostb.server.util.EventUtil;
 
 @SuppressWarnings("deprecation")
 public class EndlessParkour implements Listener {
-	private List<String> delayed = null;
 	private Map<String, Block> blocks = null;
 	private Map<String, SidebarScoreboardUtil> scoreboards = null;
 	private Map<String, Integer> scores = null;
@@ -41,7 +39,6 @@ public class EndlessParkour implements Listener {
 	private int topScore = 0;
 	
 	public EndlessParkour() {
-		delayed = new ArrayList<String>();
 		blocks = new HashMap<String, Block>();
 		scoreboards = new HashMap<String, SidebarScoreboardUtil>();
 		scores = new HashMap<String, Integer>();
@@ -95,15 +92,6 @@ public class EndlessParkour implements Listener {
 			player.setScoreboard(sidebar.getScoreboard());
 			sidebar.update(player);
 			return true;
-		} else if(!delayed.contains(player.getName())) {
-			final String name = player.getName();
-			delayed.add(name);
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					delayed.remove(name);
-				}
-			}, 20 * 5);
 		}
 		return false;
 	}
@@ -126,6 +114,7 @@ public class EndlessParkour implements Listener {
 			}
 		}
 		Block newBlock = scores.containsKey(name) ? oldBlock.getRelative(offsetX, offsetY, offsetZ) : oldBlock;
+		newBlock.getChunk().load(true);
 		newBlock.setType(Material.STAINED_GLASS);
 		newBlock.setData((byte) random.nextInt(15));
 		for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
@@ -137,12 +126,14 @@ public class EndlessParkour implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				oldBlock.setType(Material.AIR);
-				oldBlock.setData((byte) 0);
-				for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
-					Block near = oldBlock.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
-					near.setType(Material.AIR);
-					near.setData((byte) 0);
+				for(int a = 0; a < 2; ++a) {
+					oldBlock.setType(Material.AIR);
+					oldBlock.setData((byte) 0);
+					for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
+						Block near = oldBlock.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
+						near.setType(Material.AIR);
+						near.setData((byte) 0);
+					}
 				}
 			}
 		}, 20 * 2);
@@ -180,7 +171,7 @@ public class EndlessParkour implements Listener {
 						DB.HUB_PARKOUR_ENDLESS_SCORES.insert("'" + uuid.toString() + "', '" + score + "'");
 					}
 					MessageHandler.sendMessage(player, "&6New Personal Best: &e" + score);
-					List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1);
+					List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1, true);
 					if(!top.isEmpty() && top.get(0).equals(uuid.toString())) {
 						MessageHandler.sendMessage(player, "&4&k|||&6 New Top Score: &e" + score + " &4&k|||");
 					}
@@ -202,7 +193,7 @@ public class EndlessParkour implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1);
+				List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1, true);
 				if(top.isEmpty()) {
 					topPlayer = "None";
 				} else {

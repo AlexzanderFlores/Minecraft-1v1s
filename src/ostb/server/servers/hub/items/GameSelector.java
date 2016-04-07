@@ -73,9 +73,6 @@ public class GameSelector extends HubItemBase {
 			if(items.containsKey(item)) {
 				Plugins plugin = items.get(item);
 				open(player, plugin);
-			} else if(event.getItemTitle().contains("Profile")) {
-				player.closeInventory();
-				Profile.open(player);
 			}
 			event.setCancelled(true);
 		} else if(watching.containsKey(player.getName())) {
@@ -219,7 +216,7 @@ public class GameSelector extends HubItemBase {
 	}
 	
 	private void openMenu(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9 * 6, ChatColor.stripColor(getName()));
+		Inventory inventory = Bukkit.createInventory(player, 9 * 5, ChatColor.stripColor(getName()));
 		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&bPVP Battles - " + Plugins.CTF.getDisplay()).setLores(new String [] {
 			"",
 			"&eHelp your team capture the enemy's flag!",
@@ -284,7 +281,6 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.HE_NO_KITS);
 		inventory.setItem(32, item);
-		inventory.setItem(49, Profile.getItem(player));
 		player.openInventory(inventory);
 	}
 	
