@@ -184,6 +184,8 @@ public class EndlessParkour implements Listener {
 					if(!top.isEmpty() && top.get(0).equals(uuid.toString())) {
 						MessageHandler.sendMessage(player, "&4&k|||&6 New Top Score: &e" + score + " &4&k|||");
 					}
+				} else {
+					MessageHandler.sendMessage(player, "Your score: &e" + score);
 				}
 			}
 		});
