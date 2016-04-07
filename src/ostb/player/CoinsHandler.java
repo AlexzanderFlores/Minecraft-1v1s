@@ -12,11 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
-import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
-import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -49,6 +48,13 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
+		if(amount > 0) {
+			if(Ranks.PREMIUM.hasRank(player)) {
+				amount *= 2;
+			} else if(Ranks.PREMIUM_PLUS.hasRank(player)) {
+				amount *= 3;
+			}
+		}
 		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins");
 		coins.put(player.getName(), amount + coins.get(player.getName()));
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
@@ -62,7 +68,7 @@ public class CoinsHandler implements Listener {
 		}).getItemStack();
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20 * 5) {
@@ -73,7 +79,7 @@ public class CoinsHandler implements Listener {
 				}
 			});
 		}
-	}
+	}*/
 	
 	@EventHandler
 	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
