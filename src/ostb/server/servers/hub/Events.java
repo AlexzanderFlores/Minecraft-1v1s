@@ -23,7 +23,7 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
-	private Random random = null;
+	private static Random random = null;
 	
 	public Events() {
 		random = new Random();
@@ -31,7 +31,7 @@ public class Events implements Listener {
 		EventUtil.register(this);
 	}
 	
-	private Location getSpawn() {
+	public static Location getSpawn() {
 		int range = 6;
 		Location location = Bukkit.getWorlds().get(0).getSpawnLocation();
 		location.setYaw(-180.0f);
