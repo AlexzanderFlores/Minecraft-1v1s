@@ -89,7 +89,7 @@ public class PerformanceHandler implements Listener {
 		counters.add(5);
 		counters.add(10);
 		counters.add(15);
-		counters.add(18);
+		counters.add(17);
 		counters.add(20);
 		counters.add(20 * 2);
 		counters.add(20 * 5);

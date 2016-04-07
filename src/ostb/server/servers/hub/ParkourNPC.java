@@ -21,7 +21,7 @@ import ostb.server.util.ItemCreator;
 public class ParkourNPC implements Listener {
 	private LivingEntity livingEntity = null;
 	private String name = null;
-	private Location endlessLocation = null;
+	private static Location endlessLocation = null;
 	private Location courseLocation = null;
 	
 	public ParkourNPC() {
@@ -52,6 +52,10 @@ public class ParkourNPC implements Listener {
 			}
 		};
 		EventUtil.register(this);
+	}
+	
+	public static Location getEndlessLocation() {
+		return endlessLocation;
 	}
 	
 	@EventHandler
