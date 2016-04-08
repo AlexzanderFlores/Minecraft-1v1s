@@ -91,20 +91,32 @@ public class DailyRewards implements Listener {
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
 					// Coins
-					inventory.setItem(11, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
+					inventory.setItem(10, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
 						"",
 						"&e+" + coins + " &aPVP Battles Coins",
-						"&7(Capture the Flag & Domination)",
+						"",
+						"&7Capture the Flag & Domination",
 						""
 					}).getItemStack());
-					inventory.setItem(13, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
+					inventory.setItem(12, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
 						"",
 						"&e+" + coins + " &aSky Wars Coins",
 						""
 					}).getItemStack());
-					inventory.setItem(15, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
+					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
 						"",
 						"&e+" + coins + " &aHardcore Elimination Coins",
+						""
+					}).getItemStack());
+					
+					// Other
+					inventory.setItem(16, new ItemCreator(Material.CHEST).setName("&bSky Wars Looter Passes").setLores(new String [] {
+						"",
+						"&e+5 &aSky Wars Looter Passes",
+						"",
+						"&7Break a chest to restock its contents",
+						"&7Does not load if the Looter kit is selected",
+						"&7Max of 1 user per game",
 						""
 					}).getItemStack());
 					
@@ -117,41 +129,49 @@ public class DailyRewards implements Listener {
 					inventory.setItem(21, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key Fragment").setLores(new String [] {
 						"",
 						"&e+1 &aKey Fragment to the Voting crate",
-						"&7(Collect 3 of these for a full Key)",
+						"",
+						"&7Collect 3 of these for a full Key",
 						""
 					}).getItemStack()));
 					inventory.setItem(23, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Sky Wars crate",
+						"",
+						"&7Open in the Sky Wars shop",
 						""
 					}).getItemStack()));
 					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Hardcore Elimination crate",
+						"",
+						"&7Open in the Hardcore Elimination shop",
 						""
 					}).getItemStack()));
 					
 					// Other
 					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
 						"",
-						"&e+15 &aPVP Battles Fast Respawn",
-						"&7(Capture the Flag & Domination)",
+						"&e+20 &aPVP Battles Fast Respawn",
+						"",
+						"&7Capture the Flag & Domination",
+						"&7Respawn instantly instead of a 5 second delay",
 						""
 					}).getItemStack());
 					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter").setLores(new String [] {
 						"",
 						"&e+1 &aHardcore Elimination Rescatter",
-						"&7(Rescatter yourself with /rescatter)",
+						"",
+						"&7Rescatter yourself with /rescatter",
 						""
 					}).getItemStack());
 					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
 						"",
-						"&e+10 &aHub Parkour Checkpoints",
+						"&e+15 &aHub Parkour Checkpoints",
 						""
 					}).getItemStack());
 					inventory.setItem(34, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
 						"",
-						"&e+125 &aNetwork Experience",
+						"&e+250 &aNetwork Experience",
 						""
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());

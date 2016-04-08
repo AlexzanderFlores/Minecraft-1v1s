@@ -20,7 +20,7 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Looter extends KitBase {
-	private static final int amount = 2;
+	private static final int amount = 3;
 	private static Map<String, Integer> uses = null;
 	private static boolean enabled = false;
 	

@@ -218,6 +218,7 @@ public class GameSelector extends HubItemBase {
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 5, ChatColor.stripColor(getName()));
 		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&bPVP Battles - " + Plugins.CTF.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of Capture the Flag",
 			"",
 			"&eHelp your team capture the enemy's flag!",
 			"&eFirst team to &a3 &ecaptures wins",
@@ -229,6 +230,7 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.CTF);
 		inventory.setItem(10, item);
 		item = new ItemCreator(Material.BANNER, 11).setName("&bPVP Battles - " + Plugins.DOM.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of Domination",
 			"",
 			"&eHelp your team capture the command posts!",
 			"&eFirst team to &a1000 &epoints wins",
@@ -240,6 +242,7 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.DOM);
 		inventory.setItem(12, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).setLores(new String [] {
+			"&7Well known game",
 			"",
 			"&eBe the last player standing!",
 			"",
@@ -250,6 +253,7 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.SKY_WARS_SOLO);
 		inventory.setItem(14, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).setLores(new String [] {
+			"&7Well known game",
 			"",
 			"&eBe the last team standing!",
 			"",
@@ -260,6 +264,7 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.SKY_WARS_TEAMS);
 		inventory.setItem(16, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of Speed UHC",
 			"",
 			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",
@@ -271,6 +276,7 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.HE_KITS);
 		inventory.setItem(30, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
+			"&7Unique spin-off of Speed UHC",
 			"",
 			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",

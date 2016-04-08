@@ -65,27 +65,26 @@ public class EndlessParkour implements Listener {
 			player.teleport(location);
 			scores.put(player.getName(), 1);
 			final int personalBest = DB.HUB_PARKOUR_ENDLESS_SCORES.getInt("uuid", player.getUniqueId().toString(), "best_score");
+			Events.removeSidebar(player);
 			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aEndless Parkour ") {
 				@Override
 				public void update(Player player) {
-					if(isEnabled()) {
-						removeScore(11);
-						setText(new String [] {
-							" ",
-							"&eCurrent Score",
-							"&b" + scores.get(player.getName()) + " ",
-							"  ",
-							"&ePersonal Best",
-							"&b" + personalBest + "  ",
-							"   ",
-							"&eTop Player",
-							"&b" + topPlayer,
-							"    ",
-							"&eTop Score",
-							"&b" + topScore + "   ",
-							"     ",
-						});
-					}
+					removeScore(11);
+					setText(new String [] {
+						" ",
+						"&eCurrent Score",
+						"&b" + scores.get(player.getName()) + " ",
+						"  ",
+						"&ePersonal Best",
+						"&b" + personalBest + "  ",
+						"   ",
+						"&eTop Player",
+						"&b" + topPlayer,
+						"    ",
+						"&eTop Score",
+						"&b" + topScore + "   ",
+						"     ",
+					});
 				}
 			};
 			scoreboards.put(player.getName(), sidebar);
@@ -184,7 +183,7 @@ public class EndlessParkour implements Listener {
 		if(scoreboards.containsKey(name)) {
 			scoreboards.get(name).remove();
 			scoreboards.remove(name);
-			//TODO: Set the default hub scoreboard again
+			Events.giveSidebar(player);
 		}
 		lastScoredOn.remove(name);
 	}

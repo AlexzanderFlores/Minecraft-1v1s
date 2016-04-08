@@ -34,7 +34,7 @@ import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
 	private static Random random = null;
-	private Map<String, SidebarScoreboardUtil> sidebars = null;
+	private static Map<String, SidebarScoreboardUtil> sidebars = null;
 	private static int players = 0;
 	private static int oldPlayers = players;
 	
@@ -55,17 +55,8 @@ public class Events implements Listener {
 		return location;
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		final Player player = event.getPlayer();
-		if(Ranks.PREMIUM.hasRank(player)) {
-			player.setAllowFlight(true);
-		}
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(new ItemStack [] {});
-		player.getInventory().setHeldItemSlot(0);
-		player.teleport(getSpawn());
-		SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aOutsideTheBlock.org ") {
+	public static void giveSidebar(Player player) {
+		SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &eHub #" + HubBase.getHubNumber() + " ") {//" &aOutsideTheBlock.org ") {
 			@Override
 			public void update(Player player) {
 				if(oldPlayers != players) {
@@ -95,14 +86,30 @@ public class Events implements Listener {
 		sidebars.put(player.getName(), sidebar);
 	}
 	
-	@EventHandler
-	public void onPlayerLeave(PlayerLeaveEvent event) {
-		Player player = event.getPlayer();
+	public static void removeSidebar(Player player) {
 		String name = player.getName();
 		if(sidebars.containsKey(name)) {
 			sidebars.get(name).remove();
 			sidebars.remove(name);
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+		if(Ranks.PREMIUM.hasRank(player)) {
+			player.setAllowFlight(true);
+		}
+		player.getInventory().clear();
+		player.getInventory().setArmorContents(new ItemStack [] {});
+		player.getInventory().setHeldItemSlot(0);
+		player.teleport(getSpawn());
+		giveSidebar(player);
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		removeSidebar(event.getPlayer());
 	}
 	
 	@EventHandler
