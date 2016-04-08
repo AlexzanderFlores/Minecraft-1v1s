@@ -24,7 +24,7 @@ import ostb.server.util.ZipUtil;
 public class Events implements Listener {
 	private boolean running = false;
 	private World world = null;
-	private final int max = 20;
+	private final int max = 30;
 	
 	public Events() {
 		EventUtil.register(this);

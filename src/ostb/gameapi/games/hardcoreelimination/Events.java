@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -31,10 +33,9 @@ import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
-import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
-import ostb.player.account.AccountHandler;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ItemCreator;
 
 public class Events implements Listener {
 	private Map<String, Location> spawns = null;
@@ -65,7 +66,6 @@ public class Events implements Listener {
 					OSTB.getSidebar().update(game.getCounterAsString());
 				}
 			}
-		} else if(ticks == 20 * 5) {
 			if(spawns != null && !spawns.isEmpty()) {
 				String name = null;
 				for(String spawn : spawns.keySet()) {
@@ -79,7 +79,6 @@ public class Events implements Listener {
 					scattered.add(name);
 					Location location = spawns.get(name);
 					player.teleport(location);
-					MessageHandler.alert("Scattered " + AccountHandler.getRank(player).getColor() + player.getName());
 					if(scattered.size() >= ProPlugin.getPlayers().size()) {
 						ChunkUnloadEvent.getHandlerList().unregister(this);
 						PlayerLeaveEvent.getHandlerList().unregister(this);
@@ -119,12 +118,54 @@ public class Events implements Listener {
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
-			MessageHandler.sendMessage(player, "You now have &e30 &xseconds of no damage of any kind");
+			//MessageHandler.sendMessage(player, "You now have &e30 &xseconds of no damage of any kind");
+			//TODO: Put the grace period on the scoreboard
 			command += player.getName() + " ";
+			new TitleDisplayer(player, "&bScattering...").display();
 		}
-		MessageHandler.alert("Scattering all players...");
+		//MessageHandler.alert("Scattering players");
 		logSpawns = true;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+	}
+	
+	@EventHandler
+	public void onCraftItem(CraftItemEvent event) {
+		ItemCreator creator = new ItemCreator(event.getCurrentItem());
+		Material type = creator.getType();
+		if(type == Material.WOOD_SWORD) {
+			creator.setType(Material.STONE_SWORD);
+		} else if(type == Material.WOOD_PICKAXE) {
+			creator.setType(Material.STONE_PICKAXE);
+			creator.addEnchantment(Enchantment.DIG_SPEED, 1);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.WOOD_AXE) {
+			creator.setType(Material.STONE_AXE);
+			creator.addEnchantment(Enchantment.DIG_SPEED, 1);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.WOOD_SPADE) {
+			creator.setType(Material.STONE_SPADE);
+			creator.addEnchantment(Enchantment.DIG_SPEED, 1);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.IRON_PICKAXE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 2);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.IRON_AXE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 2);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.IRON_SPADE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 2);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.DIAMOND_PICKAXE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.DIAMOND_PICKAXE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		} else if(type == Material.DIAMOND_PICKAXE) {
+			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
+			creator.addEnchantment(Enchantment.DURABILITY, 3);
+		}
+		event.setCurrentItem(creator.getItemStack());
 	}
 	
 	@EventHandler
