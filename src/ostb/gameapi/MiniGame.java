@@ -3,7 +3,6 @@ package ostb.gameapi;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -258,16 +257,18 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public void setToDefaultSidebar() {
-		OSTB.setSidebar(new SidebarScoreboardUtil(ChatColor.AQUA + getDisplayName()) {
+		OSTB.setSidebar(new SidebarScoreboardUtil(" &a" + getDisplayName() + " ") {
 			@Override
 			public void update() {
-				int players = ProPlugin.getPlayers().size();
-				String playersString = ChatColor.YELLOW + "" + players;
-				String current = getText(3);
-				if(current != null && !current.equals(playersString)) {
-					removeText(current);
-				}
-				setText(new String [] {"Playing:", playersString, " ", "Server #" + OSTB.getServerName().replaceAll("[^\\d.]", "")});
+				removeScore(4);
+				setText(new String [] {
+					" ",
+					"&ePlaying:",
+					"&b" + ProPlugin.getPlayers().size(),
+					"  ",
+					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"   "
+				});
 				super.update();
 			}
 		});

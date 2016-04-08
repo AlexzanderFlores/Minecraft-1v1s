@@ -67,6 +67,9 @@ public class CutClean extends Scenario {
 		} else if(material == Material.MUTTON) {
 			world.dropItem(event.getLocation(), new ItemStack(Material.COOKED_MUTTON));
 			entity.remove();
+		} else if(material == Material.RABBIT) {
+			world.dropItem(event.getLocation(), new ItemStack(Material.COOKED_RABBIT));
+			entity.remove();
 		} else if(material == Material.GRAVEL && new Random().nextBoolean()) {
 			world.dropItem(event.getLocation(), new ItemStack(Material.FLINT));
 			entity.remove();

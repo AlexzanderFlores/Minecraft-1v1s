@@ -158,10 +158,10 @@ public class Events implements Listener {
 		} else if(type == Material.DIAMOND_PICKAXE) {
 			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
 			creator.addEnchantment(Enchantment.DURABILITY, 3);
-		} else if(type == Material.DIAMOND_PICKAXE) {
+		} else if(type == Material.DIAMOND_AXE) {
 			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
 			creator.addEnchantment(Enchantment.DURABILITY, 3);
-		} else if(type == Material.DIAMOND_PICKAXE) {
+		} else if(type == Material.DIAMOND_SPADE) {
 			creator.addEnchantment(Enchantment.DIG_SPEED, 3);
 			creator.addEnchantment(Enchantment.DURABILITY, 3);
 		}
