@@ -27,7 +27,6 @@ import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -53,11 +52,11 @@ public class MiniGameEvents implements Listener {
 					int waitingFor = miniGame.getRequiredPlayers() - ProPlugin.getPlayers().size();
 					if(waitingFor <= 0) {
 						miniGame.setGameState(GameStates.VOTING);
-					} else {
+					}/* else {
 						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
 							OSTB.getSidebar().setName("&e" + ProPlugin.getPlayers().size() + "&8/&e" + getMiniGame().getRequiredPlayers() + " Needed");
 						}
-					}
+					}*/
 				} else if(gameState == GameStates.VOTING) {
 					if(miniGame.getCounter() <= 0) {
 						miniGame.setGameState(GameStates.STARTING);
@@ -71,7 +70,7 @@ public class MiniGameEvents implements Listener {
 							EffectUtil.playSound(Sound.CLICK);
 						}
 						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-							OSTB.getSidebar().update(miniGame.getCounterAsString());
+							//OSTB.getSidebar().update(miniGame.getCounterAsString());
 						}
 					}
 				} else if(gameState == GameStates.STARTING) {
@@ -98,7 +97,7 @@ public class MiniGameEvents implements Listener {
 							EffectUtil.playSound(Sound.CLICK);
 						}
 						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-							OSTB.getSidebar().update(miniGame.getCounterAsString());
+							//OSTB.getSidebar().update(miniGame.getCounterAsString());
 						}
 						/*if(miniGame.getCounter() <= 5) {
 							for(Player player : Bukkit.getOnlinePlayers()) {
@@ -118,9 +117,11 @@ public class MiniGameEvents implements Listener {
 					if(miniGame.getCounter() <= 0) {
 						ProPlugin.restartServer();
 					} else {
-						MessageHandler.alert("Server restarting in " + miniGame.getCounterAsString());
+						for(Player player : Bukkit.getOnlinePlayers()) {
+							new TitleDisplayer(player, "&bServer Restarting", miniGame.getCounterAsString());
+						}
 						if(OSTB.getMiniGame().getUpdateTitleSidebar()) {
-							OSTB.getSidebar().update(miniGame.getCounterAsString());
+							//OSTB.getSidebar().update(miniGame.getCounterAsString());
 						}
 					}
 				}

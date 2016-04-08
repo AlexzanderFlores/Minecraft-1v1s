@@ -7,6 +7,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -30,6 +31,7 @@ import ostb.server.servers.hub.items.features.pets.Pets;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.StringUtil;
 
@@ -94,6 +96,7 @@ public class Features extends HubItemBase {
 			}, 20 * delay);
 			//KeyMerchant.removeSelling(player);
 			open(player);
+			EffectUtil.playSound(player, Sound.CHEST_OPEN);
 		}
 	}
 

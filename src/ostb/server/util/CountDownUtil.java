@@ -30,14 +30,22 @@ public class CountDownUtil {
 	}
 	
 	public String getCounterAsString() {
+		return getCounterAsString(ChatColor.YELLOW);
+	}
+	
+	public String getCounterAsString(ChatColor color) {
 		String seconds = String.valueOf(counter % 60 < 10 ? "0" + counter % 60 : counter % 60);
-		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : ChatColor.YELLOW;
+		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : color;
 		return chatColor + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
 	}
 	
 	public static String getCounterAsString(int counter) {
+		return getCounterAsString(counter, ChatColor.YELLOW);
+	}
+	
+	public static String getCounterAsString(int counter, ChatColor color) {
 		String seconds = String.valueOf(counter % 60 < 10 ? "0" + counter % 60 : counter % 60);
-		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : ChatColor.YELLOW;
+		ChatColor chatColor = counter == 1 ? ChatColor.DARK_RED : counter == 2 ? ChatColor.GOLD : color;
 		return chatColor + (counter / 60 >= 1 ? counter / 60 + ":" + seconds : "0:" + seconds);
 	}
 	

@@ -23,6 +23,15 @@ public class ServerLogger implements Listener {
 		updateStatus(false);
 	}
 	
+	public static boolean updatePlayerCount() {
+		int size = Bukkit.getOnlinePlayers().size();
+		if(players != size) {
+			players = size;
+			return true;
+		}
+		return false;
+	}
+	
 	private void updateStatus(boolean delete) {
 		String game = OSTB.getPlugin().toString();
 		String number = OSTB.getServerName().replaceAll("[^\\d.]", "");

@@ -63,7 +63,6 @@ public class Events implements Listener {
 							new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(30).display();
 						}
 					}
-					OSTB.getSidebar().update(game.getCounterAsString());
 				}
 			}
 			if(spawns != null && !spawns.isEmpty()) {

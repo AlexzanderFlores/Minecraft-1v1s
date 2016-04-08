@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
+import ostb.player.account.AccountHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.ChatClickHandler;
 import ostb.server.DB;
@@ -201,6 +202,7 @@ public class Beacon implements Listener {
 					if(item.getRarity() == Rarity.RARE) {
 						for(Player online : Bukkit.getOnlinePlayers()) {
 							new TitleDisplayer(online, "&e" + player.getName() + " Opened", "&c" + item.getName() + " " + rareString).setStay(40).display();
+							MessageHandler.sendMessage(online, AccountHandler.getRank(player).getColor() + player.getName() + " &xOpened &c" + item.getName() + " " + rareString);
 						}
 					}
 				}

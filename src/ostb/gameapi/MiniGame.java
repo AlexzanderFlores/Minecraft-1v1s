@@ -3,6 +3,7 @@ package ostb.gameapi;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
 public abstract class MiniGame extends ProPlugin {
@@ -38,20 +40,26 @@ public abstract class MiniGame extends ProPlugin {
 	private World lobby = null;
 	private World map = null;
 	public enum GameStates {
-		WAITING(new GameWaitingEvent()),
-		VOTING(new GameVotingEvent()),
-		STARTING(new GameStartingEvent()),
-		STARTED(new GameStartEvent()),
-		ENDING(new GameEndingEvent());
+		WAITING(new GameWaitingEvent(), "Waiting"),
+		VOTING(new GameVotingEvent(), "Voting"),
+		STARTING(new GameStartingEvent(), "Starting"),
+		STARTED(new GameStartEvent(), "In Game"),
+		ENDING(new GameEndingEvent(), "Ending");
 		
 		private Event event = null;
+		private String display = null;
 		
-		private GameStates(Event event) {
+		private GameStates(Event event, String display) {
 			this.event = event;
+			this.display = display;
 		}
 		
 		public Event getEvent() {
 			return this.event;
+		}
+		
+		public String getDisplay() {
+			return display;
 		}
 		
 		public void enable() {
@@ -59,6 +67,7 @@ public abstract class MiniGame extends ProPlugin {
 		}
 	}
 	private GameStates gameState = GameStates.WAITING;
+	private GameStates oldState = gameState;
 	
 	public MiniGame(String name) {
 		super(name);
@@ -260,14 +269,28 @@ public abstract class MiniGame extends ProPlugin {
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a" + getDisplayName() + " ") {
 			@Override
 			public void update() {
-				removeScore(4);
+				if(ServerLogger.updatePlayerCount()) {
+					removeScore(7);
+					removeScore(4);
+				}
+				if(getGameState() != GameStates.WAITING) {
+					removeScore(4);
+				}
+				if(getGameState() != oldState) {
+					oldState = getGameState();
+					removeScore(5);
+				}
+				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
 					" ",
 					"&ePlaying:",
-					"&b" + ProPlugin.getPlayers().size(),
+					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
 					"  ",
+					"&e" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
+					"   ",
 					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
-					"   "
+					"    "
 				});
 				super.update();
 			}
