@@ -143,8 +143,8 @@ commands:
   startGame:
     usage: /startGame
 
-  setCounter:
-    usage: /setCounter <seconds>
+  setTimer:
+    usage: /setTimer <seconds>
 
   spec:
     usage: /spec <name>

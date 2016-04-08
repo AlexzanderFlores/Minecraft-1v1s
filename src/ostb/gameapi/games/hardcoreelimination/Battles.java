@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -33,18 +35,26 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameDeathEvent;
+import ostb.customevents.game.GameEndingEvent;
+import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.player.scoreboard.SidebarScoreboardUtil;
+import ostb.server.ServerLogger;
 import ostb.server.effects.blocks.CylinderUtil;
 import ostb.server.effects.blocks.HollowCylinderUtil;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 
 public class Battles implements Listener {
 	private List<Block> blocks = null;
 	private Map<String, String> battles = null;
+	private boolean red = true;
+	private boolean pvp = false;
 	
 	public Battles() {
 		blocks = new ArrayList<Block>();
@@ -52,10 +62,35 @@ public class Battles implements Listener {
 		HandlerList.unregisterAll(this);
 		EventUtil.register(this);
 		createArenas();
-		OSTB.getSidebar().update("&ePVP");
+		final MiniGame miniGame = OSTB.getMiniGame();
+		OSTB.setSidebar(new SidebarScoreboardUtil(" &a" + miniGame.getDisplayName() + " ") {
+			@Override
+			public void update() {
+				if(ServerLogger.updatePlayerCount()) {
+					removeScore(7);
+				}
+				removeScore(4);
+				int size = ProPlugin.getPlayers().size();
+				setText(new String [] {
+					" ",
+					"&ePlaying",
+					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
+					"  ",
+					"&ePVP Stage",
+					!pvp ? (CountDownUtil.getCounterAsString(60)) : miniGame.getCounter() <= 0 ? (red ? "&40:00" : "&b0:00") : CountDownUtil.getCounterAsString(miniGame.getCounter(), ChatColor.AQUA),
+					"   ",
+					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"    "
+				});
+				red = !red;
+				super.update();
+			}
+		});
 	}
 	
 	private void createArenas() {
+		pvp = false;
+		OSTB.getMiniGame().setCounter(60);
 		World world = WorldHandler.getWorld();
 		for(Entity entity : world.getEntities()) {
 			if((entity instanceof LivingEntity || entity instanceof Item) && !(entity instanceof Player)) {
@@ -114,6 +149,7 @@ public class Battles implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
+				OSTB.getMiniGame().setCounter(60);
 				for(Player player : ProPlugin.getPlayers()) {
 					new TitleDisplayer(player, "&cPVP", "&eEnabled").setFadeIn(15).setStay(20).setFadeIn(20).display();
 				}
@@ -123,8 +159,24 @@ public class Battles implements Listener {
 				PlayerDropItemEvent.getHandlerList().unregister(instance);
 				PlayerPickupItemEvent.getHandlerList().unregister(instance);
 				EntityDamageEvent.getHandlerList().unregister(instance);
+				pvp = true;
 			}
 		}, 20 * 5);
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 2) {
+			Bukkit.getLogger().info(OSTB.getMiniGame().getCounter() + "");
+			if(OSTB.getMiniGame().getCounter() <= 0) {
+				for(Player player : ProPlugin.getPlayers()) {
+					if(battles.get(player.getName()) != null) {
+						player.setHealth(player.getHealth() - 1);
+					}
+				}
+			}
+		}
 	}
 	
 	@EventHandler
@@ -225,5 +277,10 @@ public class Battles implements Listener {
 		}
 		MessageHandler.alert("Starting next round...");
 		createArenas();
+	}
+	
+	@EventHandler
+	public void onGameEnding(GameEndingEvent event) {
+		OSTB.getMiniGame().setToDefaultSidebar();
 	}
 }

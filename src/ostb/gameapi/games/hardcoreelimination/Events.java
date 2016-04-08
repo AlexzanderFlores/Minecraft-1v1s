@@ -16,6 +16,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -34,6 +35,7 @@ import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.TitleDisplayer;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -54,15 +56,17 @@ public class Events implements Listener {
 		if(ticks == 20) {
 			MiniGame game = OSTB.getMiniGame();
 			if(game.getGameState() == GameStates.STARTED) {
-				if(game.getCounter() <= 0) {
+				int counter = game.getCounter() + 1;
+				if(counter <= 0) {
 					HandlerList.unregisterAll(this);
 					new Battles();
 				} else {
-					if(game.canDisplay()) {
+					//if(game.canDisplay()) {
+						String time = CountDownUtil.getCounterAsString(counter);
 						for(Player player : Bukkit.getOnlinePlayers()) {
-							new TitleDisplayer(player, "&cPVP", game.getCounterAsString()).setFadeIn(0).setStay(15).setFadeOut(30).display();
+							new TitleDisplayer(player, "&cPVP", time).setFadeIn(0).setStay(15).setFadeOut(30).display();
 						}
-					}
+					//}
 				}
 			}
 			if(spawns != null && !spawns.isEmpty()) {
@@ -113,7 +117,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		OSTB.getProPlugin().removeFlags();
-		OSTB.getMiniGame().setCounter(60 * 10);
+		OSTB.getMiniGame().setCounter(60 * 10 + 1);
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
@@ -209,6 +213,14 @@ public class Events implements Listener {
 			if(item != null && item.getType() == Material.FLINT_AND_STEEL) {
 				event.setCancelled(true);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onItemSpawn(ItemSpawnEvent event) {
+		Material type = event.getEntity().getItemStack().getType();
+		if(type == Material.SAPLING || type == Material.SPIDER_EYE || type == Material.SULPHUR) {
+			event.setCancelled(true);
 		}
 	}
 }

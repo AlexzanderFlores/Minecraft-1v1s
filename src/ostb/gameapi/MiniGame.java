@@ -92,7 +92,7 @@ public abstract class MiniGame extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("setCounter", 1) {
+		new CommandBase("setTimer", 1) {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
 				try {
@@ -283,7 +283,7 @@ public abstract class MiniGame extends ProPlugin {
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
 					" ",
-					"&ePlaying:",
+					"&ePlaying",
 					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
 					"  ",
 					"&e" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
