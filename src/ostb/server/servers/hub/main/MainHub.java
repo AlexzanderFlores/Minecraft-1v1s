@@ -1,8 +1,5 @@
 package ostb.server.servers.hub.main;
 
-import java.io.File;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -14,10 +11,7 @@ import org.bukkit.entity.Player;
 import net.minecraft.server.v1_8_R3.EntityGuardian;
 import npc.ostb.NPCEntity;
 import ostb.OSTB;
-import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationCrate;
-import ostb.gameapi.games.skywars.SkyWarsCrate;
 import ostb.player.LevelHandler;
-import ostb.player.MessageHandler;
 import ostb.server.CommandBase;
 import ostb.server.servers.hub.HubBase;
 import ostb.server.servers.hub.TrailTest;
@@ -69,14 +63,6 @@ public class MainHub extends HubBase {
 					new SpinBlockEntity(Material.valueOf(arguments[1]), Byte.valueOf(arguments[2]), player);
 				} else if(arguments[0].equalsIgnoreCase("trail")) {
 					new TrailTest();
-				} else if(arguments[0].equalsIgnoreCase("listWorlds")) {
-					for(File file : new File(Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/").listFiles()) {
-						MessageHandler.sendMessage(player, file.getName());
-					}
-				} else if(arguments[0].equalsIgnoreCase("swcrate")) {
-					SkyWarsCrate.giveKey(player, Integer.valueOf(arguments[1]));
-				} else if(arguments[0].equalsIgnoreCase("hecrate")) {
-					HardcoreEliminationCrate.giveKey(player, Integer.valueOf(arguments[1]));
 				}
 				return true;
 			}
