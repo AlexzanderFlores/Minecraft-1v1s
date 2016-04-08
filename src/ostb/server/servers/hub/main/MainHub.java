@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import net.minecraft.server.v1_8_R3.EntityGuardian;
 import npc.ostb.NPCEntity;
 import ostb.OSTB;
+import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationCrate;
+import ostb.gameapi.games.skywars.SkyWarsCrate;
 import ostb.player.LevelHandler;
 import ostb.player.MessageHandler;
 import ostb.server.CommandBase;
@@ -71,6 +73,10 @@ public class MainHub extends HubBase {
 					for(File file : new File(Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/").listFiles()) {
 						MessageHandler.sendMessage(player, file.getName());
 					}
+				} else if(arguments[0].equalsIgnoreCase("swcrate")) {
+					SkyWarsCrate.giveKey(player, Integer.valueOf(arguments[1]));
+				} else if(arguments[0].equalsIgnoreCase("hecrate")) {
+					HardcoreEliminationCrate.giveKey(player, Integer.valueOf(arguments[1]));
 				}
 				return true;
 			}

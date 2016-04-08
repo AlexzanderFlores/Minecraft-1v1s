@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationCrate;
+import ostb.gameapi.games.skywars.SkyWarsCrate;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features.Rarity;
@@ -61,8 +63,16 @@ public class FeatureItem {
 			KeyFragments.give(player, 1);
 			return;
 		}
-		if(getName().equals(Beacon.getVotingKeyx2())) {
-			Beacon.giveKey(player.getUniqueId(), 2, "voting");
+		if(getName().equals(Beacon.getVotingKeyx3())) {
+			Beacon.giveKey(player.getUniqueId(), 3, "voting");
+			return;
+		}
+		if(getName().equals(Beacon.getSkyWarsCrateKey())) {
+			SkyWarsCrate.giveKey(player, 1);
+			return;
+		}
+		if(getName().equals(Beacon.getHardcoreEliminationCrateKey())) {
+			HardcoreEliminationCrate.giveKey(player, 1);
 			return;
 		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {

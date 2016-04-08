@@ -52,8 +52,10 @@ public class Beacon implements Listener {
 	private List<FeatureItem> items = null;
 	private List<String> delayed = null;
 	private static final int delay = 2;
-	private static String keyFragmentName;
-	private static String votingKeyx2Name;
+	private static String keyFragmentName = null;
+	private static String votingKeyx3Name = null;
+	private static String skyWarsCrateKey = null;
+	private static String hardcoreEliminationCrateKey = null;
 	
 	public Beacon(String originalName, String type, Block glass, Vector standOffset) {
 		random = new Random();
@@ -71,13 +73,17 @@ public class Beacon implements Listener {
 		delayed = new ArrayList<String>();
 		setWood();
 		keyFragmentName = "Key Fragment";
-		votingKeyx2Name = "Voting Key x2";
+		votingKeyx3Name = "Voting Key x3";
+		skyWarsCrateKey = "Sky Wars Crate Key";
+		hardcoreEliminationCrateKey = "Hardcore Elimination Crate Key";
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				items = FeatureItem.getItems();
-				items.add(new FeatureItem(keyFragmentName, new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
-				items.add(new FeatureItem(votingKeyx2Name, new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE));
+				items.add(new FeatureItem(getKeyFragmentName(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
+				items.add(new FeatureItem(getVotingKeyx3(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE));
+				items.add(new FeatureItem(getSkyWarsCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
+				items.add(new FeatureItem(getHardcoreEliminationCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
 			}
 		});
 		EventUtil.register(this);
@@ -87,8 +93,16 @@ public class Beacon implements Listener {
 		return keyFragmentName;
 	}
 	
-	public static String getVotingKeyx2() {
-		return votingKeyx2Name;
+	public static String getVotingKeyx3() {
+		return votingKeyx3Name;
+	}
+	
+	public static String getSkyWarsCrateKey() {
+		return skyWarsCrateKey;
+	}
+	
+	public static String getHardcoreEliminationCrateKey() {
+		return hardcoreEliminationCrateKey;
 	}
 	
 	public String getType() {

@@ -1,10 +1,11 @@
 package ostb.gameapi.games.skywars;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,11 +17,11 @@ import org.bukkit.inventory.Inventory;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
-import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -28,12 +29,12 @@ import ostb.server.util.StringUtil;
 
 public class SkyWarsCrate implements Listener {
 	private static String name = null;
+	private static List<String> delayed = null;
 	private static final int cost = 50;
-	private static Map<String, Integer> keys = null;
 	
 	public SkyWarsCrate() {
 		name = "Sky Wars Crate";
-		keys = new HashMap<String, Integer>();
+		delayed = new ArrayList<String>();
 		EventUtil.register(this);
 	}
 	
@@ -89,37 +90,62 @@ public class SkyWarsCrate implements Listener {
 	}
 	
 	private static int getKeys(Player player) {
-		if(!keys.containsKey(player.getName())) {
-			keys.put(player.getName(), DB.HUB_SKY_WARS_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount"));
-		}
-		return keys.get(player.getName());
+		Bukkit.getLogger().info("sky wars crate: get keys");
+		return DB.HUB_SKY_WARS_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
+	}
+	
+	public static void giveKey(final Player player, final int toAdd) {
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				UUID uuid = player.getUniqueId();
+				if(DB.HUB_SKY_WARS_CRATE_KEYS.isUUIDSet(uuid)) {
+					int amount = DB.HUB_SKY_WARS_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
+					DB.HUB_SKY_WARS_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
+				} else {
+					DB.HUB_SKY_WARS_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
+				}
+				updateItem(player);
+				Bukkit.getLogger().info("sky wars crate: give keys");
+			}
+		});
 	}
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
+		Player player = event.getPlayer();
 		if(event.getTitle().equals(name)) {
 			
 			event.setCancelled(true);
 		} else if(ChatColor.stripColor(event.getItemTitle()).equals(name)) {
 			if(OSTB.getPlugin() == Plugins.HUB) {
 				if(event.getClickType() == ClickType.LEFT) {
-					Player player = event.getPlayer();
-					if(getKeys(player) > 0) {
-						//TODO: Run
-						EffectUtil.playSound(player, Sound.LEVEL_UP);
-					} else {
+					if(delayed.contains(player.getName())) {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+					} else {
+						final String name = player.getName();
+						delayed.add(name);
+						new DelayedTask(new Runnable() {
+							@Override
+							public void run() {
+								delayed.remove(name);								
+							}
+						}, 20 * 2);
+						if(getKeys(player) > 0) {
+							//TODO: Run
+							EffectUtil.playSound(player, Sound.LEVEL_UP);
+						} else {
+							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+						}
 					}
 				} else if(event.getClickType() == ClickType.MIDDLE) {
 					//TODO: Display item options and rarities
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					final Player player = event.getPlayer();
 					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
-						keys.put(player.getName(), getKeys(player) + 1);
-						updateItem(player);
+						giveKey(player, 1);
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
@@ -127,20 +153,6 @@ public class SkyWarsCrate implements Listener {
 				}
 			}
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
-		String name = event.getName();
-		if(keys.containsKey(name)) {
-			UUID uuid = event.getUUID();
-			if(DB.HUB_SKY_WARS_CRATE_KEYS.isUUIDSet(uuid)) {
-				DB.HUB_SKY_WARS_CRATE_KEYS.updateInt("amount", keys.get(name), "uuid", uuid.toString());
-			} else {
-				DB.HUB_SKY_WARS_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + keys.get(name) + "'");
-			}
-			keys.remove(name);
 		}
 	}
 }
