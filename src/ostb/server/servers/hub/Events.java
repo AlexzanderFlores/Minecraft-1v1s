@@ -133,7 +133,10 @@ public class Events implements Listener {
 		Player player = event.getPlayer();
 		if(sidebars.containsKey(player.getName())) {
 			sidebars.get(player.getName()).update(player);
-			if(Ranks.PLAYER != event.getRank() && !player.getAllowFlight()) {
+			if(event.getRank() == Ranks.PLAYER && player.getAllowFlight()) {
+				player.setFlying(false);
+				player.setAllowFlight(false);
+			} else if(event.getRank() != Ranks.PLAYER && !player.getAllowFlight()) {
 				player.setAllowFlight(true);
 			}
 		}
