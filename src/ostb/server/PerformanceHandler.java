@@ -57,7 +57,7 @@ public class PerformanceHandler implements Listener {
 				MessageHandler.sendMessage(sender, "&bConnected clients: &c" + Bukkit.getOnlinePlayers().size());
 				MessageHandler.sendMessage(sender, "&bUsed memory: &c" + getMemory(!Ranks.OWNER.hasRank(sender)) + "%");
 				MessageHandler.sendMessage(sender, "&bUptime: &c" + getUptimeString());
-				MessageHandler.sendMessage(sender, "&eFor more server performance info run /bungeeInfo");
+				MessageHandler.sendMessage(sender, "&eFor more server performance info run /networkPerformance");
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);

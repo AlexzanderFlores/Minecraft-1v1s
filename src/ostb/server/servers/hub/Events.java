@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.customevents.player.PlayerRankChangeEvent;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
@@ -70,13 +72,18 @@ public class Events implements Listener {
 					removeScore(7);
 				}
 				Ranks rank = AccountHandler.getRank(player);
+				String rankString = rank == Ranks.PLAYER ? "&7None &b/buy" : rank.getPrefix();
+				String current = getText(4);
+				if(current != null && !ChatColor.stripColor(rankString).equals(ChatColor.stripColor(current))) {
+					removeScore(4);
+				}
 				setText(new String [] {
 					" ",
 					"&ePlayers",
 					"&b" + players,
 					"  ",
 					"&eRank",
-					rank == Ranks.PLAYER ? "&7None" : rank.getPrefix(),
+					rankString,
 					"   ",
 					"&eHub #" + HubBase.getHubNumber(),
 					"    ",
@@ -117,6 +124,17 @@ public class Events implements Listener {
 				if(sidebars.containsKey(player.getName())) {
 					sidebars.get(player.getName()).update(player);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerRankChange(PlayerRankChangeEvent event) {
+		Player player = event.getPlayer();
+		if(sidebars.containsKey(player.getName())) {
+			sidebars.get(player.getName()).update(player);
+			if(Ranks.PLAYER != event.getRank() && !player.getAllowFlight()) {
+				player.setAllowFlight(true);
 			}
 		}
 	}
