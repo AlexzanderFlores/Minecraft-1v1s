@@ -13,6 +13,7 @@ import org.bukkit.util.EulerAngle;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.KitSelection;
+import ostb.gameapi.games.pvpbattles.Armory;
 import ostb.gameapi.games.pvpbattles.kits.Bomber;
 import ostb.gameapi.games.pvpbattles.kits.Default;
 import ostb.gameapi.games.pvpbattles.kits.Healer;
@@ -90,6 +91,8 @@ public class Building extends ProPlugin {
 						armorStand.setRightArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
 					} else if(cmd.equalsIgnoreCase("levelUp")) {
 						new LevelGiver(player);
+					} else if(cmd.equalsIgnoreCase("armory")) {
+						new Armory(player.getLocation());
 					}
 				}
 				return true;
