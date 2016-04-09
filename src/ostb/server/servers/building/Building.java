@@ -14,11 +14,6 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.KitSelection;
 import ostb.gameapi.games.pvpbattles.Armory;
-import ostb.gameapi.games.pvpbattles.kits.Bomber;
-import ostb.gameapi.games.pvpbattles.kits.Default;
-import ostb.gameapi.games.pvpbattles.kits.Healer;
-import ostb.gameapi.games.pvpbattles.kits.Ninja;
-import ostb.gameapi.games.pvpbattles.kits.Tracker;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -98,11 +93,6 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		};
-		new Default();
-		new Bomber();
-		new Ninja();
-		new Healer();
-		new Tracker();
 	}
 	
 	@Override

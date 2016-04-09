@@ -1,11 +1,10 @@
 package ostb.gameapi.games.pvpbattles;
 
-import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.customevents.game.GameKillEvent;
-import ostb.server.util.EffectUtil;
+import ostb.player.LevelGiver;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
@@ -15,7 +14,6 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onGameKill(GameKillEvent event) {
-		event.getPlayer().setLevel(event.getPlayer().getLevel() + 1);
-		EffectUtil.playSound(event.getPlayer(), Sound.LEVEL_UP);
+		new LevelGiver(event.getPlayer());
 	}
 }
