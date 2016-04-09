@@ -349,7 +349,7 @@ public class Armor extends FeatureBase {
 					inventory.setItem(armor.getSlot(), armor.getItem(player, getAction()));
 				}
 				inventory.setItem(inventory.getSize() - 9, getSettingItem(player));
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&cBack").getItemStack());
+				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&cBack").getItemStack());
 				player.openInventory(inventory);
 			}
 		});
@@ -373,14 +373,14 @@ public class Armor extends FeatureBase {
 				}
 			} else if(item.getType() == Material.INK_SACK && item.getData().getData() == 8) {
 				displayLocked(player);
+			} else if(item.getType() == Material.WOOD_DOOR) {
+				Features.open(player);
 			} else {
 				String type = item.getType().toString().toUpperCase();
 				String name = ChatColor.stripColor(event.getItemTitle());
 				if(item.getType() == Material.BARRIER) {
 					boolean update = false;
-					if(name.equals("Back")) {
-						Features.open(player);
-					} else if(name.contains("Helmet")) {
+					if(name.contains("Helmet")) {
 						if(player.getInventory().getHelmet() != null && player.getInventory().getHelmet().getType() != Material.AIR) {
 							player.getInventory().setHelmet(new ItemStack(Material.AIR));
 							update = true;

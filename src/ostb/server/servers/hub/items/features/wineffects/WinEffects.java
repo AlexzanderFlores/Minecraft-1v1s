@@ -269,7 +269,7 @@ public class WinEffects extends FeatureBase {
 				for(WinEffect effect : WinEffect.values()) {
 					inventory.setItem(effect.getSlot(), effect.getItem(player, getAction()));
 				}
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&cBack").getItemStack());
+				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&cBack").getItemStack());
 				player.openInventory(inventory);
 			}
 		});
@@ -282,9 +282,7 @@ public class WinEffects extends FeatureBase {
 			final UUID uuid = player.getUniqueId();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.BARRIER) {
-				if(event.getItemTitle().contains("Back")) {
-					Features.open(player);
-				} else if(activated.containsKey(player.getName())) {
+				if(activated.containsKey(player.getName())) {
 					activated.remove(player.getName());
 					new AsyncDelayedTask(new Runnable() {
 						@Override
@@ -297,6 +295,8 @@ public class WinEffects extends FeatureBase {
 				}
 			} else if(item.getType() == Material.INK_SACK) {
 				displayLocked(player);
+			} else if(item.getType() == Material.WOOD_DOOR) {
+				Features.open(player);
 			} else {
 				final WinEffect effect = getEffect(event.getSlot());
 				if(effect != null) {

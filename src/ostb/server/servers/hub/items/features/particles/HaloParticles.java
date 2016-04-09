@@ -354,7 +354,7 @@ public class HaloParticles extends FeatureBase {
 					inventory.setItem(particle.getSlot(), particle.getItem(player, getAction()));
 				}
 				inventory.setItem(29, getSettingItem(player));
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&cBack").getItemStack());
+				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&cBack").getItemStack());
 				player.openInventory(inventory);
 			}
 		});
@@ -379,9 +379,7 @@ public class HaloParticles extends FeatureBase {
 				}
 			} else if(item.getType() == Material.BARRIER) {
 				String name = event.getItemTitle();
-				if(name.contains("Back")) {
-					Features.open(player);
-				} else if(selected.containsKey(player.getName())) {
+				if(selected.containsKey(player.getName())) {
 					final UUID uuid = player.getUniqueId();
 					new AsyncDelayedTask(new Runnable() {
 						@Override
@@ -396,6 +394,8 @@ public class HaloParticles extends FeatureBase {
 				}
 			} else if(item.getType() == Material.INK_SACK) {
 				displayLocked(player);
+			} else if(item.getType() == Material.WOOD_DOOR) {
+				Features.open(player);
 			} else {
 				String name = event.getItemTitle();
 				final HaloParticleTypes type = getParticles(event.getSlot());

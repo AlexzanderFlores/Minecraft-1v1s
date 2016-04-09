@@ -35,7 +35,11 @@ public class SpinningBlocks extends FeatureBase {
 		PUMPKIN(10, "Pumpkin", Rarity.RARE, Material.PUMPKIN),
 		JACK_O_LANTERN(12, "Jack o Lantern", Rarity.RARE, Material.JACK_O_LANTERN),
 		TNT(14, "TNT", Rarity.RARE, Material.TNT),
-		NO_BLOCKS(16, "&cNo Spinning Block", Rarity.COMMON, Material.BARRIER, false),
+		GLOWSTONE(16, "Glowstone", Rarity.RARE, Material.GLOWSTONE),
+		JUKEBOX(28, "Jukebox", Rarity.RARE, Material.JUKEBOX),
+		BEACON(30, "Beacon", Rarity.RARE, Material.BEACON),
+		REDSTONE_LAMP(32, "Redstone Lamp", Rarity.RARE, Material.REDSTONE_LAMP_OFF),
+		NO_BLOCKS(34, "&cNo Spinning Block", Rarity.COMMON, Material.BARRIER, false),
 		
 		;
 		
@@ -202,11 +206,11 @@ public class SpinningBlocks extends FeatureBase {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				Inventory inventory = Bukkit.createInventory(player, 9 * 4, getName());
+				Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
 				for(SpinBlock spinBlock : SpinBlock.values()) {
 					inventory.setItem(spinBlock.getSlot(), spinBlock.getItem(player, getAction()));
 				}
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&cBack").getItemStack());
+				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&cBack").getItemStack());
 				player.openInventory(inventory);
 			}
 		});
@@ -219,15 +223,15 @@ public class SpinningBlocks extends FeatureBase {
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.BARRIER) {
 				String name = event.getItemTitle();
-				if(name.contains("Back")) {
-					Features.open(player);
-				} else if(blocks.containsKey(player.getName())) {
+				if(blocks.containsKey(player.getName())) {
 					blocks.get(player.getName()).remove();
 					blocks.remove(player.getName());
 					MessageHandler.sendMessage(player, "You have set " + name);
 				}
 			} else if(item.getType() == Material.INK_SACK) {
 				displayLocked(player);
+			} else if(item.getType() == Material.WOOD_DOOR) {
+				Features.open(player);
 			} else if(Ranks.PREMIUM_PLUS.hasRank(player)) {
 				if(blocks.containsKey(player.getName())) {
 					blocks.get(player.getName()).remove();

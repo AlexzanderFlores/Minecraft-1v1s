@@ -382,7 +382,7 @@ public class ArrowTrails extends FeatureBase {
 				}
 				inventory.setItem(29, getDisplaySettingItem(player));
 				inventory.setItem(31, getViewSettingItem(player));
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&cBack").getItemStack());
+				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&cBack").getItemStack());
 				player.openInventory(inventory);
 			}
 		});
@@ -418,9 +418,7 @@ public class ArrowTrails extends FeatureBase {
 				}
 			} else if(item.getType() == Material.BARRIER) {
 				String name = event.getItemTitle();
-				if(name.contains("Back")) {
-					Features.open(player);
-				} else if(selected.containsKey(player.getName())) {
+				if(selected.containsKey(player.getName())) {
 					final UUID uuid = player.getUniqueId();
 					new AsyncDelayedTask(new Runnable() {
 						@Override
@@ -434,6 +432,8 @@ public class ArrowTrails extends FeatureBase {
 				}
 			} else if(item.getType() == Material.INK_SACK) {
 				displayLocked(player);
+			} else if(item.getType() == Material.WOOD_DOOR) {
+				Features.open(player);
 			} else {
 				String name = event.getItemTitle();
 				final ArrowTrailParticleTypes type = getParticles(event.getSlot());
