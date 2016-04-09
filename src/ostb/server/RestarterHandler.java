@@ -83,6 +83,10 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 		EventUtil.register(this);
 	}
 	
+	public void toggleRunning() {
+		running = !running;
+	}
+	
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();

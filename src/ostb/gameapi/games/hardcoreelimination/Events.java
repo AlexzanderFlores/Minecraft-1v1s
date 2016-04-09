@@ -56,7 +56,7 @@ public class Events implements Listener {
 		if(ticks == 20) {
 			MiniGame game = OSTB.getMiniGame();
 			if(game.getGameState() == GameStates.STARTED) {
-				int counter = game.getCounter() + 1;
+				int counter = game.getCounter();
 				if(counter <= 0) {
 					HandlerList.unregisterAll(this);
 					new Battles();

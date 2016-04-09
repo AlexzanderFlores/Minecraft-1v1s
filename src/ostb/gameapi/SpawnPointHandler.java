@@ -88,7 +88,6 @@ public class SpawnPointHandler implements Listener {
 				double z = Double.valueOf(location[2]);
 				spawns.add(new Location(world, x, y, z));
 			}
-			return spawns;
 		}
 		return spawns;
 	}

@@ -53,6 +53,8 @@ import ostb.server.util.EventUtil;
 public class Battles implements Listener {
 	private List<Block> blocks = null;
 	private Map<String, String> battles = null;
+	private Location [] centers = null;
+	private boolean createdArenas = false;
 	private boolean red = true;
 	private boolean pvp = false;
 	
@@ -92,36 +94,39 @@ public class Battles implements Listener {
 		pvp = false;
 		OSTB.getMiniGame().setCounter(60);
 		World world = WorldHandler.getWorld();
-		for(Entity entity : world.getEntities()) {
-			if((entity instanceof LivingEntity || entity instanceof Item) && !(entity instanceof Player)) {
-				entity.remove();
-			}
-		}
 		List<Player> players = ProPlugin.getPlayers();
-		int toCreate = (int) (players.size() + 1 / 2 + 0.5);
-		Location [] centers = new Location[toCreate];
-		for(int a = 0; a < toCreate; ++a) {
-			Location location = new Location(world, 50 * a, 0, 0);
-			location.setY(WorldHandler.getGround(location).getBlockY());
-			centers[a] = location;
-			new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 1, location.getBlockZ(), 25, world.getMaxHeight() - location.getBlockY(), Material.AIR);
-			new CylinderUtil(world, location.getBlockX(), 1, location.getBlockZ(), 25, location.getBlockY() - 1, Material.SPONGE);
-			byte lastUsed = 0;
-			for(int b = -1; b <= 5; ++b) {
-				lastUsed = (byte) (lastUsed == 0 ? 1 : 0);
-				if(b <= 0) {
-					for(Block block : new CylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
-						blocks.add(block);
-					}
-				} else {
-					for(Block block : new HollowCylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
-						if(block.getType() != Material.AIR) {
+		if(!createdArenas) {
+			for(Entity entity : world.getEntities()) {
+				if((entity instanceof LivingEntity || entity instanceof Item) && !(entity instanceof Player)) {
+					entity.remove();
+				}
+			}
+			int toCreate = (int) (players.size() + 1 / 2 + 0.5);
+			centers = new Location[toCreate];
+			for(int a = 0; a < toCreate; ++a) {
+				Location location = new Location(world, 50 * a, 0, 0);
+				location.setY(WorldHandler.getGround(location).getBlockY());
+				centers[a] = location;
+				new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 1, location.getBlockZ(), 25, world.getMaxHeight() - location.getBlockY(), Material.AIR);
+				new CylinderUtil(world, location.getBlockX(), 1, location.getBlockZ(), 25, location.getBlockY() - 1, Material.SPONGE);
+				byte lastUsed = 0;
+				for(int b = -1; b <= 5; ++b) {
+					lastUsed = (byte) (lastUsed == 0 ? 1 : 0);
+					if(b <= 0) {
+						for(Block block : new CylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
 							blocks.add(block);
+						}
+					} else {
+						for(Block block : new HollowCylinderUtil(world, location.getBlockX(), location.getBlockY() + b, location.getBlockZ(), 21, 1, Material.WOOD, lastUsed).getBlocks()) {
+							if(block.getType() != Material.AIR) {
+								blocks.add(block);
+							}
 						}
 					}
 				}
+				new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 6, location.getBlockZ(), 20, 1, Material.BARRIER);
 			}
-			new CylinderUtil(world, location.getBlockX(), location.getBlockY() + 6, location.getBlockZ(), 20, 1, Material.BARRIER);
+			createdArenas = true;
 		}
 		for(int a = 0; ; a += 2) {
 			if(a >= players.size()) {
