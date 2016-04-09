@@ -27,7 +27,6 @@ import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -91,7 +90,7 @@ public class MiniGameEvents implements Listener {
 					}
 				}
 			} else if(gameState == GameStates.STARTED) {
-				MessageHandler.alert(""+miniGame.getCounter());
+				
 			} else if(gameState == GameStates.ENDING) {
 				if(miniGame.getCounter() <= 0) {
 					ProPlugin.restartServer();

@@ -61,12 +61,12 @@ public class Events implements Listener {
 					HandlerList.unregisterAll(this);
 					new Battles();
 				} else {
-					//if(game.canDisplay()) {
+					if(game.canDisplay()) {
 						String time = CountDownUtil.getCounterAsString(counter);
 						for(Player player : Bukkit.getOnlinePlayers()) {
 							new TitleDisplayer(player, "&cPVP", time).setFadeIn(0).setStay(15).setFadeOut(30).display();
 						}
-					//}
+					}
 				}
 			}
 			if(spawns != null && !spawns.isEmpty()) {
@@ -121,12 +121,9 @@ public class Events implements Listener {
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
-			//MessageHandler.sendMessage(player, "You now have &e30 &xseconds of no damage of any kind");
-			//TODO: Put the grace period on the scoreboard
 			command += player.getName() + " ";
 			new TitleDisplayer(player, "&bScattering...").display();
 		}
-		//MessageHandler.alert("Scattering players");
 		logSpawns = true;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 	}
