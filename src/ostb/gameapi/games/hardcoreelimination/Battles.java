@@ -40,7 +40,6 @@ import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpectatorHandler;
-import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.ServerLogger;
@@ -57,6 +56,7 @@ public class Battles implements Listener {
 	private boolean createdArenas = false;
 	private boolean red = true;
 	private boolean pvp = false;
+	private boolean startingNextRound = false;
 	
 	public Battles() {
 		blocks = new ArrayList<Block>();
@@ -78,7 +78,7 @@ public class Battles implements Listener {
 					"&ePlaying",
 					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
 					"  ",
-					"&ePVP Stage",
+					startingNextRound ? "&eNext Round In" : "&ePVP Stage",
 					!pvp ? (CountDownUtil.getCounterAsString(60)) : miniGame.getCounter() <= 0 ? (red ? "&40:00" : "&b0:00") : CountDownUtil.getCounterAsString(miniGame.getCounter(), ChatColor.AQUA),
 					"   ",
 					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
@@ -92,6 +92,7 @@ public class Battles implements Listener {
 	
 	private void createArenas() {
 		pvp = false;
+		startingNextRound = false;
 		OSTB.getMiniGame().setCounter(60);
 		World world = WorldHandler.getWorld();
 		List<Player> players = ProPlugin.getPlayers();
@@ -280,8 +281,11 @@ public class Battles implements Listener {
 				return;
 			}
 		}
-		MessageHandler.alert("Starting next round...");
-		createArenas();
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			new TitleDisplayer(player, "&bNext Round", "&bStarting Soon").display();
+		}
+		startingNextRound = true;
+		OSTB.getMiniGame().setCounter(60);
 	}
 	
 	@EventHandler
