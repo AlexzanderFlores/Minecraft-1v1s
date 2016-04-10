@@ -11,21 +11,17 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 
 import ostb.OSTB;
 
 public class FileHandler {
 	public static void checkForUpdates() {
 		String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
-		Bukkit.getLogger().info("Path: " + path);
-		for(String plugin : new String [] {"OSTB.jar", "NPC_OSTB.jar", "EffectLib.jar", "ViaVersion.jar"}) {
+		for(String plugin : new String [] {"OSTB.jar","OSTB_Updater.jar", "NPC_OSTB.jar", "EffectLib.jar", "ViaVersion.jar"}) {
 			File file = new File(path + plugin);
-			Bukkit.getLogger().info(file.toString());
 			if(file.exists()) {
 				File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
 				if(update.exists()) {
-					Bukkit.getLogger().info("Deleting old jar");
 					delete(update);
 				}
 				copyFile(file, update);
