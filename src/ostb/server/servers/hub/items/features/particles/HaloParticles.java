@@ -69,7 +69,6 @@ public class HaloParticles extends FeatureBase {
 		SNOW_SHOVEL(22, "Shovel Snow Halo Particles", Rarity.COMMON, Material.SNOW_BLOCK),
 		SLIME(23, "Slime Halo Particles", Rarity.COMMON, Material.SLIME_BALL),
 		HEART(24, "Heart Halo Particles", Rarity.UNCOMMON, Material.RED_ROSE),
-		WATER_DROP(25, "Water Halo Particles", Rarity.COMMON, Material.WATER_BUCKET),
 		FIREWORKS_SPARK(25, "Firework Spark Halo Particles", Rarity.RARE, Material.FIREWORK),
 		NONE(33, "&cSet No Halo Particles", Rarity.COMMON, Material.BARRIER, false)
 		
