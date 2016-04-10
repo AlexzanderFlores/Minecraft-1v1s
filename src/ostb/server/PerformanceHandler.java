@@ -126,8 +126,7 @@ public class PerformanceHandler implements Listener {
 	public static double getMemory(boolean round) {
 		double total = Runtime.getRuntime().totalMemory() / (1024 * 1024);
 		double allocated = Runtime.getRuntime().maxMemory() / (1024 * 1024);
-		double value = (total * 100) / allocated;
-		return round ? new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue() : value;
+		return (int) (total * 100.0d / allocated + 0.5);
 	}
 	
 	public static String getUptimeString() {
