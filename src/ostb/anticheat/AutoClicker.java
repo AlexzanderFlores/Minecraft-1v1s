@@ -80,7 +80,8 @@ public class AutoClicker extends AntiCheat implements Listener {
 					log = logs.get(name);
 				}
 				if(++log >= 3) {
-					ban(player);
+					event.setCancelled(true);
+					//ban(player);
 				} else {
 					logs.put(name, log);
 				}
