@@ -39,7 +39,7 @@ public class ServerLogger implements Listener {
 		if(delete) {
 			DB.NETWORK_SERVER_STATUS.delete(keys, values);
 		} else {
-			int current = ProPlugin.getPlayers().size() + SpectatorHandler.getNumberOf();
+			int current = ProPlugin.getPlayers().size() + (SpectatorHandler.isEnabled() ? SpectatorHandler.getNumberOf() : 0);
 			GameStates gameState = null;
 			MiniGame miniGame = OSTB.getMiniGame();
 			if(miniGame != null) {
