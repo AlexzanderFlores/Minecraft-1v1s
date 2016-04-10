@@ -11,8 +11,26 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+
+import ostb.OSTB;
 
 public class FileHandler {
+	public static void checkForUpdates() {
+		String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
+		for(String plugin : new String [] {"OSTB.jar", "NPC_OSTB.jar", "EffectLib.jar", "ViaVersion.jar"}) {
+			File file = new File(path + plugin);
+			Bukkit.getLogger().info(file.getPath());
+			if(file.exists()) {
+				File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
+				if(update.exists()) {
+					delete(update);
+				}
+				copyFile(file, update);
+			}
+		}
+	}
+	
 	public static boolean isImage(String url) {
 		try {
 			return ImageIO.read(new URL(url)) != null;

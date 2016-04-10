@@ -47,6 +47,7 @@ import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.pregenerator.Pregenerator;
 import ostb.server.servers.slave.Slave;
 import ostb.server.servers.worker.Worker;
+import ostb.server.util.FileHandler;
 import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
 import ostb.staff.Punishment;
@@ -193,6 +194,7 @@ public class OSTB extends JavaPlugin {
 		} else if(plugin == Plugins.SLAVE && Slave.getServer() != null) {
 			Slave.getServer().shutdown();
 		}
+		FileHandler.checkForUpdates();
 	}
 	
 	private void addClassPath(URL url) throws IOException {

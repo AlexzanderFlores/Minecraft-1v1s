@@ -164,6 +164,10 @@ public class HaloParticles extends FeatureBase {
 						"&7Rarity: &e" + getRarity().getName(),
 						""
 					});
+					if(this == FIREWORKS_SPARK) {
+						item.addLore("&7Requires " + Ranks.PREMIUM.getPrefix());
+						item.addLore("");
+					}
 					Bukkit.getLogger().info("halo particles: getItem");
 				}
 			} else {
@@ -175,7 +179,14 @@ public class HaloParticles extends FeatureBase {
 					"&7Rarity: &e" + getRarity().getName(),
 					"",
 				});
+				if(this == FIREWORKS_SPARK) {
+					item.addLore("&7Requires " + Ranks.PREMIUM.getPrefix());
+					item.addLore("");
+				}
 			}
+			Bukkit.getLogger().info("");
+			Bukkit.getLogger().info(toString());
+			Bukkit.getLogger().info("");
 			return item.getItemStack();
 		}
 		
@@ -399,8 +410,12 @@ public class HaloParticles extends FeatureBase {
 				String name = event.getItemTitle();
 				final HaloParticleTypes type = getParticles(event.getSlot());
 				if(type != null && !(selected.containsKey(player.getName()) && selected.get(player.getName()) == type)) {
-					enable(player, type);
-					MessageHandler.sendMessage(player, "You have enabled &e" + ChatColor.stripColor(name));
+					if(type == HaloParticleTypes.FIREWORKS_SPARK && !Ranks.PREMIUM.hasRank(player)) {
+						MessageHandler.sendMessage(player, "&cThis Halo Particle requires at least " + Ranks.PREMIUM.getPrefix());
+					} else {
+						enable(player, type);
+						MessageHandler.sendMessage(player, "You have enabled &e" + ChatColor.stripColor(name));
+					}
 				}
 			}
 			event.setCancelled(true);
