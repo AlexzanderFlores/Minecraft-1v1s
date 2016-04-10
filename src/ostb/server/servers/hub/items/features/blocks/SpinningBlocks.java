@@ -27,7 +27,7 @@ import ostb.server.util.TimeUtil;
 
 @SuppressWarnings("deprecation")
 public class SpinningBlocks extends FeatureBase {
-	private static int max = 3;
+	private static int max = 7;
 	private static Map<String, Integer> owned = null;
 	private static Map<String, SpinBlockEntity> blocks = null;
 	

@@ -40,7 +40,7 @@ import ostb.server.util.TimeUtil;
 
 @SuppressWarnings("deprecation")
 public class HaloParticles extends FeatureBase {
-	private static int max = 22;
+	private static int max = 21;
 	private static Map<String, Integer> owned = null;
 	private static Map<String, HaloParticleTypes> selected = null;
 	private static Map<String, CircleUtil> circles = null;
