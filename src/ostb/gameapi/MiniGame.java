@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,6 +38,7 @@ public abstract class MiniGame extends ProPlugin {
 	private boolean playersHaveOneLife = true;
 	private boolean restartWithOnePlayerLeft = true;
 	private boolean updateTitleSidebar = true;
+	private GameMode spectatingMode = GameMode.CREATIVE;
 	private World lobby = null;
 	private World map = null;
 	public enum GameStates {
@@ -84,6 +86,7 @@ public abstract class MiniGame extends ProPlugin {
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
+		new AutoJoinHandler();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override
@@ -238,6 +241,14 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public void setRestartWithOnePlayerLeft(boolean restartWithOnePlayerLeft) {
 		this.restartWithOnePlayerLeft = restartWithOnePlayerLeft;
+	}
+	
+	public GameMode getSpectatingMode() {
+		return spectatingMode;
+	}
+	
+	public void setSpectatingMode(GameMode spectatingMode) {
+		this.spectatingMode = spectatingMode;
 	}
 	
 	public World getLobby() {

@@ -1,6 +1,5 @@
 package ostb.server;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -10,6 +9,7 @@ import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.SpectatorHandler;
 import ostb.server.util.EventUtil;
 
 public class ServerLogger implements Listener {
@@ -24,9 +24,8 @@ public class ServerLogger implements Listener {
 	}
 	
 	public static boolean updatePlayerCount() {
-		int size = Bukkit.getOnlinePlayers().size();
+		int size = ProPlugin.getPlayers().size();
 		if(players != size) {
-			players = size;
 			return true;
 		}
 		return false;
@@ -40,7 +39,7 @@ public class ServerLogger implements Listener {
 		if(delete) {
 			DB.NETWORK_SERVER_STATUS.delete(keys, values);
 		} else {
-			int current = Bukkit.getOnlinePlayers().size();
+			int current = ProPlugin.getPlayers().size() + SpectatorHandler.getNumberOf();
 			GameStates gameState = null;
 			MiniGame miniGame = OSTB.getMiniGame();
 			if(miniGame != null) {

@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,12 +41,13 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.player.PlayerSpectateEndEvent;
-import ostb.customevents.player.PlayerSpectateStartEvent;
+import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -60,14 +62,41 @@ public class SpectatorHandler implements Listener {
 	
 	public SpectatorHandler() {
 		spectators = new ArrayList<String>();
-		teleporter = new ItemCreator(Material.WATCH).setName("&6Teleport to Player").getItemStack();
+		teleporter = new ItemCreator(Material.WATCH).setName("&aTeleport to Player").getItemStack();
 		if(OSTB.getMiniGame() == null) {
-			exit = new ItemCreator(Material.GLOWSTONE_DUST).setName("&aExit Spectating").getItemStack();
+			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aExit Spectating").getItemStack();
 		} else {
-			exit = new ItemCreator(Material.GLOWSTONE_DUST).setName("&aReturn to Hub").getItemStack();
+			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aReturn to Hub").getItemStack();
 		}
-		nextGame = new ItemCreator(Material.DIAMOND).setName("&6Join Next Game").getItemStack();
+		nextGame = new ItemCreator(Material.DIAMOND_SWORD).setName("&aJoin Next Game").getItemStack();
 		enabled = true;
+		new CommandBase("toggleSpectator", 0, 1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				if(arguments.length == 0) {
+					if(sender instanceof Player) {
+						Player player = (Player) sender;
+						if(SpectatorHandler.contains(player)) {
+							SpectatorHandler.remove(player);
+						} else {
+							SpectatorHandler.add(player);
+						}
+					} else {
+						MessageHandler.sendPlayersOnly(sender);
+					}
+				} else if(arguments.length == 1) {
+					Player player = ProPlugin.getPlayer(arguments[0]);
+					if(player == null) {
+						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
+					} else if(SpectatorHandler.contains(player)) {
+						SpectatorHandler.remove(player);
+					} else {
+						SpectatorHandler.add(player);
+					}
+				}
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
 		EventUtil.register(this);
 	}
 	
@@ -77,12 +106,12 @@ public class SpectatorHandler implements Listener {
 	
 	public static void add(final Player player) {
 		if(!contains(player)) {
-			PlayerSpectateStartEvent playerSpectateStartEvent = new PlayerSpectateStartEvent(player);
+			PlayerSpectatorEvent playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.STARTING);
 			Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
 			if(!playerSpectateStartEvent.isCancelled()) {
+				spectators.add(player.getName());
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
-				spectators.add(player.getName());
 				player.getInventory().setItem(0, teleporter);
 				if(OSTB.getMiniGame() == null) {
 					player.getInventory().setItem(8, exit);
@@ -97,8 +126,6 @@ public class SpectatorHandler implements Listener {
 				player.getInventory().setHeldItemSlot(0);
 				for(Player online : Bukkit.getOnlinePlayers()) {
 					online.hidePlayer(player);
-					online.showPlayer(player);
-					online.hidePlayer(player);
 					if(contains(online)) {
 						player.hidePlayer(online);
 					}
@@ -107,19 +134,20 @@ public class SpectatorHandler implements Listener {
 					@Override
 					public void run() {
 						player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 10));
 					}
 				}, 20);
-				player.setGameMode(GameMode.CREATIVE);
+				player.setGameMode(OSTB.getMiniGame().getSpectatingMode());
 				player.setAllowFlight(true);
 				player.setFlying(true);
+				playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.ADDED);
+				Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
 			}
 		}
 	}
 	
 	public static void remove(Player player) {
 		if(contains(player)) {
-			PlayerSpectateEndEvent spectateEndEvent = new PlayerSpectateEndEvent(player);
+			PlayerSpectatorEvent spectateEndEvent = new PlayerSpectatorEvent(player, SpectatorState.END);
 			Bukkit.getPluginManager().callEvent(spectateEndEvent);
 			if(!spectateEndEvent.isCancelled()) {
 				spectators.remove(player.getName());
@@ -259,12 +287,14 @@ public class SpectatorHandler implements Listener {
 					if(inventory != null) {
 						player.openInventory(inventory);
 					}
-				} else if(item.getType() == Material.GLOWSTONE_DUST) {
+				} else if(item.getType() == Material.WOOD_DOOR) {
 					if(OSTB.getMiniGame() == null) {
 						remove(player);
 					} else {
 						ProPlugin.sendPlayerToServer(player, "hub");
 					}
+				} else if(item.getType() == Material.DIAMOND_SWORD) {
+					AutoJoinHandler.send(player);
 				}
 			}
 			event.setCancelled(true);

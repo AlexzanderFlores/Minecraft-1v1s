@@ -19,7 +19,8 @@ import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.customevents.player.PlayerSpectateStartEvent;
+import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -468,8 +469,8 @@ public class StatsHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerSpectateStart(PlayerSpectateStartEvent event) {
-		if(combatTagged != null) {
+	public void onPlayerSpectatorStart(PlayerSpectatorEvent event) {
+		if(event.getState() == SpectatorState.STARTING && combatTagged != null) {
 			combatTagged.remove(event.getPlayer().getName());
 		}
 	}

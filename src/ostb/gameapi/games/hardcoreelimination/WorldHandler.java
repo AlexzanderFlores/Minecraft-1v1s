@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
+import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.server.BiomeSwap;
 import ostb.server.util.FileHandler;
@@ -29,6 +30,7 @@ public class WorldHandler {
 			world = Bukkit.createWorld(new WorldCreator("world"));
 			FileHandler.delete(file);
 			FileHandler.delete(zip);
+			OSTB.getMiniGame().setMap(world);
 		}
 	}
 	

@@ -71,6 +71,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  toggleSpectator:
+    usage: /toggleSpectator
+
   sendCommand:
     usage: /sendCommand <server> <command>
 

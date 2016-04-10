@@ -4,17 +4,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerSpectateStartEvent extends Event {
+public class PlayerSpectatorEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;
     private boolean cancelled = false;
+    private SpectatorState state = null;
+    public enum SpectatorState {STARTING, ADDED, END}
  
-    public PlayerSpectateStartEvent(Player player) {
+    public PlayerSpectatorEvent(Player player, SpectatorState state) {
         this.player = player;
+        this.state = state;
     }
     
     public Player getPlayer() {
     	return player;
+    }
+    
+    public SpectatorState getState() {
+    	return state;
     }
     
     public boolean isCancelled() {

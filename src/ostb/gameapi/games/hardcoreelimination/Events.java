@@ -56,7 +56,7 @@ public class Events implements Listener {
 		if(ticks == 20) {
 			MiniGame game = OSTB.getMiniGame();
 			if(game.getGameState() == GameStates.STARTED) {
-				int counter = game.getCounter();
+				int counter = game.getCounter() + 1;
 				if(counter <= 0) {
 					HandlerList.unregisterAll(this);
 					new Battles();
@@ -117,7 +117,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		OSTB.getProPlugin().removeFlags();
-		OSTB.getMiniGame().setCounter(60 * 10 + 1);
+		OSTB.getMiniGame().setCounter(60 * 10);
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
