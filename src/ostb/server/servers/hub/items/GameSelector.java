@@ -25,6 +25,9 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.gameapi.AutoJoinHandler;
+import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB.Databases;
 import ostb.server.servers.hub.HubBase;
@@ -66,7 +69,7 @@ public class GameSelector extends HubItemBase {
 	@Override
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		ItemStack item = event.getItem();
 		String title = event.getTitle();
 		if(title.equals(ChatColor.stripColor(getName()))) {
@@ -78,6 +81,20 @@ public class GameSelector extends HubItemBase {
 		} else if(watching.containsKey(player.getName())) {
 			if(item.getType() == Material.WOOD_DOOR) {
 				openMenu(player);
+			} else if(item.getType() == Material.EYE_OF_ENDER) {
+				if(Ranks.PREMIUM.hasRank(player)) {
+					player.closeInventory();
+					new TitleDisplayer(player, "&bSearching...").display();
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							ProPlugin.sendPlayerToServer(player, AutoJoinHandler.getBestServer(watching.get(player.getName())));
+						}
+					}, 20);
+				} else {
+					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+				}
 			} else {
 				ProPlugin.sendPlayerToServer(player, ChatColor.stripColor(event.getItemTitle()));
 			}
