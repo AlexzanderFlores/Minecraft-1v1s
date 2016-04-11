@@ -12,16 +12,14 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class CowSlayer extends KitBase {
-	private static final int price = 450;
-	
 	public CowSlayer() {
 		super(Plugins.HE_KITS, new ItemCreator(Material.LEATHER).setName("Cow Slayer").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aFull Leather Armor",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

@@ -12,16 +12,14 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Miner extends KitBase {
-	private static final int price = 500;
-	
 	public Miner() {
 		super(Plugins.HE_KITS, new ItemCreator(Material.WOOD_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Pickaxe",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

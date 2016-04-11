@@ -12,16 +12,14 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Lumberjack extends KitBase {
-	private static final int price = 500;
-	
 	public Lumberjack() {
 		super(Plugins.HE_KITS, new ItemCreator(Material.WOOD_AXE).setName("Lumberjack").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Axe",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

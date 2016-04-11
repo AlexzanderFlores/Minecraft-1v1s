@@ -132,18 +132,18 @@ public abstract class KitBase implements Listener {
 				}
 			}
 		} else if(price > 0) {
-			if(CoinsHandler.getCoinsHandler(getPlugin()).getCoins(player) >= getPrice()) {
-				PlayerKitPurchaseEvent event = new PlayerKitPurchaseEvent(player, this);
-				Bukkit.getPluginManager().callEvent(event);
-				if(!event.isCancelled()) {
+			PlayerKitPurchaseEvent event = new PlayerKitPurchaseEvent(player, this);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				if(CoinsHandler.getCoinsHandler(getPlugin()).getCoins(player) >= getPrice()) {
 					giveKit(player);
-					MessageHandler.sendMessage(player, "Unlocked &e" + getName());
+					MessageHandler.sendMessage(player, "&6+1 Use for " + getName());
 					use(player);
 					CoinsHandler.getCoinsHandler(getPlugin()).addCoins(player, getPrice() * -1);
 					return true;
+				} else {
+					MessageHandler.sendMessage(player, "&cYou do not have enough coins for this kit");
 				}
-			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have enough coins for this kit");
 			}
 		} else {
 			MessageHandler.sendMessage(player, "&cYou cannot purchase this kit with coins");
@@ -170,7 +170,7 @@ public abstract class KitBase implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				String game = OSTB.getPlugin().toString();
+				String game = plugin.toString();
 				String [] keys = new String [] {"uuid", "game"};
 				String [] values = new String [] {uuid.toString(), game};
 				if(DB.PLAYERS_DEFAULT_KITS.isKeySet(keys, values)) {
@@ -195,9 +195,9 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public ItemStack getIcon(Player player) {
-		boolean own = owns(player);
-		String name = (own ? "&b" : "&c") + getName() + " " + (own ? "&a" + UnicodeUtil.getUnicode("2714") : "&4" + UnicodeUtil.getUnicode("2716"));
-		String lore = "&7Status: " + (own ? "&bUnlocked" : "&cLocked");
+		boolean owns = owns(player);
+		String name = (owns ? "&b" : "&c") + getName() + " " + (owns ? "&a" + UnicodeUtil.getUnicode("2714") : "&4" + UnicodeUtil.getUnicode("2716"));
+		String lore = "&7Status: " + (owns ? "&aUnlocked" : "&cLocked");
 		return new ItemCreator(icon.clone()).setName(name).addLore(lore).getItemStack();
 	}
 	

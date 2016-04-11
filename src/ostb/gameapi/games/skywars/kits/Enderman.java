@@ -14,7 +14,6 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Enderman extends KitBase {
-	private static final int price = 1000;
 	private static boolean enabled = false;
 	
 	public Enderman() {
@@ -23,8 +22,8 @@ public class Enderman extends KitBase {
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTake no Enderpearl Damage",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

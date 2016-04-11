@@ -13,7 +13,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class Pyro extends KitBase {
 	private static final int amount = 2;
-	private static final int price = 600;
 	
 	public Pyro() {
 		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.FLINT_AND_STEEL).setName("Pyro").setLores(new String [] {
@@ -21,8 +20,8 @@ public class Pyro extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Flint and Steel (4 uses)",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

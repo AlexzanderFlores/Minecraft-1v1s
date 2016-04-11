@@ -13,7 +13,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class Archer extends KitBase {
 	private static final int amount = 6;
-	private static final int price = 1000;
 	
 	public Archer() {
 		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.BOW).setName("Archer").setLores(new String [] {
@@ -22,8 +21,8 @@ public class Archer extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aBow",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Arrows",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price, 19);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1, 19);
 	}
 
 	@Override

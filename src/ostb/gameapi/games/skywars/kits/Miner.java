@@ -12,8 +12,6 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Miner extends KitBase {
-	private static final int price = 1000;
-	
 	public Miner() {
 		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.WOOD_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
@@ -23,8 +21,8 @@ public class Miner extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Axe",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Shovel",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

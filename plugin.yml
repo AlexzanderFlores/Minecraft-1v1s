@@ -71,6 +71,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  addCoins:
+    usage: /addCoins <name> <game> <amount>
+
   toggleSpectator:
     usage: /toggleSpectator
 

@@ -40,7 +40,7 @@ public class SkyWarsShop implements Listener {
 	
 	public SkyWarsShop() {
 		name = "Shop - Sky Wars";
-		permission = "kit.sky_wars";
+		permission = "kit.sky_wars.";
 		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO);
 		new SkyWarsCrate();
 		new Archer();

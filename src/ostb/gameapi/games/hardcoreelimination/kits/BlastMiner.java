@@ -19,7 +19,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class BlastMiner extends KitBase {
 	private static final int amount = 3;
-	private static final int price = 1200;
 	
 	public BlastMiner() {
 		super(Plugins.HE_KITS, new ItemCreator(Material.TNT).setName("Blast Miner").setLores(new String [] {
@@ -31,8 +30,8 @@ public class BlastMiner extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT cannot damage players",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT only explodes during grace period",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

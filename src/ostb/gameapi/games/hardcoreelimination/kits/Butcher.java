@@ -26,7 +26,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class Butcher extends KitBase {
 	private static final int amount = 5;
-	private static final int price = 450;
 	private List<Pig> pigs = null;
 	
 	public Butcher() {
@@ -35,8 +34,8 @@ public class Butcher extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Pigs spawn near you",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price, 20);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1, 20);
 	}
 
 	@Override

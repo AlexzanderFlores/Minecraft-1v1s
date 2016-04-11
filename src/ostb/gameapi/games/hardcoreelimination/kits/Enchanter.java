@@ -12,8 +12,6 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Enchanter extends KitBase {
-	private static final int price = 1000;
-	
 	public Enchanter() {
 		super(Plugins.HE_KITS, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
 			"",
@@ -21,8 +19,8 @@ public class Enchanter extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a3 Sugar Cane",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a1 Leather",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price, 29);
+			"&7Unlocked in &bHardcore Elimination Crate"
+		}).getItemStack(), -1, 29);
 	}
 
 	@Override

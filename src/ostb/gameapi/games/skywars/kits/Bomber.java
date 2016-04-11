@@ -21,7 +21,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class Bomber extends KitBase implements Listener {
 	private static final int amount = 2;
-	private static final int price = 875;
 	private static boolean enabled = false;
 	
 	public Bomber() {
@@ -34,8 +33,8 @@ public class Bomber extends KitBase implements Listener {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aLeft click will throw TNT",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aPlacing will place primed TNT",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

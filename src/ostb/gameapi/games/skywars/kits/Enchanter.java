@@ -13,7 +13,6 @@ import ostb.server.util.UnicodeUtil;
 
 public class Enchanter extends KitBase {
 	private static final int amount = 16;
-	private static final int price = 750;
 	
 	public Enchanter() {
 		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
@@ -21,8 +20,8 @@ public class Enchanter extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Exp Bottles",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override

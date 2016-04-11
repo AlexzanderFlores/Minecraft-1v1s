@@ -6,15 +6,18 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -32,6 +35,35 @@ public class CoinsHandler implements Listener {
 			//this.plugin = plugin;
 			coins = new HashMap<String, Integer>();
 			handlers.put(plugin, this);
+			new CommandBase("addCoins", 3) {
+				@Override
+				public boolean execute(CommandSender sender, String [] arguments) {
+					String name = arguments[0];
+					String game = arguments[1];
+					int amount = Integer.valueOf(arguments[2]);
+					Plugins plugin = null;
+					try {
+						plugin = Plugins.valueOf(game);
+					} catch(Exception e) {
+						for(Plugins plugins : Plugins.values()) {
+							MessageHandler.sendMessage(sender, plugins.toString());
+						}
+						return true;
+					}
+					if(handlers.containsKey(plugin)) {
+						Player player = ProPlugin.getPlayer(name);
+						if(player == null) {
+							MessageHandler.sendMessage(sender, "&c" + name + " is not online");
+						} else {
+							CoinsHandler handler = handlers.get(plugin);
+							handler.addCoins(player, amount);
+						}
+					} else {
+						MessageHandler.sendMessage(sender, "&cThere is no handler for " + plugin.toString());
+					}
+					return true;
+				}
+			};
 			EventUtil.register(this);
 		}
 	}

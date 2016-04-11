@@ -37,7 +37,7 @@ public class HardcoreEliminationShop implements Listener {
 	
 	public HardcoreEliminationShop() {
 		name = "Shop - Hardcore Elimination";
-		permission = "kit.hardcore_elimination";
+		permission = "kit.hardcore_elimination.";
 		new CoinsHandler(DB.PLAYERS_COINS_HE, Plugins.HE_KITS);
 		new HardcoreEliminationCrate();
 		new Butcher();

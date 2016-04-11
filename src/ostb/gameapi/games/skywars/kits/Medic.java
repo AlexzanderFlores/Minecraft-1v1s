@@ -14,7 +14,6 @@ import ostb.server.util.UnicodeUtil;
 @SuppressWarnings("deprecation")
 public class Medic extends KitBase {
 	private static final int amount = 2;
-	private static final int price = 800;
 	
 	public Medic() {
 		super(Plugins.SKY_WARS_SOLO, new ItemCreator(new Potion(PotionType.REGEN, 1, true).toItemStack(1)).setName("Medic").setLores(new String [] {
@@ -22,8 +21,8 @@ public class Medic extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Splash Regen Potions",
 			"",
-			"&7Coins: &a" + price
-		}).getItemStack(), price);
+			"&7Unlocked in &bSky Wars Crate"
+		}).getItemStack(), -1);
 	}
 
 	@Override
