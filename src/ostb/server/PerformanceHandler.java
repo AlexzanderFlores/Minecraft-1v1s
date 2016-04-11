@@ -83,15 +83,9 @@ public class PerformanceHandler implements Listener {
 			}
 		};
 		final List<Integer> counters = new ArrayList<Integer>();
-		counters.add(1);
-		counters.add(2);
-		counters.add(3);
-		counters.add(5);
-		counters.add(10);
-		counters.add(11);
-		counters.add(15);
-		counters.add(17);
-		counters.add(20);
+		for(int a = 1; a <= 20; ++a) {
+			counters.add(a);
+		}
 		counters.add(20 * 2);
 		counters.add(20 * 5);
 		counters.add(20 * 10);

@@ -29,6 +29,8 @@ public class CrateBase implements Listener {
 	private List<ItemStack> items = null;
 	private int glassSpeed = 2;
 	private int tickSpeed = 2;
+	private int start = 20;
+	private int end = 25;
 	private float pitch = 1000.0f;
 	
 	public CrateBase(Player player, String  title, List<ItemStack> items) {
@@ -39,6 +41,7 @@ public class CrateBase implements Listener {
 		this.items = items;
 		Inventory inventory = Bukkit.createInventory(player, 9 * 5, title);
 		inventory.setItem(13, new ItemCreator(Material.HOPPER).setName(" ").getItemStack());
+		inventory.setItem(31, new ItemCreator(Material.LONG_GRASS, 2).setName(" ").getItemStack());
 		player.openInventory(inventory);
 		EventUtil.register(this);
 	}
@@ -77,10 +80,11 @@ public class CrateBase implements Listener {
 		long ticks = event.getTicks();
 		if(ticks == glassSpeed) {
 			placeGlass();
-		} else if(ticks == tickSpeed) {
+		}
+		if(ticks == tickSpeed) {
 			InventoryView inventoryView = player.getOpenInventory();
 			if(inventoryView != null && inventoryView.getTitle().equals(title)) {
-				for(int a = 20; a < 25; ++a) {
+				for(int a = start; a < end; ++a) {
 					inventoryView.setItem(a, items.get(random.nextInt(items.size())));
 				}
 			}
@@ -89,8 +93,7 @@ public class CrateBase implements Listener {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getPlayer() instanceof Player) {
-			Player player = (Player) event.getPlayer();
+		if(event.getPlayer().getName().equals(this.player.getName())) {
 			InventoryView inventoryView = player.getOpenInventory();
 			if(inventoryView != null && inventoryView.getTitle().equals(title)) {
 				remove();

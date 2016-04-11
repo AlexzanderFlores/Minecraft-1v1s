@@ -128,6 +128,7 @@ public class SkyWarsCrate implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
+		Bukkit.getLogger().info(event.getTitle() + " vs " + name);
 		if(event.getTitle().equals(name)) {
 			
 			event.setCancelled(true);
