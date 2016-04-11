@@ -3,6 +3,7 @@ package ostb.gameapi.shops;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
@@ -31,10 +33,16 @@ public class HardcoreEliminationCrate implements Listener {
 	private static String name = null;
 	private static List<String> delayed = null;
 	private static final int cost = 50;
+	private static List<ItemStack> items = null;
 	
 	public HardcoreEliminationCrate() {
 		name = "Hardcore Elimination Crate";
 		delayed = new ArrayList<String>();
+		items = new ArrayList<ItemStack>();
+		Random random = new Random();
+		for(int a = 0; a < 40; ++a) {
+			items.add(new ItemStack(Material.values()[random.nextInt(Material.values().length)]));
+		}
 		EventUtil.register(this);
 	}
 	
@@ -132,14 +140,14 @@ public class HardcoreEliminationCrate implements Listener {
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
-							//TODO: Run
-							EffectUtil.playSound(player, Sound.LEVEL_UP);
+							new CrateBase(player, name, items);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
 					}
 				} else if(event.getClickType() == ClickType.MIDDLE) {
 					//TODO: Display item options and rarities
+					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.HE_KITS);
 					int coins = coinsHandler.getCoins(player);
