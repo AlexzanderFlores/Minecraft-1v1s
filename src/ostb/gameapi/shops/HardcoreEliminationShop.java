@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination;
+package ostb.gameapi.shops;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

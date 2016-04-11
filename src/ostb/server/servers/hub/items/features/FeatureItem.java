@@ -6,8 +6,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationCrate;
-import ostb.gameapi.games.skywars.SkyWarsCrate;
+import ostb.gameapi.shops.HardcoreEliminationCrate;
+import ostb.gameapi.shops.SkyWarsCrate;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features.Rarity;

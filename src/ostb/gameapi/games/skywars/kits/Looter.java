@@ -13,7 +13,7 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.games.skywars.Events;
-import ostb.gameapi.games.skywars.SkyWarsShop;
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;

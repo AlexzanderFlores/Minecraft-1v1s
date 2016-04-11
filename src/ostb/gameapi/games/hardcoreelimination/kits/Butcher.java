@@ -18,7 +18,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import ostb.OSTB.Plugins;
 import ostb.customevents.game.PostGameStartEvent;
 import ostb.gameapi.KitBase;
-import ostb.gameapi.games.skywars.SkyWarsShop;
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;

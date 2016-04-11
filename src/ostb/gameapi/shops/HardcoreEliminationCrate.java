@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination;
+package ostb.gameapi.shops;
 
 import java.util.ArrayList;
 import java.util.Calendar;

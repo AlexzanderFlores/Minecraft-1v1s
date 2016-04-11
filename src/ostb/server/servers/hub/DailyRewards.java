@@ -116,7 +116,7 @@ public class DailyRewards implements Listener {
 						"",
 						"&7Break a chest to restock its contents",
 						"&7Does not load if the Looter kit is selected",
-						"&7Max of 1 user per game",
+						"&7Max of 1 use per game",
 						""
 					}).getItemStack());
 					

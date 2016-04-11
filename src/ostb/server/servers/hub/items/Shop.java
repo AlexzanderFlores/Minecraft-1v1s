@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.games.hardcoreelimination.HardcoreEliminationShop;
-import ostb.gameapi.games.skywars.SkyWarsShop;
+import ostb.gameapi.shops.HardcoreEliminationShop;
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;

@@ -1,4 +1,4 @@
-package ostb.gameapi.games.skywars;
+package ostb.gameapi.shops;
 
 import java.util.ArrayList;
 import java.util.Calendar;

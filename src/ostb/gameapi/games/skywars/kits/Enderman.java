@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import ostb.OSTB.Plugins;
 import ostb.gameapi.KitBase;
-import ostb.gameapi.games.skywars.SkyWarsShop;
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;

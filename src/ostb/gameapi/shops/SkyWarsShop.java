@@ -1,4 +1,4 @@
-package ostb.gameapi.games.skywars;
+package ostb.gameapi.shops;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
