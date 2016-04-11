@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
-import npc.ostb.NPCEntity;
+import npc.NPCEntity;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
 import ostb.server.DB;

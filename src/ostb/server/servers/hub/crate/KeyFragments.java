@@ -17,11 +17,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import npc.ostb.NPCEntity;
-import npc.ostb.util.DelayedTask;
+import npc.NPCEntity;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;

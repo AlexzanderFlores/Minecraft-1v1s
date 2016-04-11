@@ -22,13 +22,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import npc.ostb.util.EventUtil;
 import ostb.OSTB;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ImageMap;
 

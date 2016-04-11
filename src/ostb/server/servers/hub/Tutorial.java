@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import npc.ostb.NPCEntity;
+import npc.NPCEntity;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 

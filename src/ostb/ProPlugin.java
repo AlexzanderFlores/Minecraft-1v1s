@@ -71,7 +71,7 @@ import com.google.common.io.ByteStreams;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
 import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand.EnumClientCommand;
-import npc.ostb.NPCRegistrationHandler.NPCs;
+import npc.NPCRegistrationHandler.NPCs;
 import ostb.OSTB.Plugins;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
@@ -1086,8 +1086,12 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		for(World world : Bukkit.getWorlds()) {
 			String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/";
 			Bukkit.unloadWorld(world, false);
-			FileHandler.delete(new File(path + "playerdata"));
-			FileHandler.delete(new File(path + "stats"));
+			try {
+				FileHandler.delete(new File(path + "playerdata"));
+				FileHandler.delete(new File(path + "stats"));
+			} catch(Exception e) {
+				
+			}
 		}
 		if(importedWorlds != null && OSTB.getPlugin() != Plugins.BUILDING) {
 			for(String world : importedWorlds) {

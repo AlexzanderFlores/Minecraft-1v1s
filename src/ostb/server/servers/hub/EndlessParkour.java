@@ -157,29 +157,31 @@ public class EndlessParkour implements Listener {
 				player.teleport(ParkourNPC.getEndlessLocation());
 			}
 		}
-		final int score = scores.get(name);
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				UUID uuid = player.getUniqueId();
-				int bestScore = DB.HUB_PARKOUR_ENDLESS_SCORES.getInt("uuid", uuid.toString(), "best_score");
-				if(score > bestScore) {
-					if(DB.HUB_PARKOUR_ENDLESS_SCORES.isUUIDSet(uuid)) {
-						DB.HUB_PARKOUR_ENDLESS_SCORES.updateInt("best_score", score, "uuid", uuid.toString());
+		if(scores.containsKey(name)) {
+			final int score = scores.get(name);
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					UUID uuid = player.getUniqueId();
+					int bestScore = DB.HUB_PARKOUR_ENDLESS_SCORES.getInt("uuid", uuid.toString(), "best_score");
+					if(score > bestScore) {
+						if(DB.HUB_PARKOUR_ENDLESS_SCORES.isUUIDSet(uuid)) {
+							DB.HUB_PARKOUR_ENDLESS_SCORES.updateInt("best_score", score, "uuid", uuid.toString());
+						} else {
+							DB.HUB_PARKOUR_ENDLESS_SCORES.insert("'" + uuid.toString() + "', '" + score + "'");
+						}
+						MessageHandler.sendMessage(player, "&6New Personal Best: &e" + score);
+						List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1, true);
+						if(!top.isEmpty() && top.get(0).equals(uuid.toString())) {
+							MessageHandler.sendMessage(player, "&4&k|||&6 New Top Score: &e" + score + " &4&k|||");
+						}
 					} else {
-						DB.HUB_PARKOUR_ENDLESS_SCORES.insert("'" + uuid.toString() + "', '" + score + "'");
+						MessageHandler.sendMessage(player, "Your score: &e" + score);
 					}
-					MessageHandler.sendMessage(player, "&6New Personal Best: &e" + score);
-					List<String> top = DB.HUB_PARKOUR_ENDLESS_SCORES.getOrdered("best_score", "uuid", 1, true);
-					if(!top.isEmpty() && top.get(0).equals(uuid.toString())) {
-						MessageHandler.sendMessage(player, "&4&k|||&6 New Top Score: &e" + score + " &4&k|||");
-					}
-				} else {
-					MessageHandler.sendMessage(player, "Your score: &e" + score);
 				}
-			}
-		});
-		scores.remove(name);
+			});
+			scores.remove(name);
+		}
 		if(scoreboards.containsKey(name)) {
 			scoreboards.get(name).remove();
 			scoreboards.remove(name);

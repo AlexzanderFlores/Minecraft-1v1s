@@ -13,10 +13,10 @@ import org.bukkit.event.Listener;
 
 import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
-import npc.ostb.util.DelayedTask;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;

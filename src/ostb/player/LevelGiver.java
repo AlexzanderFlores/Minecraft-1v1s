@@ -6,10 +6,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import npc.ostb.util.EventUtil;
 import ostb.customevents.TimeEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.server.util.EffectUtil;
+import ostb.server.util.EventUtil;
 
 public class LevelGiver implements Listener {
 	private final Player player;

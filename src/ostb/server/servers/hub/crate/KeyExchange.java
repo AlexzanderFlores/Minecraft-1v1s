@@ -10,7 +10,7 @@ import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import npc.ostb.NPCEntity;
+import npc.NPCEntity;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
 import ostb.server.util.EffectUtil;

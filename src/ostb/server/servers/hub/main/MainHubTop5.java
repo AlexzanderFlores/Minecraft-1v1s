@@ -18,7 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import npc.ostb.NPCEntity;
+import npc.NPCEntity;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.player.MessageHandler;
