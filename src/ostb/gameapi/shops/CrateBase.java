@@ -19,42 +19,41 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ItemCreator;
 
 public class CrateBase implements Listener {
-	private static int [] slots = null;
-	private static Random random = new Random();
+	private int [] slots = null;
+	private Random random = new Random();
 	private Player player = null;
 	private String  title = null;
 	private List<ItemStack> items = null;
-	private int glassSpeed = 5;
-	private int tickSpeed = 20;
-	private float pitch = 100.0f;
+	private int glassSpeed = 2;
+	private int tickSpeed = 2;
+	private float pitch = 1000.0f;
 	
 	public CrateBase(Player player, String  title, List<ItemStack> items) {
-		if(slots == null) {
-			slots = new int [] {0, 1, 2, 3, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
-			random = new Random();
-		}
+		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
+		random = new Random();
 		this.player = player;
 		this.title = title;
 		this.items = items;
-		Inventory inventory = Bukkit.createInventory(player, 9 * 3, title);
+		Inventory inventory = Bukkit.createInventory(player, 9 * 5, title);
+		inventory.setItem(13, new ItemCreator(Material.HOPPER).setName(" ").getItemStack());
 		player.openInventory(inventory);
 		EventUtil.register(this);
 	}
 	
 	private void remove() {
 		HandlerList.unregisterAll(this);
+		slots = null;
+		random = null;
 		InventoryView inventoryView = player.getOpenInventory();
 		if(inventoryView.getTitle().equals(title)) {
 			player.closeInventory();
 		}
 		player = null;
 		title = null;
-		if(items != null) {
-			items.clear();
-			items = null;
-		}
+		items = null;
 	}
 	
 	public List<ItemStack> getItems() {
@@ -66,7 +65,7 @@ public class CrateBase implements Listener {
 		if(inventoryView != null && inventoryView.getTitle().equals(title)) {
 			EffectUtil.playSound(player, Sound.NOTE_PIANO, pitch);
 			for(int slot : slots) {
-				inventoryView.setItem(slot, new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) random.nextInt(15)));
+				inventoryView.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, random.nextInt(15)).setName(" ").getItemStack());
 			}
 		} else {
 			remove();
@@ -79,7 +78,12 @@ public class CrateBase implements Listener {
 		if(ticks == glassSpeed) {
 			placeGlass();
 		} else if(ticks == tickSpeed) {
-			
+			InventoryView inventoryView = player.getOpenInventory();
+			if(inventoryView != null && inventoryView.getTitle().equals(title)) {
+				for(int a = 20; a < 25; ++a) {
+					inventoryView.setItem(a, items.get(random.nextInt(items.size())));
+				}
+			}
 		}
 	}
 	

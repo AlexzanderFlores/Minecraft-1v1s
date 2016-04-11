@@ -41,7 +41,11 @@ public class HardcoreEliminationCrate implements Listener {
 		items = new ArrayList<ItemStack>();
 		Random random = new Random();
 		for(int a = 0; a < 40; ++a) {
-			items.add(new ItemStack(Material.values()[random.nextInt(Material.values().length)]));
+			Material material = null;
+			do {
+				material = Material.values()[random.nextInt(Material.values().length)];
+			} while(!material.isBlock() || material == Material.AIR);
+			items.add(new ItemStack(material));
 		}
 		EventUtil.register(this);
 	}
@@ -102,18 +106,20 @@ public class HardcoreEliminationCrate implements Listener {
 		return DB.HUB_HE_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
 	}
 	
-	public static void giveKey(final Player player, final int toAdd) {
+	public static void giveKey(final UUID uuid, final int toAdd) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				UUID uuid = player.getUniqueId();
 				if(DB.HUB_HE_CRATE_KEYS.isUUIDSet(uuid)) {
 					int amount = DB.HUB_HE_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
 					DB.HUB_HE_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
 				} else {
 					DB.HUB_HE_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
 				}
-				updateItem(player);
+				Player player = Bukkit.getPlayer(uuid);
+				if(player != null) {
+					updateItem(player);
+				}
 				Bukkit.getLogger().info("hardcore elimination crate: give key");
 			}
 		});
@@ -140,7 +146,7 @@ public class HardcoreEliminationCrate implements Listener {
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
-							new CrateBase(player, name, items);
+							new CrateBase(player, HardcoreEliminationCrate.name, items);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
@@ -153,7 +159,7 @@ public class HardcoreEliminationCrate implements Listener {
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
-						giveKey(player, 1);
+						giveKey(player.getUniqueId(), 1);
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);

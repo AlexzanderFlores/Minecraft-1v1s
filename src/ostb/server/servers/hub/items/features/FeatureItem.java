@@ -68,11 +68,11 @@ public class FeatureItem {
 			return;
 		}
 		if(getName().equals(Beacon.getSkyWarsCrateKey())) {
-			SkyWarsCrate.giveKey(player, 1);
+			SkyWarsCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}
 		if(getName().equals(Beacon.getHardcoreEliminationCrateKey())) {
-			HardcoreEliminationCrate.giveKey(player, 1);
+			HardcoreEliminationCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
