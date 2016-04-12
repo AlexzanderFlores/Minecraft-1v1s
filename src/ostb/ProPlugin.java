@@ -753,30 +753,17 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		if(restarting) {
 			event.setKickMessage("This server is currently restarting");
 			event.setResult(Result.KICK_OTHER);
-		} else if(ProPlugin.isServerFull() && Ranks.PREMIUM.hasRank(player)) {
-			//TODO: Write different logic 
-			/*if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getJoiningPreGame()) {
-				if(SpectatorHandler.isEnabled() && Ranks.ELITE.hasRank(player)) {
-					for(Player spectator : SpectatorHandler.getPlayers()) {
-						if(!Ranks.PRO.hasRank(spectator)) {
-							MessageHandler.sendMessage(spectator, "You've been moved to the hub to make room for a " + AccountHandler.getRank(player).getPrefix());
-							ProPlugin.sendPlayerToServer(spectator, "hub");
-							event.setResult(Result.ALLOWED);
-							return;
-						}
-					}
-				}
-				return;
-			}
+		} else if(ProPlugin.isServerFull() && Ranks.PREMIUM.hasRank(player) && OSTB.getMiniGame().getJoiningPreGame()) {
 			for(Player online : Bukkit.getOnlinePlayers()) {
-				if(!Ranks.PRO.hasRank(online, true)) {
-					MessageHandler.sendMessage(online, "You've been moved to the hub to make room for a " + AccountHandler.getRank(player).getPrefix());
+				if(!Ranks.PREMIUM.hasRank(online)) {
+					MessageHandler.sendMessage(online, "You were moved to the hub to make room for a " + AccountHandler.getRank(player).getPrefix());
+					MessageHandler.sendMessage(online, "Avoid this with a rank: &b/buy");
 					ProPlugin.sendPlayerToServer(online, "hub");
 					event.setResult(Result.ALLOWED);
 					return;
 				}
 			}
-			event.setResult(Result.KICK_FULL);*/
+			event.setResult(Result.KICK_FULL);
 		}
 	}
 	
