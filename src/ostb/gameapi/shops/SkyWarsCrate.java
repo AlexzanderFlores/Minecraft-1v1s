@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.KitBase;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -147,7 +148,14 @@ public class SkyWarsCrate implements Listener {
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
+							List<ItemStack> items = new ArrayList<ItemStack>();
+							for(KitBase kit : KitBase.getKits()) {
+								if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
+									items.add(new ItemCreator(kit.getIcon()).setName("&b" + kit.getIcon().getItemMeta().getDisplayName()).setLores(new String [] {}).getItemStack());
+								}
+							}
 							new CrateBase(player, SkyWarsCrate.name, items);
+							items = null;
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}

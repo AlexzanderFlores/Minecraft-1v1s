@@ -152,7 +152,9 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public void giveKit(Player player) {
-		if(!owns(player)) {
+		if(owns(player)) {
+			MessageHandler.sendMessage(player, "&cYou already own &e" + getName());
+		} else {
 			final UUID uuid = player.getUniqueId();
 			new AsyncDelayedTask(new Runnable() {
 				@Override
@@ -161,6 +163,7 @@ public abstract class KitBase implements Listener {
 				}
 			});
 			unlocked.put(player.getName(), true);
+			MessageHandler.sendMessage(player, "You unlocked &e" + getName());
 			Bukkit.getPluginManager().callEvent(new PlayerPostKitPurchaseEvent(player, this));
 		}
 	}

@@ -3,7 +3,6 @@ package ostb.gameapi.shops;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.KitBase;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -33,20 +33,10 @@ public class HardcoreEliminationCrate implements Listener {
 	private static String name = null;
 	private static List<String> delayed = null;
 	private static final int cost = 50;
-	private static List<ItemStack> items = null;
 	
 	public HardcoreEliminationCrate() {
 		name = "Hardcore Elimination Crate";
 		delayed = new ArrayList<String>();
-		items = new ArrayList<ItemStack>();
-		Random random = new Random();
-		for(int a = 0; a < 40; ++a) {
-			Material material = null;
-			do {
-				material = Material.values()[random.nextInt(Material.values().length)];
-			} while(!material.isBlock() || material == Material.AIR);
-			items.add(new ItemStack(material));
-		}
 		EventUtil.register(this);
 	}
 	
@@ -146,7 +136,14 @@ public class HardcoreEliminationCrate implements Listener {
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
+							List<ItemStack> items = new ArrayList<ItemStack>();
+							for(KitBase kit : KitBase.getKits()) {
+								if(kit.getPlugin() == Plugins.HE_KITS) {
+									items.add(new ItemCreator(kit.getIcon()).setName("&b" + kit.getIcon().getItemMeta().getDisplayName()).setLores(new String [] {}).getItemStack());
+								}
+							}
 							new CrateBase(player, HardcoreEliminationCrate.name, items);
+							items = null;
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
