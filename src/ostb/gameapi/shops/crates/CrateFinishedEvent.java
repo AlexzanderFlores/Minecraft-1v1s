@@ -5,13 +5,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import ostb.OSTB.Plugins;
+import ostb.server.servers.hub.items.features.FeatureItem;
 
 public class CrateFinishedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player= null;
     private Plugins plugin = null;
+    private FeatureItem won = null;
     
-    public CrateFinishedEvent(Player player, Plugins plugin) {
+    public CrateFinishedEvent(Player player, Plugins plugin, FeatureItem won) {
     	this.player = player;
     	this.plugin = plugin;
     }
@@ -22,6 +24,10 @@ public class CrateFinishedEvent extends Event {
     
     public Plugins getPlugin() {
     	return this.plugin;
+    }
+    
+    public FeatureItem getItemWon() {
+    	return this.won;
     }
  
     @Override

@@ -48,6 +48,7 @@ public class AntiCheat {
 			new AutoCritFix();
 			new AttackThroughWalls();
 			new AttackDistanceLogger();
+			new AntiNoSlow();
 		}
 		new InventoryKillAuraDetection();
 		new HeadlessFix();

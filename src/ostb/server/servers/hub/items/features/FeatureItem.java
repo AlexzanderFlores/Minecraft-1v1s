@@ -16,6 +16,7 @@ import ostb.server.servers.hub.items.features.blocks.SpinningBlocks.SpinBlock;
 import ostb.server.servers.hub.items.features.particles.ArrowTrails.ArrowTrailParticleTypes;
 import ostb.server.servers.hub.items.features.particles.HaloParticles.HaloParticleTypes;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
+import ostb.server.util.ItemCreator;
 
 public class FeatureItem {
 	private static List<FeatureItem> items = null;
@@ -25,7 +26,7 @@ public class FeatureItem {
 	
 	public FeatureItem(String name, ItemStack itemStack, Rarity rarity) {
 		this.name = name;
-		this.itemStack = itemStack;
+		this.itemStack = new ItemCreator(itemStack).setName(name).getItemStack();
 		this.rarity = rarity;
 		if(items == null) {
 			items = new ArrayList<FeatureItem>();

@@ -3,7 +3,6 @@ package ostb.gameapi.shops.crates;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -24,6 +23,8 @@ import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
+import ostb.server.servers.hub.items.Features.Rarity;
+import ostb.server.servers.hub.items.features.FeatureItem;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -34,21 +35,13 @@ import ostb.server.util.StringUtil;
 public class SkyWarsCrate implements Listener {
 	private static String name = null;
 	private static List<String> delayed = null;
+	private static List<FeatureItem> features = null;
 	private static final int cost = 50;
-	private static List<ItemStack> items = null;
 	
 	public SkyWarsCrate() {
 		name = "Sky Wars Crate";
 		delayed = new ArrayList<String>();
-		items = new ArrayList<ItemStack>();
-		Random random = new Random();
-		for(int a = 0; a < 40; ++a) {
-			Material material = null;
-			do {
-				material = Material.values()[random.nextInt(Material.values().length)];
-			} while(!material.isBlock() || material == Material.AIR);
-			items.add(new ItemStack(material));
-		}
+		features = new ArrayList<FeatureItem>();
 		EventUtil.register(this);
 	}
 	
@@ -127,6 +120,22 @@ public class SkyWarsCrate implements Listener {
 		});
 	}
 	
+	private void populateFeatures() {
+		if(features.isEmpty()) {
+			for(KitBase kit : KitBase.getKits()) {
+				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
+					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity()));
+				}
+			}
+			features.add(new FeatureItem("&b15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
+			features.add(new FeatureItem("&b25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
+			features.add(new FeatureItem("&b35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
+			features.add(new FeatureItem("&b45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
+			features.add(new FeatureItem("&b60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
+			features.add(new FeatureItem("&b80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
+		}
+	}
+	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
@@ -145,20 +154,15 @@ public class SkyWarsCrate implements Listener {
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
-							List<ItemStack> items = new ArrayList<ItemStack>();
-							for(KitBase kit : KitBase.getKits()) {
-								if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
-									items.add(new ItemCreator(kit.getIcon()).setName("&b" + kit.getIcon().getItemMeta().getDisplayName()).setLores(new String [] {}).getItemStack());
-								}
-							}
-							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.name, items);
-							items = null;
+							populateFeatures();
+							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.name, features);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
 					}
 				} else if(event.getClickType() == ClickType.MIDDLE) {
 					//TODO: Display item options and rarities
+					populateFeatures();
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO);
@@ -180,7 +184,20 @@ public class SkyWarsCrate implements Listener {
 	public void onCrateFinished(CrateFinishedEvent event) {
 		if(event.getPlugin() == Plugins.SKY_WARS_SOLO) {
 			Player player = event.getPlayer();
+			FeatureItem won = event.getItemWon();
+			String name = ChatColor.stripColor(won.getName());
 			giveKey(player.getUniqueId(), -1);
+			for(KitBase kit : KitBase.getKits()) {
+				if(kit.getPlugin() == event.getPlugin() && name.equals(ChatColor.stripColor(kit.getName()))) {
+					kit.giveKit(player);
+					return;
+				}
+			}
+			if(won.getItemStack().getType() == Material.GOLD_INGOT) {
+				int coins = Integer.valueOf(name.split(" ")[0]);
+				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin());
+				handler.addCoins(player, coins);
+			}
 		}
 	}
 }
