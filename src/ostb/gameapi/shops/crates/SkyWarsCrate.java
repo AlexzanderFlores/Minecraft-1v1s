@@ -196,7 +196,7 @@ public class SkyWarsCrate implements Listener {
 			if(won.getItemStack().getType() == Material.GOLD_INGOT) {
 				int coins = Integer.valueOf(name.split(" ")[0]);
 				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin());
-				handler.addCoins(player, coins);
+				handler.addCoins(player, coins, false);
 			}
 		}
 	}

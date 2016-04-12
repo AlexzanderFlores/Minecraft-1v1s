@@ -81,8 +81,12 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
+		addCoins(player, amount, true);
+	}
+	
+	public void addCoins(Player player, int amount, boolean multiply) {
 		String multiplier = Ranks.PLAYER.getColor() + "(x1 Multiplier)";
-		if(amount > 0) {
+		if(amount > 0 && multiply) {
 			if(Ranks.PREMIUM_PLUS.hasRank(player)) {
 				amount *= 3;
 				multiplier = AccountHandler.getRank(player).getColor() + "(x3 Multiplier)";
