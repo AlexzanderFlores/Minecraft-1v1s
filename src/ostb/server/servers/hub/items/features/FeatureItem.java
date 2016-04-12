@@ -3,6 +3,7 @@ package ostb.server.servers.hub.items.features;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +27,11 @@ public class FeatureItem {
 	
 	public FeatureItem(String name, ItemStack itemStack, Rarity rarity) {
 		this.name = name;
-		this.itemStack = new ItemCreator(itemStack).setName(name).getItemStack();
+		if(name.equals(ChatColor.stripColor(name))) {
+			this.itemStack = new ItemCreator(itemStack).setName("&b" + name).getItemStack();
+		} else {
+			this.itemStack = itemStack;
+		}
 		this.rarity = rarity;
 		if(items == null) {
 			items = new ArrayList<FeatureItem>();

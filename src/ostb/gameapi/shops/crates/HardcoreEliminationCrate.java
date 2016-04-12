@@ -127,12 +127,12 @@ public class HardcoreEliminationCrate implements Listener {
 					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity()));
 				}
 			}
-			features.add(new FeatureItem("&b15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
-			features.add(new FeatureItem("&b25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
-			features.add(new FeatureItem("&b35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
-			features.add(new FeatureItem("&b45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
-			features.add(new FeatureItem("&b60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
-			features.add(new FeatureItem("&b80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
+			features.add(new FeatureItem("15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
+			features.add(new FeatureItem("25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
+			features.add(new FeatureItem("35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
+			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
+			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
+			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
 		}
 	}
 	
@@ -184,9 +184,9 @@ public class HardcoreEliminationCrate implements Listener {
 	public void onCrateFinished(CrateFinishedEvent event) {
 		if(event.getPlugin() == Plugins.HE_KITS) {
 			Player player = event.getPlayer();
+			giveKey(player.getUniqueId(), -1);
 			FeatureItem won = event.getItemWon();
 			String name = ChatColor.stripColor(won.getName());
-			giveKey(player.getUniqueId(), -1);
 			for(KitBase kit : KitBase.getKits()) {
 				if(kit.getPlugin() == event.getPlugin() && name.equals(ChatColor.stripColor(kit.getName()))) {
 					kit.giveKit(player);

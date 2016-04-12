@@ -16,6 +16,7 @@ public class CrateFinishedEvent extends Event {
     public CrateFinishedEvent(Player player, Plugins plugin, FeatureItem won) {
     	this.player = player;
     	this.plugin = plugin;
+    	this.won = won;
     }
     
     public Player getPlayer() {

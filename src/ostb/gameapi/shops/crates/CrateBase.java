@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -37,7 +38,6 @@ public class CrateBase implements Listener {
 	private int start = 20;
 	private int end = 25;
 	private int counter = 0;
-	private float pitch = 1000.0f;
 	private boolean displaying = false;
 	
 	public CrateBase(Player player, Plugins plugin, String title, List<FeatureItem> features) {
@@ -94,7 +94,7 @@ public class CrateBase implements Listener {
 	}
 	
 	private void placeItems(boolean last) {
-		EffectUtil.playSound(player, Sound.NOTE_PIANO, pitch);
+		EffectUtil.playSound(player, Sound.NOTE_PIANO);
 		InventoryView inventoryView = player.getOpenInventory();
 		if(inventoryView != null && inventoryView.getTitle().equals(title)) {
 			for(int a = start; a < end; ++a) {
@@ -116,7 +116,6 @@ public class CrateBase implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		--pitch;
 		if(!displaying) {
 			if(ticks == glassSpeed) {
 				placeGlass();
@@ -157,7 +156,7 @@ public class CrateBase implements Listener {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else if(counter == 5) {
 						FeatureItem featureWon = null;
-						String wonName = inventoryView.getItem(22).getItemMeta().getDisplayName();
+						String wonName = ChatColor.stripColor(inventoryView.getItem(22).getItemMeta().getDisplayName());
 						for(FeatureItem feature : features) {
 							String name = feature.getName();
 							Bukkit.getLogger().info(name + " vs " + wonName);
