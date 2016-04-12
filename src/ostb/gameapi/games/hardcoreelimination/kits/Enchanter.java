@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -19,8 +20,13 @@ public class Enchanter extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a3 Sugar Cane",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a1 Leather",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate"
-		}).getItemStack(), -1, 29);
+			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1, 29);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.UNCOMMON;
 	}
 
 	@Override

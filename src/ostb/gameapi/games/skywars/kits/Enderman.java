@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -22,8 +23,13 @@ public class Enderman extends KitBase {
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTake no Enderpearl Damage",
 			"",
-			"&7Unlocked in &bSky Wars Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bSky Wars Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.UNCOMMON;
 	}
 
 	@Override

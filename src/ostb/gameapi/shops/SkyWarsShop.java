@@ -27,6 +27,7 @@ import ostb.gameapi.games.skywars.kits.Miner;
 import ostb.gameapi.games.skywars.kits.Ninja;
 import ostb.gameapi.games.skywars.kits.Pyro;
 import ostb.gameapi.games.skywars.kits.Spiderman;
+import ostb.gameapi.shops.crates.SkyWarsCrate;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;

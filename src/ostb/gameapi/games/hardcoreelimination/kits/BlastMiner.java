@@ -13,6 +13,7 @@ import ostb.OSTB.Plugins;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.HardcoreEliminationShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -30,8 +31,13 @@ public class BlastMiner extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT cannot damage players",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT only explodes during grace period",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.UNCOMMON;
 	}
 
 	@Override

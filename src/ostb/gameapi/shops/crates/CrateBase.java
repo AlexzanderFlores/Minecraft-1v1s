@@ -1,4 +1,4 @@
-package ostb.gameapi.shops;
+package ostb.gameapi.shops.crates;
 
 import java.util.List;
 import java.util.Random;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.KitBase;
@@ -29,6 +30,7 @@ public class CrateBase implements Listener {
 	private int [] slots = null;
 	private Random random = new Random();
 	private Player player = null;
+	private Plugins plugin = null;
 	private String  title = null;
 	private List<ItemStack> items = null;
 	private int glassSpeed = 2;
@@ -39,10 +41,11 @@ public class CrateBase implements Listener {
 	private float pitch = 1000.0f;
 	private boolean displaying = false;
 	
-	public CrateBase(Player player, String  title, List<ItemStack> items) {
+	public CrateBase(Player player, Plugins plugin, String title, List<ItemStack> items) {
 		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 		random = new Random();
 		this.player = player;
+		this.plugin = plugin;
 		this.title = title;
 		this.items = items;
 		Inventory inventory = Bukkit.createInventory(player, 9 * 5, title);
@@ -152,6 +155,7 @@ public class CrateBase implements Listener {
 								if(won == null) {
 									MessageHandler.sendMessage(player, "&cThere was an error in giving you your kit, please report this (&e\"" + wonName + "&e\"&c)");
 								} else {
+									Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin));
 									won.giveKit(player);
 								}
 								remove();

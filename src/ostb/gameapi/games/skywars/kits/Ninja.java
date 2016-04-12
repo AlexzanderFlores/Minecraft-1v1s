@@ -22,6 +22,7 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -45,8 +46,13 @@ public class Ninja extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aClick to throw star",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStars deal 0 or .5 damage each",
 			"",
-			"&7Unlocked in &bSky Wars Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bSky Wars Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.RARE;
 	}
 
 	@Override

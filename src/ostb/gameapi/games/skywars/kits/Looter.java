@@ -15,6 +15,7 @@ import ostb.gameapi.KitBase;
 import ostb.gameapi.games.skywars.Events;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.TitleDisplayer;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -30,8 +31,13 @@ public class Looter extends KitBase {
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aLoot up to " + amount + " chest by breaking them",
 			"",
-			"&7Unlocked in &bSky Wars Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bSky Wars Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.RARE;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -33,8 +34,13 @@ public class Bomber extends KitBase implements Listener {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aLeft click will throw TNT",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aPlacing will place primed TNT",
 			"",
-			"&7Unlocked in &bSky Wars Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bSky Wars Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.COMMON;
 	}
 
 	@Override

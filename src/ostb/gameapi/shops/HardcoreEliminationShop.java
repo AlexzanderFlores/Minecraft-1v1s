@@ -24,6 +24,7 @@ import ostb.gameapi.games.hardcoreelimination.kits.Lumberjack;
 import ostb.gameapi.games.hardcoreelimination.kits.Miner;
 import ostb.gameapi.games.hardcoreelimination.kits.Swordsman;
 import ostb.gameapi.games.hardcoreelimination.kits.WallBreather;
+import ostb.gameapi.shops.crates.HardcoreEliminationCrate;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;

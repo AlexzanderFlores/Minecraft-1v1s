@@ -8,19 +8,25 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
 public class Swordsman extends KitBase {
 	
 	public Swordsman() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.WOOD_SWORD).setName("Swordsman").setLores(new String [] {
+		super(Plugins.HE_KITS, new ItemCreator(Material.STONE_SWORD).setName("Swordsman").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Sword",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Sword",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.COMMON;
 	}
 
 	@Override
@@ -31,7 +37,7 @@ public class Swordsman extends KitBase {
 	@Override
 	public void execute() {
 		for(Player player : getPlayers()) {
-			player.getInventory().setHelmet(new ItemStack(Material.WOOD_SWORD));
+			player.getInventory().setHelmet(new ItemStack(Material.STONE_SWORD));
 		}
 	}
 }

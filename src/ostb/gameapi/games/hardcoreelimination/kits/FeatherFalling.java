@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -23,8 +24,13 @@ public class FeatherFalling extends KitBase {
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTake .5 less fall damage",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate"
-		}).getItemStack(), -1);
+			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Rarity: " + getRarity().getName()
+		}).getItemStack(), getRarity(), -1);
+	}
+	
+	public static Rarity getRarity() {
+		return Rarity.RARE;
 	}
 
 	@Override

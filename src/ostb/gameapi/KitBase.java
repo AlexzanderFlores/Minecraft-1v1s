@@ -26,6 +26,7 @@ import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.DB;
+import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -44,12 +45,13 @@ public abstract class KitBase implements Listener {
 	private int price = 0;
 	private List<String> users = null;
 	private Map<String, Boolean> unlocked = null;
+	private Rarity rarity = null;
 	
-	public KitBase(Plugins plugin, ItemStack icon, int price) {
-		this(plugin, icon, price, -1);
+	public KitBase(Plugins plugin, ItemStack icon, Rarity rarity, int price) {
+		this(plugin, icon, rarity, price, -1);
 	}
 	
-	public KitBase(Plugins plugin, ItemStack icon, int price, int slot) {
+	public KitBase(Plugins plugin, ItemStack icon, Rarity rarity, int price, int slot) {
 		if(kits == null) {
 			kits = new ArrayList<KitBase>();
 		}
@@ -59,6 +61,7 @@ public abstract class KitBase implements Listener {
 		} else {
 			slot = ++lastSlot;
 		}
+		this.rarity = rarity;
 		this.price = price;
 		this.slot = slot;
 		ItemMeta meta = icon.getItemMeta();
@@ -205,6 +208,10 @@ public abstract class KitBase implements Listener {
 		String name = (owns ? "&b" : "&c") + getName() + " " + (owns ? "&a" + UnicodeUtil.getUnicode("2714") : "&4" + UnicodeUtil.getUnicode("2716"));
 		String lore = "&7Status: " + (owns ? "&aUnlocked" : "&cLocked");
 		return new ItemCreator(icon.clone()).setName(name).addLore(lore).getItemStack();
+	}
+	
+	public Rarity getKitRarity() {
+		return rarity;
 	}
 	
 	public int getSlot() {

@@ -1,8 +1,9 @@
-package ostb.gameapi.shops;
+package ostb.gameapi.shops.crates;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.KitBase;
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -29,14 +31,24 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.StringUtil;
 
-public class HardcoreEliminationCrate implements Listener {
+public class SkyWarsCrate implements Listener {
 	private static String name = null;
 	private static List<String> delayed = null;
 	private static final int cost = 50;
+	private static List<ItemStack> items = null;
 	
-	public HardcoreEliminationCrate() {
-		name = "Hardcore Elimination Crate";
+	public SkyWarsCrate() {
+		name = "Sky Wars Crate";
 		delayed = new ArrayList<String>();
+		items = new ArrayList<ItemStack>();
+		Random random = new Random();
+		for(int a = 0; a < 40; ++a) {
+			Material material = null;
+			do {
+				material = Material.values()[random.nextInt(Material.values().length)];
+			} while(!material.isBlock() || material == Material.AIR);
+			items.add(new ItemStack(material));
+		}
 		EventUtil.register(this);
 	}
 	
@@ -49,9 +61,9 @@ public class HardcoreEliminationCrate implements Listener {
 				int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
 				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + name).setLores(new String [] {
 					"",
-					"&eGet random kits, vote passes and more",
+					"&eGet random kits, cages and more!",
 					"",
-					"&7Coins: &a" + cost,
+					"&7Coins:&a " + cost,
 					"&7Get one &aFREE &7through &a/vote",
 					"",
 					"&7Left click to open a crate",
@@ -59,9 +71,9 @@ public class HardcoreEliminationCrate implements Listener {
 					"&7Right click to purchase a key",
 					"",
 					"&eKeys owned: &a" + getKeys(player),
-					"&7Lifetime Hardcore crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-					"&7Monthly Hardcore crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-					"&7Weekly Hardcore crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+					"&7Lifetime Sky Wars crates opened: &a" + DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED.getInt("uuid", uuid, "amount"),
+					"&7Monthly Sky Wars crates opened: &a" + DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
+					"&7Weekly Sky Wars crates opened: &a" + DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
 					""
 				});
 				if(OSTB.getPlugin() != Plugins.HUB) {
@@ -75,7 +87,7 @@ public class HardcoreEliminationCrate implements Listener {
 	
 	private static void updateItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
-		if(title != null && title.equals(HardcoreEliminationShop.getName())) {
+		if(title != null && title.equals(SkyWarsShop.getName())) {
 			ItemCreator itemCreator = new ItemCreator(player.getOpenInventory().getItem(4));
 			int index = -1;
 			for(String lore : itemCreator.getLores()) {
@@ -92,25 +104,25 @@ public class HardcoreEliminationCrate implements Listener {
 	}
 	
 	private static int getKeys(Player player) {
-		Bukkit.getLogger().info("hardcore elimination crate: get keys");
-		return DB.HUB_HE_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
+		Bukkit.getLogger().info("sky wars crate: get keys");
+		return DB.HUB_SKY_WARS_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
 	}
 	
 	public static void giveKey(final UUID uuid, final int toAdd) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				if(DB.HUB_HE_CRATE_KEYS.isUUIDSet(uuid)) {
-					int amount = DB.HUB_HE_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
-					DB.HUB_HE_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
+				if(DB.HUB_SKY_WARS_CRATE_KEYS.isUUIDSet(uuid)) {
+					int amount = DB.HUB_SKY_WARS_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
+					DB.HUB_SKY_WARS_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
 				} else {
-					DB.HUB_HE_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
+					DB.HUB_SKY_WARS_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
 				}
 				Player player = Bukkit.getPlayer(uuid);
 				if(player != null) {
 					updateItem(player);
 				}
-				Bukkit.getLogger().info("hardcore elimination crate: give key");
+				Bukkit.getLogger().info("sky wars crate: give keys");
 			}
 		});
 	}
@@ -118,10 +130,7 @@ public class HardcoreEliminationCrate implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
-		if(event.getTitle().equals(name)) {
-			
-			event.setCancelled(true);
-		} else if(ChatColor.stripColor(event.getItemTitle()).equals(name)) {
+		if(ChatColor.stripColor(event.getItemTitle()).equals(name)) {
 			if(OSTB.getPlugin() == Plugins.HUB) {
 				if(event.getClickType() == ClickType.LEFT) {
 					if(delayed.contains(player.getName())) {
@@ -132,17 +141,17 @@ public class HardcoreEliminationCrate implements Listener {
 						new DelayedTask(new Runnable() {
 							@Override
 							public void run() {
-								delayed.remove(name);
+								delayed.remove(name);								
 							}
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							List<ItemStack> items = new ArrayList<ItemStack>();
 							for(KitBase kit : KitBase.getKits()) {
-								if(kit.getPlugin() == Plugins.HE_KITS) {
+								if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
 									items.add(new ItemCreator(kit.getIcon()).setName("&b" + kit.getIcon().getItemMeta().getDisplayName()).setLores(new String [] {}).getItemStack());
 								}
 							}
-							new CrateBase(player, HardcoreEliminationCrate.name, items);
+							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.name, items);
 							items = null;
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
@@ -152,7 +161,7 @@ public class HardcoreEliminationCrate implements Listener {
 					//TODO: Display item options and rarities
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.HE_KITS);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
@@ -164,6 +173,14 @@ public class HardcoreEliminationCrate implements Listener {
 				}
 			}
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onCrateFinished(CrateFinishedEvent event) {
+		if(event.getPlugin() == Plugins.SKY_WARS_SOLO) {
+			Player player = event.getPlayer();
+			giveKey(player.getUniqueId(), -1);
 		}
 	}
 }
