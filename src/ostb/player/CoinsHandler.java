@@ -16,6 +16,7 @@ import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
+import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -80,14 +81,17 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
+		String multiplier = Ranks.PLAYER.getColor() + "(x1 Multiplier)";
 		if(amount > 0) {
-			if(Ranks.PREMIUM.hasRank(player)) {
-				amount *= 2;
-			} else if(Ranks.PREMIUM_PLUS.hasRank(player)) {
+			if(Ranks.PREMIUM_PLUS.hasRank(player)) {
 				amount *= 3;
+				multiplier = AccountHandler.getRank(player).getColor() + "(x3 Multiplier)";
+			} else if(Ranks.PREMIUM.hasRank(player)) {
+				amount *= 2;
+				multiplier = Ranks.PREMIUM.getColor() + "(x2 Multiplier)";
 			}
 		}
-		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins");
+		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins " + multiplier);
 		coins.put(player.getName(), amount + coins.get(player.getName()));
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
 	}
