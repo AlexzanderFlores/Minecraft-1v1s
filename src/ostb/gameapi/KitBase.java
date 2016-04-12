@@ -24,6 +24,7 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
@@ -154,6 +155,7 @@ public abstract class KitBase implements Listener {
 	public void giveKit(Player player) {
 		if(owns(player)) {
 			MessageHandler.sendMessage(player, "&cYou already own &e" + getName());
+			new TitleDisplayer(player, "&cYou already own", "&e" + getName()).display();
 		} else {
 			final UUID uuid = player.getUniqueId();
 			new AsyncDelayedTask(new Runnable() {
@@ -164,6 +166,7 @@ public abstract class KitBase implements Listener {
 			});
 			unlocked.put(player.getName(), true);
 			MessageHandler.sendMessage(player, "You unlocked &e" + getName());
+			new TitleDisplayer(player, "&bYou unlocked", "&e" + getName()).display();
 			Bukkit.getPluginManager().callEvent(new PlayerPostKitPurchaseEvent(player, this));
 		}
 	}

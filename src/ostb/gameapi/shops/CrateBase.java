@@ -131,15 +131,12 @@ public class CrateBase implements Listener {
 						inventoryView.setItem(20, new ItemStack(Material.AIR));
 						inventoryView.setItem(24, new ItemStack(Material.AIR));
 						EffectUtil.playSound(player, random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2);
-					} else if(counter == 3) {
+					} else if(counter == 2) {
 						inventoryView.setItem(21, new ItemStack(Material.AIR));
 						inventoryView.setItem(23, new ItemStack(Material.AIR));
 						EffectUtil.playSound(player, random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2);
-					} else if(counter == 5) {
-						TimeEvent.getHandlerList().unregister(this);
-						for(int slot : slots) {
-							inventoryView.setItem(slot, new ItemStack(Material.AIR));
-						}
+					} else if(counter == 3) {
+						EffectUtil.playSound(player, Sound.LEVEL_UP);
 						new DelayedTask(new Runnable() {
 							@Override
 							public void run() {
@@ -152,7 +149,6 @@ public class CrateBase implements Listener {
 										break;
 									}
 								}
-								EffectUtil.playSound(player, Sound.LEVEL_UP);
 								if(won == null) {
 									MessageHandler.sendMessage(player, "&cThere was an error in giving you your kit, please report this (&e\"" + wonName + "&e\"&c)");
 								} else {
