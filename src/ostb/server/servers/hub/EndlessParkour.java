@@ -9,7 +9,10 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +29,7 @@ import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
+import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class EndlessParkour implements Listener {
@@ -45,6 +49,12 @@ public class EndlessParkour implements Listener {
 		lastScoredOn = new HashMap<String, Block>();
 		random = new Random();
 		loadTopData();
+		World world = Bukkit.getWorlds().get(0);
+		ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world, 1592.5, 4.5, -1262.5), EntityType.ARMOR_STAND);
+		armorStand.setGravity(false);
+		armorStand.setVisible(false);
+		armorStand.setCustomName(StringUtil.color("&e&nWalk forward"));
+		armorStand.setCustomNameVisible(true);
 		EventUtil.register(this);
 	}
 	
