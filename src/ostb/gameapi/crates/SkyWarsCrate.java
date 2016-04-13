@@ -1,4 +1,4 @@
-package ostb.gameapi.shops.crates;
+package ostb.gameapi.crates;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,7 +80,7 @@ public class SkyWarsCrate implements Listener {
 	
 	private static void updateItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
-		if(title != null && title.equals(SkyWarsShop.getName())) {
+		if(title != null && title.equals(SkyWarsShop.getInstance().getName())) {
 			ItemCreator itemCreator = new ItemCreator(player.getOpenInventory().getItem(4));
 			int index = -1;
 			for(String lore : itemCreator.getLores()) {

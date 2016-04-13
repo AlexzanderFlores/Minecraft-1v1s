@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.shops.crates.HardcoreEliminationCrate;
-import ostb.gameapi.shops.crates.SkyWarsCrate;
+import ostb.gameapi.crates.HardcoreEliminationCrate;
+import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.player.LevelHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;

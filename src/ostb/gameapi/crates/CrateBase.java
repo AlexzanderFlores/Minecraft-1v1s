@@ -1,4 +1,4 @@
-package ostb.gameapi.shops.crates;
+package ostb.gameapi.crates;
 
 import java.util.List;
 import java.util.Random;

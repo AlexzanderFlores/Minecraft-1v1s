@@ -6,14 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
-import ostb.customevents.player.CoinUpdateEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.player.PlayerPostKitPurchaseEvent;
 import ostb.gameapi.KitBase;
+import ostb.gameapi.crates.HardcoreEliminationCrate;
 import ostb.gameapi.games.hardcoreelimination.kits.BlastMiner;
 import ostb.gameapi.games.hardcoreelimination.kits.Butcher;
 import ostb.gameapi.games.hardcoreelimination.kits.CowSlayer;
@@ -24,22 +24,16 @@ import ostb.gameapi.games.hardcoreelimination.kits.Lumberjack;
 import ostb.gameapi.games.hardcoreelimination.kits.Miner;
 import ostb.gameapi.games.hardcoreelimination.kits.Swordsman;
 import ostb.gameapi.games.hardcoreelimination.kits.WallBreather;
-import ostb.gameapi.shops.crates.HardcoreEliminationCrate;
-import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
-import ostb.server.util.EventUtil;
-import ostb.server.util.ItemCreator;
 
-public class HardcoreEliminationShop implements Listener {
-	private static String name = null;
-	private static String permission = null;
+public class HardcoreEliminationShop extends ShopBase {
+	private static HardcoreEliminationShop instance = null;
 	
 	public HardcoreEliminationShop() {
-		name = "Shop - Hardcore Elimination";
-		permission = "kit.hardcore_elimination.";
-		new CoinsHandler(DB.PLAYERS_COINS_HE, Plugins.HE_KITS);
+		super("Shop - Hardcore Elimination", "kit.hardcore_elimination.", DB.PLAYERS_COINS_HE, Plugins.HE_KITS, 2);
+		instance = this;
 		new HardcoreEliminationCrate();
 		new Butcher();
 		new CowSlayer();
@@ -51,87 +45,82 @@ public class HardcoreEliminationShop implements Listener {
 		new FeatherFalling();
 		new Haste();
 		new BlastMiner();
-		EventUtil.register(this);
 	}
 	
-	public static String getName() {
-		if(name == null) {
+	public static HardcoreEliminationShop getInstance() {
+		if(instance == null) {
 			new HardcoreEliminationShop();
 		}
-		return name;
+		return instance;
 	}
 	
-	public static String getPermission() {
-		return permission;
-	}
-	
-	public static void openShop(final Player player) {
+	@Override
+	public void openShop(final Player player, final int page) {
+		final InventoryView view = player.getOpenInventory();
 		final Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
 		player.openInventory(inventory);
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				HardcoreEliminationCrate.addItem(player, inventory);
-				for(KitBase kit : KitBase.getKits()) {
-					if(kit.getPlugin() == Plugins.HE_KITS) {
-						inventory.setItem(kit.getSlot(), kit.getIcon(player));
-					}
+				if(hasCrate(player, view)) {
+					inventory.setItem(4, view.getItem(4));
+				} else {
+					HardcoreEliminationCrate.addItem(player, inventory);
 				}
-				updateInfoItem(player, inventory);
-				inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
-				updateCoinsItem(player, inventory);
+				pages.put(player.getName(), page);
+				if(page == 1) {
+					for(KitBase kit : KitBase.getKits()) {
+						if(kit.getPlugin() == Plugins.HE_KITS) {
+							inventory.setItem(kit.getSlot(), kit.getIcon(player));
+						}
+					}
+				} else if(page == 2) {
+					
+				}
+				updateItems(player, inventory);
 			}
 		});
 	}
-	
-	private static void updateCoinsItem(Player player) {
+
+	@Override
+	public void updateInfoItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
 		if(title != null && title.equals(getName())) {
-			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 4, CoinsHandler.getCoinsHandler(Plugins.HE_KITS).getItemStack(player));
-		}
-	}
-	
-	private static void updateCoinsItem(Player player, Inventory inventory) {
-		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(Plugins.HE_KITS).getItemStack(player));
-	}
-	
-	private static void updateInfoItem(Player player) {
-		String title = player.getOpenInventory().getTitle();
-		if(title != null && title.equals(getName())) {
-			int total = 0;
-			int owned = 0;
-			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.HE_KITS) {
-					++total;
-					if(kit.owns(player)) {
-						++owned;
-					}
-				}
-			}
-			int percentage = (int) (owned * 100.0 / total + 0.5);
-			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 6, new ItemCreator(Material.DIAMOND).setName("&7Kits Owned: &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack());
-		}
-	}
-	
-	private static void updateInfoItem(Player player, Inventory inventory) {
-		int total = 0;
-		int owned = 0;
-		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.HE_KITS) {
-				++total;
-				if(kit.owns(player)) {
-					++owned;
-				}
+			InventoryView inv = player.getOpenInventory();
+			int page = getPage(player);
+			if(page == 1) {
+				inv.setItem(inv.getTopInventory().getSize() - 6, new KitData(player).getItem());
+			} else if(page == 2) {
+				
 			}
 		}
-		int percentage = (int) (owned * 100.0 / total + 0.5);
-		inventory.setItem(inventory.getSize() - 6, new ItemCreator(Material.DIAMOND).setName("&7Kits Owned: &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack());
+	}
+
+	@Override
+	public void updateInfoItem(Player player, Inventory inventory) {
+		int page = getPage(player);
+		if(page == 1) {
+			inventory.setItem(inventory.getSize() - 6, new KitData(player).getItem());
+		} else if(page == 2) {
+			
+		}
 	}
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(getName())) {
+			event.setCancelled(true);
 			Player player = event.getPlayer();
+			ItemStack item = event.getItem();
+			if(item.getType() == Material.ARROW) {
+				if(event.getSlot() == 0) {
+					openShop(player, getPage(player) - 1);
+					return;
+				} else if(event.getSlot() == 8) {
+					openShop(player, getPage(player) + 1);
+					return;
+				}
+			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
 				if(name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
@@ -144,20 +133,5 @@ public class HardcoreEliminationShop implements Listener {
 				}
 			}
 		}
-	}
-	
-	@EventHandler
-	public void onPlayerPostKitPurchase(PlayerPostKitPurchaseEvent event) {
-		Player player = event.getPlayer();
-		String title = player.getOpenInventory().getTitle();
-		if(title != null && title.equals(getName())) {
-			player.getOpenInventory().setItem(event.getKit().getSlot(), event.getKit().getIcon(player));
-		}
-	}
-	
-	@EventHandler
-	public void onCoinUpdate(CoinUpdateEvent event) {
-		updateCoinsItem(event.getPlayer());
-		updateInfoItem(event.getPlayer());
 	}
 }

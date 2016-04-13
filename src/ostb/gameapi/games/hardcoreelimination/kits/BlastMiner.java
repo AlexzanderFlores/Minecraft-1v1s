@@ -42,7 +42,7 @@ public class BlastMiner extends KitBase {
 
 	@Override
 	public String getPermission() {
-		return ChatColor.stripColor(HardcoreEliminationShop.getPermission() + getName().toLowerCase());
+		return ChatColor.stripColor(HardcoreEliminationShop.getInstance().getPermission() + getName().toLowerCase());
 	}
 
 	@Override

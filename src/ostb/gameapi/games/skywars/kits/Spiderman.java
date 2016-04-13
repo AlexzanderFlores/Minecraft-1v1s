@@ -42,7 +42,7 @@ public class Spiderman extends KitBase {
 
 	@Override
 	public String getPermission() {
-		return ChatColor.stripColor(SkyWarsShop.getPermission() + getName().toLowerCase());
+		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
 	}
 
 	@Override

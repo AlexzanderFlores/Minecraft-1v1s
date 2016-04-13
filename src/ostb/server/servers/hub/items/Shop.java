@@ -24,6 +24,8 @@ public class Shop extends HubItemBase {
 	public Shop() {
 		super(new ItemCreator(Material.CHEST).setName("&eShop"), 2);
 		name = ChatColor.stripColor(getName());
+		new SkyWarsShop();
+		new HardcoreEliminationShop();
 	}
 
 	@Override
@@ -51,9 +53,9 @@ public class Shop extends HubItemBase {
 		if(title.equals(ChatColor.stripColor(getName()))) {
 			EffectUtil.playSound(player, Sound.CHEST_OPEN);
 			if(name.equals("Sky Wars")) {
-				SkyWarsShop.openShop(player);
+				SkyWarsShop.getInstance().openShop(player);
 			} else if(name.equals("Hardcore Elimination")) {
-				HardcoreEliminationShop.openShop(player);
+				HardcoreEliminationShop.getInstance().openShop(player);
 			}
 			event.setCancelled(true);
 		} else if(title.startsWith("Shop - ")) {

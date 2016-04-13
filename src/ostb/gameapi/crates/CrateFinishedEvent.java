@@ -1,4 +1,4 @@
-package ostb.gameapi.shops.crates;
+package ostb.gameapi.crates;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
