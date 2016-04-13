@@ -86,7 +86,6 @@ public abstract class MiniGame extends ProPlugin {
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
-		new AutoJoinHandler();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override
