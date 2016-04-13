@@ -1,27 +1,40 @@
 package ostb.gameapi.games.skywars.cages;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import ostb.gameapi.shops.SkyWarsShop;
+import ostb.server.servers.hub.items.Features.Rarity;
+
+@SuppressWarnings("deprecation")
 public class SmallCage extends Cage {
-	public SmallCage(Player player) {
-		super(player);
-		place();
+	public SmallCage(ItemStack icon) {
+		this(null, icon);
 	}
 	
-	public SmallCage(Player player, Material material) {
-		this(player, material, (byte) 0);
+	public SmallCage(ItemStack icon, int slot) {
+		this(null, icon, slot);
 	}
 	
-	public SmallCage(Player player, Material material, byte data) {
-		super(player);
-		setMaterial(material, data);
-		place();
+	public SmallCage(Player player, ItemStack icon) {
+		this(player, icon, -1);
+	}
+	
+	public SmallCage(Player player, ItemStack icon, int slot) {
+		super(player, icon, Rarity.COMMON, slot);
+		setMaterial(icon.getType(), icon.getData().getData());
+		setKitType("small_cage");
 	}
 
 	@Override
-	public void place() {
+	public String getPermission() {
+		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
+	}
+
+	@Override
+	public void execute() {
 		Player player = getPlayer();
 		if(player != null) {
 			Location location = player.getLocation();

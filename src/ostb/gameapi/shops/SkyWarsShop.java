@@ -14,6 +14,7 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.KitBase;
 import ostb.gameapi.crates.SkyWarsCrate;
+import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.gameapi.games.skywars.kits.Archer;
 import ostb.gameapi.games.skywars.kits.Bomber;
 import ostb.gameapi.games.skywars.kits.Builder;
@@ -35,9 +36,10 @@ public class SkyWarsShop extends ShopBase {
 	private static SkyWarsShop instance = null;
 	
 	public SkyWarsShop() {
-		super("Shop - Sky Wars", "kit.sky_wars.", DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO, 2);
+		super("Shop - Sky Wars", "kit.sky_wars.", DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO, 3);
 		instance = this;
 		new SkyWarsCrate();
+		Cage.createCages();
 		new Archer();
 		new Builder();
 		new Looter();
@@ -76,12 +78,22 @@ public class SkyWarsShop extends ShopBase {
 				pages.put(player.getName(), page);
 				if(page == 1) {
 					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
+						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("kit")) {
 							inventory.setItem(kit.getSlot(), kit.getIcon(player));
 						}
 					}
 				} else if(page == 2) {
-					
+					for(KitBase kit : KitBase.getKits()) {
+						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("small_cage")) {
+							inventory.setItem(kit.getSlot(), kit.getIcon(player));
+						}
+					}
+				} else if(page == 3) {
+					for(KitBase kit : KitBase.getKits()) {
+						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("big_cage")) {
+							inventory.setItem(kit.getSlot(), kit.getIcon(player));
+						}
+					}
 				}
 				updateItems(player, inventory);
 			}
@@ -95,9 +107,11 @@ public class SkyWarsShop extends ShopBase {
 			InventoryView inventory = player.getOpenInventory();
 			int page = getPage(player);
 			if(page == 1) {
-				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player).getItem());
+				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
 			} else if(page == 2) {
-				
+				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player, "Small Cages Owned", "small_cage").getItem());
+			} else if(page == 3) {
+				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player, "Big Cages Owned", "big_cage").getItem());
 			}
 		}
 	}
@@ -106,9 +120,11 @@ public class SkyWarsShop extends ShopBase {
 	public void updateInfoItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page == 1) {
-			inventory.setItem(inventory.getSize() - 6, new KitData(player).getItem());
+			inventory.setItem(inventory.getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
 		} else if(page == 2) {
-			
+			inventory.setItem(inventory.getSize() - 6, new KitData(player, "Small Cages Owned", "small_cage").getItem());
+		} else if(page == 3) {
+			inventory.setItem(inventory.getSize() - 6, new KitData(player, "Big Cages Owned", "big_cage").getItem());
 		}
 	}
 	

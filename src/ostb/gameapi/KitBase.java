@@ -36,6 +36,7 @@ public abstract class KitBase implements Listener {
 	private static List<KitBase> kits = null;
 	private static int lastSlot = -1;
 	private Plugins plugin = null;
+	private String kitType = null;
 	private ItemStack icon = null;
 	private ItemStack helmet = null;
 	private ItemStack chestplate = null;
@@ -56,6 +57,7 @@ public abstract class KitBase implements Listener {
 			kits = new ArrayList<KitBase>();
 		}
 		this.plugin = plugin;
+		kitType = "kit";
 		if(slot > -1) {
 			lastSlot = slot;
 		} else {
@@ -68,6 +70,14 @@ public abstract class KitBase implements Listener {
 		icon = new ItemCreator(icon).setName(meta.getDisplayName()).getItemStack();
 		this.icon = icon;
 		kits.add(this);
+	}
+	
+	public String getKitType() {
+		return kitType;
+	}
+	
+	public void setKitType(String kitType) {
+		this.kitType = kitType;
 	}
 	
 	public ItemStack getHelmet() {

@@ -30,15 +30,17 @@ public abstract class ShopBase implements Listener {
 	private int maxPages = 1;
 	
 	public class KitData {
+		private String title = null;
 		private int total = 0;
 		private int owned = 0;
 		private int percentage = 0;
 		
-		public KitData(Player player) {
+		public KitData(Player player, String title, String kitType) {
+			this.title = title;
 			total = 0;
 			owned = 0;
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == plugin) {
+				if(kit.getPlugin() == plugin && kit.getKitType().equals(kitType)) {
 					++total;
 					if(kit.owns(player)) {
 						++owned;
@@ -49,7 +51,7 @@ public abstract class ShopBase implements Listener {
 		}
 		
 		public ItemStack getItem() {
-			return new ItemCreator(Material.DIAMOND).setName("&7Kits Owned: &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack();
+			return new ItemCreator(Material.DIAMOND).setName("&7" + title + ": &e" + owned + "&8/&e" + total + " &7(&e" + percentage + "%&7)").getItemStack();
 		}
 	}
 	

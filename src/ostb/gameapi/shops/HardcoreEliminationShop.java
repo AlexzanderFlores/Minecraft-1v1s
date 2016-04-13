@@ -70,7 +70,7 @@ public class HardcoreEliminationShop extends ShopBase {
 				pages.put(player.getName(), page);
 				if(page == 1) {
 					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.HE_KITS) {
+						if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals("kit")) {
 							inventory.setItem(kit.getSlot(), kit.getIcon(player));
 						}
 					}
@@ -89,7 +89,7 @@ public class HardcoreEliminationShop extends ShopBase {
 			InventoryView inventory = player.getOpenInventory();
 			int page = getPage(player);
 			if(page == 1) {
-				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player).getItem());
+				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
 			} else if(page == 2) {
 				
 			}
@@ -100,7 +100,7 @@ public class HardcoreEliminationShop extends ShopBase {
 	public void updateInfoItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page == 1) {
-			inventory.setItem(inventory.getSize() - 6, new KitData(player).getItem());
+			inventory.setItem(inventory.getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
 		} else if(page == 2) {
 			
 		}

@@ -1,29 +1,40 @@
 package ostb.gameapi.games.skywars.cages;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import ostb.server.servers.hub.items.Features.Rarity;
+
+@SuppressWarnings("deprecation")
 public class BigCage extends Cage {
-	public BigCage(Player player) {
-		super(player);
-		place();
+	public BigCage(ItemStack icon) {
+		this(null, icon);
 	}
 	
-	public BigCage(Player player, Material material) {
-		this(player, material, (byte) 0);
+	public BigCage(ItemStack icon, int slot) {
+		this(null, icon, slot);
 	}
 	
-	public BigCage(Player player, Material material, byte data) {
-		super(player);
-		setMaterial(material, data);
-		place();
+	public BigCage(Player player, ItemStack icon) {
+		this(player, icon, -1);
+	}
+	
+	public BigCage(Player player, ItemStack icon, int slot) {
+		super(player, icon, Rarity.UNCOMMON, slot);
+		setMaterial(icon.getType(), icon.getData().getData());
+		setKitType("big_cage");
 	}
 
 	@Override
-	public void place() {
+	public String getPermission() {
+		return null;
+	}
+
+	@Override
+	public void execute() {
 		Player player = getPlayer();
 		if(player != null) {
 			Location location = player.getLocation();
