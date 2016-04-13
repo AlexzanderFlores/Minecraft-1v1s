@@ -46,7 +46,7 @@ public class BigCage extends Cage {
 					}
 				}
 			}
-			player.teleport(getBlocks().get(0).getLocation().clone().add(0.5, 1, 0.5));
+			teleport(player);
 		}
 	}
 }

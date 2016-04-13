@@ -33,7 +33,7 @@ public class SmallCage extends Cage {
 					placeBlock(location.clone().add(x, y, z));
 				}
 			}
-			player.teleport(getBlocks().get(0).getLocation().clone().add(0.5, 1, 0.5));
+			teleport(player);
 		}
 	}
 }

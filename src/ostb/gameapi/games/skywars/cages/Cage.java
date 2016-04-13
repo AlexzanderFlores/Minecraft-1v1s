@@ -70,5 +70,9 @@ public abstract class Cage {
 		return ProPlugin.getPlayer(playerName);
 	}
 	
+	protected void teleport(Player player) {
+		player.teleport(getBlocks().get(0).getLocation().clone().add(0.5, 1, 0.5));
+	}
+	
 	public abstract void place();
 }
