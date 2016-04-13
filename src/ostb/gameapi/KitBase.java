@@ -217,7 +217,11 @@ public abstract class KitBase implements Listener {
 		boolean owns = owns(player);
 		String name = (owns ? "&b" : "&c") + getName() + " " + (owns ? "&a" + UnicodeUtil.getUnicode("2714") : "&4" + UnicodeUtil.getUnicode("2716"));
 		String lore = "&7Status: " + (owns ? "&aUnlocked" : "&cLocked");
-		return new ItemCreator(icon.clone()).setName(name).addLore(lore).getItemStack();
+		ItemStack clone = icon.clone();
+		if(!owns) {
+			clone = new ItemCreator(Material.INK_SACK, 8).setName(name).setLores(clone.getItemMeta().getLore()).getItemStack();
+		}
+		return new ItemCreator(clone).setName(name).addLore(lore).getItemStack();
 	}
 	
 	public Rarity getKitRarity() {

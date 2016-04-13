@@ -1,11 +1,13 @@
 package ostb.gameapi.games.skywars.cages;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 
 @SuppressWarnings("deprecation")
@@ -30,7 +32,7 @@ public class BigCage extends Cage {
 
 	@Override
 	public String getPermission() {
-		return null;
+		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
 	}
 
 	@Override

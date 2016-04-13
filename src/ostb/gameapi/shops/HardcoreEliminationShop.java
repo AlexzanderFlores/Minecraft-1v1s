@@ -123,7 +123,7 @@ public class HardcoreEliminationShop extends ShopBase {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
+				if(kit.getPlugin() == Plugins.HE_KITS && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
 					if(kit.use(player)) {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else {
