@@ -21,7 +21,6 @@ import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.KitBase;
-import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -49,34 +48,27 @@ public class CageSelector implements Listener {
 		open(player, getPage(player));
 	}
 	
-	private void open(final Player player, final int page) {
-		final Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-		player.openInventory(inventory);
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				pages.put(player.getName(), page);
-				if(page == 1) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("small_cage")) {
-							inventory.setItem(kit.getSlot() - 18, kit.getIcon(player));
-						}
-					}
-				} else if(page == 2) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("big_cage")) {
-							inventory.setItem(kit.getSlot() - 18, kit.getIcon(player));
-						}
-					}
-				}
-				if(page > 1) {
-					inventory.setItem(18, new ItemCreator(Material.ARROW).setName("&bPage #" + (page - 1)).getItemStack());
-				}
-				if(page < 2) {
-					inventory.setItem(26, new ItemCreator(Material.ARROW).setName("&bPage #" + (page + 1)).getItemStack());
-				}
+	private void open(Player player, int page) {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
+		pages.put(player.getName(), page);
+		String type = null;
+		if(page == 1) {
+			type = "small_cage";
+		} else if(page == 2) {
+			type = "big_cage";
+		}
+		for(KitBase kit : KitBase.getKits()) {
+			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals(type)) {
+				inventory.setItem(kit.getSlot() - 18, kit.getIcon(player));
 			}
-		});
+		}
+		if(page > 1) {
+			inventory.setItem(18, new ItemCreator(Material.ARROW).setName("&bPage #" + (page - 1)).getItemStack());
+		}
+		if(page < 2) {
+			inventory.setItem(26, new ItemCreator(Material.ARROW).setName("&bPage #" + (page + 1)).getItemStack());
+		}
+		player.openInventory(inventory);
 	}
 	
 	@EventHandler

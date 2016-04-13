@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
+import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerKitPurchaseEvent;
 import ostb.customevents.player.PlayerKitSelectEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -69,6 +70,9 @@ public abstract class KitBase implements Listener {
 		ItemMeta meta = icon.getItemMeta();
 		icon = new ItemCreator(icon).setName(meta.getDisplayName()).getItemStack();
 		this.icon = icon;
+		users = new ArrayList<String>();
+		unlocked = new HashMap<String, Boolean>();
+		EventUtil.register(this);
 		kits.add(this);
 	}
 	
@@ -117,10 +121,6 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public boolean owns(Player player) {
-		if(unlocked == null) {
-			unlocked = new HashMap<String, Boolean>();
-			EventUtil.register(this);
-		}
 		if(!unlocked.containsKey(player.getName())) {
 			unlocked.put(player.getName(), DB.PLAYERS_KITS.isKeySet(new String [] {"uuid", "kit"}, new String [] {player.getUniqueId().toString(), getPermission()}));
 		}
@@ -136,9 +136,6 @@ public abstract class KitBase implements Listener {
 				if(getPlugin() == OSTB.getPlugin()) {
 					for(KitBase kit : kits) {
 						kit.remove(player);
-					}
-					if(users == null) {
-						users = new ArrayList<String>();
 					}
 					users.add(player.getName());
 					MessageHandler.sendMessage(player, "Selected &e" + getName());
@@ -217,11 +214,12 @@ public abstract class KitBase implements Listener {
 		boolean owns = owns(player);
 		String name = (owns ? "&b" : "&c") + getName() + " " + (owns ? "&a" + UnicodeUtil.getUnicode("2714") : "&4" + UnicodeUtil.getUnicode("2716"));
 		String lore = "&7Status: " + (owns ? "&aUnlocked" : "&cLocked");
-		ItemStack clone = icon.clone();
-		if(!owns) {
-			clone = new ItemCreator(Material.INK_SACK, 8).setName(name).setLores(clone.getItemMeta().getLore()).getItemStack();
+		ItemStack item = getIcon();
+		if(owns) {
+			return new ItemCreator(item).setName(name).addLore(lore).getItemStack();
+		} else {
+			return new ItemCreator(Material.INK_SACK, 8).setName(name).setLores(item.getItemMeta().getLore()).getItemStack();
 		}
-		return new ItemCreator(clone).setName(name).addLore(lore).getItemStack();
 	}
 	
 	public Rarity getKitRarity() {
@@ -284,10 +282,13 @@ public abstract class KitBase implements Listener {
 	public abstract void execute();
 	
 	@EventHandler
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+		owns(event.getPlayer());
+	}
+	
+	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
-		if(users != null) {
-			users.remove(event.getPlayer().getName());
-		}
+		users.remove(event.getPlayer().getName());
 		unlocked.remove(event.getPlayer().getName());
 	}
 }

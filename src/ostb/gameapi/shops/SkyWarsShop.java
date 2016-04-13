@@ -76,23 +76,17 @@ public class SkyWarsShop extends ShopBase {
 					SkyWarsCrate.addItem(player, inventory);
 				}
 				pages.put(player.getName(), page);
+				String type = null;
 				if(page == 1) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("kit")) {
-							inventory.setItem(kit.getSlot(), kit.getIcon(player));
-						}
-					}
+					type = "kit";
 				} else if(page == 2) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("small_cage")) {
-							inventory.setItem(kit.getSlot(), kit.getIcon(player));
-						}
-					}
+					type = "small_cage";
 				} else if(page == 3) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals("big_cage")) {
-							inventory.setItem(kit.getSlot(), kit.getIcon(player));
-						}
+					type = "big_cage";
+				}
+				for(KitBase kit : KitBase.getKits()) {
+					if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals(type)) {
+						inventory.setItem(kit.getSlot(), kit.getIcon(player));
 					}
 				}
 				updateItems(player, inventory);

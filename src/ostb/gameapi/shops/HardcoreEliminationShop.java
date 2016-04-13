@@ -68,14 +68,16 @@ public class HardcoreEliminationShop extends ShopBase {
 					HardcoreEliminationCrate.addItem(player, inventory);
 				}
 				pages.put(player.getName(), page);
+				String type = null;
 				if(page == 1) {
-					for(KitBase kit : KitBase.getKits()) {
-						if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals("kit")) {
-							inventory.setItem(kit.getSlot(), kit.getIcon(player));
-						}
-					}
+					type = "kit";
 				} else if(page == 2) {
-					
+					type = "none";
+				}
+				for(KitBase kit : KitBase.getKits()) {
+					if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals(type)) {
+						inventory.setItem(kit.getSlot(), kit.getIcon(player));
+					}
 				}
 				updateItems(player, inventory);
 			}
