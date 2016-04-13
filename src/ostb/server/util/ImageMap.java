@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -65,6 +66,7 @@ public class ImageMap implements Listener {
 	}
 	
 	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
+		Bukkit.getLogger().info("Loading image from \"" + path + "\"");
 		File file = new File(path);
 		BufferedImage image = null;
 		try {

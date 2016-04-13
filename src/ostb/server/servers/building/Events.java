@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -20,6 +22,7 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ImageMap;
 
 public class Events implements Listener {
 	public Events() {
@@ -102,6 +105,15 @@ public class Events implements Listener {
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if(event.getEntityType() == EntityType.ARMOR_STAND) {
 			event.setCancelled(false);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if(event.getRightClicked() instanceof ItemFrame) {
+			ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
+			new ImageMap(itemFrame, Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png");
+			event.setCancelled(true);
 		}
 	}
 }
