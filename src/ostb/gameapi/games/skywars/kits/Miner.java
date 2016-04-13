@@ -14,13 +14,13 @@ import ostb.server.util.UnicodeUtil;
 
 public class Miner extends KitBase {
 	public Miner() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.WOOD_PICKAXE).setName("Miner").setLores(new String [] {
+		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.STONE_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Sword",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Pickaxe",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Axe",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Shovel",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Sword",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Pickaxe",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Axe",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Shovel",
 			"",
 			"&7Unlocked in &bSky Wars Crate",
 			"&7Rarity: " + getRarity().getName()
@@ -39,10 +39,10 @@ public class Miner extends KitBase {
 	@Override
 	public void execute() {
 		for(Player player : getPlayers()) {
-			player.getInventory().addItem(new ItemStack(Material.WOOD_SWORD));
-			player.getInventory().addItem(new ItemStack(Material.WOOD_PICKAXE));
-			player.getInventory().addItem(new ItemStack(Material.WOOD_AXE));
-			player.getInventory().addItem(new ItemStack(Material.WOOD_SPADE));
+			player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
+			player.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
+			player.getInventory().addItem(new ItemStack(Material.STONE_AXE));
+			player.getInventory().addItem(new ItemStack(Material.STONE_SPADE));
 		}
 	}
 }
