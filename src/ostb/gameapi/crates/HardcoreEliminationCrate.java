@@ -133,6 +133,7 @@ public class HardcoreEliminationCrate implements Listener {
 			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
 			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
 			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
+			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE));
 		}
 	}
 	
@@ -187,16 +188,20 @@ public class HardcoreEliminationCrate implements Listener {
 			giveKey(player.getUniqueId(), -1);
 			FeatureItem won = event.getItemWon();
 			String name = ChatColor.stripColor(won.getName());
+			if(won.getItemStack().getType() == Material.GOLD_INGOT) {
+				int coins = Integer.valueOf(name.split(" ")[0]);
+				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin());
+				handler.addCoins(player, coins, false);
+				return;
+			} else if(won.getItemStack().getType() == Material.TRIPWIRE_HOOK) {
+				giveKey(player.getUniqueId(), 3);
+				return;
+			}
 			for(KitBase kit : KitBase.getKits()) {
 				if(kit.getPlugin() == event.getPlugin() && name.equals(ChatColor.stripColor(kit.getName()))) {
 					kit.giveKit(player);
 					return;
 				}
-			}
-			if(won.getItemStack().getType() == Material.GOLD_INGOT) {
-				int coins = Integer.valueOf(name.split(" ")[0]);
-				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin());
-				handler.addCoins(player, coins, false);
 			}
 		}
 	}
