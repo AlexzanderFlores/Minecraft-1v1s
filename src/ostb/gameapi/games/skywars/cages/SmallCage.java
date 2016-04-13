@@ -1,11 +1,22 @@
 package ostb.gameapi.games.skywars.cages;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class SmallCage extends Cage {
 	public SmallCage(Player player) {
 		super(player);
+		place();
+	}
+	
+	public SmallCage(Player player, Material material) {
+		this(player, material, (byte) 0);
+	}
+	
+	public SmallCage(Player player, Material material, byte data) {
+		super(player);
+		setMaterial(material, data);
 		place();
 	}
 

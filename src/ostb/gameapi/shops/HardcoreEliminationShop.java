@@ -86,10 +86,10 @@ public class HardcoreEliminationShop extends ShopBase {
 	public void updateInfoItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
 		if(title != null && title.equals(getName())) {
-			InventoryView inv = player.getOpenInventory();
+			InventoryView inventory = player.getOpenInventory();
 			int page = getPage(player);
 			if(page == 1) {
-				inv.setItem(inv.getTopInventory().getSize() - 6, new KitData(player).getItem());
+				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player).getItem());
 			} else if(page == 2) {
 				
 			}

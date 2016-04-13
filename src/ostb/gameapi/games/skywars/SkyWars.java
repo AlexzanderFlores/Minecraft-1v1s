@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import ostb.OSTB;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.games.skywars.cages.BigCage;
-import ostb.gameapi.games.skywars.cages.ColoredBigCage;
-import ostb.gameapi.games.skywars.cages.ColoredSmallCage;
 import ostb.gameapi.games.skywars.cages.SmallCage;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.CommandBase;
@@ -40,7 +38,7 @@ public class SkyWars extends MiniGame {
 					} else {
 						return false;
 					}
-					new ColoredSmallCage(player, material, data);
+					new SmallCage(player, material, data);
 				} else if(arguments[0].equalsIgnoreCase("coloredBig")) {
 					Material material = null;
 					byte data = 0;
@@ -52,7 +50,7 @@ public class SkyWars extends MiniGame {
 					} else {
 						return false;
 					}
-					new ColoredBigCage(player, material, data);
+					new BigCage(player, material, data);
 				} else if(arguments[0].equalsIgnoreCase("setMax")) {
 					OSTB.setMaxPlayers(Integer.valueOf(arguments[1]));
 				} else {

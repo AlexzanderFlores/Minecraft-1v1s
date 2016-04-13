@@ -1,6 +1,7 @@
 package ostb.gameapi.games.skywars.cages;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -8,6 +9,16 @@ import org.bukkit.entity.Player;
 public class BigCage extends Cage {
 	public BigCage(Player player) {
 		super(player);
+		place();
+	}
+	
+	public BigCage(Player player, Material material) {
+		this(player, material, (byte) 0);
+	}
+	
+	public BigCage(Player player, Material material, byte data) {
+		super(player);
+		setMaterial(material, data);
 		place();
 	}
 
