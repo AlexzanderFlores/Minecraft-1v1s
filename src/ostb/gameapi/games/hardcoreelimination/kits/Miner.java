@@ -17,7 +17,7 @@ public class Miner extends KitBase {
 		super(Plugins.HE_KITS, new ItemCreator(Material.STONE_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aWood Pickaxe",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Pickaxe",
 			"",
 			"&7Unlocked in &bHardcore Elimination Crate",
 			"&7Rarity: " + getRarity().getName()
