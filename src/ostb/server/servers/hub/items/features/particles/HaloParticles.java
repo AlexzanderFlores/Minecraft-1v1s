@@ -33,6 +33,7 @@ import ostb.server.servers.hub.items.Features;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureBase;
 import ostb.server.servers.hub.items.features.FeatureItem;
+import ostb.server.servers.hub.items.features.FeatureItem.FeatureType;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.CircleUtil;
 import ostb.server.util.ItemCreator;
@@ -99,7 +100,7 @@ public class HaloParticles extends FeatureBase {
 			this.itemStack = itemStack;
 			this.store = store;
 			if(store) {
-				new FeatureItem(getName(), getItemStack(), getRarity());
+				new FeatureItem(getName(), getItemStack(), getRarity(), FeatureType.REWARD_CRATE);
 			}
 		}
 		

@@ -29,6 +29,7 @@ import ostb.server.servers.hub.items.Features;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureBase;
 import ostb.server.servers.hub.items.features.FeatureItem;
+import ostb.server.servers.hub.items.features.FeatureItem.FeatureType;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.TimeUtil;
@@ -80,7 +81,7 @@ public class WinEffects extends FeatureBase {
 			this.itemStack = itemStack;
 			this.store = store;
 			if(store) {
-				new FeatureItem(getName(), getItemStack(), getRarity());
+				new FeatureItem(getName(), getItemStack(), getRarity(), FeatureType.REWARD_CRATE);
 			}
 		}
 		

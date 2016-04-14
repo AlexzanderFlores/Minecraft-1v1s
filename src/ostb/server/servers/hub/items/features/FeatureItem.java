@@ -24,8 +24,10 @@ public class FeatureItem {
 	private String name = null;
 	private ItemStack itemStack = null;
 	private Rarity rarity = null;
+	private FeatureType type = null;
+	public enum FeatureType {REWARD_CRATE, SKY_WARS, HARDCORE_ELIMINATION};
 	
-	public FeatureItem(String name, ItemStack itemStack, Rarity rarity) {
+	public FeatureItem(String name, ItemStack itemStack, Rarity rarity, FeatureType type) {
 		this.name = name;
 		if(name.equals(ChatColor.stripColor(name))) {
 			this.itemStack = new ItemCreator(itemStack).setName("&b" + name).getItemStack();
@@ -33,18 +35,25 @@ public class FeatureItem {
 			this.itemStack = itemStack;
 		}
 		this.rarity = rarity;
+		this.type = type;
 		if(items == null) {
 			items = new ArrayList<FeatureItem>();
 		}
 		items.add(this);
 	}
 	
-	public static List<FeatureItem> getItems() {
+	public static List<FeatureItem> getItems(FeatureType type) {
+		List<FeatureItem> items = new ArrayList<FeatureItem>();
+		for(FeatureItem item : FeatureItem.items) {
+			if(type == item.getType()) {
+				items.add(item);
+			}
+		}
 		return items;
 	}
 	
 	public static FeatureItem getItem(ItemStack itemStack) {
-		for(FeatureItem featureItem : getItems()) {
+		for(FeatureItem featureItem : items) {
 			if(featureItem.getItemStack().equals(itemStack)) {
 				return featureItem;
 			}
@@ -62,6 +71,10 @@ public class FeatureItem {
 	
 	public Rarity getRarity() {
 		return this.rarity;
+	}
+	
+	public FeatureType getType() {
+		return this.type;
 	}
 	
 	public void give(Player player) {

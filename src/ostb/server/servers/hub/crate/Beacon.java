@@ -32,6 +32,7 @@ import ostb.server.ChatClickHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
+import ostb.server.servers.hub.items.features.FeatureItem.FeatureType;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -79,11 +80,11 @@ public class Beacon implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				items = FeatureItem.getItems();
-				items.add(new FeatureItem(getKeyFragmentName(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
-				items.add(new FeatureItem(getVotingKeyx3(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE));
-				items.add(new FeatureItem(getSkyWarsCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
-				items.add(new FeatureItem(getHardcoreEliminationCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON));
+				items = FeatureItem.getItems(FeatureType.REWARD_CRATE);
+				items.add(new FeatureItem(getKeyFragmentName(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
+				items.add(new FeatureItem(getVotingKeyx3(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE, FeatureType.REWARD_CRATE));
+				items.add(new FeatureItem(getSkyWarsCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
+				items.add(new FeatureItem(getHardcoreEliminationCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
 			}
 		});
 		EventUtil.register(this);

@@ -25,6 +25,7 @@ import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
+import ostb.server.servers.hub.items.features.FeatureItem.FeatureType;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -124,16 +125,16 @@ public class SkyWarsCrate implements Listener {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
 				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
-					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity()));
+					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.SKY_WARS));
 				}
 			}
-			features.add(new FeatureItem("15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
-			features.add(new FeatureItem("25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON));
-			features.add(new FeatureItem("35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
-			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON));
-			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
-			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE));
-			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE));
+			features.add(new FeatureItem("15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SKY_WARS));
+			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE, FeatureType.SKY_WARS));
 		}
 	}
 	
