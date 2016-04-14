@@ -31,9 +31,11 @@ import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
+import ostb.gameapi.games.skywars.cages.SmallCage;
 import ostb.gameapi.kit.KitBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ItemCreator;
 
 public class Events implements Listener {
 	private static List<Block> oppenedChests = null;
@@ -153,10 +155,16 @@ public class Events implements Listener {
 		List<Player> players = ProPlugin.getPlayers();
 		spawnPointHandler.teleport(players);
 		for(Player player : players) {
+			boolean usedCage = false;
 			for(KitBase kit : KitBase.getKits()) {
 				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.has(player) && kit.getKitType().equals("cage")) {
 					kit.execute(player);
+					usedCage = true;
+					break;
 				}
+			}
+			if(!usedCage) {
+				new SmallCage(new ItemCreator(Material.GLASS).setName("Default Cage").setLores(new String [] {}).getItemStack(), 0).execute(player);
 			}
 		}
 	}
