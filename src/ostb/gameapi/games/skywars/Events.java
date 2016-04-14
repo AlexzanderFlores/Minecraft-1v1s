@@ -21,11 +21,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.gameapi.KitBase;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
@@ -148,8 +150,15 @@ public class Events implements Listener {
 	public void onGameStarting(GameStartingEvent event) {
 		World world = OSTB.getMiniGame().getMap();
 		SpawnPointHandler spawnPointHandler = new SpawnPointHandler(world);
-		//List<Location> spawns = spawnPointHandler.getSpawns();
-		spawnPointHandler.teleport(ProPlugin.getPlayers());
+		List<Player> players = ProPlugin.getPlayers();
+		spawnPointHandler.teleport(players);
+		for(Player player : players) {
+			for(KitBase kit : KitBase.getKits()) {
+				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.has(player) && kit.getKitType().equals("cage")) {
+					kit.execute(player);
+				}
+			}
+		}
 	}
 	
 	@EventHandler

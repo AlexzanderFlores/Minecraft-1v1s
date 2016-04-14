@@ -41,4 +41,9 @@ public class Fisherman extends KitBase {
 			player.getInventory().addItem(new ItemCreator(Material.FISHING_ROD).addEnchantment(Enchantment.KNOCKBACK).getItemStack());
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

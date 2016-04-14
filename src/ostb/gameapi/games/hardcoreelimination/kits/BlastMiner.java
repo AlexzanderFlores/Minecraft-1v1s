@@ -53,6 +53,11 @@ public class BlastMiner extends KitBase {
 		EventUtil.register(this);
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onBlockExplode(BlockExplodeEvent event) {
 		if(!GracePeriod.isRunning()) {

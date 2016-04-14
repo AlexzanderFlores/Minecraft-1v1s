@@ -65,6 +65,9 @@ public class VotingHandler implements Listener {
 		while(maps.size() > 3) {
 			maps.remove(random.nextInt(maps.size()));
 		}
+		for(String map : maps) {
+			mapVotes.put(map, 0);
+		}
 		World lobby = OSTB.getMiniGame().getLobby();
 		ItemFrame [] itemFrames = new ItemFrame [] {ImageMap.getItemFrame(lobby, 12, 7, 7), ImageMap.getItemFrame(lobby, 2, 7, 7), ImageMap.getItemFrame(lobby, -8, 7, 7)};
 		for(int a = 0; a < maps.size(); ++a) {

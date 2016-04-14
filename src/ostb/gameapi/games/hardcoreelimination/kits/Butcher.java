@@ -54,6 +54,11 @@ public class Butcher extends KitBase {
 		EventUtil.register(this);
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onPostGameStart(PostGameStartEvent event) {
 		Random random = new Random();

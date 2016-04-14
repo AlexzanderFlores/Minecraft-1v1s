@@ -42,4 +42,9 @@ public class CowSlayer extends KitBase {
 			player.getInventory().setBoots(new ItemStack(Material.LEATHER_BOOTS));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

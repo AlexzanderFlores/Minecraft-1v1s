@@ -57,6 +57,11 @@ public class Bomber extends KitBase implements Listener {
 		enabled = true;
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
 		if(enabled) {

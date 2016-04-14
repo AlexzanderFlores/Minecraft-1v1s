@@ -13,31 +13,28 @@ import ostb.server.servers.hub.items.Features.Rarity;
 @SuppressWarnings("deprecation")
 public class BigCage extends Cage {
 	public BigCage(ItemStack icon) {
-		this(null, icon);
+		this(icon, -1);
 	}
 	
 	public BigCage(ItemStack icon, int slot) {
-		this(null, icon, slot);
-	}
-	
-	public BigCage(Player player, ItemStack icon) {
-		this(player, icon, -1);
-	}
-	
-	public BigCage(Player player, ItemStack icon, int slot) {
-		super(player, icon, Rarity.UNCOMMON, slot);
+		super(icon, Rarity.UNCOMMON, slot);
 		setMaterial(icon.getType(), icon.getData().getData());
-		setKitType("big_cage");
+		setKitType("cage");
+		setKitSubType("big_cage");
 	}
 
 	@Override
 	public String getPermission() {
 		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
 	}
-
+	
 	@Override
 	public void execute() {
-		Player player = getPlayer();
+		
+	}
+
+	@Override
+	public void execute(Player player) {
 		if(player != null) {
 			Location location = player.getLocation();
 			placeBlock(location.clone().add(0, -1, 0));

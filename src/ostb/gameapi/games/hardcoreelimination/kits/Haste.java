@@ -40,4 +40,9 @@ public class Haste extends KitBase {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, (20 * 60 * 2) + (20 * 30), 1));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
-import ostb.ProPlugin;
 import ostb.gameapi.KitBase;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
@@ -19,15 +18,12 @@ import ostb.server.util.ItemCreator;
 public abstract class Cage extends KitBase {
 	private static List<Cage> cages = null;
 	private List<Block> blocks = null;
-	private String playerName = null;
+	//private String playerName = null;
 	private Material material = Material.GLASS;
 	private byte data = 0;
 	
-	public Cage(Player player, ItemStack icon, Rarity rarity, int slot) {
+	public Cage(ItemStack icon, Rarity rarity, int slot) {
 		super(Plugins.SKY_WARS_SOLO, icon, rarity, -1, slot);
-		if(player != null) {
-			this.playerName = player.getName();
-		}
 		if(cages == null) {
 			cages = new ArrayList<Cage>();
 		}
@@ -127,14 +123,6 @@ public abstract class Cage extends KitBase {
 			blocks.clear();
 			blocks = null;
 		}
-	}
-	
-	public String getPlayerName() {
-		return playerName;
-	}
-	
-	public Player getPlayer() {
-		return playerName == null ? null : ProPlugin.getPlayer(playerName);
 	}
 	
 	protected void teleport(Player player) {

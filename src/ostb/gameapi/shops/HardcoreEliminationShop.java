@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.KitBase;
@@ -34,17 +35,19 @@ public class HardcoreEliminationShop extends ShopBase {
 	public HardcoreEliminationShop() {
 		super("Shop - Hardcore Elimination", "kit.hardcore_elimination.", DB.PLAYERS_COINS_HE, Plugins.HE_KITS, 2);
 		instance = this;
-		new HardcoreEliminationCrate();
-		new Butcher();
-		new CowSlayer();
-		new Swordsman();
-		new Lumberjack();
-		new Miner();
-		new Enchanter();
-		new WallBreather();
-		new FeatherFalling();
-		new Haste();
-		new BlastMiner();
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			new HardcoreEliminationCrate();
+			new Butcher();
+			new CowSlayer();
+			new Swordsman();
+			new Lumberjack();
+			new Miner();
+			new Enchanter();
+			new WallBreather();
+			new FeatherFalling();
+			new Haste();
+			new BlastMiner();
+		}
 	}
 	
 	public static HardcoreEliminationShop getInstance() {
@@ -68,7 +71,7 @@ public class HardcoreEliminationShop extends ShopBase {
 					HardcoreEliminationCrate.addItem(player, inventory);
 				}
 				pages.put(player.getName(), page);
-				String type = null;
+				String type = "";
 				if(page == 1) {
 					type = "kit";
 				} else if(page == 2) {

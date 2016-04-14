@@ -2,6 +2,7 @@ package ostb.gameapi.games.skywars.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -41,6 +42,11 @@ public class Enderman extends KitBase {
 	public void execute() {
 		EventUtil.register(this);
 		enabled = true;
+	}
+	
+	@Override
+	public void execute(Player player) {
+		
 	}
 	
 	@EventHandler

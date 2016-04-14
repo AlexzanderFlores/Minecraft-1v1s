@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,14 +52,17 @@ public class CageSelector implements Listener {
 	private void open(Player player, int page) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
 		pages.put(player.getName(), page);
-		String type = null;
+		String type = "";
+		String subType = "";
 		if(page == 1) {
-			type = "small_cage";
+			type = "cage";
+			subType = "small_cage";
 		} else if(page == 2) {
-			type = "big_cage";
+			type = "cage";
+			subType = "big_cage";
 		}
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.getKitType().equals(type)) {
+			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
 				inventory.setItem(kit.getSlot() - 18, kit.getIcon(player));
 			}
 		}
@@ -105,7 +109,7 @@ public class CageSelector implements Listener {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
+				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && name.startsWith(kit.getName()) && kit.getSlot() - 18 == event.getSlot()) {
 					if(kit.use(player)) {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 						player.closeInventory();
@@ -117,7 +121,7 @@ public class CageSelector implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onGameStarting(GameStartingEvent event) {
 		HandlerList.unregisterAll(this);
 		name = null;

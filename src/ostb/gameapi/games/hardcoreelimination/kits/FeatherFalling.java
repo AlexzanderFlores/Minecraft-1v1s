@@ -44,6 +44,11 @@ public class FeatherFalling extends KitBase {
 		enabled = true;
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
 		if(enabled && event.getCause() == DamageCause.FALL && event.getEntity() instanceof Player) {

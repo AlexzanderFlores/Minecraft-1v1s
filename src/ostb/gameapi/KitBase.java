@@ -38,6 +38,7 @@ public abstract class KitBase implements Listener {
 	private static int lastSlot = -1;
 	private Plugins plugin = null;
 	private String kitType = null;
+	private String kitSubType = null;
 	private ItemStack icon = null;
 	private ItemStack helmet = null;
 	private ItemStack chestplate = null;
@@ -59,6 +60,7 @@ public abstract class KitBase implements Listener {
 		}
 		this.plugin = plugin;
 		kitType = "kit";
+		kitSubType = "";
 		if(slot > -1) {
 			lastSlot = slot;
 		} else {
@@ -82,6 +84,14 @@ public abstract class KitBase implements Listener {
 	
 	public void setKitType(String kitType) {
 		this.kitType = kitType;
+	}
+	
+	public String getKitSubType() {
+		return kitSubType;
+	}
+	
+	public void setKitSubType(String kitSubType) {
+		this.kitSubType = kitSubType;
 	}
 	
 	public ItemStack getHelmet() {
@@ -135,7 +145,9 @@ public abstract class KitBase implements Listener {
 				setDefaultKit(player);
 				if(getPlugin() == OSTB.getPlugin()) {
 					for(KitBase kit : kits) {
-						kit.remove(player);
+						if(kit.getKitType().equals(getKitType())) {
+							kit.remove(player);
+						}
 					}
 					users.add(player.getName());
 					MessageHandler.sendMessage(player, "Selected &e" + getName());
@@ -157,7 +169,7 @@ public abstract class KitBase implements Listener {
 				}
 			}
 		} else {
-			MessageHandler.sendMessage(player, "&cYou cannot purchase this kit with coins");
+			MessageHandler.sendMessage(player, "&cUnlock this in crates &a/vote");
 		}
 		return false;
 	}
@@ -235,6 +247,9 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public boolean has(Player player) {
+		for(String user : users) {
+			Bukkit.getLogger().info(getName() + ": " + user);
+		}
 		return users != null && users.contains(player.getName()) && !SpectatorHandler.contains(player);
 	}
 	
@@ -280,6 +295,7 @@ public abstract class KitBase implements Listener {
 	
 	public abstract String getPermission();
 	public abstract void execute();
+	public abstract void execute(Player player);
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {

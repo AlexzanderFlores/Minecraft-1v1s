@@ -11,31 +11,28 @@ import ostb.server.servers.hub.items.Features.Rarity;
 @SuppressWarnings("deprecation")
 public class SmallCage extends Cage {
 	public SmallCage(ItemStack icon) {
-		this(null, icon);
+		this(icon, -1);
 	}
 	
 	public SmallCage(ItemStack icon, int slot) {
-		this(null, icon, slot);
-	}
-	
-	public SmallCage(Player player, ItemStack icon) {
-		this(player, icon, -1);
-	}
-	
-	public SmallCage(Player player, ItemStack icon, int slot) {
-		super(player, icon, Rarity.COMMON, slot);
+		super(icon, Rarity.COMMON, slot);
 		setMaterial(icon.getType(), icon.getData().getData());
-		setKitType("small_cage");
+		setKitType("cage");
+		setKitSubType("small_cage");
 	}
 
 	@Override
 	public String getPermission() {
 		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
 	}
-
+	
 	@Override
 	public void execute() {
-		Player player = getPlayer();
+		
+	}
+
+	@Override
+	public void execute(Player player) {
 		if(player != null) {
 			Location location = player.getLocation();
 			placeBlock(location.clone().add(0, -1, 0));

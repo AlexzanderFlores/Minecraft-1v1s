@@ -39,4 +39,9 @@ public class Lumberjack extends KitBase {
 			player.getInventory().setHelmet(new ItemStack(Material.STONE_AXE));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

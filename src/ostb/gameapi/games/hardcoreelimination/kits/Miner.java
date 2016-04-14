@@ -39,4 +39,9 @@ public class Miner extends KitBase {
 			player.getInventory().setHelmet(new ItemStack(Material.STONE_PICKAXE));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

@@ -74,6 +74,11 @@ public class Ninja extends KitBase {
 		enabled = true;
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
 		if(enabled && event.getClickType() == ClickType.RIGHT_CLICK) {

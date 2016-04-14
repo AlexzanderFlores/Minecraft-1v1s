@@ -41,4 +41,9 @@ public class Enchanter extends KitBase {
 			player.getInventory().setHelmet(new ItemStack(Material.LEATHER));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

@@ -43,4 +43,9 @@ public class Archer extends KitBase {
 			player.getInventory().addItem(new ItemStack(Material.ARROW, amount));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

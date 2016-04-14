@@ -43,4 +43,9 @@ public class Pyro extends KitBase {
 			}
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

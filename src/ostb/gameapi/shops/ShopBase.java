@@ -36,11 +36,15 @@ public abstract class ShopBase implements Listener {
 		private int percentage = 0;
 		
 		public KitData(Player player, String title, String kitType) {
+			this(player, title, kitType, "");
+		}
+		
+		public KitData(Player player, String title, String kitType, String kitSubType) {
 			this.title = title;
 			total = 0;
 			owned = 0;
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == plugin && kit.getKitType().equals(kitType)) {
+				if(kit.getPlugin() == plugin && kit.getKitType().equals(kitType) && kit.getKitSubType().equals(kitSubType)) {
 					++total;
 					if(kit.owns(player)) {
 						++owned;

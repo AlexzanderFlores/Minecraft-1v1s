@@ -44,6 +44,11 @@ public class WallBreather extends KitBase {
 		enabled = true;
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
 		if(enabled && event.getCause() == DamageCause.SUFFOCATION && event.getEntity() instanceof Player) {

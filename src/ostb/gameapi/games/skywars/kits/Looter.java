@@ -55,6 +55,11 @@ public class Looter extends KitBase {
 		enabled = true;
 	}
 	
+	@Override
+	public void execute(Player player) {
+		
+	}
+	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		if(enabled) {

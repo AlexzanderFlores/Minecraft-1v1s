@@ -42,4 +42,9 @@ public class Medic extends KitBase {
 			player.getInventory().addItem(new Potion(PotionType.REGEN, 1, true).toItemStack(2));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }

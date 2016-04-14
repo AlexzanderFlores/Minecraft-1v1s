@@ -40,4 +40,9 @@ public class Swordsman extends KitBase {
 			player.getInventory().setHelmet(new ItemStack(Material.STONE_SWORD));
 		}
 	}
+	
+	@Override
+	public void execute(Player player) {
+		
+	}
 }
