@@ -38,9 +38,7 @@ public class SkyWarsShop extends ShopBase {
 	public SkyWarsShop() {
 		super("Shop - Sky Wars", "kit.sky_wars.", DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO, 3);
 		instance = this;
-		if(OSTB.getPlugin() == Plugins.HUB) {
-			new SkyWarsCrate();
-		}
+		new SkyWarsCrate();
 		Cage.createCages();
 		new Archer();
 		new Builder();

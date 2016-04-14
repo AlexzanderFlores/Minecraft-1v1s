@@ -18,7 +18,7 @@ public class LeaveItem implements Listener {
 	private ItemStack leaveItem = null;
 	
 	public LeaveItem() {
-		leaveItem = new ItemCreator(Material.WOOD_DOOR).setName("&bReturn to Hub").getItemStack();
+		leaveItem = new ItemCreator(Material.WOOD_DOOR).setName("&aReturn to Hub").getItemStack();
 		EventUtil.register(this);
 	}
 	

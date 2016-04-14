@@ -34,13 +34,11 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.StringUtil;
 
 public class SkyWarsCrate implements Listener {
-	private static String name = null;
 	private static List<String> delayed = null;
 	private static List<FeatureItem> features = null;
 	private static final int cost = 50;
 	
 	public SkyWarsCrate() {
-		name = "Sky Wars Crate";
 		delayed = new ArrayList<String>();
 		features = new ArrayList<FeatureItem>();
 		EventUtil.register(this);
@@ -53,7 +51,7 @@ public class SkyWarsCrate implements Listener {
 				String uuid = player.getUniqueId().toString();
 				int month = Calendar.getInstance().get(Calendar.MONTH);
 				int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
-				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + name).setLores(new String [] {
+				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + getName()).setLores(new String [] {
 					"",
 					"&eGet random kits, cages and more!",
 					"",
@@ -77,6 +75,10 @@ public class SkyWarsCrate implements Listener {
 				inventory.setItem(4, itemCreator.getItemStack());
 			}
 		});
+	}
+	
+	private static String getName() {
+		return "Sky Wars Crate";
 	}
 	
 	private static void updateItem(Player player) {
@@ -141,7 +143,7 @@ public class SkyWarsCrate implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
-		if(ChatColor.stripColor(event.getItemTitle()).equals(name)) {
+		if(ChatColor.stripColor(event.getItemTitle()).equals(getName())) {
 			if(OSTB.getPlugin() == Plugins.HUB) {
 				if(event.getClickType() == ClickType.LEFT) {
 					if(delayed.contains(player.getName())) {
@@ -157,7 +159,7 @@ public class SkyWarsCrate implements Listener {
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							populateFeatures();
-							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.name, features);
+							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.getName(), features);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}

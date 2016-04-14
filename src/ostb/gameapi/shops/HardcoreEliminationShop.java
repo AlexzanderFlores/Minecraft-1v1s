@@ -34,9 +34,7 @@ public class HardcoreEliminationShop extends ShopBase {
 	public HardcoreEliminationShop() {
 		super("Shop - Hardcore Elimination", "kit.hardcore_elimination.", DB.PLAYERS_COINS_HE, Plugins.HE_KITS, 2);
 		instance = this;
-		if(OSTB.getPlugin() == Plugins.HUB) {
-			new HardcoreEliminationCrate();
-		}
+		new HardcoreEliminationCrate();
 		new Butcher();
 		new CowSlayer();
 		new Swordsman();
