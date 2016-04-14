@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.server.DB;
@@ -29,21 +30,25 @@ public class DefaultKit implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		UUID uuid = player.getUniqueId();
-		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().toString()})) {
-			KitBase kit = null;
-			for(KitBase kitBase : KitBase.getKits()) {
-				if(kitBase.getName().equals(kitName)) {
-					kit = kitBase;
-					break;
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			AsyncPlayerJoinEvent.getHandlerList().unregister(this);
+		} else {
+			Player player = event.getPlayer();
+			UUID uuid = player.getUniqueId();
+			for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().toString()})) {
+				KitBase kit = null;
+				for(KitBase kitBase : KitBase.getKits()) {
+					if(kitBase.getName().equals(kitName)) {
+						kit = kitBase;
+						break;
+					}
+				}
+				if(kit != null) {
+					kit.use(player, true);
 				}
 			}
-			if(kit != null) {
-				kit.use(player, true);
-			}
+			Bukkit.getLogger().info("Loading default kits");
 		}
-		Bukkit.getLogger().info("Loading default kits");
 	}
 	
 	@EventHandler

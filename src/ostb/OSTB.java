@@ -22,6 +22,7 @@ import ostb.gameapi.games.hardcoreelimination.HardcoreElimination;
 import ostb.gameapi.games.pvpbattles.ctf.CTF;
 import ostb.gameapi.games.pvpbattles.dom.DOM;
 import ostb.gameapi.games.skywars.SkyWars;
+import ostb.gameapi.kit.DefaultKit;
 import ostb.player.ChatLogger;
 import ostb.player.DefaultChatColor;
 import ostb.player.LevelHandler;
@@ -175,6 +176,7 @@ public class OSTB extends JavaPlugin {
 		new AutoAlerts();
 		new CommandDispatcher();
 		new DefaultChatColor();
+		new DefaultKit();
 		Glow.register();
 		client = new Client("192.198.207.74", 4500, 5000);
 		client.start();
