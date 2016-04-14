@@ -20,6 +20,7 @@ import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.game.PostGameStartEvent;
 import ostb.customevents.game.PostGameStartingEvent;
+import ostb.gameapi.kit.DefaultKit;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
@@ -86,6 +87,7 @@ public abstract class MiniGame extends ProPlugin {
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
+		new DefaultKit();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override

@@ -16,7 +16,7 @@ import ostb.customevents.player.CoinUpdateEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;

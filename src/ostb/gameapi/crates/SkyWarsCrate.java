@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;

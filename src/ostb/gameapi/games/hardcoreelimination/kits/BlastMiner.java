@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
 import ostb.gameapi.GracePeriod;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.HardcoreEliminationShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.EventUtil;

@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 
 public class PlayerKitPurchaseEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

@@ -11,8 +11,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.KitBase;
 import ostb.gameapi.games.skywars.Events;
+import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.TitleDisplayer;
 import ostb.server.servers.hub.items.Features.Rarity;

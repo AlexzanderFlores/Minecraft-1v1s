@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 

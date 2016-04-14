@@ -21,7 +21,7 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;

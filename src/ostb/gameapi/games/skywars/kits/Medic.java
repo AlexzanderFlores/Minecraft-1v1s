@@ -6,7 +6,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import ostb.OSTB.Plugins;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;

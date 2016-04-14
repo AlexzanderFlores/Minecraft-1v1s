@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.kit;
 
 import java.util.ArrayList;
 import java.util.List;

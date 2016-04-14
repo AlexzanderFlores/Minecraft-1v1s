@@ -27,11 +27,11 @@ import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.KitBase;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
+import ostb.gameapi.kit.KitBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 

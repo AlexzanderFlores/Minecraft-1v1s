@@ -6,7 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import ostb.OSTB.Plugins;
-import ostb.gameapi.KitBase;
+import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;

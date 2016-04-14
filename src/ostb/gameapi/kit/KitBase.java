@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.kit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import ostb.customevents.player.PlayerKitPurchaseEvent;
 import ostb.customevents.player.PlayerKitSelectEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
+import ostb.gameapi.SpectatorHandler;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
@@ -142,7 +143,7 @@ public abstract class KitBase implements Listener {
 			PlayerKitSelectEvent event = new PlayerKitSelectEvent(player, this);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				setDefaultKit(player);
+				DefaultKit.setDefaultKit(player, this);
 				if(getPlugin() == OSTB.getPlugin()) {
 					for(KitBase kit : kits) {
 						if(kit.getKitType().equals(getKitType())) {
@@ -150,9 +151,10 @@ public abstract class KitBase implements Listener {
 						}
 					}
 					users.add(player.getName());
+				} else if(getPlugin() == Plugins.HUB) {
 					MessageHandler.sendMessage(player, "Selected &e" + getName());
-					return true;
 				}
+				return true;
 			}
 		} else if(price > 0) {
 			PlayerKitPurchaseEvent event = new PlayerKitPurchaseEvent(player, this);
@@ -160,7 +162,6 @@ public abstract class KitBase implements Listener {
 			if(!event.isCancelled()) {
 				if(CoinsHandler.getCoinsHandler(getPlugin()).getCoins(player) >= getPrice()) {
 					giveKit(player);
-					MessageHandler.sendMessage(player, "&6+1 Use for " + getName());
 					use(player);
 					CoinsHandler.getCoinsHandler(getPlugin()).addCoins(player, getPrice() * -1);
 					return true;
@@ -191,23 +192,6 @@ public abstract class KitBase implements Listener {
 			new TitleDisplayer(player, "&bYou unlocked", "&e" + getName()).display();
 			Bukkit.getPluginManager().callEvent(new PlayerPostKitPurchaseEvent(player, this));
 		}
-	}
-	
-	public void setDefaultKit(Player player) {
-		final UUID uuid = player.getUniqueId();
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				String game = plugin.toString();
-				String [] keys = new String [] {"uuid", "game"};
-				String [] values = new String [] {uuid.toString(), game};
-				if(DB.PLAYERS_DEFAULT_KITS.isKeySet(keys, values)) {
-					DB.PLAYERS_DEFAULT_KITS.updateString("kit", getName(), keys, values);
-				} else {
-					DB.PLAYERS_DEFAULT_KITS.insert("'" + uuid.toString() + "', '" + game + "', '" + getName() + "'");
-				}
-			}
-		});
 	}
 	
 	public Plugins getPlugin() {

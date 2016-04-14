@@ -12,8 +12,8 @@ import org.bukkit.util.EulerAngle;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.KitSelection;
 import ostb.gameapi.games.pvpbattles.Armory;
+import ostb.gameapi.kit.KitSelection;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
