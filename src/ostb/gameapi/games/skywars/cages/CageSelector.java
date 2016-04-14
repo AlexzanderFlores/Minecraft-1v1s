@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
+import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
@@ -123,6 +124,9 @@ public class CageSelector implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onGameStarting(GameStartingEvent event) {
 		HandlerList.unregisterAll(this);
+		for(Player player : ProPlugin.getPlayers()) {
+			player.getInventory().remove(Material.IRON_FENCE);
+		}
 		name = null;
 		item = null;
 		pages.clear();

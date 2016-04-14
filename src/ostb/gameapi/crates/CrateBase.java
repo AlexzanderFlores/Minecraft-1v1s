@@ -113,6 +113,24 @@ public class CrateBase implements Listener {
 		}
 	}
 	
+	private void win(InventoryView inventoryView) {
+		FeatureItem featureWon = null;
+		String wonName = ChatColor.stripColor(inventoryView.getItem(22).getItemMeta().getDisplayName());
+		for(FeatureItem feature : features) {
+			String name = feature.getName();
+			if(name.equals(wonName)) {
+				featureWon = feature;
+				break;
+			}
+		}
+		if(featureWon == null) {
+			MessageHandler.sendMessage(player, "&cThere was an error in giving you your reward, please report this (&e\"" + wonName + "&e\"&c)");
+		} else {
+			Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin, featureWon));
+		}
+		remove();
+	}
+	
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
@@ -155,22 +173,7 @@ public class CrateBase implements Listener {
 					} else if(counter == 3) {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else if(counter == 5) {
-						FeatureItem featureWon = null;
-						String wonName = ChatColor.stripColor(inventoryView.getItem(22).getItemMeta().getDisplayName());
-						for(FeatureItem feature : features) {
-							String name = feature.getName();
-							Bukkit.getLogger().info(name + " vs " + wonName);
-							if(name.equals(wonName)) {
-								featureWon = feature;
-								break;
-							}
-						}
-						if(featureWon == null) {
-							MessageHandler.sendMessage(player, "&cThere was an error in giving you your reward, please report this (&e\"" + wonName + "&e\"&c)");
-						} else {
-							Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin, featureWon));
-						}
-						remove();
+						win(inventoryView);
 					}
 					++counter;
 				}
@@ -183,7 +186,11 @@ public class CrateBase implements Listener {
 		if(event.getPlayer().getName().equals(this.player.getName())) {
 			InventoryView inventoryView = player.getOpenInventory();
 			if(inventoryView != null && inventoryView.getTitle().equals(title)) {
-				remove();
+				if(displaying) {
+					win(inventoryView);
+				} else {
+					remove();
+				}
 			}
 		}
 	}
