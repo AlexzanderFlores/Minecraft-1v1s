@@ -289,15 +289,15 @@ public abstract class MiniGame extends ProPlugin {
 			@Override
 			public void update() {
 				if(ServerLogger.updatePlayerCount()) {
-					removeScore(7);
-					removeScore(4);
+					removeScore(8);
+					removeScore(5);
 				}
 				if(getGameState() != GameStates.WAITING) {
-					removeScore(4);
+					removeScore(5);
 				}
 				if(getGameState() != oldState) {
 					oldState = getGameState();
-					removeScore(5);
+					removeScore(6);
 				}
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
@@ -308,6 +308,7 @@ public abstract class MiniGame extends ProPlugin {
 					"&e" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
+					"&aOutsideTheBlock.org",
 					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"    "
 				});

@@ -72,7 +72,7 @@ public abstract class ShopBase implements Listener {
 		this.plugin = plugin;
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
-		itemStack = new ItemCreator(Material.CHEST).setName("&a" + plugin.getDisplay() + " Shop").getItemStack();
+		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").getItemStack();
 		EventUtil.register(this);
 	}
 	

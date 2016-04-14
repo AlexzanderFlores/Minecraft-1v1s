@@ -69,9 +69,9 @@ public class Battles implements Listener {
 			@Override
 			public void update() {
 				if(ServerLogger.updatePlayerCount()) {
-					removeScore(7);
+					removeScore(8);
 				}
-				removeScore(4);
+				removeScore(5);
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
 					" ",

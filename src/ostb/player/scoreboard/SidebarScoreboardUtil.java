@@ -28,7 +28,6 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	}
 	
 	public SidebarScoreboardUtil(Scoreboard scoreboard, String name) {
-		// TODO scores stuff
 		scores = new HashMap<String, Integer>();
 		setScoreboard(scoreboard);
 		if(getScoreboard().getObjective(" ") == null) {
@@ -42,9 +41,6 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	
 	public void setText(String text, int score) {
 		text = StringUtil.color(text);
-		if(text.length() > 16) {
-			text = text.substring(0, 16);
-		}
 		getObjective().getScore(text).setScore(score);
 		scores.put(text, score);
 	}
@@ -69,9 +65,6 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	}
 	
 	public void removeText(String text) {
-		if(text.length() > 16) {
-			text = text.substring(0, 16);
-		}
 		getScoreboard().resetScores(text);
 		scores.remove(text);
 	}

@@ -13,6 +13,5 @@ public class SkyWars extends MiniGame {
 		new BelowNameHealthScoreboardUtil();
 		new Events();
 		new SkyWarsShop();
-		//new CageSelector();
 	}
 }

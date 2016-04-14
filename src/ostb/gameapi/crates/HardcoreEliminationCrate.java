@@ -51,27 +51,35 @@ public class HardcoreEliminationCrate implements Listener {
 				String uuid = player.getUniqueId().toString();
 				int month = Calendar.getInstance().get(Calendar.MONTH);
 				int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
-				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + getName()).setLores(new String [] {
-					"",
-					"&eGet random kits, vote passes and more",
-					"",
-					"&7Coins: &a" + cost,
-					"&7Get one &aFREE &7through &a/vote",
-					"",
-					"&7Left click to open a crate",
-					"&7Middle click to view possible items",
-					"&7Right click to purchase a key",
-					"",
-					"&eKeys owned: &a" + getKeys(player),
-					"&7Lifetime Hardcore crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-					"&7Monthly Hardcore crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-					"&7Weekly Hardcore crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
-					""
-				});
-				if(OSTB.getPlugin() != Plugins.HUB) {
-					itemCreator.addLore("&4&nThis can only be used in the hub");
-					itemCreator.addLore("");
+				String [] lores = null;
+				if(OSTB.getPlugin() == Plugins.HUB) {
+					lores = new String [] {
+						"",
+						"&eGet random kits, vote passes and more",
+						"",
+						"&7Coins: &a" + cost,
+						"&7Get one &aFREE &7through &a/vote",
+						"",
+						"&7Left click to open a crate",
+						"&7Middle click to view possible items",
+						"&7Right click to purchase a key",
+						"",
+						"&eKeys owned: &a" + getKeys(player),
+						"&7Lifetime Hardcore crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
+						"&7Monthly Hardcore crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
+						"&7Weekly Hardcore crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+						""
+					};
+				} else {
+					lores = new String [] {
+						"",
+						"&eGet random kits, vote passes and more",
+						"",
+						"&4&nThis can only be used in the hub",
+						""
+					};
 				}
+				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + getName()).setLores(lores);
 				inventory.setItem(4, itemCreator.getItemStack());
 			}
 		});

@@ -60,7 +60,6 @@ public class HardcoreEliminationShop extends ShopBase {
 	public void openShop(Player player, int page) {
 		InventoryView view = player.getOpenInventory();
 		Inventory inventory = Bukkit.createInventory(player, 9 * (OSTB.getPlugin() == Plugins.HUB ? 6 : 5), getName());
-		player.openInventory(inventory);
 		pages.put(player.getName(), page);
 		if(hasCrate(player, view)) {
 			inventory.setItem(4, view.getItem(4));
@@ -84,6 +83,7 @@ public class HardcoreEliminationShop extends ShopBase {
 				inventory.setItem(kit.getSlot(), kit.getIcon(player));
 			}
 		}
+		player.openInventory(inventory);
 	}
 
 	@Override
@@ -94,8 +94,6 @@ public class HardcoreEliminationShop extends ShopBase {
 			int page = getPage(player);
 			if(page == 1) {
 				inventory.setItem(inventory.getTopInventory().getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
-			} else if(page == 2) {
-				
 			}
 		}
 	}
@@ -105,8 +103,6 @@ public class HardcoreEliminationShop extends ShopBase {
 		int page = getPage(player);
 		if(page == 1) {
 			inventory.setItem(inventory.getSize() - 6, new KitData(player, "Kits Owned", "kit").getItem());
-		} else if(page == 2) {
-			
 		}
 	}
 	
