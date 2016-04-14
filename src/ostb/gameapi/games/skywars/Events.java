@@ -26,6 +26,7 @@ import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.game.PostGameStartEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
@@ -198,6 +199,15 @@ public class Events implements Listener {
 				miniGame.setAllowEntityDamage(true);
 			}
 		}, 20 * 5);
+	}
+	
+	@EventHandler
+	public void onPostGameStart(PostGameStartEvent event) {
+		for(KitBase kit : KitBase.getKits()) {
+			if(kit.getKitType().equals("kit")) {
+				kit.execute();
+			}
+		}
 	}
 	
 	@EventHandler

@@ -70,10 +70,6 @@ public class SkyWarsCrate implements Listener {
 					"&7Weekly Sky Wars crates opened: &a" + DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
 					""
 				});
-				if(OSTB.getPlugin() != Plugins.HUB) {
-					itemCreator.addLore("&4&nThis can only be used in the hub");
-					itemCreator.addLore("");
-				}
 				inventory.setItem(4, itemCreator.getItemStack());
 			}
 		});

@@ -11,8 +11,8 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
-import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
+import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
 
@@ -29,9 +29,9 @@ public class DefaultKit implements Listener {
 	}
 	
 	@EventHandler
-	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
 		if(OSTB.getPlugin() == Plugins.HUB) {
-			AsyncPlayerJoinEvent.getHandlerList().unregister(this);
+			AsyncPostPlayerJoinEvent.getHandlerList().unregister(this);
 		} else {
 			Player player = event.getPlayer();
 			UUID uuid = player.getUniqueId();

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.gameapi.games.skywars.kits.Archer;
@@ -30,7 +31,6 @@ import ostb.gameapi.games.skywars.kits.Pyro;
 import ostb.gameapi.games.skywars.kits.Spiderman;
 import ostb.gameapi.kit.KitBase;
 import ostb.server.DB;
-import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 
 public class SkyWarsShop extends ShopBase {
@@ -41,21 +41,21 @@ public class SkyWarsShop extends ShopBase {
 		instance = this;
 		if(OSTB.getPlugin() == Plugins.HUB) {
 			new SkyWarsCrate();
-			Cage.createCages();
-			new Archer();
-			new Builder();
-			new Looter();
-			new Enchanter();
-			new Bomber();
-			new Ninja();
-			new Medic();
-			new CowSlayer();
-			new Enderman();
-			new Fisherman();
-			new Spiderman();
-			new Pyro();
-			new Miner();
 		}
+		Cage.createCages();
+		new Archer();
+		new Builder();
+		new Looter();
+		new Enchanter();
+		new Bomber();
+		new Ninja();
+		new Medic();
+		new CowSlayer();
+		new Enderman();
+		new Fisherman();
+		new Spiderman();
+		new Pyro();
+		new Miner();
 	}
 	
 	public static SkyWarsShop getInstance() {
@@ -66,38 +66,38 @@ public class SkyWarsShop extends ShopBase {
 	}
 	
 	@Override
-	public void openShop(final Player player, final int page) {
-		final InventoryView view = player.getOpenInventory();
-		final Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
+	public void openShop(Player player, int page) {
+		InventoryView view = player.getOpenInventory();
+		Inventory inventory = Bukkit.createInventory(player, 9 * (OSTB.getPlugin() == Plugins.HUB ? 6 : OSTB.getMiniGame().getGameState() == GameStates.STARTING ? 4 : 5), getName());
 		player.openInventory(inventory);
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				if(hasCrate(player, view)) {
-					inventory.setItem(4, view.getItem(4));
-				} else {
-					SkyWarsCrate.addItem(player, inventory);
-				}
-				pages.put(player.getName(), page);
-				String type = "";
-				String subType = "";
-				if(page == 1) {
-					type = "kit";
-				} else if(page == 2) {
-					type = "cage";
-					subType = "small_cage";
-				} else if(page == 3) {
-					type = "cage";
-					subType = "big_cage";
-				}
-				for(KitBase kit : KitBase.getKits()) {
-					if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
-						inventory.setItem(kit.getSlot(), kit.getIcon(player));
-					}
-				}
-				updateItems(player, inventory);
+		pages.put(player.getName(), page);
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			if(hasCrate(player, view)) {
+				inventory.setItem(4, view.getItem(4));
+			} else {
+				SkyWarsCrate.addItem(player, inventory);
 			}
-		});
+			updateItems(player, inventory);
+		} else if(OSTB.getMiniGame().getGameState() != GameStates.STARTING) {
+			setBackItem(player, inventory);
+			setNextItem(player, inventory);
+		}
+		String type = "";
+		String subType = "";
+		if(page == 1) {
+			type = "kit";
+		} else if(page == 2) {
+			type = "cage";
+			subType = "small_cage";
+		} else if(page == 3) {
+			type = "cage";
+			subType = "big_cage";
+		}
+		for(KitBase kit : KitBase.getKits()) {
+			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
+				inventory.setItem(kit.getSlot(), kit.getIcon(player));
+			}
+		}
 	}
 
 	@Override

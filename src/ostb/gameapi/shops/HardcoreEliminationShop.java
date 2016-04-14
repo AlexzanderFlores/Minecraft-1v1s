@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.crates.HardcoreEliminationCrate;
 import ostb.gameapi.games.hardcoreelimination.kits.BlastMiner;
 import ostb.gameapi.games.hardcoreelimination.kits.Butcher;
@@ -26,7 +27,6 @@ import ostb.gameapi.games.hardcoreelimination.kits.Swordsman;
 import ostb.gameapi.games.hardcoreelimination.kits.WallBreather;
 import ostb.gameapi.kit.KitBase;
 import ostb.server.DB;
-import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 
 public class HardcoreEliminationShop extends ShopBase {
@@ -37,17 +37,17 @@ public class HardcoreEliminationShop extends ShopBase {
 		instance = this;
 		if(OSTB.getPlugin() == Plugins.HUB) {
 			new HardcoreEliminationCrate();
-			new Butcher();
-			new CowSlayer();
-			new Swordsman();
-			new Lumberjack();
-			new Miner();
-			new Enchanter();
-			new WallBreather();
-			new FeatherFalling();
-			new Haste();
-			new BlastMiner();
 		}
+		new Butcher();
+		new CowSlayer();
+		new Swordsman();
+		new Lumberjack();
+		new Miner();
+		new Enchanter();
+		new WallBreather();
+		new FeatherFalling();
+		new Haste();
+		new BlastMiner();
 	}
 	
 	public static HardcoreEliminationShop getInstance() {
@@ -58,33 +58,33 @@ public class HardcoreEliminationShop extends ShopBase {
 	}
 	
 	@Override
-	public void openShop(final Player player, final int page) {
-		final InventoryView view = player.getOpenInventory();
-		final Inventory inventory = Bukkit.createInventory(player, 9 * 6, getName());
+	public void openShop(Player player, int page) {
+		InventoryView view = player.getOpenInventory();
+		Inventory inventory = Bukkit.createInventory(player, 9 * (OSTB.getPlugin() == Plugins.HUB ? 6 : OSTB.getMiniGame().getGameState() == GameStates.STARTING ? 4 : 5), getName());
 		player.openInventory(inventory);
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				if(hasCrate(player, view)) {
-					inventory.setItem(4, view.getItem(4));
-				} else {
-					HardcoreEliminationCrate.addItem(player, inventory);
-				}
-				pages.put(player.getName(), page);
-				String type = "";
-				if(page == 1) {
-					type = "kit";
-				} else if(page == 2) {
-					type = "none";
-				}
-				for(KitBase kit : KitBase.getKits()) {
-					if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals(type)) {
-						inventory.setItem(kit.getSlot(), kit.getIcon(player));
-					}
-				}
-				updateItems(player, inventory);
+		pages.put(player.getName(), page);
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			if(hasCrate(player, view)) {
+				inventory.setItem(4, view.getItem(4));
+			} else {
+				HardcoreEliminationCrate.addItem(player, inventory);
 			}
-		});
+			updateItems(player, inventory);
+		} else if(OSTB.getMiniGame().getGameState() != GameStates.STARTING) {
+			setBackItem(player, inventory);
+			setNextItem(player, inventory);
+		}
+		String type = "";
+		if(page == 1) {
+			type = "kit";
+		} else if(page == 2) {
+			type = "none";
+		}
+		for(KitBase kit : KitBase.getKits()) {
+			if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals(type)) {
+				inventory.setItem(kit.getSlot(), kit.getIcon(player));
+			}
+		}
 	}
 
 	@Override

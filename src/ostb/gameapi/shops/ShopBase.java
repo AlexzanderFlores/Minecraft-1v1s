@@ -4,21 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.CoinUpdateEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
 import ostb.gameapi.kit.KitBase;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -28,6 +33,7 @@ public abstract class ShopBase implements Listener {
 	private Plugins plugin = null;
 	protected Map<String, Integer> pages = null;
 	private int maxPages = 1;
+	private ItemStack itemStack = null;
 	
 	public class KitData {
 		private String title = null;
@@ -66,6 +72,7 @@ public abstract class ShopBase implements Listener {
 		this.plugin = plugin;
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
+		itemStack = new ItemCreator(Material.CHEST).setName("&b" + plugin.getDisplay() + " Shop").getItemStack();
 		EventUtil.register(this);
 	}
 	
@@ -103,14 +110,14 @@ public abstract class ShopBase implements Listener {
 		return view.getTitle().equals(getName()) && view.getItem(4).getType() != Material.AIR;
 	}
 	
-	private void setBackItem(Player player, Inventory inventory) {
+	protected void setBackItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page > 1) {
 			inventory.setItem(0, new ItemCreator(Material.ARROW).setName("&bPage #" + (page - 1)).getItemStack());
 		}
 	}
 	
-	private void setNextItem(Player player, Inventory inventory) {
+	protected void setNextItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page < maxPages) {
 			inventory.setItem(8, new ItemCreator(Material.ARROW).setName("&bPage #" + (page + 1)).getItemStack());
@@ -129,6 +136,29 @@ public abstract class ShopBase implements Listener {
 	public abstract void updateInfoItem(Player player);
 	public abstract void updateInfoItem(Player player, Inventory inventory);
 	public abstract void onInventoryItemClick(InventoryItemClickEvent event);
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getJoiningPreGame()) {
+			Player player = event.getPlayer();
+			player.getInventory().addItem(itemStack);
+		} else {
+			PlayerJoinEvent.getHandlerList().unregister(this);
+		}
+	}
+	
+	@EventHandler
+	public void onMouseClick(MouseClickEvent event) {
+		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getJoiningPreGame()) {
+			Player player = event.getPlayer();
+			if(player.getItemInHand().equals(itemStack)) {
+				EffectUtil.playSound(player, Sound.CHEST_OPEN);
+				openShop(player);
+			}
+		} else {
+			MouseClickEvent.getHandlerList().unregister(this);
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerPostKitPurchase(PlayerPostKitPurchaseEvent event) {
