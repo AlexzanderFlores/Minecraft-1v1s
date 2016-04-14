@@ -82,8 +82,17 @@ public class MapRating implements Listener {
 		String name = event.getName();
 		if(ratings.containsKey(name)) {
 			UUID uuid = event.getUUID();
+			String game = OSTB.getPlugin().getData();
 			MiniGame miniGame = OSTB.getMiniGame();
-			DB.NETWORK_MAP_RATINGS.insert("'" + uuid.toString() + "', '" + OSTB.getPlugin().getData() + "', '" + miniGame.getMap().getName() + "', '" + ratings.get(name) + "'");
+			String map = miniGame.getMap().getName();
+			int rating = ratings.get(name);
+			String [] keys = new String [] {"uuid", "game", "map"};
+			String [] values = new String [] {uuid.toString(), game, map};
+			if(DB.NETWORK_MAP_RATINGS.isKeySet(keys, values)) {
+				DB.NETWORK_MAP_RATINGS.updateInt("rating", rating, keys, values);
+			} else {
+				DB.NETWORK_MAP_RATINGS.insert("'" + uuid.toString() + "', '" + game + "', '" + map + "', '" + rating + "'");
+			}
 			ratings.remove(name);
 		}
 	}
