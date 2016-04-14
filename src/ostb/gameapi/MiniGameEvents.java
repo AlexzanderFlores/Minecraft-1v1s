@@ -154,9 +154,9 @@ public class MiniGameEvents implements Listener {
 			Player player = event.getPlayer();
 			List<Player> players = ProPlugin.getPlayers();
 			if(gameState == GameStates.STARTING && miniGame.getCanJoinWhileStarting() && players.size() > 0) {
-				player.teleport(players.get(0).getWorld().getSpawnLocation());
+				player.teleport(players.get(0).getWorld().getSpawnLocation().clone().add(0.5, 0, 0.5));
 			} else {
-				player.teleport(miniGame.getLobby().getSpawnLocation());
+				player.teleport(miniGame.getLobby().getSpawnLocation().clone().add(0.5, 0, 0.5));
 			}
 			if(gameState == GameStates.WAITING && players.size() >= miniGame.getRequiredPlayers()) {
 				miniGame.setGameState(GameStates.VOTING);

@@ -5,8 +5,11 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -27,6 +30,7 @@ import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
+import ostb.server.util.StringUtil;
 
 public abstract class MiniGame extends ProPlugin {
 	private int requiredPlayers = 4;
@@ -78,6 +82,11 @@ public abstract class MiniGame extends ProPlugin {
 		addGroup("mini-game");
 		setLobby(Bukkit.getWorlds().get(0));
 		lobby.setTime(12250);
+		ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
+		armorStand.setGravity(false);
+		armorStand.setVisible(false);
+		armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
+		armorStand.setCustomNameVisible(true);
 		new MiniGameEvents();
 		new SpectatorHandler();
 		new PerformanceLogger();
