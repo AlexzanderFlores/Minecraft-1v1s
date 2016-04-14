@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.gameapi.games.skywars.kits.Archer;
@@ -68,17 +67,17 @@ public class SkyWarsShop extends ShopBase {
 	@Override
 	public void openShop(Player player, int page) {
 		InventoryView view = player.getOpenInventory();
-		Inventory inventory = Bukkit.createInventory(player, 9 * (OSTB.getPlugin() == Plugins.HUB ? 6 : OSTB.getMiniGame().getGameState() == GameStates.STARTING ? 4 : 5), getName());
+		Inventory inventory = Bukkit.createInventory(player, 9 * (OSTB.getPlugin() == Plugins.HUB ? 6 : 5), getName());
 		player.openInventory(inventory);
 		pages.put(player.getName(), page);
+		if(hasCrate(player, view)) {
+			inventory.setItem(4, view.getItem(4));
+		} else {
+			SkyWarsCrate.addItem(player, inventory);
+		}
 		if(OSTB.getPlugin() == Plugins.HUB) {
-			if(hasCrate(player, view)) {
-				inventory.setItem(4, view.getItem(4));
-			} else {
-				SkyWarsCrate.addItem(player, inventory);
-			}
 			updateItems(player, inventory);
-		} else if(OSTB.getMiniGame().getGameState() != GameStates.STARTING) {
+		} else {
 			setBackItem(player, inventory);
 			setNextItem(player, inventory);
 		}
