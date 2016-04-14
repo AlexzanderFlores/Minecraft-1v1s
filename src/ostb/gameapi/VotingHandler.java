@@ -11,7 +11,10 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -21,6 +24,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
 
 import ostb.OSTB;
 import ostb.customevents.game.GameStartingEvent;
@@ -31,17 +36,22 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ImageMap;
+import ostb.server.util.StringUtil;
 
 public class VotingHandler implements Listener {
 	private Map<String, Integer> mapVotes = null;
 	private Map<String, String> playerVotes = null;
+	private Map<String, ArmorStand> holograms = null;
 	private Map<ItemFrame, String> itemFrames = null;
+	private Map<Block, String> walls = null;
 	private List<String> maps = null;
 	
 	public VotingHandler() {
-		mapVotes = new HashMap<String, Integer>(3);
+		mapVotes = new HashMap<String, Integer>();
 		playerVotes = new HashMap<String, String>();
-		itemFrames = new HashMap<ItemFrame, String>(15);
+		holograms = new HashMap<String, ArmorStand>();
+		itemFrames = new HashMap<ItemFrame, String>();
+		walls = new HashMap<Block, String>();
 		maps = new ArrayList<String>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/";
 		String name = OSTB.getPlugin().getData();
@@ -65,19 +75,32 @@ public class VotingHandler implements Listener {
 		while(maps.size() > 3) {
 			maps.remove(random.nextInt(maps.size()));
 		}
-		for(String map : maps) {
-			mapVotes.put(map, 0);
-		}
 		World lobby = OSTB.getMiniGame().getLobby();
+		Vector [] vectors = new Vector [] {new Vector(10.5, 6.75, 6.5), new Vector(0.5, 6.75, 6.5), new Vector(-10.5, 6.75, 6.5)};
+		for(int a = 0; a < maps.size(); ++a) {
+			String map = maps.get(a);
+			mapVotes.put(map, 0);
+			ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(vectors[a].toLocation(lobby), EntityType.ARMOR_STAND);
+			armorStand.setGravity(false);
+			armorStand.setVisible(false);
+			armorStand.setCustomNameVisible(true);
+			holograms.put(map, armorStand);
+			updateHologram(map);
+		}
 		ItemFrame [] itemFrames = new ItemFrame [] {ImageMap.getItemFrame(lobby, 12, 7, 7), ImageMap.getItemFrame(lobby, 2, 7, 7), ImageMap.getItemFrame(lobby, -8, 7, 7)};
 		for(int a = 0; a < maps.size(); ++a) {
 			String map = maps.get(a);
 			String render = name + "/" + map + "/Render.png";
 			for(ItemFrame itemFrame : new ImageMap(itemFrames[a], render).getItemFrames()) {
 				this.itemFrames.put(itemFrame, map);
+				walls.put(lobby.getBlockAt(itemFrame.getLocation()).getRelative(0, 0, 1), map);
 			}
 		}
 		EventUtil.register(this);
+	}
+	
+	private void updateHologram(String map) {
+		holograms.get(map).setCustomName(StringUtil.color("&a" + map + "&b (" + mapVotes.get(map) + " Votes)"));
 	}
 	
 	private void vote(Player player, String map) {
@@ -95,6 +118,7 @@ public class VotingHandler implements Listener {
 			mapVotes.put(map, votes);
 		}
 		MessageHandler.sendMessage(player, "+" + votes + " Votes for &a" + map);
+		updateHologram(map);
 	}
 	
 	@EventHandler
@@ -117,6 +141,15 @@ public class VotingHandler implements Listener {
 				String map = itemFrames.get(itemFrame);
 				vote(event.getPlayer(), map);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		Block block = event.getClickedBlock();
+		if(block != null && walls.containsKey(block)) {
+			String map = walls.get(block);
+			vote(event.getPlayer(), map);
 		}
 	}
 	
