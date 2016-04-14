@@ -6,7 +6,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,11 +15,10 @@ import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
-public class Bomber extends KitBase implements Listener {
+public class Bomber extends KitBase {
 	private static final int amount = 2;
 	private static boolean enabled = false;
 	
@@ -53,7 +51,6 @@ public class Bomber extends KitBase implements Listener {
 		for(Player player : getPlayers()) {
 			player.getInventory().addItem(new ItemStack(Material.TNT, amount));
 		}
-		EventUtil.register(this);
 		enabled = true;
 	}
 	
@@ -72,7 +69,7 @@ public class Bomber extends KitBase implements Listener {
 					TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(player.getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
 					tnt.setVelocity(player.getLocation().getDirection().multiply(1.5d));
 					tnt.setFuseTicks(tnt.getFuseTicks() / 2);
-					removeATNT(player);
+					removeTNT(player);
 				}
 			}
 		}
@@ -85,13 +82,13 @@ public class Bomber extends KitBase implements Listener {
 			if(has(player) && event.getBlock().getType() == Material.TNT) {
 				TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(event.getBlock().getLocation(), EntityType.PRIMED_TNT);
 				tnt.setFuseTicks(tnt.getFuseTicks() / 2);
-				removeATNT(player);
+				removeTNT(player);
 				event.setCancelled(true);
 			}
 		}
 	}
 	
-	private void removeATNT(Player player) {
+	private void removeTNT(Player player) {
 		ItemStack item = player.getItemInHand();
 		int amount = item.getAmount() - 1;
 		if(amount <= 0) {

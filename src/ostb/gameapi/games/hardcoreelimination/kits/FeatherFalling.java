@@ -11,7 +11,6 @@ import ostb.OSTB.Plugins;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -40,7 +39,6 @@ public class FeatherFalling extends KitBase {
 
 	@Override
 	public void execute() {
-		EventUtil.register(this);
 		enabled = true;
 	}
 	

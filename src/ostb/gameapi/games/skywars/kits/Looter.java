@@ -16,7 +16,6 @@ import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.TitleDisplayer;
 import ostb.server.servers.hub.items.Features.Rarity;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -51,7 +50,6 @@ public class Looter extends KitBase {
 		for(Player player : getPlayers()) {
 			uses.put(player.getName(), amount);
 		}
-		EventUtil.register(this);
 		enabled = true;
 	}
 	

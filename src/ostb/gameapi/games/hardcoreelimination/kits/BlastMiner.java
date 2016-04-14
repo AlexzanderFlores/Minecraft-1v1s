@@ -14,7 +14,6 @@ import ostb.gameapi.GracePeriod;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.HardcoreEliminationShop;
 import ostb.server.servers.hub.items.Features.Rarity;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -50,7 +49,6 @@ public class BlastMiner extends KitBase {
 		for(Player player : getPlayers()) {
 			player.getInventory().setHelmet(new ItemStack(Material.TNT, amount));
 		}
-		EventUtil.register(this);
 	}
 	
 	@Override

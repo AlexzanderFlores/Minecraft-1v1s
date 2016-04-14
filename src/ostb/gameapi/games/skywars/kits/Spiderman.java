@@ -14,7 +14,6 @@ import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -49,9 +48,6 @@ public class Spiderman extends KitBase {
 	public void execute() {
 		for(Player player : getPlayers()) {
 			player.getInventory().addItem(new ItemCreator(Material.SNOW_BALL).setName("&fWeb").setAmount(amount).getItemStack());
-		}
-		if(!enabled) {
-			EventUtil.register(this);
 		}
 		enabled = true;
 	}

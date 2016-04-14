@@ -12,8 +12,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
@@ -24,7 +22,6 @@ import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.DelayedTask;
-import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
@@ -68,9 +65,6 @@ public class Ninja extends KitBase {
 		delayed = new ArrayList<String>();
 		stars = new ArrayList<Item>();
 		random = new Random();
-		if(!enabled) {
-			EventUtil.register(this);
-		}
 		enabled = true;
 	}
 	
@@ -112,34 +106,27 @@ public class Ninja extends KitBase {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 1) {
-			if(enabled) {
-				Iterator<Item> iterator = stars.iterator();
-				while(iterator.hasNext()) {
-					Item item = iterator.next();
-					if(item.isOnGround() || item.getLocation().getY() <= 0) {
-						item.remove();
-						iterator.remove();
-					} else {
-						for(Entity near : item.getNearbyEntities(0.5, 0.5, 0.5)) {
-							if(near instanceof Player) {
-								Player nearPlayer = (Player) near;
-								if(random.nextBoolean()) {
-									nearPlayer.damage(1.0d);
-								} else {
-									nearPlayer.damage(0.0d);
-								}
-								nearPlayer.setVelocity(item.getVelocity().multiply(.50d));
+		if(ticks == 1 && enabled) {
+			Iterator<Item> iterator = stars.iterator();
+			while(iterator.hasNext()) {
+				Item item = iterator.next();
+				if(item.isOnGround() || item.getLocation().getY() <= 0) {
+					item.remove();
+					iterator.remove();
+				} else {
+					for(Entity near : item.getNearbyEntities(0.5, 0.5, 0.5)) {
+						if(near instanceof Player) {
+							Player nearPlayer = (Player) near;
+							if(random.nextBoolean()) {
+								nearPlayer.damage(1.0d);
+							} else {
+								nearPlayer.damage(0.0d);
 							}
+							nearPlayer.setVelocity(item.getVelocity().multiply(.50d));
 						}
 					}
 				}
 			}
 		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onItemDespawn(ItemDespawnEvent event) {
-		event.setCancelled(false);
 	}
 }
