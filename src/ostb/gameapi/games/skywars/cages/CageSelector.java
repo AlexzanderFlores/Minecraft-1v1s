@@ -111,7 +111,6 @@ public class CageSelector implements Listener {
 				String name = ChatColor.stripColor(event.getItemTitle());
 				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && name.startsWith(kit.getName()) && kit.getSlot() - 18 == event.getSlot()) {
 					if(kit.use(player)) {
-						EffectUtil.playSound(player, Sound.LEVEL_UP);
 						player.closeInventory();
 					} else {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);

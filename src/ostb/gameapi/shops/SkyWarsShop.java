@@ -146,9 +146,7 @@ public class SkyWarsShop extends ShopBase {
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
 				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
-					if(kit.use(player)) {
-						EffectUtil.playSound(player, Sound.LEVEL_UP);
-					} else {
+					if(!kit.use(player)) {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 					}
 					return;

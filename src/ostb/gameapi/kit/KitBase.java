@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,6 +31,7 @@ import ostb.player.TitleDisplayer;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -139,11 +141,14 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public boolean use(Player player) {
+		return use(player, false);
+	}
+	
+	public boolean use(Player player, boolean defaultKit) {
 		if(owns(player)) {
 			PlayerKitSelectEvent event = new PlayerKitSelectEvent(player, this);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				DefaultKit.setDefaultKit(player, this);
 				if(getPlugin() == OSTB.getPlugin()) {
 					for(KitBase kit : kits) {
 						if(kit.getKitType().equals(getKitType())) {
@@ -151,8 +156,11 @@ public abstract class KitBase implements Listener {
 						}
 					}
 					users.add(player.getName());
-				} else if(getPlugin() == Plugins.HUB) {
+				}
+				if(!defaultKit) {
+					DefaultKit.setDefaultKit(player, this);
 					MessageHandler.sendMessage(player, "Selected &e" + getName());
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				}
 				return true;
 			}
@@ -283,7 +291,9 @@ public abstract class KitBase implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		owns(event.getPlayer());
+		if(OSTB.getPlugin() != Plugins.HUB) {
+			owns(event.getPlayer());
+		}
 	}
 	
 	@EventHandler
