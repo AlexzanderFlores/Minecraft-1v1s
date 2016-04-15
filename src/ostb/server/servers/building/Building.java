@@ -5,16 +5,10 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.EulerAngle;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.games.pvpbattles.Armory;
-import ostb.gameapi.kit.KitSelection;
-import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -22,9 +16,6 @@ import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
 
 public class Building extends ProPlugin {
-	private KitSelection selection = null;
-	private ArmorStand armorStand = null;
-	
 	public Building() {
 		super("Building");
 		addGroup("24/7");
@@ -55,41 +46,14 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", -1, true) {
+		new CommandBase("test", 2, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				Player player = (Player) sender;
-				if(arguments.length == 0) {
-					if(selection == null) {
-						selection = new KitSelection(player);
-					} else {
-						selection.delete();
-						selection = null;
-						return true;
-					}
-					selection.update();
-				} else {
-					String cmd = arguments[0];
-					if(cmd.equalsIgnoreCase("spawn")) {
-						if(armorStand != null) {
-							armorStand.remove();
-							armorStand = null;
-						}
-						armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-						armorStand.setArms(true);
-					} else if(cmd.equalsIgnoreCase("remove") && armorStand != null) {
-						armorStand.remove();
-						armorStand = null;
-					} else if(cmd.equalsIgnoreCase("leftArm")) {
-						armorStand.setLeftArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
-					} else if(cmd.equalsIgnoreCase("rightArm")) {
-						armorStand.setRightArmPose(new EulerAngle(Double.valueOf(arguments[1]), Double.valueOf(arguments[2]), Double.valueOf(arguments[3])));
-					} else if(cmd.equalsIgnoreCase("levelUp")) {
-						new LevelGiver(player);
-					} else if(cmd.equalsIgnoreCase("armory")) {
-						new Armory(player.getLocation());
-					}
-				}
+				String ign = arguments[0];
+				int ratio = Integer.valueOf(arguments[1]);
+				String url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=10&abg=330&abd=40&ajg=340&ajd=20&ratio=" + ratio + "&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=314";
+				FileHandler.downloadImage(url, Bukkit.getWorldContainer().getPath() + "/plugins/test.png");
+				
 				return true;
 			}
 		};
