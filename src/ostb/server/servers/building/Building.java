@@ -53,7 +53,6 @@ public class Building extends ProPlugin {
 				int ratio = Integer.valueOf(arguments[1]);
 				String url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=10&abg=330&abd=40&ajg=340&ajd=20&ratio=" + ratio + "&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=314";
 				FileHandler.downloadImage(url, Bukkit.getWorldContainer().getPath() + "/plugins/test.png");
-				
 				return true;
 			}
 		};

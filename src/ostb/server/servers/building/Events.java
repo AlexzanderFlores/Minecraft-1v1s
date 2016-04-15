@@ -112,7 +112,7 @@ public class Events implements Listener {
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.getRightClicked() instanceof ItemFrame) {
 			ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
-			new ImageMap(itemFrame, Bukkit.getWorldContainer().getPath() + "/plugins/test.png");
+			new ImageMap(itemFrame, Bukkit.getWorldContainer().getPath() + "/plugins/test.png", 3, 4);
 			event.setCancelled(true);
 		}
 	}
