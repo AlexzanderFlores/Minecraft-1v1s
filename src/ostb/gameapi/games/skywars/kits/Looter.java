@@ -71,7 +71,7 @@ public class Looter extends KitBase {
 				} else {
 					uses.put(player.getName(), amount);
 				}
-				new TitleDisplayer(player, "&2" + amount, "&aUses left").setFadeIn(0).setStay(20).setFadeOut(0).display();
+				new TitleDisplayer(player, "&2" + amount, "&aUse" + (amount == 1 ? "" : "s") + " left").setFadeIn(0).setStay(20).setFadeOut(0).display();
 				event.setCancelled(true);
 			}
 		}

@@ -8,6 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
@@ -15,6 +19,7 @@ import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.game.PostGameStartEvent;
+import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
@@ -95,6 +100,27 @@ public class Events implements Listener {
 		String type = event.getBlock().getType().toString();
 		if(type.contains("LAVA") || type.contains("WATER")) {
 			event.setCancelled(false);
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event) {
+		if(event.getInventory().getType() == InventoryType.ENCHANTING) {
+			event.getInventory().setItem(1, new ItemStack(Material.INK_SACK, 3, (byte) 4));
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent event) {
+		if(event.getInventory().getType() == InventoryType.ENCHANTING) {
+			event.getInventory().setItem(1, new ItemStack(Material.AIR));
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryItemClick(InventoryItemClickEvent event) {
+		if(event.getItem().getType() == Material.INK_SACK) {
+			event.setCancelled(true);
 		}
 	}
 }

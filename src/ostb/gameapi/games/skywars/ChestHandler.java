@@ -87,6 +87,7 @@ public class ChestHandler implements Listener {
 		addItem(Material.DIAMOND_LEGGINGS, Rarity.RARE);
 		addItem(Material.DIAMOND_CHESTPLATE, Rarity.RARE);
 		addItem(Material.ENCHANTMENT_TABLE, Rarity.RARE);
+		addItem(Material.ANVIL, Rarity.RARE);
 		
 		EventUtil.register(this);
 	}
@@ -156,11 +157,9 @@ public class ChestHandler implements Listener {
 							if(isArmor(itemStack)) {
 								for(ItemStack armor : player.getInventory().getArmorContents()) {
 									if(armor == null || armor.getType() == Material.AIR) {
-										if(rarity == Rarity.COMMON) {
-											type = Material.CHAINMAIL_HELMET;
-										} else if(rarity == Rarity.UNCOMMON) {
+										if(random.nextBoolean()) {
 											type = Material.IRON_HELMET;
-										} else if(rarity == Rarity.RARE) {
+										} else {
 											type = Material.DIAMOND_HELMET;
 										}
 										ArmorSlot armorSlot = getArmorSlot(armor);
