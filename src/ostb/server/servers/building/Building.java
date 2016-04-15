@@ -50,8 +50,20 @@ public class Building extends ProPlugin {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				String ign = arguments[0];
-				int ratio = Integer.valueOf(arguments[1]);
-				String url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=10&abg=330&abd=40&ajg=340&ajd=20&ratio=" + ratio + "&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=314";
+				String url = "";
+				switch(Integer.valueOf(arguments[1])) {
+				case 1:
+					url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=340&wt=20&abg=240&abd=130&ajg=330&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=186";
+					break;
+				case 2:
+					url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=30&abg=310&abd=50&ajg=340&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=727";
+					break;
+				case 3:
+					url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=10&w=330&wt=30&abg=330&abd=110&ajg=350&ajd=10&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=761";
+					break;
+				default:
+					return false;
+				}
 				FileHandler.downloadImage(url, Bukkit.getWorldContainer().getPath() + "/plugins/test.png");
 				return true;
 			}
