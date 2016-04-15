@@ -21,11 +21,13 @@ import org.bukkit.event.server.ServerCommandEvent;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.DB.Databases;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.StringUtil;
@@ -175,6 +177,16 @@ public class GeneralEvents implements Listener {
 		// Final formatting
 		event.setMessage(event.getMessage().replace("%", "%%"));
 		event.setFormat(AccountHandler.getPrefix(player, false) + ": " + event.getMessage());
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 5) {
+			for(Databases database : Databases.values()) {
+				database.connect();
+			}
+		}
 	}
 	
 	@EventHandler

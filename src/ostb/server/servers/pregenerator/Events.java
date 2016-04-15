@@ -65,6 +65,8 @@ public class Events implements Listener {
 			int worlds = getWorlds();
 			if(worlds < max) {
 				run();
+			} else {
+				ProPlugin.restartServer();
 			}
 		}
 	}
