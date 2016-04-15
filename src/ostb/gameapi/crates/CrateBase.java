@@ -1,7 +1,9 @@
 package ostb.gameapi.crates;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,8 +22,10 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
+import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -39,6 +43,9 @@ public class CrateBase implements Listener {
 	private int end = 25;
 	private int counter = 0;
 	private boolean displaying = false;
+	private DB lifetime = null;
+	private DB monthly = null;
+	private DB weekly = null;
 	
 	public CrateBase(Player player, Plugins plugin, String title, List<FeatureItem> features) {
 		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
@@ -65,10 +72,40 @@ public class CrateBase implements Listener {
 		player = null;
 		title = null;
 		features = null;
+		lifetime = null;
+		monthly = null;
+		weekly = null;
 	}
 	
 	public List<FeatureItem> getFeatures() {
 		return features;
+	}
+	
+	public DB getLifetime() {
+		return lifetime;
+	}
+	
+	public CrateBase setLifetime(DB lifetime) {
+		this.lifetime = lifetime;
+		return this;
+	}
+	
+	public DB getMonthly() {
+		return monthly;
+	}
+	
+	public CrateBase setMonthly(DB monthly) {
+		this.monthly = monthly;
+		return this;
+	}
+	
+	public DB getWeekly() {
+		return weekly;
+	}
+	
+	public CrateBase setWeekly(DB weekly) {
+		this.weekly = weekly;
+		return this;
 	}
 	
 	private void placeGlass() {
@@ -127,8 +164,49 @@ public class CrateBase implements Listener {
 			MessageHandler.sendMessage(player, "&cThere was an error in giving you your reward, please report this (&e\"" + wonName + "&e\"&c)");
 		} else {
 			Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin, featureWon));
+			if(lifetime == null || monthly == null || weekly == null) {
+				remove();
+			} else {
+				final UUID uuid = player.getUniqueId();
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						if(lifetime != null) {
+							if(lifetime.isUUIDSet(uuid)) {
+								int amount = lifetime.getInt("uuid", uuid.toString(), "amount") + 1;
+								lifetime.updateInt("amount", amount, "uuid", uuid.toString());
+							} else {
+								lifetime.insert("'" + uuid.toString() + "', '1'");
+							}
+						}
+						Calendar calendar = Calendar.getInstance();
+						if(monthly != null) {
+							int month = calendar.get(Calendar.MONTH);
+							String [] keys = new String [] {"uuid", "month"};
+							String [] values = new String [] {uuid.toString(), month + ""};
+							if(monthly.isKeySet(keys, values)) {
+								int amount = monthly.getInt(keys, values, "amount") + 1;
+								monthly.updateInt("amount", amount, keys, values);
+							} else {
+								monthly.insert("'" + uuid.toString() + "', '1', '" + month + "'");
+							}
+						}
+						if(weekly != null) {
+							int week = calendar.get(Calendar.WEEK_OF_YEAR);
+							String [] keys = new String [] {"uuid", "week"};
+							String [] values = new String [] {uuid.toString(), week + ""};
+							if(weekly.isKeySet(keys, values)) {
+								int amount = weekly.getInt(keys, values, "amount") + 1;
+								weekly.updateInt("amount", amount, keys, values);
+							} else {
+								weekly.insert("'" + uuid.toString() + "', '1', '" + week + "'");
+							}
+						}
+						remove();
+					}
+				});
+			}
 		}
-		remove();
 	}
 	
 	@EventHandler
