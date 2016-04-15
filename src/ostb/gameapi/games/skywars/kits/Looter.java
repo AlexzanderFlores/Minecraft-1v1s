@@ -11,7 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.games.skywars.Events;
+import ostb.gameapi.games.skywars.ChestHandler;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.TitleDisplayer;
@@ -63,7 +63,7 @@ public class Looter extends KitBase {
 		if(enabled) {
 			Player player = event.getPlayer();
 			if(event.getBlock().getType() == Material.CHEST && uses.containsKey(player.getName())) {
-				Events.restock(event.getBlock());
+				ChestHandler.restock(event.getBlock());
 				int amount = uses.get(player.getName()) - 1;
 				if(amount <= 0) {
 					uses.remove(player.getName());

@@ -12,6 +12,7 @@ public class SkyWars extends MiniGame {
 		setFlintAndSteelUses(4);
 		new BelowNameHealthScoreboardUtil();
 		new Events();
+		new ChestHandler();
 		new SkyWarsShop();
 	}
 }
