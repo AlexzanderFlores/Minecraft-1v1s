@@ -7,8 +7,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scoreboard.Scoreboard;
 
 import ostb.anticheat.AntiCheat;
@@ -55,7 +58,7 @@ import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
 import ostb.staff.Punishment;
 
-public class OSTB extends JavaPlugin {
+public class OSTB extends JavaPlugin implements PluginMessageListener {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
 		PVP_BATTLES("PVPBattles", "pvp_battles", "PVP Battles"), // Not used on server
@@ -113,6 +116,8 @@ public class OSTB extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		Bukkit.getMessenger().registerOutgoingPluginChannel(getInstance(), "BungeeCord");
+		Bukkit.getMessenger().registerIncomingPluginChannel(getInstance(), "WDL|INIT", this);
+		Bukkit.getMessenger().registerIncomingPluginChannel(getInstance(), "WDL|CONTROL", this);
 		sidebar = new SidebarScoreboardUtil("");
 		try {
         	File [] libs = new File [] {
@@ -275,6 +280,13 @@ public class OSTB extends JavaPlugin {
 	public static void setMaxPlayers(int max) {
 		if(max != Bukkit.getMaxPlayers()) {
 			maxPlayers = max;
+		}
+	}
+
+	@Override
+	public void onPluginMessageReceived(String channel, Player player, byte [] message) {
+		if(channel.equals("WDL|INIT") || channel.equals("WDL|CONTROL")) {
+			player.kickPlayer(ChatColor.RED + "World Downloader is not allowed on this server!");
 		}
 	}
 }
