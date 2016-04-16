@@ -25,6 +25,7 @@ import ostb.gameapi.games.skywars.SkyWars;
 import ostb.gameapi.kit.DefaultKit;
 import ostb.player.ChatLogger;
 import ostb.player.DefaultChatColor;
+import ostb.player.LanguageChannels;
 import ostb.player.LevelHandler;
 import ostb.player.Particles;
 import ostb.player.PrivateMessaging;
@@ -177,6 +178,7 @@ public class OSTB extends JavaPlugin {
 		new CommandDispatcher();
 		new DefaultChatColor();
 		new DefaultKit();
+		new LanguageChannels();
 		Glow.register();
 		client = new Client("192.198.207.74", 4500, 5000);
 		client.start();

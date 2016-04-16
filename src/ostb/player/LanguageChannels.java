@@ -6,89 +6,80 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
 
 import ostb.customevents.player.AsyncPlayerJoinEvent;
-import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
 public class LanguageChannels implements Listener {
-	public enum LanguageChannel {
-		ALL, NONE, ENGLISH, SPANISH
-	}
-	private Map<String, LanguageChannel> channels = null;
-	private String name = null;
+	private enum Languages {ENGLISH, SPANISH, OTHER}
 	
 	public LanguageChannels() {
-		channels = new HashMap<String, LanguageChannel>();
-		name = "Language Selection";
-		new CommandBase("lang", true) {
+		new CommandBase("lang") {
 			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				Player player = (Player) sender;
-				Inventory inventory = Bukkit.createInventory(player, 9 * 4, name);
-				
-				player.openInventory(inventory);
+			public boolean execute(final CommandSender sender, String [] arguments) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						Map<Languages, Integer> amounts = new HashMap<Languages, Integer>();
+						int total = 0;
+						for(Languages language : Languages.values()) {
+							int amount = DB.PLAYERS_CHAT_LANGUAGE.getSize("language", language.toString());
+							total += amount;
+							amounts.put(language, amount);
+						}
+						MessageHandler.sendMessage(sender, "Stats for " + total + " entires over " + Languages.values().length + " languages:");
+						for(Languages language : Languages.values()) {
+							int percentage = (int) (amounts.get(language) * 100.0 / total + 0.5);
+							MessageHandler.sendMessage(sender, language.toString() + " &a" + percentage + "%");
+						}
+						amounts.clear();
+						amounts = null;
+					}
+				});
 				return true;
 			}
-		};
+		}.setRequiredRank(Ranks.OWNER).enableDelay(2);
 		EventUtil.register(this);
 	}
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		String language = null;
+		try {
+			Object object = null;
+			for(Method method : player.getClass().getDeclaredMethods()) {
+				if(method.getName().equals("getHandle")) {
+					object = method.invoke(player, (Object []) null);
+					Field field = object.getClass().getDeclaredField("locale");
+					field.setAccessible(true);
+					language = (String) field.get(object);
+					break;
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		if(language.equals("en_US") || language.equals("en_GB")) {
+			language = Languages.ENGLISH.toString();
+		} else if(language.equals("es_AR") || language.equals("es_ES") || language.equals("es_MX") || language.equals("es_UY") || language.equals("es_VE")) {
+			language = Languages.SPANISH.toString();
+		} else {
+			language = Languages.OTHER.toString();
+		}
 		UUID uuid = player.getUniqueId();
 		if(DB.PLAYERS_CHAT_LANGUAGE.isUUIDSet(uuid)) {
-			channels.put(player.getName(), LanguageChannel.valueOf(DB.PLAYERS_CHAT_LANGUAGE.getString("uuid", uuid.toString(), "language")));
-		} else {
-			String language = null;
-			try {
-				Object object = null;
-				for(Method method : player.getClass().getDeclaredMethods()) {
-					if(method.getName().equals("getHandle")) {
-						object = method.invoke(player, (Object []) null);
-						Field field = object.getClass().getDeclaredField("locale");
-						field.setAccessible(true);
-						language = (String) field.get(object);
-						break;
-					}
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			if(language == null) {
-				channels.put(player.getName(), LanguageChannel.ALL);
-			} else {
-				if(language.equals("en_US") || language.equals("en_GB")) {
-					channels.put(player.getName(), LanguageChannel.ENGLISH);
-				} else if(language.equals("es_AR") || language.equals("es_ES") || language.equals("es_MX") || language.equals("es_UY") || language.equals("es_VE")) {
-					channels.put(player.getName(), LanguageChannel.SPANISH);
-				} else {
-					channels.put(player.getName(), LanguageChannel.ALL);
-				}
-			}
-			DB.PLAYERS_CHAT_LANGUAGE.insert("'" + uuid.toString() + "', '" + channels.get(player.getName()) + "'");
+			DB.PLAYERS_CHAT_LANGUAGE.updateString("language", language, "uuid", uuid.toString());
+		} else {			
+			DB.PLAYERS_CHAT_LANGUAGE.insert("'" + uuid.toString() + "', '" + language + "'");
 		}
-	}
-	
-	@EventHandler
-	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(name)) {
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerLeave(PlayerLeaveEvent event) {
-		channels.remove(event.getPlayer().getName());
 	}
 }

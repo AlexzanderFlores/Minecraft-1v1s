@@ -32,6 +32,9 @@ commands:
   lag:
     usage: /lag
 
+  lang:
+    usage: /lang
+
   list:
     usage: /list
 
