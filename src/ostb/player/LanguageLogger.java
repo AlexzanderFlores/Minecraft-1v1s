@@ -18,10 +18,10 @@ import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
-public class LanguageChannels implements Listener {
+public class LanguageLogger implements Listener {
 	private enum Languages {ENGLISH, SPANISH, OTHER}
 	
-	public LanguageChannels() {
+	public LanguageLogger() {
 		new CommandBase("lang") {
 			@Override
 			public boolean execute(final CommandSender sender, String [] arguments) {
