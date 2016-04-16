@@ -28,7 +28,7 @@ public enum DB {
 	PLAYERS_NOTIFICATIONS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), text VARCHAR(250), seen INT, PRIMARY KEY(id)"),
 	PLAYERS_LEVELS("uuid VARCHAR(40), level INT, exp INT, PRIMARY KEY(uuid)"),
 	PLAYERS_CHAT_COLOR("uuid VARCHAR(40), color VARCHAR(2), PRIMARY KEY(uuid)"),
-	PLAYERS_CHAT_LANGUAGE("uuid VARCHAR(40), sending_language VARCHAR(15), viewing_language VARCHAR(15), PRIMARY KEY(uuid)"),
+	PLAYERS_CHAT_LANGUAGE("uuid VARCHAR(40), language VARCHAR(15), PRIMARY KEY(uuid)"),
 	// Play time
 	PLAYERS_LIFETIME_PLAYTIME("uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, PRIMARY KEY(uuid)"),
 	PLAYERS_MONTHLY_PLAYTIME("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, month INT,  PRIMARY KEY(id)"),
