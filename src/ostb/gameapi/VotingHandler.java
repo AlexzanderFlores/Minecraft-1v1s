@@ -71,9 +71,15 @@ public class VotingHandler implements Listener {
 				maps.add(folder);
 			}
 		}
-		Random random = new Random();
 		while(maps.size() > 3) {
-			maps.remove(random.nextInt(maps.size()));
+			Random random = new Random();
+			int index = random.nextInt(maps.size());
+			String map = maps.get(index);
+			Bukkit.getLogger().info("Removing map " + map);
+			maps.remove(index);
+		}
+		for(String map : maps) {
+			Bukkit.getLogger().info("Map remaining: " + map);
 		}
 		World lobby = OSTB.getMiniGame().getLobby();
 		Vector [] vectors = new Vector [] {new Vector(10.5, 6.75, 6.5), new Vector(0.5, 6.75, 6.5), new Vector(-10.5, 6.75, 6.5)};
