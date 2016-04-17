@@ -110,6 +110,7 @@ public class VotingHandler implements Listener {
 			mapVotes.put(oldMap, mapVotes.get(oldMap) - votes);
 			MessageHandler.sendMessage(player, "&c-" + votes + " Votes for &a" + oldMap);
 			playerVotes.remove(player.getName());
+			updateHologram(oldMap);
 		}
 		playerVotes.put(player.getName(), map);
 		if(mapVotes.containsKey(map)) {
