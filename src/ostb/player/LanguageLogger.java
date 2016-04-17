@@ -35,7 +35,7 @@ public class LanguageLogger implements Listener {
 							total += amount;
 							amounts.put(language, amount);
 						}
-						MessageHandler.sendMessage(sender, "Stats for " + total + " entires over " + Languages.values().length + " languages:");
+						MessageHandler.sendMessage(sender, "Stats for " + total + " entries over " + Languages.values().length + " languages:");
 						for(Languages language : Languages.values()) {
 							int percentage = (int) (amounts.get(language) * 100.0 / total + 0.5);
 							MessageHandler.sendMessage(sender, language.toString() + " &a" + percentage + "%");
