@@ -164,3 +164,6 @@ commands:
 # Building Commands
   setGameSpawn:
     usage: /setGameSpawn [number]
+
+  copyArmorStands:
+    usage: /copyArmorStands [copy <radius>] [paste]

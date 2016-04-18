@@ -25,6 +25,7 @@ public class Building extends ProPlugin {
 		removeFlags();
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
+		new ArmorStandHelper();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
