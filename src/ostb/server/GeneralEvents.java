@@ -19,8 +19,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;

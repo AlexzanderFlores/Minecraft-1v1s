@@ -13,6 +13,7 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.Campfire;
 import ostb.server.CommandBase;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
@@ -49,10 +50,13 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", 1, 2, true) {
+		new CommandBase("test", 0, 2, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				if(arguments.length == 1) {
+				if(arguments.length == 0) {
+					Player player = (Player) sender;
+					new Campfire(player.getLocation());
+				} else if(arguments.length == 1) {
 					Player player = ProPlugin.getPlayer(arguments[0]);
 					if(player == null) {
 						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");

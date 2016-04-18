@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -79,7 +80,33 @@ public class ArmorStandHelper implements Listener {
 								double x = pLoc.getX() - asLoc.getX();
 								double y = pLoc.getY() - asLoc.getY();
 								double z = pLoc.getZ() - asLoc.getZ();
-								nearByStands.add(new StandData(armorStand, x, y, z));
+								ArmorStand clone = (ArmorStand) armorStand.getWorld().spawnEntity(asLoc, EntityType.ARMOR_STAND);
+								clone.setArms(armorStand.hasArms());
+								clone.setBasePlate(armorStand.hasBasePlate());
+								clone.setBodyPose(armorStand.getBodyPose());
+								clone.setBoots(armorStand.getBoots());
+								clone.setCanPickupItems(armorStand.getCanPickupItems());
+								clone.setChestplate(armorStand.getChestplate());
+								clone.setCustomName(armorStand.getCustomName());
+								clone.setGravity(armorStand.hasGravity());
+								clone.setHeadPose(armorStand.getHeadPose());
+								clone.setHelmet(armorStand.getHelmet());
+								clone.setItemInHand(armorStand.getItemInHand());
+								clone.setLastDamage(armorStand.getLastDamage());
+								clone.setLastDamageCause(armorStand.getLastDamageCause());
+								if(armorStand.isLeashed()) {
+									clone.setLeashHolder(armorStand.getLeashHolder());
+								}
+								clone.setLeftArmPose(armorStand.getLeftArmPose());
+								clone.setLeftLegPose(armorStand.getLeftLegPose());
+								clone.setLeggings(armorStand.getLeggings());
+								clone.setRemoveWhenFarAway(armorStand.getRemoveWhenFarAway());
+								clone.setRightArmPose(armorStand.getRightArmPose());
+								clone.setRightLegPose(armorStand.getRightLegPose());
+								clone.setSmall(armorStand.isSmall());
+								clone.setTicksLived(armorStand.getTicksLived());
+								clone.setVisible(armorStand.isVisible());
+								nearByStands.add(new StandData(clone, x, y, z));
 							}
 						}
 						if(nearByStands.isEmpty()) {
