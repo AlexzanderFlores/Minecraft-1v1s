@@ -31,7 +31,6 @@ import ostb.player.LanguageLogger;
 import ostb.player.LevelHandler;
 import ostb.player.Particles;
 import ostb.player.PrivateMessaging;
-import ostb.player.VersionLogger;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.PlayerTracker;
 import ostb.player.account.PlaytimeTracker;
@@ -183,7 +182,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		new DefaultChatColor();
 		new DefaultKit();
 		new LanguageLogger();
-		new VersionLogger();
 		Glow.register();
 		client = new Client("192.198.207.74", 4500, 5000);
 		client.start();

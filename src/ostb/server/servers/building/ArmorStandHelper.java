@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -133,6 +134,22 @@ public class ArmorStandHelper implements Listener {
 			ItemCreator locked = new ItemCreator(ArmorStandHelper.locked.clone()).addLore("&bMovement Lock: " + (lockOn ? "&cLocked" : "&aUn-Locked"));
 			view.setItem(view.getTopInventory().getSize() - 1, locked.getItemStack());
 			editing.put(player.getName(), armorStand);
+		}
+	}
+	
+	@EventHandler
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+		if(event.getEntity() instanceof ArmorStand) {
+			final ArmorStand armorStand = (ArmorStand) event.getEntity();
+			new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					armorStand.setHelmet(new ItemStack(Material.AIR));
+					armorStand.setChestplate(new ItemStack(Material.AIR));
+					armorStand.setLeggings(new ItemStack(Material.AIR));
+					armorStand.setBoots(new ItemStack(Material.AIR));					
+				}
+			}, 5);
 		}
 	}
 	
