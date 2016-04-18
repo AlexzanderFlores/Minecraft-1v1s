@@ -14,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scoreboard.Scoreboard;
 
-import ostb.anticheat.AntiCheat;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerAFKEvent;
@@ -163,7 +162,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		maxPlayers = Bukkit.getMaxPlayers();
 		new LevelHandler();
 		new AccountHandler();
-		new AntiCheat();
 		new GlobalCommands();
 		new PerformanceHandler();
 		new GeneralEvents();

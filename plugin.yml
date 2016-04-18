@@ -2,7 +2,7 @@ name: OSTB
 main: ostb.OSTB
 version: 1.0
 softdepend: [NPC_OSTB, Votifier, EffectLib]
-authors: [Outside The Block Development Team]
+authors: [Leet_Gamer]
 commands:
 # Global Commands
   defaultChatColor:
