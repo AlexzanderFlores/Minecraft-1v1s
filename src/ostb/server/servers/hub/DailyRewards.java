@@ -70,9 +70,11 @@ public class DailyRewards implements Listener {
 			"&eReaching vote streak milestones",
 			"&ewill give you exclusive perks!",
 			"",
-			"&716 Streak: &aAccess to beta testing servers",
-			"&721 Streak: &aExclusive Rainbow Sheep hub pet",
-			"&726 Streak: &aExclusive Guardian hub pet",
+			"&76 Streak: &aExclusive random arrow particle trail",
+			"&711 Streak: &aAccess to beta testing servers",
+			"&716 Streak: &aToggle your pet being upside down",
+			"&721 Streak: &aExclusive rainbow sheep hub pet",
+			"&726 Streak: &aExclusive guardian hub pet",
 			"",
 		}).getItemStack());
 		player.openInventory(inventory);
@@ -112,7 +114,7 @@ public class DailyRewards implements Listener {
 					// Other
 					inventory.setItem(16, new ItemCreator(Material.CHEST).setName("&bSky Wars Looter Passes").setLores(new String [] {
 						"",
-						"&e+5 &aSky Wars Looter Passes",
+						"&e+3 &aSky Wars Looter Passes",
 						"",
 						"&7Break a chest to restock its contents",
 						"&7Does not load if the Looter kit is selected",
@@ -151,7 +153,7 @@ public class DailyRewards implements Listener {
 					// Other
 					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
 						"",
-						"&e+20 &aPVP Battles Fast Respawn",
+						"&e+15 &aPVP Battles Fast Respawn",
 						"",
 						"&7Capture the Flag & Domination",
 						"&7Respawn instantly instead of a 5 second delay",
@@ -166,7 +168,7 @@ public class DailyRewards implements Listener {
 					}).getItemStack());
 					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
 						"",
-						"&e+15 &aHub Parkour Checkpoints",
+						"&e+10 &aHub Parkour Checkpoints",
 						""
 					}).getItemStack());
 					inventory.setItem(34, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {

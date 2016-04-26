@@ -46,12 +46,11 @@ public class WinEffects extends FeatureBase {
 	private static Random random = null;
 	
 	public enum WinEffect {
-		FIREWORKS(10, "Firework Win Effect", Rarity.UNCOMMON, Material.FIREWORK),
-		FIREWORK_FRENZY(12, "Firework Frenzy Win Effect", Rarity.RARE, new ItemStack(Material.FIREWORK, 2)),
-		DISCO_BLOCKS(14, "Disco Block Win Effect", Rarity.RARE, Material.WOOL),
-		DISCO_ITEMS(16, "Disco Item Win Effect", Rarity.RARE, new ItemStack(Material.WOOL, 2)),
-		FIRE_DISCO_ITEMS(29, "Fire Disco Item Win Effect", Rarity.RARE, new ItemStack(Material.WOOL, 3)),
-		FLY_ENDER_DRAGON(31, "Fly Ender Dragon Win Effect", Rarity.RARE, new ItemStack(Material.DRAGON_EGG)),
+		FIREWORKS(11, "Firework Win Effect", Rarity.UNCOMMON, Material.FIREWORK),
+		FIREWORK_FRENZY(13, "Firework Frenzy Win Effect", Rarity.RARE, new ItemStack(Material.FIREWORK, 2)),
+		DISCO_BLOCKS(15, "Disco Block Win Effect", Rarity.RARE, Material.WOOL),
+		DISCO_ITEMS(29, "Disco Item Win Effect", Rarity.RARE, new ItemStack(Material.WOOL, 2)),
+		FIRE_DISCO_ITEMS(31, "Fire Disco Item Win Effect", Rarity.RARE, new ItemStack(Material.WOOL, 3)),
 		NONE(33, "&cNone", Rarity.COMMON, Material.BARRIER, false)
 		
 		;
@@ -184,8 +183,6 @@ public class WinEffects extends FeatureBase {
 				new DiscoItems();
 			} else if(this == FIRE_DISCO_ITEMS) {
 				new FireDiscoItems();
-			} else if(this == FLY_ENDER_DRAGON) {
-				new FlyEnderDragon();
 			}
 		}
 	}

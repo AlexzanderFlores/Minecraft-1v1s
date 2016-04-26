@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -46,6 +46,7 @@ public class ArmorStandHelper implements Listener {
 			this.x = x;
 			this.y = y;
 			this.z = z;
+			Bukkit.getLogger().info(x + ", " + y + ", " + z);
 		}
 	}
 	
@@ -68,7 +69,7 @@ public class ArmorStandHelper implements Listener {
 							armorStand.teleport(newLoc);
 						}
 					} else {
-						MessageHandler.sendMessage(sender, "&cYou do not have any armor stands copied! To copy run &e/copyArmorStands copy");
+						MessageHandler.sendMessage(sender, "&cYou do not have any armor stands copied! To copy run &e/copyArmorStands copy <radius>");
 					}
 				} else if(arguments[0].equalsIgnoreCase("copy") && arguments.length == 2) {
 					try {
@@ -134,22 +135,6 @@ public class ArmorStandHelper implements Listener {
 			ItemCreator locked = new ItemCreator(ArmorStandHelper.locked.clone()).addLore("&bMovement Lock: " + (lockOn ? "&cLocked" : "&aUn-Locked"));
 			view.setItem(view.getTopInventory().getSize() - 1, locked.getItemStack());
 			editing.put(player.getName(), armorStand);
-		}
-	}
-	
-	@EventHandler
-	public void onCreatureSpawn(CreatureSpawnEvent event) {
-		if(event.getEntity() instanceof ArmorStand) {
-			final ArmorStand armorStand = (ArmorStand) event.getEntity();
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					armorStand.setHelmet(new ItemStack(Material.AIR));
-					armorStand.setChestplate(new ItemStack(Material.AIR));
-					armorStand.setLeggings(new ItemStack(Material.AIR));
-					armorStand.setBoots(new ItemStack(Material.AIR));					
-				}
-			}, 5);
 		}
 	}
 	
