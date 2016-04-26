@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import ostb.OSTB;
 
 public class DelayedTask implements Listener {
+	private int id = -1;
+	
 	public DelayedTask(Runnable runnable) {
 		this(runnable, 1);
 	}
@@ -13,9 +15,13 @@ public class DelayedTask implements Listener {
 	public DelayedTask(Runnable runnable, long delay) {
 		OSTB instance = OSTB.getInstance();
 		if(instance.isEnabled()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, delay);
+			id = Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, delay);
 		} else {
 			runnable.run();
 		}
+	}
+	
+	public int getId() {
+		return id;
 	}
 }
