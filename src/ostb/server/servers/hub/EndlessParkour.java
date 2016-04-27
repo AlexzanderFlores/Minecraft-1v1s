@@ -37,6 +37,8 @@ public class EndlessParkour implements Listener {
 	private Map<String, SidebarScoreboardUtil> scoreboards = null;
 	private Map<String, Integer> scores = null;
 	private Map<String, Block> lastScoredOn = null;
+	private static Map<String, Integer> taskIds = null;
+	private static Map<String, Integer> storedScores = null;
 	private int counter = 0;
 	private Random random = null;
 	private String topPlayer = null;
@@ -47,6 +49,8 @@ public class EndlessParkour implements Listener {
 		scoreboards = new HashMap<String, SidebarScoreboardUtil>();
 		scores = new HashMap<String, Integer>();
 		lastScoredOn = new HashMap<String, Block>();
+		taskIds = new HashMap<String, Integer>();
+		storedScores = new HashMap<String, Integer>();
 		random = new Random();
 		loadTopData();
 		World world = Bukkit.getWorlds().get(0);
@@ -56,6 +60,13 @@ public class EndlessParkour implements Listener {
 		armorStand.setCustomName(StringUtil.color("&e&nWalk forward"));
 		armorStand.setCustomNameVisible(true);
 		EventUtil.register(this);
+	}
+	
+	public static void cancelRemove(String name) {
+		if(taskIds.containsKey(name)) {
+			Bukkit.getScheduler().cancelTask(taskIds.get(name));
+			taskIds.remove(name);
+		}
 	}
 	
 	private boolean start(Player player) {
@@ -149,7 +160,7 @@ public class EndlessParkour implements Listener {
 	}
 	
 	private void remove(final Player player, boolean teleport) {
-		String name = player.getName();
+		final String name = player.getName();
 		if(blocks.containsKey(name)) {
 			Block block = blocks.get(name);
 			blocks.remove(name);
@@ -169,6 +180,19 @@ public class EndlessParkour implements Listener {
 		}
 		if(scores.containsKey(name)) {
 			final int score = scores.get(name);
+			cancelRemove(name);
+			MessageHandler.sendMessage(player, "Want to return to where you were? &eOutsideTheBlock.org/EPK");
+			MessageHandler.sendMessage(player, "Your score of &e" + score + " &xis saved for only &e2:30 &xso be quick!");
+			taskIds.put(name, new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					if(player.isOnline()) {
+						MessageHandler.sendMessage(player, "&cYour previous score of &e" + score + " &cwas removed");
+					}
+					storedScores.remove(name);
+				}
+			}, 20 * 60 * 2 + 30).getId());
+			storedScores.put(name, score);
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
@@ -185,12 +209,10 @@ public class EndlessParkour implements Listener {
 						if(!top.isEmpty() && top.get(0).equals(uuid.toString())) {
 							MessageHandler.sendMessage(player, "&4&k|||&6 New Top Score: &e" + score + " &4&k|||");
 						}
-					} else {
-						MessageHandler.sendMessage(player, "Your score: &e" + score);
 					}
+					scores.remove(name);
 				}
 			});
-			scores.remove(name);
 		}
 		if(scoreboards.containsKey(name)) {
 			scoreboards.get(name).remove();
@@ -264,6 +286,8 @@ public class EndlessParkour implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
+		cancelRemove(event.getPlayer().getName());
+		storedScores.remove(event.getPlayer().getName());
 		remove(event.getPlayer(), false);
 	}
 }
