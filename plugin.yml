@@ -148,6 +148,8 @@ commands:
   statReset:
     usage: /statReset
 
+  endlessParkourRespawn:
+    usage: /endlessParkourRespawn
 # Mini-Game Commands
   grace:
     usage: /grace <seconds>

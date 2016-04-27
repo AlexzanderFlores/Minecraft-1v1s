@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,12 +20,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
+import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
+import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
@@ -37,11 +40,12 @@ public class EndlessParkour implements Listener {
 	private Map<String, SidebarScoreboardUtil> scoreboards = null;
 	private Map<String, Integer> scores = null;
 	private Map<String, Block> lastScoredOn = null;
-	private static Map<String, Integer> taskIds = null;
-	private static Map<String, Integer> storedScores = null;
+	private Map<String, Integer> taskIds = null;
+	private Map<String, Integer> storedScores = null;
 	private int counter = 0;
 	private Random random = null;
 	private String topPlayer = null;
+	private String url = null;
 	private int topScore = 0;
 	
 	public EndlessParkour() {
@@ -53,6 +57,7 @@ public class EndlessParkour implements Listener {
 		storedScores = new HashMap<String, Integer>();
 		random = new Random();
 		loadTopData();
+		url = "OutsideTheBlock.org/EPK";
 		World world = Bukkit.getWorlds().get(0);
 		ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world, 1592.5, 4.5, -1262.5), EntityType.ARMOR_STAND);
 		armorStand.setGravity(false);
@@ -60,9 +65,59 @@ public class EndlessParkour implements Listener {
 		armorStand.setCustomName(StringUtil.color("&e&nWalk forward"));
 		armorStand.setCustomNameVisible(true);
 		EventUtil.register(this);
+		//TODO: Add 1 respawn into the database when this command is dispatched on the slave server
+		new CommandBase("endlessParkourRespawn", 0, 1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				if(arguments.length == 0) {
+					if(sender instanceof Player) {
+						final Player player = (Player) sender;
+						final String name = player.getName();
+						if(scores.containsKey(name)) {
+							MessageHandler.sendMessage(player, "&cYou cannot run this command while playing");
+							return true;
+						}
+						if(!storedScores.containsKey(name)) {
+							MessageHandler.sendMessage(player, "&cNot scores saved. Scores only save for &e2:30");
+							return true;
+						}
+						new AsyncDelayedTask(new Runnable() {
+							@Override
+							public void run() {
+								UUID uuid = player.getUniqueId();
+								int amount = DB.HUB_PARKOUR_ENDLESS_RESPAWNS.getInt("uuid", uuid.toString(), "amount");
+								if(amount > 0) {
+									MessageHandler.sendMessage(player, "You now have &e" + (--amount) + " &xrespawn" + (amount == 1 ? "" : "s"));
+									DB.HUB_PARKOUR_ENDLESS_RESPAWNS.updateInt("amount", amount, "uuid", uuid.toString());
+									scores.put(name, storedScores.get(name));
+									storedScores.remove(name);
+								} else {
+									MessageHandler.sendMessage(player, "&cYou do not have any Endless Parkour respawns, get some here: &e" + url);
+								}
+							}
+						});
+					} else {
+						return false;
+					}
+				} else if(arguments.length == 1) {
+					if(Ranks.OWNER.hasRank(sender)) {
+						Player player = ProPlugin.getPlayer(arguments[0]);
+						if(player == null) {
+							MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
+						} else {
+							cancelRemove(player.getName());
+							MessageHandler.sendMessage(player, "Your Endless Parkour respawn has been loaded. To activate it run &e/endlessParkourRespawn &xand you will be teleported into the game. Be ready!");
+						}
+					} else {
+						MessageHandler.sendMessage(sender, Ranks.OWNER.getNoPermission());
+					}
+				}
+				return true;
+			}
+		}.enableDelay(2);
 	}
 	
-	public static void cancelRemove(String name) {
+	public void cancelRemove(String name) {
 		if(taskIds.containsKey(name)) {
 			Bukkit.getScheduler().cancelTask(taskIds.get(name));
 			taskIds.remove(name);
@@ -77,14 +132,15 @@ public class EndlessParkour implements Listener {
 				player.setAllowFlight(false);
 			}
 			Block block = Bukkit.getWorlds().get(0).getBlockAt(1586, 4, -1263);
-			lastScoredOn.put(player.getName(), block);
-			blocks.put(player.getName(), block);
-			place(player.getName());
+			final String name = player.getName();
+			lastScoredOn.put(name, block);
+			blocks.put(name, block);
+			place(name);
 			Location location = block.getLocation().clone().add(1.5, 1, 0.5);
 			location.setYaw(-270.0f);
 			location.setPitch(25.0f);
 			player.teleport(location);
-			scores.put(player.getName(), 1);
+			scores.put(name, 1);
 			final int personalBest = DB.HUB_PARKOUR_ENDLESS_SCORES.getInt("uuid", player.getUniqueId().toString(), "best_score");
 			Events.removeSidebar(player);
 			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aEndless Parkour ") {
@@ -94,7 +150,7 @@ public class EndlessParkour implements Listener {
 					setText(new String [] {
 						" ",
 						"&eCurrent Score",
-						"&b" + scores.get(player.getName()) + " ",
+						"&b" + scores.get(name) + " ",
 						"  ",
 						"&ePersonal Best",
 						"&b" + personalBest + "  ",
@@ -108,7 +164,7 @@ public class EndlessParkour implements Listener {
 					});
 				}
 			};
-			scoreboards.put(player.getName(), sidebar);
+			scoreboards.put(name, sidebar);
 			player.setScoreboard(sidebar.getScoreboard());
 			sidebar.update(player);
 			return true;
@@ -181,7 +237,7 @@ public class EndlessParkour implements Listener {
 		if(scores.containsKey(name)) {
 			final int score = scores.get(name);
 			cancelRemove(name);
-			MessageHandler.sendMessage(player, "Want to return to where you were? &eOutsideTheBlock.org/EPK");
+			MessageHandler.sendMessage(player, "Want to return to where you were? &e" + url);
 			MessageHandler.sendMessage(player, "Your score of &e" + score + " &xis saved for only &e2:30 &xso be quick!");
 			taskIds.put(name, new DelayedTask(new Runnable() {
 				@Override
@@ -256,12 +312,12 @@ public class EndlessParkour implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location to = event.getTo();
-		if(blocks.containsKey(player.getName())) {
+		String name = player.getName();
+		if(blocks.containsKey(name)) {
 			if(to.getY() < 0) {
 				remove(player, true);
 				return;
 			}
-			String name = player.getName();
 			Block below = player.getLocation().getBlock().getRelative(0, -1, 0);
 			if(below.getType() == Material.STAINED_GLASS && below.getRelative(0, -1, 0).getType() == Material.STAINED_GLASS && !lastScoredOn.get(name).equals(below)) {
 				lastScoredOn.put(name, below);
