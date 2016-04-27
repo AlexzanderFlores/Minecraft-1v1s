@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets.entities;
+package ostb.server.servers.hub.items.features.pets.entities;
 
 import java.lang.reflect.Field;
 
@@ -9,16 +9,16 @@ import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_8_R3.Block;
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EntityOcelot;
+import net.minecraft.server.v1_8_R3.EntityChicken;
 import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 import net.minecraft.server.v1_8_R3.World;
 import npc.pathfinders.PathfinderGoalWalkToLocation;
-import ostb.server.servers.hub.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
 import ostb.server.util.ReflectionUtil;
 
-public class OcelotPet extends EntityOcelot implements EntityPet {
-    public OcelotPet(World world) {
+public class ChickenPet extends EntityChicken implements EntityPet {
+	public ChickenPet(World world) {
         super(world);
         try {
             for(String fieldName : new String[]{"b", "c"}) {
@@ -64,7 +64,7 @@ public class OcelotPet extends EntityOcelot implements EntityPet {
 
     @Override
     public void makeSound(Player player) {
-        makeSound(super.z(), 1.0f, 1.0f);//this.bf(), this.bg());
+        makeSound(super.z(), 1.0f, 1.0f);//this.bo(), this.bp());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class OcelotPet extends EntityOcelot implements EntityPet {
 
     @Override
     public void remove(Player player) {
-
+        
     }
 
     @Override
@@ -94,7 +94,7 @@ public class OcelotPet extends EntityOcelot implements EntityPet {
 
     @Override
     protected void a(BlockPosition blockPosition, Block block) {
-
+    	
     }
 
     @Override

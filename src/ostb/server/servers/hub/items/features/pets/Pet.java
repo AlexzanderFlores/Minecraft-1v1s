@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets;
+package ostb.server.servers.hub.items.features.pets;
 
 import java.util.ArrayList;
 import java.util.HashMap;

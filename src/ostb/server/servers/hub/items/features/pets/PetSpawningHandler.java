@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets;
+package ostb.server.servers.hub.items.features.pets;
 
 import java.util.HashMap;
 
@@ -19,19 +19,19 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.EntityLiving;
 import ostb.ProPlugin;
-import ostb.server.servers.hub.pets.Pet.PetTypes;
-import ostb.server.servers.hub.pets.entities.ChickenPet;
-import ostb.server.servers.hub.pets.entities.CowPet;
-import ostb.server.servers.hub.pets.entities.HorsePet;
-import ostb.server.servers.hub.pets.entities.MagmaCubePet;
-import ostb.server.servers.hub.pets.entities.MushroomCowPet;
-import ostb.server.servers.hub.pets.entities.OcelotPet;
-import ostb.server.servers.hub.pets.entities.PigPet;
-import ostb.server.servers.hub.pets.entities.SheepPet;
-import ostb.server.servers.hub.pets.entities.SlimePet;
-import ostb.server.servers.hub.pets.entities.SnowmanPet;
-import ostb.server.servers.hub.pets.entities.SquidPet;
-import ostb.server.servers.hub.pets.entities.WolfPet;
+import ostb.server.servers.hub.items.features.pets.Pet.PetTypes;
+import ostb.server.servers.hub.items.features.pets.entities.ChickenPet;
+import ostb.server.servers.hub.items.features.pets.entities.CowPet;
+import ostb.server.servers.hub.items.features.pets.entities.HorsePet;
+import ostb.server.servers.hub.items.features.pets.entities.MagmaCubePet;
+import ostb.server.servers.hub.items.features.pets.entities.MushroomCowPet;
+import ostb.server.servers.hub.items.features.pets.entities.OcelotPet;
+import ostb.server.servers.hub.items.features.pets.entities.PigPet;
+import ostb.server.servers.hub.items.features.pets.entities.SheepPet;
+import ostb.server.servers.hub.items.features.pets.entities.SlimePet;
+import ostb.server.servers.hub.items.features.pets.entities.SnowmanPet;
+import ostb.server.servers.hub.items.features.pets.entities.SquidPet;
+import ostb.server.servers.hub.items.features.pets.entities.WolfPet;
 import ostb.server.util.EventUtil;
 
 public class PetSpawningHandler implements Listener {

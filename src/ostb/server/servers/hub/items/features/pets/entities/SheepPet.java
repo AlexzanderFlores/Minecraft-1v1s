@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets.entities;
+package ostb.server.servers.hub.items.features.pets.entities;
 
 import java.lang.reflect.Field;
 
@@ -14,7 +14,7 @@ import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 import net.minecraft.server.v1_8_R3.World;
 import npc.pathfinders.PathfinderGoalWalkToLocation;
-import ostb.server.servers.hub.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
 import ostb.server.util.ReflectionUtil;
 
 public class SheepPet extends EntitySheep implements EntityPet {

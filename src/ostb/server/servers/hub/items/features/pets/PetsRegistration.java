@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets;
+package ostb.server.servers.hub.items.features.pets;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -19,21 +19,21 @@ import net.minecraft.server.v1_8_R3.EntitySnowman;
 import net.minecraft.server.v1_8_R3.EntitySquid;
 import net.minecraft.server.v1_8_R3.EntityTypes;
 import net.minecraft.server.v1_8_R3.EntityWolf;
-import ostb.server.servers.hub.pets.entities.ChickenPet;
-import ostb.server.servers.hub.pets.entities.CowPet;
-import ostb.server.servers.hub.pets.entities.HorsePet;
-import ostb.server.servers.hub.pets.entities.MagmaCubePet;
-import ostb.server.servers.hub.pets.entities.MushroomCowPet;
-import ostb.server.servers.hub.pets.entities.OcelotPet;
-import ostb.server.servers.hub.pets.entities.PigPet;
-import ostb.server.servers.hub.pets.entities.SheepPet;
-import ostb.server.servers.hub.pets.entities.SlimePet;
-import ostb.server.servers.hub.pets.entities.SnowmanPet;
-import ostb.server.servers.hub.pets.entities.SquidPet;
-import ostb.server.servers.hub.pets.entities.WolfPet;
+import ostb.server.servers.hub.items.features.pets.entities.ChickenPet;
+import ostb.server.servers.hub.items.features.pets.entities.CowPet;
+import ostb.server.servers.hub.items.features.pets.entities.HorsePet;
+import ostb.server.servers.hub.items.features.pets.entities.MagmaCubePet;
+import ostb.server.servers.hub.items.features.pets.entities.MushroomCowPet;
+import ostb.server.servers.hub.items.features.pets.entities.OcelotPet;
+import ostb.server.servers.hub.items.features.pets.entities.PigPet;
+import ostb.server.servers.hub.items.features.pets.entities.SheepPet;
+import ostb.server.servers.hub.items.features.pets.entities.SlimePet;
+import ostb.server.servers.hub.items.features.pets.entities.SnowmanPet;
+import ostb.server.servers.hub.items.features.pets.entities.SquidPet;
+import ostb.server.servers.hub.items.features.pets.entities.WolfPet;
 
 @SuppressWarnings({"rawtypes", "unchecked", "deprecation"})
-public enum Pets {
+public enum PetsRegistration {
     COW(EntityCow.class, CowPet.class),
     PIG(EntityPig.class, PigPet.class),
     CHICKEN(EntityChicken.class, ChickenPet.class),
@@ -50,7 +50,7 @@ public enum Pets {
     private Class<? extends EntityInsentient> defaultClass;
     private Class<? extends EntityInsentient> customClass;
 
-    private Pets(Class<? extends EntityInsentient> defaultClass, Class<? extends EntityInsentient> customClass) {
+    private PetsRegistration(Class<? extends EntityInsentient> defaultClass, Class<? extends EntityInsentient> customClass) {
         this.defaultClass = defaultClass;
         this.customClass = customClass;
     }

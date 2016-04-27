@@ -1,25 +1,24 @@
-package ostb.server.servers.hub.pets.entities;
+package ostb.server.servers.hub.items.features.pets.entities;
 
 import java.lang.reflect.Field;
 
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_8_R3.Block;
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EntityWolf;
+import net.minecraft.server.v1_8_R3.EntityCow;
 import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 import net.minecraft.server.v1_8_R3.World;
 import npc.pathfinders.PathfinderGoalWalkToLocation;
-import ostb.server.servers.hub.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
 import ostb.server.util.ReflectionUtil;
 
-public class WolfPet extends EntityWolf implements EntityPet {
-    public WolfPet(World world) {
+public class CowPet extends EntityCow implements EntityPet {
+    public CowPet(World world) {
         super(world);
         try {
             for(String fieldName : new String[]{"b", "c"}) {
@@ -35,13 +34,12 @@ public class WolfPet extends EntityWolf implements EntityPet {
 
     @Override
     public void onSpawn(Player player) {
-        Wolf wolf = (Wolf) getBukkitEntity();
-        wolf.setOwner(player);
+
     }
 
     @Override
     public void walkTo(Player player, float speed) {
-        this.goalSelector.a(0, new PathfinderGoalWalkToLocation(this, speed, player.getLocation()));
+    	this.goalSelector.a(0, new PathfinderGoalWalkToLocation(this, speed, player.getLocation()));
     }
 
     @Override

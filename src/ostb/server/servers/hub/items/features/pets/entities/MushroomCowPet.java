@@ -1,25 +1,24 @@
-package ostb.server.servers.hub.pets.entities;
+package ostb.server.servers.hub.items.features.pets.entities;
 
 import java.lang.reflect.Field;
 
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_8_R3.Block;
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EntitySlime;
+import net.minecraft.server.v1_8_R3.EntityMushroomCow;
 import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 import net.minecraft.server.v1_8_R3.World;
 import npc.pathfinders.PathfinderGoalWalkToLocation;
-import ostb.server.servers.hub.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
 import ostb.server.util.ReflectionUtil;
 
-public class SlimePet extends EntitySlime implements EntityPet {
-    public SlimePet(World world) {
+public class MushroomCowPet extends EntityMushroomCow implements EntityPet {
+    public MushroomCowPet(World world) {
         super(world);
         try {
             for(String fieldName : new String[]{"b", "c"}) {
@@ -35,9 +34,7 @@ public class SlimePet extends EntitySlime implements EntityPet {
 
     @Override
     public void onSpawn(Player player) {
-        setSize(2);
-        LivingEntity livingEntity = (LivingEntity) getBukkitEntity();
-        livingEntity.damage(0.0d);
+
     }
 
     @Override

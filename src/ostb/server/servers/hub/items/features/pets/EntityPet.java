@@ -1,4 +1,4 @@
-package ostb.server.servers.hub.pets;
+package ostb.server.servers.hub.items.features.pets;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

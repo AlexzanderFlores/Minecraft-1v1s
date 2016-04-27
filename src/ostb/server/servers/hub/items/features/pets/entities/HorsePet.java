@@ -1,24 +1,26 @@
-package ostb.server.servers.hub.pets.entities;
+package ostb.server.servers.hub.items.features.pets.entities;
 
 import java.lang.reflect.Field;
 
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_8_R3.Block;
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EntitySnowman;
+import net.minecraft.server.v1_8_R3.EntityHorse;
 import net.minecraft.server.v1_8_R3.GenericAttributes;
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 import net.minecraft.server.v1_8_R3.World;
 import npc.pathfinders.PathfinderGoalWalkToLocation;
-import ostb.server.servers.hub.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
 import ostb.server.util.ReflectionUtil;
 
-public class SnowmanPet extends EntitySnowman implements EntityPet {
-    public SnowmanPet(World world) {
+public class HorsePet extends EntityHorse implements EntityPet {
+    public HorsePet(World world) {
         super(world);
         try {
             for(String fieldName : new String[]{"b", "c"}) {
@@ -34,7 +36,8 @@ public class SnowmanPet extends EntitySnowman implements EntityPet {
 
     @Override
     public void onSpawn(Player player) {
-
+        Horse horse = (Horse) getBukkitEntity();
+        horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
     }
 
     @Override
