@@ -12,7 +12,7 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.servers.hub.items.features.FeatureBase;
 
 public class Pets extends FeatureBase {
-	private static int max = 0;
+	private static int max = 96;
 	private static Map<String, Integer> owned = null;
 	
 	public Pets() {
@@ -20,11 +20,11 @@ public class Pets extends FeatureBase {
 			"",
 			"&cUnder development",
 			"",
-			"&7&mLove pets? We have one of",
-			"&7&mthe largest collections around!",
+			"&7Love pets? We have one of",
+			"&7the largest collections around!",
 			"",
-			"&7&mOwned: &e&mXX&8&m/&e&m" + max + " &7&m(&e&mYY%&7&m)",
-			"&7&mCollect from: &e&mZZ",
+			"&7Owned: &eXX&8/&e" + max + " &7(&eYY%&7)",
+			"&7Collect from: &eZZ",
 			""
 		});
 		owned = new HashMap<String, Integer>();
