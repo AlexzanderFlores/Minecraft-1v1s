@@ -80,6 +80,9 @@ commands:
   addCoins:
     usage: /addCoins <name> <game> <amount>
 
+  antiCheat:
+    usage: /antiCheat <additional arguments>
+
   toggleSpectator:
     usage: /toggleSpectator
 

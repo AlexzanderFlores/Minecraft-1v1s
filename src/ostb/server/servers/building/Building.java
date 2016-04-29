@@ -1,8 +1,6 @@
 package ostb.server.servers.building;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -59,28 +57,6 @@ public class Building extends ProPlugin {
 				if(arguments.length == 0) {
 					Player player = (Player) sender;
 					new Campfire(player.getLocation());
-				} else if(arguments.length == 1) {
-					Player player = ProPlugin.getPlayer(arguments[0]);
-					if(player == null) {
-						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
-					} else {
-						try {
-							Object object = null;
-							String language = "N/A";
-							for(Method method : player.getClass().getDeclaredMethods()) {
-								if(method.getName().equals("getHandle")) {
-									object = method.invoke(player, (Object []) null);
-									Field field = object.getClass().getDeclaredField("locale");
-									field.setAccessible(true);
-									language = (String) field.get(object);
-									break;
-								}
-							}
-							MessageHandler.sendMessage(sender, player.getName() + " has the language " + language);
-						} catch(Exception e) {
-							e.printStackTrace();
-						}
-					}
 				} else if(arguments.length == 2) {
 					String ign = arguments[0];
 					String url = "";
