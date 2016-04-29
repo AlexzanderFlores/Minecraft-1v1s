@@ -37,6 +37,7 @@ import ostb.player.account.PlaytimeTracker;
 import ostb.player.scoreboard.BelowNameScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.AlertHandler;
+import ostb.server.AntiCheatListener;
 import ostb.server.AutoAlerts;
 import ostb.server.CommandDispatcher;
 import ostb.server.DB;
@@ -182,6 +183,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		new DefaultChatColor();
 		new DefaultKit();
 		new LanguageLogger();
+		new AntiCheatListener();
 		Glow.register();
 		client = new Client("192.198.207.74", 4500, 5000);
 		client.start();
