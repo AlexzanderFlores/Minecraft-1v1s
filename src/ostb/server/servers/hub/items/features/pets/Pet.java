@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,10 +19,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import net.minecraft.server.v1_8_R3.EntityLiving;
 import ostb.player.MessageHandler;
+import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.StringUtil;
 
-@SuppressWarnings("deprecation")
 public class Pet implements EntityPet {
     public static Map<String, Pet> playersPets = null;
     public EntityPet entityPet = null;
@@ -31,23 +29,6 @@ public class Pet implements EntityPet {
     private List<String> movedTowards = null;
     private List<String> stayingPets = null;
     private List<String> enabledPetSounds = null;
-    public static enum PetTypes {
-        COW, PIG, CHICKEN, WOLF, MUSHROOM_COW, OCELOT, SHEEP, HORSE, SLIME, MAGMA_CUBE, SQUID, SNOWMAN;
-
-        private ItemStack itemStack = null;
-
-        private PetTypes() {
-            itemStack = new ItemStack(Material.MONSTER_EGG, 1, (byte) EntityType.valueOf(toString()).getTypeId());
-        }
-
-        public ItemStack getItemStack() {
-            return new ItemCreator(itemStack.clone()).setName("&a" + StringUtil.getFirstLetterCap(toString())).getItemStack();
-        }
-
-        public EntityType getEntityType() {
-            return EntityType.valueOf(toString());
-        }
-    }
 
     public Pet(Player player, PetTypes petType, EntityLiving entityLiving) {
         if(playersPets == null) {

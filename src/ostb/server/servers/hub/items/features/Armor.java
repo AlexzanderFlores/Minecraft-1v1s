@@ -358,7 +358,7 @@ public class Armor extends FeatureBase {
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(ChatColor.stripColor(getName()))) {
+		if(event.getTitle().equals(getInvName())) {
 			Player player = event.getPlayer();
 			final UUID uuid = player.getUniqueId();
 			ItemStack item = event.getItem();

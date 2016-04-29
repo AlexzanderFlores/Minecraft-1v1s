@@ -403,7 +403,7 @@ public class ArrowTrails extends FeatureBase {
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(ChatColor.stripColor(getName()))) {
+		if(event.getTitle().equals(getInvName())) {
 			Player player = event.getPlayer();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.EMERALD_BLOCK || item.getType() == Material.REDSTONE_BLOCK) {

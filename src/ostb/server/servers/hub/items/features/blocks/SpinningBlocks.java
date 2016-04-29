@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -219,7 +218,7 @@ public class SpinningBlocks extends FeatureBase {
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(ChatColor.stripColor(getName()))) {
+		if(event.getTitle().equals(getInvName())) {
 			Player player = event.getPlayer();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.BARRIER) {

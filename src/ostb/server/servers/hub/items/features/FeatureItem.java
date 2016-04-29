@@ -16,6 +16,7 @@ import ostb.server.servers.hub.items.features.Armor.PlayerArmor;
 import ostb.server.servers.hub.items.features.blocks.SpinningBlocks.SpinBlock;
 import ostb.server.servers.hub.items.features.particles.ArrowTrails.ArrowTrailParticleTypes;
 import ostb.server.servers.hub.items.features.particles.HaloParticles.HaloParticleTypes;
+import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
 import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.util.ItemCreator;
 
@@ -97,6 +98,12 @@ public class FeatureItem {
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
 			if(halo.getName().equals(getName())) {
 				halo.give(player);
+				return;
+			}
+		}
+		for(PetTypes petType : PetTypes.values()) {
+			if(petType.getName().equals(getName())) {
+				petType.give(player);
 				return;
 			}
 		}

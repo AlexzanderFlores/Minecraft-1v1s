@@ -19,7 +19,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.EntityLiving;
 import ostb.ProPlugin;
-import ostb.server.servers.hub.items.features.pets.Pet.PetTypes;
+import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
 import ostb.server.servers.hub.items.features.pets.entities.ChickenPet;
 import ostb.server.servers.hub.items.features.pets.entities.CowPet;
 import ostb.server.servers.hub.items.features.pets.entities.HorsePet;
