@@ -6,11 +6,14 @@ import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.player.MouseClickEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.Campfire;
@@ -106,5 +109,13 @@ public class Building extends ProPlugin {
 		FileHandler.delete(new File(OSTB.getInstance().getDataFolder().getPath() + "/../Multiverse-Core/worlds.yml"));
 		FileHandler.delete(new File(OSTB.getInstance().getDataFolder().getPath() + "/../Essentials/userdata"));
 		super.disable();
+	}
+	
+	@EventHandler
+	public void onMouseClick(MouseClickEvent event) {
+		Player player = event.getPlayer();
+		if(player.getInventory().getItemInHand().getType() == Material.SPONGE) {
+			player.setVelocity(player.getLocation().getDirection().multiply(5.0d));
+		}
 	}
 }
