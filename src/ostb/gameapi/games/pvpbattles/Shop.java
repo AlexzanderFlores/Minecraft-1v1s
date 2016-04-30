@@ -9,11 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import npc.NPCEntity;
+import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.player.CoinsHandler;
+import ostb.player.TitleDisplayer;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -72,7 +76,18 @@ public class Shop implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(name)) {
-			
+			Player player = event.getPlayer();
+			ItemStack item = event.getItem();
+			int price = Integer.valueOf(item.getItemMeta().getLore().get(1).split(" ")[1]);
+			CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES);
+			if(coinsHandler.getCoins(player) >= price) {
+				coinsHandler.addCoins(player, price * -1);
+				ItemStack newItem = new ItemStack(item.getType(), item.getAmount(), item.getData().getData());
+				player.getInventory().addItem(newItem);
+			} else {
+				player.closeInventory();
+				new TitleDisplayer(player, "&cNot have enough coins", "&eFor " + item.getItemMeta().getDisplayName()).display();
+			}
 			event.setCancelled(true);
 		}
 	}
