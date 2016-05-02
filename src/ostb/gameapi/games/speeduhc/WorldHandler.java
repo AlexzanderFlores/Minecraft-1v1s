@@ -20,7 +20,7 @@ import ostb.server.util.ZipUtil;
 
 public class WorldHandler implements Listener {
 	private static World world = null;
-	private static int radius = 750;
+	private static double radius = 1500;
 	
 	public WorldHandler() {
 		BiomeSwap.setUpUHC();
@@ -36,6 +36,11 @@ public class WorldHandler implements Listener {
 			FileHandler.delete(file);
 			FileHandler.delete(zip);
 			OSTB.getMiniGame().setMap(world);
+			world.getWorldBorder().setCenter(0, 0);
+			world.getWorldBorder().setDamageAmount(1.0d);
+			world.getWorldBorder().setWarningDistance(25);
+			world.getWorldBorder().setWarningTime(20);
+			setBorder();
 		}
 	}
 	
@@ -44,12 +49,16 @@ public class WorldHandler implements Listener {
 	}
 	
 	public static void setBorder() {
-		world.getWorldBorder().setCenter(0, 0);
-		world.getWorldBorder().setSize(radius);
+		int r = ((int) radius) / 2;
 		OSTB.getSidebar().removeScore(11);
 		OSTB.getSidebar().setText("     ", 13);
 		OSTB.getSidebar().setText("&eBorder", 12);
-		OSTB.getSidebar().setText("&b" + radius, 11);
+		OSTB.getSidebar().setText("&b" + r + "x" + r, 11);
+		try {
+			world.getWorldBorder().setSize(radius);
+		} catch(Exception e) {
+			
+		}
 	}
 	
 	public static Location getGround(Location location) {
@@ -68,7 +77,7 @@ public class WorldHandler implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20) {
-			--radius;
+			radius -= .5;
 			setBorder();
 		}
 	}
