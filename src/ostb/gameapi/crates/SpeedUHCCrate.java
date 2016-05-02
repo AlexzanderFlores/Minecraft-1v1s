@@ -65,9 +65,9 @@ public class SpeedUHCCrate implements Listener {
 						"&7Right click to purchase a key",
 						"",
 						"&eKeys owned: &a" + getKeys(player),
-						"&7Lifetime Hardcore crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-						"&7Monthly Hardcore crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-						"&7Weekly Hardcore crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+						"&7Lifetime Speed UHC crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
+						"&7Monthly Speed UHC crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
+						"&7Weekly Speed UHC crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
 						""
 					};
 				} else {
@@ -86,7 +86,7 @@ public class SpeedUHCCrate implements Listener {
 	}
 	
 	private static String getName() {
-		return "Hardcore Elimination Crate";
+		return "Speed UHC Crate";
 	}
 	
 	private static void updateItem(Player player) {
@@ -108,7 +108,7 @@ public class SpeedUHCCrate implements Listener {
 	}
 	
 	private static int getKeys(Player player) {
-		Bukkit.getLogger().info("hardcore elimination crate: get keys");
+		Bukkit.getLogger().info("speed UHC crate: get keys");
 		return DB.HUB_HE_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
 	}
 	
@@ -126,7 +126,7 @@ public class SpeedUHCCrate implements Listener {
 				if(player != null) {
 					updateItem(player);
 				}
-				Bukkit.getLogger().info("hardcore elimination crate: give key");
+				Bukkit.getLogger().info("speed UHC crate: give key");
 			}
 		});
 	}
@@ -135,16 +135,16 @@ public class SpeedUHCCrate implements Listener {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
 				if(kit.getPlugin() == Plugins.SPEED_UHC_KITS) {
-					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.HARDCORE_ELIMINATION));
+					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.SPEED_UHC));
 				}
 			}
-			features.add(new FeatureItem("15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.HARDCORE_ELIMINATION));
-			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE, FeatureType.HARDCORE_ELIMINATION));
+			features.add(new FeatureItem("15 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("25 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.COMMON, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("35 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("45 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.UNCOMMON, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SPEED_UHC));
+			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE, FeatureType.SPEED_UHC));
 		}
 	}
 	

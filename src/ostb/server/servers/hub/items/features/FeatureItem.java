@@ -26,7 +26,7 @@ public class FeatureItem {
 	private ItemStack itemStack = null;
 	private Rarity rarity = null;
 	private FeatureType type = null;
-	public enum FeatureType {REWARD_CRATE, SKY_WARS, HARDCORE_ELIMINATION};
+	public enum FeatureType {REWARD_CRATE, SKY_WARS, SPEED_UHC};
 	
 	public FeatureItem(String name, ItemStack itemStack, Rarity rarity, FeatureType type) {
 		this.name = name;
