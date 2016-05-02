@@ -281,9 +281,8 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.SKY_WARS_TEAMS);
 		inventory.setItem(16, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_KITS.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of Speed UHC",
+			"&7Well known game",
 			"",
-			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",
 			"",
 			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_KITS),
@@ -293,9 +292,8 @@ public class GameSelector extends HubItemBase {
 		items.put(item, Plugins.SPEED_UHC_KITS);
 		inventory.setItem(30, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
-			"&7Unique spin-off of Speed UHC",
+			"&7Well known game",
 			"",
-			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",
 			"",
 			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_NO_KITS),
