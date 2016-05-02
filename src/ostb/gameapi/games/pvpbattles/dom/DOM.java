@@ -5,5 +5,6 @@ import ostb.gameapi.games.pvpbattles.PVPBattles;
 public class DOM extends PVPBattles {
 	public DOM() {
 		super("Domination");
+		new ostb.gameapi.modes.DOM(1000);
 	}
 }

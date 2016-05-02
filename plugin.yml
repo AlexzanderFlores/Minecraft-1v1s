@@ -175,3 +175,6 @@ commands:
 
   copyArmorStands:
     usage: /copyArmorStands [copy <radius>] [paste]
+
+  pvpBattles:
+    usage: /pvpBattles <addional arguments>

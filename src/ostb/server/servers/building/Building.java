@@ -7,17 +7,19 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerMoveEvent;
+
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.regions.Region;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.games.pvpbattles.Armory;
 import ostb.gameapi.games.pvpbattles.Shop;
 import ostb.player.CoinsHandler;
@@ -29,6 +31,7 @@ import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
 
+@SuppressWarnings("deprecation")
 public class Building extends ProPlugin {
 	public Building() {
 		super("Building");
@@ -62,6 +65,95 @@ public class Building extends ProPlugin {
 				config.getConfig().set(index + "", loc);
 				config.save();
 				MessageHandler.sendMessage(player, "Set spawn " + index);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("pvpBattles", -1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				Location location = player.getLocation();
+				int x = location.getBlockX();
+				int y = location.getBlockY();
+				int z = location.getBlockZ();
+				float yaw = location.getYaw();
+				float pitch = location.getPitch();
+				if(arguments.length == 2) {
+					String action = arguments[0];
+					String team = arguments[1].toLowerCase();
+					if(!action.equalsIgnoreCase("setCP") && !team.equals("red") && !team.equals("blue")) {
+						MessageHandler.sendMessage(player, "&cUnknown team, please use \"&ered&c\" or \"&eblue&c\"");
+						return true;
+					}
+					if(action.equalsIgnoreCase("setEnchant") || action.equalsIgnoreCase("setAnvil")) {
+						String target = action.toLowerCase().replace("set", "");
+						Block block = getRegionBlock(player);
+						if(block != null) {
+							if(block.getType() != Material.AIR) {
+								block.setType(Material.AIR);
+								MessageHandler.sendMessage(player, "&7Note: Setting block to air, plugin will place block in game");
+							}
+							ConfigurationUtil config = getConfig(player, target);
+							config.getConfig().set(team + ".x", x);
+							config.getConfig().set(team + ".y", y);
+							config.getConfig().set(team + ".z", z);
+							if(config.save()) {
+								MessageHandler.sendMessage(player, "Set " + target + " for the " + team + " team");
+							} else {
+								MessageHandler.sendMessage(player, "&cError on saving config file");
+							}
+						}
+						return true;
+					} else if(action.equalsIgnoreCase("setShop") || action.equalsIgnoreCase("setArmory") || action.equalsIgnoreCase("setSpawn")) {
+						String target = action.toLowerCase().replace("set", "");
+						ConfigurationUtil config = getConfig(player, target);
+						config.getConfig().set(team + ".x", x + ".5");
+						config.getConfig().set(team + ".y", y + 1);
+						config.getConfig().set(team + ".z", z + ".5");
+						config.getConfig().set(team + ".yaw", yaw);
+						config.getConfig().set(team + ".pitch", pitch);
+						if(config.save()) {
+							MessageHandler.sendMessage(player, "Set " + target + " for the " + team + " team");
+						} else {
+							MessageHandler.sendMessage(player, "&cError on saving config file");
+						}
+						return true;
+					} else if(action.equalsIgnoreCase("setFlag")) {
+						ConfigurationUtil config = getConfig(player, "flag");
+						config.getConfig().set(team + ".x", x + ".5");
+						config.getConfig().set(team + ".y", y);
+						config.getConfig().set(team + ".z", z + ".5");
+						if(config.save()) {
+							MessageHandler.sendMessage(player, "Set the " + team + " team flag");
+						} else {
+							MessageHandler.sendMessage(player, "&cError on saving config file");
+						}
+						return true;
+					} else if(action.equalsIgnoreCase("setCP")) {
+						try {
+							int index = Integer.valueOf(team);
+							ConfigurationUtil config = getConfig(player, "command_posts");
+							config.getConfig().set(team + ".x", x + ".5");
+							config.getConfig().set(team + ".y", y);
+							config.getConfig().set(team + ".z", z + ".5");
+							if(config.save()) {
+								MessageHandler.sendMessage(player, "Set command post #" + index);
+							} else {
+								MessageHandler.sendMessage(player, "&cError on saving config file");
+							}
+						} catch(NumberFormatException e) {
+							MessageHandler.sendMessage(player, "&f/pvpBattles setCP [index]");
+						}
+						return true;
+					}
+				}
+				MessageHandler.sendMessage(player, "&f/pvpBattles setEnchant <red | blue>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setAnvil <red | blue>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setSpawn <red | blue> [index]");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setShop <red | blue>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setArmory <red | blue>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setFlag <red | blue>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setCP [index]");
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
@@ -137,24 +229,37 @@ public class Building extends ProPlugin {
 		super.disable();
 	}
 	
-	//@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		float yaw = event.getTo().getYaw();
-		if(yaw < 0) {
-			yaw *= -1;
-		}
-		if(yaw > 360) {
-			yaw = 0;
-		}
-		player.setLevel((int) yaw);
+	private ConfigurationUtil getConfig(Player player, String name) {
+		return new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + player.getWorld().getName() + "/pvpbattles/" + name + ".yml");
 	}
 	
-	@EventHandler
-	public void onMouseClick(MouseClickEvent event) {
-		Player player = event.getPlayer();
-		if(player.getInventory().getItemInHand().getType() == Material.SPONGE) {
-			player.setVelocity(player.getLocation().getDirection().multiply(5.0d));
+	private Block getRegionBlock(Player player) {
+		Region region = getRegion(player);
+		if(region == null) {
+			MessageHandler.sendMessage(player, "&cPlease use WorldEdit to select a one block region");
+		} else if(region.getArea() != 1) {
+			MessageHandler.sendMessage(player, "&cYour region must only be one block");
+		} else {
+			int x = region.getMinimumPoint().getBlockX();
+			int y = region.getMinimumPoint().getBlockY();
+			int z = region.getMinimumPoint().getBlockZ();
+			return player.getWorld().getBlockAt(x, y, z);
 		}
+		return null;
+	}
+	
+	private Region getRegion(Player player) {
+		WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
+		if(worldEdit == null || !worldEdit.isEnabled()) {
+			MessageHandler.sendMessage(player, "&cWorld Edit is not enabled");
+		} else {
+			try {
+				Region region = worldEdit.getSession(player).getRegion();
+				return region;
+			} catch (IncompleteRegionException e) {
+				
+			}
+		}
+		return null;
 	}
 }

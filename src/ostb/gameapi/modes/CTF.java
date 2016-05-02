@@ -178,8 +178,8 @@ public class CTF extends ModeBase {
 			MiniGame miniGame = OSTB.getMiniGame();
 			GameStates gameState = miniGame.getGameState();
 			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
-				World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
-				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/ctf_flags.yml");
+				World world = miniGame.getMap();
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/flags.yml");
 				if(config.getFile().exists()) {
 					for(Teams team : Teams.values()) {
 						double x = config.getConfig().getDouble(team.toString().toLowerCase() + ".x");

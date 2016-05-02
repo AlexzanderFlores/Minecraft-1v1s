@@ -175,8 +175,8 @@ public class DOM extends ModeBase {
 			MiniGame miniGame = OSTB.getMiniGame();
 			GameStates gameState = miniGame.getGameState();
 			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
-				World world = Bukkit.getWorlds().get(1); //TODO: Set this to something
-				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/command_posts.yml");
+				World world = miniGame.getMap();
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/command_posts.yml");
 				if(config.getFile().exists()) {
 					for(String key : config.getConfig().getKeys(false)) {
 						int x = config.getConfig().getInt(key + ".x");
