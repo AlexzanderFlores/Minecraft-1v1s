@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +22,7 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -34,7 +36,7 @@ public class TeamHandler implements Listener {
 	public TeamHandler() {
 		teams = new ArrayList<Team>();
 		name = "Team Selector";
-		item = new ItemCreator(Material.WOOL).setName("&b" + name).getItemStack();
+		item = new ItemCreator(Material.WOOL).setName("&a" + name).getItemStack();
 		EventUtil.register(this);
 	}
 	
@@ -100,11 +102,18 @@ public class TeamHandler implements Listener {
 		enableTeamSelectorItem = !enableTeamSelectorItem;
 	}
 	
+	public void setTeam(Player player, Team newTeam) {
+		for(Team team : teams) {
+			team.removePlayer(player);
+		}
+		newTeam.addPlayer(player);
+	}
+	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(enableTeamSelectorItem && OSTB.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
-			player.getInventory().setItem(1, item);
+			player.getInventory().addItem(item);
 		}
 	}
 	
@@ -136,13 +145,16 @@ public class TeamHandler implements Listener {
 				team = getTeam("blue");
 			}
 			if(team == null) {
-				MessageHandler.sendMessage(player, "&cError: team not found");
+				MessageHandler.sendMessage(player, "&cError: team not found, please report this");
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			} else if(team.hasPlayer(player)) {
 				new TitleDisplayer(player, "&cAlready on the", team.getPrefix() + " &eTeam").display();
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			} else {
 				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + " &eTeam").display();
 				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + " &xteam");
-				team.addPlayer(player);
+				setTeam(player, team);
+				EffectUtil.playSound(player, Sound.LEVEL_UP);
 			}
 			player.closeInventory();
 			event.setCancelled(true);

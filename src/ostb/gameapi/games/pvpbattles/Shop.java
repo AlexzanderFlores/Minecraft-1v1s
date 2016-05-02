@@ -31,25 +31,22 @@ public class Shop implements Listener {
 	private static boolean registered = false;
 	private String name = null;
 	
-	public Shop(World world) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/Shop.yml");
-		double x = config.getConfig().getDouble("red.location.x");
-		double y = config.getConfig().getDouble("red.location.y");
-		double z = config.getConfig().getDouble("red.location.z");
-		float yaw = (float) config.getConfig().getDouble("red.location.yaw");
-		float pitch = (float) config.getConfig().getDouble("red.location.pitch");
-		new Shop(new Location(world, x, y, z, yaw, pitch));
-		x = config.getConfig().getDouble("blue.location.x");
-		y = config.getConfig().getDouble("blue.location.y");
-		z = config.getConfig().getDouble("blue.location.z");
-		yaw = (float) config.getConfig().getDouble("blue.location.yaw");
-		pitch = (float) config.getConfig().getDouble("blue.location.pitch");
-		new Shop(new Location(world, x, y, z, yaw, pitch));
+	public Shop(World world, Location redSpawn, Location blueSpawn) {
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/shop.yml");
+		double x = config.getConfig().getDouble("red.x");
+		double y = config.getConfig().getDouble("red.y");
+		double z = config.getConfig().getDouble("red.z");
+		new Shop(new Location(world, x, y, z), redSpawn, blueSpawn);
+		x = config.getConfig().getDouble("blue.x");
+		y = config.getConfig().getDouble("blue.y");
+		z = config.getConfig().getDouble("blue.z");
+		new Shop(new Location(world, x, y, z), redSpawn, blueSpawn);
 	}
 	
-	public Shop(Location location) {
+	public Shop(Location location, Location redSpawn, Location blueSpawn) {
 		name = "Shop";
-		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location) {
+		Location target = location.distance(redSpawn) < location.distance(blueSpawn) ? redSpawn : blueSpawn;
+		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
 				Inventory inventory = Bukkit.createInventory(player, 9 * 5, name);

@@ -18,15 +18,10 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
 
 import ostb.OSTB;
-import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.gameapi.games.pvpbattles.Armory;
-import ostb.gameapi.games.pvpbattles.Shop;
-import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
-import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
@@ -40,10 +35,6 @@ public class Building extends ProPlugin {
 		removeFlags();
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
-		new ostb.gameapi.games.pvpbattles.Events();
-		new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES);
-		CoinsHandler.setKillCoins(5);
-		CoinsHandler.setWinCoins(20);
 		new ArmorStandHelper();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
@@ -94,9 +85,9 @@ public class Building extends ProPlugin {
 								MessageHandler.sendMessage(player, "&7Note: Setting block to air, plugin will place block in game");
 							}
 							ConfigurationUtil config = getConfig(player, target);
-							config.getConfig().set(team + ".x", x);
-							config.getConfig().set(team + ".y", y);
-							config.getConfig().set(team + ".z", z);
+							config.getConfig().set(team + ".x", block.getX());
+							config.getConfig().set(team + ".y", block.getY());
+							config.getConfig().set(team + ".z", block.getZ());
 							if(config.save()) {
 								MessageHandler.sendMessage(player, "Set " + target + " for the " + team + " team");
 							} else {
@@ -107,9 +98,9 @@ public class Building extends ProPlugin {
 					} else if(action.equalsIgnoreCase("setShop") || action.equalsIgnoreCase("setArmory") || action.equalsIgnoreCase("setSpawn")) {
 						String target = action.toLowerCase().replace("set", "");
 						ConfigurationUtil config = getConfig(player, target);
-						config.getConfig().set(team + ".x", x + ".5");
+						config.getConfig().set(team + ".x", x + .5);
 						config.getConfig().set(team + ".y", y + 1);
-						config.getConfig().set(team + ".z", z + ".5");
+						config.getConfig().set(team + ".z", z + .5);
 						config.getConfig().set(team + ".yaw", yaw);
 						config.getConfig().set(team + ".pitch", pitch);
 						if(config.save()) {
@@ -120,9 +111,9 @@ public class Building extends ProPlugin {
 						return true;
 					} else if(action.equalsIgnoreCase("setFlag")) {
 						ConfigurationUtil config = getConfig(player, "flag");
-						config.getConfig().set(team + ".x", x + ".5");
+						config.getConfig().set(team + ".x", x + .5);
 						config.getConfig().set(team + ".y", y);
-						config.getConfig().set(team + ".z", z + ".5");
+						config.getConfig().set(team + ".z", z + .5);
 						if(config.save()) {
 							MessageHandler.sendMessage(player, "Set the " + team + " team flag");
 						} else {
@@ -133,9 +124,9 @@ public class Building extends ProPlugin {
 						try {
 							int index = Integer.valueOf(team);
 							ConfigurationUtil config = getConfig(player, "command_posts");
-							config.getConfig().set(team + ".x", x + ".5");
+							config.getConfig().set(team + ".x", x + .5);
 							config.getConfig().set(team + ".y", y);
-							config.getConfig().set(team + ".z", z + ".5");
+							config.getConfig().set(team + ".z", z + .5);
 							if(config.save()) {
 								MessageHandler.sendMessage(player, "Set command post #" + index);
 							} else {
@@ -192,14 +183,7 @@ public class Building extends ProPlugin {
 		new CommandBase("test", -1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				if(arguments.length == 1) {
-					Player player = (Player) sender;
-					if(arguments[0].equalsIgnoreCase("shop")) {
-						new Shop(player.getLocation());
-					} else if(arguments[0].equalsIgnoreCase("armory")) {
-						new Armory(player.getLocation());
-					}
-				} else if(arguments.length == 2) {
+				if(arguments.length == 2) {
 					String ign = arguments[0];
 					String url = "";
 					switch(Integer.valueOf(arguments[1])) {

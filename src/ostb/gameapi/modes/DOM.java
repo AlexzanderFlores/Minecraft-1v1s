@@ -151,8 +151,10 @@ public class DOM {
 		this.scoreLimit = scoreLimit;
 		redTeam = OSTB.getMiniGame().getTeamHandler().addTeam("red");
 		redTeam.setPrefix(ChatColor.RED + "[Red]");
+		redTeam.setAllowFriendlyFire(false);
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
 		blueTeam.setPrefix(ChatColor.AQUA + "[Blue]");
+		blueTeam.setAllowFriendlyFire(false);
 	}
 	
 	public Team getWinning() {

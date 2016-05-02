@@ -27,30 +27,27 @@ public class Armory implements Listener {
 	private String name = null;
 	private Map<Material, Integer> armorCosts = null;
 	
-	public Armory(World world) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/armory.yml");
-		double x = config.getConfig().getDouble("red.location.x");
-		double y = config.getConfig().getDouble("red.location.y");
-		double z = config.getConfig().getDouble("red.location.z");
-		float yaw = (float) config.getConfig().getDouble("red.location.yaw");
-		float pitch = (float) config.getConfig().getDouble("red.location.pitch");
-		new Armory(new Location(world, x, y, z, yaw, pitch));
-		x = config.getConfig().getDouble("blue.location.x");
-		y = config.getConfig().getDouble("blue.location.y");
-		z = config.getConfig().getDouble("blue.location.z");
-		yaw = (float) config.getConfig().getDouble("blue.location.yaw");
-		pitch = (float) config.getConfig().getDouble("blue.location.pitch");
-		new Armory(new Location(world, x, y, z, yaw, pitch));
+	public Armory(World world, Location redSpawn, Location blueSpawn) {
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/armory.yml");
+		double x = config.getConfig().getDouble("red.x");
+		double y = config.getConfig().getDouble("red.y");
+		double z = config.getConfig().getDouble("red.z");
+		new Armory(new Location(world, x, y, z), redSpawn, blueSpawn);
+		x = config.getConfig().getDouble("blue.x");
+		y = config.getConfig().getDouble("blue.y");
+		z = config.getConfig().getDouble("blue.z");
+		new Armory(new Location(world, x, y, z), redSpawn, blueSpawn);
 	}
 	
-	public Armory(Location location) {
+	public Armory(Location location, Location redSpawn, Location blueSpawn) {
 		name = "Armory";
 		armorCosts = new HashMap<Material, Integer>();
 		armorCosts.put(Material.LEATHER_CHESTPLATE, 1);
 		armorCosts.put(Material.GOLD_CHESTPLATE, 2);
 		armorCosts.put(Material.CHAINMAIL_CHESTPLATE, 3);
 		armorCosts.put(Material.IRON_CHESTPLATE, 4);
-		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location) {
+		Location target = location.distance(redSpawn) < location.distance(blueSpawn) ? redSpawn : blueSpawn;
+		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
 				int repairCost = getRepairCost(player);
@@ -87,7 +84,7 @@ public class Armory implements Listener {
 				}
 				player.openInventory(inventory);
 			}
-		};	
+		};
 		if(!registered) {
 			registered = true;
 			EventUtil.register(this);

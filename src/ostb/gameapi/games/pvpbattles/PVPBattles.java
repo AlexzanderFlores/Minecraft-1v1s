@@ -8,6 +8,7 @@ import ostb.server.DB;
 public class PVPBattles extends MiniGame {
 	public PVPBattles(String name) {
 		super(name);
+		setStartingCounter(20);
 		setRequiredPlayers(8);
 		setFlintAndSteelUses(4);
 		getTeamHandler().toggleTeamItem();

@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
@@ -59,11 +60,13 @@ public class CTF {
 		this.captureLimit = captureLimit;
 		redTeam = OSTB.getMiniGame().getTeamHandler().addTeam("red");
 		redTeam.setPrefix(ChatColor.RED + "[Red]");
+		redTeam.setAllowFriendlyFire(false);
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
 		blueTeam.setPrefix(ChatColor.AQUA + "[Blue]");
+		blueTeam.setAllowFriendlyFire(false);
+		blueTeam.setNameTagVisibility(NameTagVisibility.NEVER);
 		redFlagLocationRemoved = new ArrayList<BlockState>();
 		blueFlagLocationRemoved = new ArrayList<BlockState>();
-		compass = new ItemCreator(Material.COMPASS).setName("").getItemStack();
 	}
 
 	public Team getWinning() {

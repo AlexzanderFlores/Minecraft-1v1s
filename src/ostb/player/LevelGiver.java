@@ -13,9 +13,15 @@ import ostb.server.util.EventUtil;
 
 public class LevelGiver implements Listener {
 	private final Player player;
+	private boolean demo = false;
 	
 	public LevelGiver(Player player) {
+		this(player, true);
+	}
+	
+	public LevelGiver(Player player, boolean demo) {
 		this.player = player;
+		this.demo = demo;
 		EventUtil.register(this);
 	}
 	
@@ -26,6 +32,11 @@ public class LevelGiver implements Listener {
 			if(player.isOnline() && !SpectatorHandler.contains(player)) {
 				player.setExp(player.getExp() + 0.025f);
 				if(player.getExp() > 1.0f) {
+					if(demo) {
+						player.setExp(0.0f);
+						HandlerList.unregisterAll(this);
+						return;
+					}
 					player.setExp(0.0f);
 					player.setLevel(player.getLevel() + 1);
 					EffectUtil.playSound(player, Sound.LEVEL_UP);
