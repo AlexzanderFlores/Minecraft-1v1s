@@ -6,25 +6,29 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.ProPlugin;
+import ostb.customevents.game.GameKillEvent;
+import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
-import ostb.player.account.AccountHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
+@SuppressWarnings("deprecation")
 public class CoinsHandler implements Listener {
 	private static Map<Plugins, CoinsHandler> handlers = new HashMap<Plugins, CoinsHandler>();
+	private static int killCoins = 0;
+	private static int winCoins = 0;
 	private DB table = null;
 	//private Plugins plugin = null;
 	private Map<String, Integer> coins = null;
@@ -73,6 +77,22 @@ public class CoinsHandler implements Listener {
 		return handlers.get(plugin);
 	}
 	
+	public static int getWinCoins() {
+		return winCoins;
+	}
+	
+	public static void setWinCoins(int winCoins) {
+		CoinsHandler.winCoins = winCoins;
+	}
+	
+	public static int getKillCoins() {
+		return killCoins;
+	}
+	
+	public static void setKillCoins(int killCoins) {
+		CoinsHandler.killCoins = killCoins;
+	}
+	
 	public int getCoins(Player player) {
 		if(!coins.containsKey(player.getName())) {
 			coins.put(player.getName(), table.getInt("uuid", player.getUniqueId().toString(), "coins"));
@@ -81,25 +101,11 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
-		addCoins(player, amount, true);
-	}
-	
-	public void addCoins(Player player, int amount, boolean multiply) {
-		if(amount <= 0) {
-			multiply = false;
+		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins");
+		if(coins.containsKey(player.getName())) {
+			amount += coins.get(player.getName());
 		}
-		String multiplier = multiply ? Ranks.PLAYER.getColor() + "(x1 Multiplier)" : "";
-		if(multiply) {
-			if(Ranks.PREMIUM_PLUS.hasRank(player)) {
-				amount *= 3;
-				multiplier = AccountHandler.getRank(player).getColor() + "(x3 Multiplier)";
-			} else if(Ranks.PREMIUM.hasRank(player)) {
-				amount *= 2;
-				multiplier = Ranks.PREMIUM.getColor() + "(x2 Multiplier)";
-			}
-		}
-		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins " + multiplier);
-		coins.put(player.getName(), amount + coins.get(player.getName()));
+		coins.put(player.getName(), amount);
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
 	}
 	
@@ -123,6 +129,29 @@ public class CoinsHandler implements Listener {
 			});
 		}
 	}*/
+	
+	@EventHandler
+	public void onGameKill(GameKillEvent event) {
+		if(killCoins > 0) {
+			addCoins(event.getPlayer(), killCoins);
+		}
+	}
+	
+	@EventHandler
+	public void onGameWin(GameWinEvent event) {
+		if(winCoins > 0) {
+			if(event.getTeam() == null) {
+				addCoins(event.getPlayer(), winCoins);
+			} else {
+				for(OfflinePlayer offlinePlayer : event.getTeam().getPlayers()) {
+					if(offlinePlayer.isOnline()) {
+						Player player = (Player) offlinePlayer;
+						addCoins(player, winCoins);
+					}
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {

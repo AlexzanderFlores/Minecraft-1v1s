@@ -36,6 +36,8 @@ public abstract class MiniGame extends ProPlugin {
 	private int votingCounter = 60;
 	private int startingCounter = 30;
 	private int endingCounter = 5;
+	private int killCoins = 0;
+	private int winCoins = 0;
 	private boolean autoJoin = true;
 	private boolean canJoinWhileStarting = true;
 	private boolean useSpectatorChatChannel = true;
@@ -204,6 +206,22 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public void setRequiredPlayers(int requiredPlayers) {
 		this.requiredPlayers = requiredPlayers;
+	}
+	
+	public int getKillCoins() {
+		return this.killCoins;
+	}
+	
+	public void setKillCoins(int killCoins) {
+		this.killCoins = killCoins;
+	}
+	
+	public int getWinCoins() {
+		return this.winCoins;
+	}
+	
+	public void setWinCoins(int winCoins) {
+		this.winCoins = winCoins;
 	}
 	
 	public boolean getAutoJoin() {

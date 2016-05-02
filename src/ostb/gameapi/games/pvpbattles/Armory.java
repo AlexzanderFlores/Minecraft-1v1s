@@ -50,7 +50,7 @@ public class Armory implements Listener {
 		armorCosts.put(Material.GOLD_CHESTPLATE, 2);
 		armorCosts.put(Material.CHAINMAIL_CHESTPLATE, 3);
 		armorCosts.put(Material.IRON_CHESTPLATE, 4);
-		new NPCEntity(EntityType.SKELETON, "&e&n" + name, location) {
+		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location) {
 			@Override
 			public void onInteract(Player player) {
 				int repairCost = getRepairCost(player);
@@ -87,7 +87,7 @@ public class Armory implements Listener {
 				}
 				player.openInventory(inventory);
 			}
-		};
+		};	
 		if(!registered) {
 			registered = true;
 			EventUtil.register(this);

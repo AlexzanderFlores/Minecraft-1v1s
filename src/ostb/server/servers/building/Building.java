@@ -1,22 +1,31 @@
 package ostb.server.servers.building;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.games.pvpbattles.Armory;
+import ostb.gameapi.games.pvpbattles.Shop;
+import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
+import ostb.server.DB;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
 
@@ -28,6 +37,10 @@ public class Building extends ProPlugin {
 		removeFlags();
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
+		new ostb.gameapi.games.pvpbattles.Events();
+		new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES);
+		CoinsHandler.setKillCoins(5);
+		CoinsHandler.setWinCoins(20);
 		new ArmorStandHelper();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
@@ -52,12 +65,48 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", 0, 2, true) {
+		new CommandBase("viewArmorStands", 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				if(arguments.length == 0) {
+				Player player = (Player) sender;
+				double radius = 0;
+				try {
+					radius = Double.valueOf(arguments[0]);
+				} catch(NumberFormatException e) {
+					return false;
+				}
+				final List<ArmorStand> nearStands = new ArrayList<ArmorStand>();
+				for(Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+					if(entity instanceof ArmorStand) {
+						ArmorStand armorStand = (ArmorStand) entity;
+						if(!armorStand.isVisible()) {
+							armorStand.setVisible(true);
+							nearStands.add(armorStand);
+						}
+					}
+				}
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						for(ArmorStand armorStand : nearStands) {
+							armorStand.setVisible(false);
+						}
+						nearStands.clear();
+					}
+				}, 20 * 3);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("test", -1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				if(arguments.length == 1) {
 					Player player = (Player) sender;
-					new Armory(player.getLocation());
+					if(arguments[0].equalsIgnoreCase("shop")) {
+						new Shop(player.getLocation());
+					} else if(arguments[0].equalsIgnoreCase("armory")) {
+						new Armory(player.getLocation());
+					}
 				} else if(arguments.length == 2) {
 					String ign = arguments[0];
 					String url = "";
