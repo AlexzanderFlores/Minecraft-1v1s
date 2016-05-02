@@ -45,7 +45,7 @@ public enum DB {
 	// Coins
 	PLAYERS_COINS_PVP_BATTLES("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
 	PLAYERS_COINS_SKY_WARS("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
-	PLAYERS_COINS_HE("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
+	PLAYERS_COINS_SPEED_UHC("uuid VARCHAR(40), coins INT, PRIMARY KEY(uuid)"),
 	// Keys
 	PLAYERS_KEY_FRAGMENTS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Speed UHC

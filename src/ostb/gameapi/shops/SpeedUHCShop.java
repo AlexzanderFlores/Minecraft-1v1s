@@ -32,7 +32,7 @@ public class SpeedUHCShop extends ShopBase {
 	private static SpeedUHCShop instance = null;
 	
 	public SpeedUHCShop() {
-		super("Shop - Speed UHC", "kit.speed_uhc.", DB.PLAYERS_COINS_HE, Plugins.SPEED_UHC_KITS, 1);
+		super("Shop - Speed UHC", "kit.speed_uhc.", DB.PLAYERS_COINS_SPEED_UHC, Plugins.SPEED_UHC_KITS, 1);
 		instance = this;
 		if(OSTB.getPlugin() == Plugins.HUB) {
 			new SpeedUHCCrate();
