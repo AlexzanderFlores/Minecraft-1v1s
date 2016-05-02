@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,20 +12,21 @@ import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
-public class Lumberjack extends KitBase {
-	public Lumberjack() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.STONE_AXE).setName("Lumberjack").setLores(new String [] {
+public class Enchanter extends KitBase {
+	public Enchanter() {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Axe",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a3 Sugar Cane",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a1 Leather",
 			"",
 			"&7Unlocked in &bHardcore Elimination Crate",
 			"&7Rarity: " + getRarity().getName()
-		}).getItemStack(), getRarity(), -1);
+		}).getItemStack(), getRarity(), -1, 29);
 	}
 	
 	public static Rarity getRarity() {
-		return Rarity.COMMON;
+		return Rarity.UNCOMMON;
 	}
 
 	@Override
@@ -36,7 +37,8 @@ public class Lumberjack extends KitBase {
 	@Override
 	public void execute() {
 		for(Player player : getPlayers()) {
-			player.getInventory().setHelmet(new ItemStack(Material.STONE_AXE));
+			player.getInventory().setHelmet(new ItemStack(Material.SUGAR_CANE, 3));
+			player.getInventory().setHelmet(new ItemStack(Material.LEATHER));
 		}
 	}
 	

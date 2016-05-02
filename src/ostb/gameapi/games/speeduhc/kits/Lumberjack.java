@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,12 +12,12 @@ import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
-public class Miner extends KitBase {
-	public Miner() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.STONE_PICKAXE).setName("Miner").setLores(new String [] {
+public class Lumberjack extends KitBase {
+	public Lumberjack() {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.STONE_AXE).setName("Lumberjack").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Pickaxe",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Axe",
 			"",
 			"&7Unlocked in &bHardcore Elimination Crate",
 			"&7Rarity: " + getRarity().getName()
@@ -36,7 +36,7 @@ public class Miner extends KitBase {
 	@Override
 	public void execute() {
 		for(Player player : getPlayers()) {
-			player.getInventory().setHelmet(new ItemStack(Material.STONE_PICKAXE));
+			player.getInventory().setHelmet(new ItemStack(Material.STONE_AXE));
 		}
 	}
 	

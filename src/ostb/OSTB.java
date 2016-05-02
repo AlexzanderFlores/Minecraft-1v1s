@@ -20,10 +20,10 @@ import ostb.customevents.player.PlayerAFKEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.games.hardcoreelimination.HardcoreElimination;
 import ostb.gameapi.games.pvpbattles.ctf.CTF;
 import ostb.gameapi.games.pvpbattles.dom.DOM;
 import ostb.gameapi.games.skywars.SkyWars;
+import ostb.gameapi.games.speeduhc.SpeedUHC;
 import ostb.gameapi.kit.DefaultKit;
 import ostb.player.ChatLogger;
 import ostb.player.DefaultChatColor;
@@ -65,8 +65,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		DOM("DOM", "pvp_battles", "Domination"),
 		SKY_WARS_SOLO("SW", "sky_wars", "Solo Sky Wars"),
 		SKY_WARS_TEAMS("SWT", "sky_wars", "Team Sky Wars"),
-		HE_NO_KITS("HENK", "hardcore_elimination", "Hardcore Elimination No Kits"),
-		HE_KITS("HEK", "hardcore_elimination", "Hardcore Elimination Kits"),
+		SPEED_UHC_NO_KITS("SUHCNK", "speed_uhc", "Speed UHC No Kits"),
+		SPEED_UHC_KITS("SUHCK", "speed_uhc", "Speed UHC Kits"),
 		PREGENERATOR("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
 		WORKER("Worker", "worker"),
@@ -147,8 +147,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 			proPlugin = new DOM();
 		} else if(plugin == Plugins.SKY_WARS_SOLO || plugin == Plugins.SKY_WARS_TEAMS) {
 			proPlugin = new SkyWars();
-		} else if(plugin == Plugins.HE_NO_KITS || plugin == Plugins.HE_KITS) {
-			proPlugin = new HardcoreElimination();
+		} else if(plugin == Plugins.SPEED_UHC_KITS || plugin == Plugins.SPEED_UHC_NO_KITS) {
+			proPlugin = new SpeedUHC();
 		} else if(plugin == Plugins.PREGENERATOR) {
 			proPlugin = new Pregenerator();
 		} else if(plugin == Plugins.BUILDING) {

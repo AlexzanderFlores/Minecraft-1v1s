@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.gameapi.crates.HardcoreEliminationCrate;
+import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.KeyFragments;
@@ -92,7 +92,7 @@ public class FeatureItem {
 			return;
 		}
 		if(getName().equals(Beacon.getHardcoreEliminationCrateKey())) {
-			HardcoreEliminationCrate.giveKey(player.getUniqueId(), 1);
+			SpeedUHCCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {

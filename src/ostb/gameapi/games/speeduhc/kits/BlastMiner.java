@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.kit.KitBase;
-import ostb.gameapi.shops.HardcoreEliminationShop;
+import ostb.gameapi.shops.SpeedUHCShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -21,7 +21,7 @@ public class BlastMiner extends KitBase {
 	private static final int amount = 3;
 	
 	public BlastMiner() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.TNT).setName("Blast Miner").setLores(new String [] {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.TNT).setName("Blast Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " TNT",
@@ -41,7 +41,7 @@ public class BlastMiner extends KitBase {
 
 	@Override
 	public String getPermission() {
-		return ChatColor.stripColor(HardcoreEliminationShop.getInstance().getPermission() + getName().toLowerCase());
+		return ChatColor.stripColor(SpeedUHCShop.getInstance().getPermission() + getName().toLowerCase());
 	}
 
 	@Override

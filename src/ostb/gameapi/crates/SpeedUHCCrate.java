@@ -20,7 +20,7 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.kit.KitBase;
-import ostb.gameapi.shops.HardcoreEliminationShop;
+import ostb.gameapi.shops.SpeedUHCShop;
 import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
@@ -33,12 +33,12 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.StringUtil;
 
-public class HardcoreEliminationCrate implements Listener {
+public class SpeedUHCCrate implements Listener {
 	private static List<String> delayed = null;
 	private static List<FeatureItem> features = null;
 	private static final int cost = 50;
 	
-	public HardcoreEliminationCrate() {
+	public SpeedUHCCrate() {
 		delayed = new ArrayList<String>();
 		features = new ArrayList<FeatureItem>();
 		EventUtil.register(this);
@@ -91,7 +91,7 @@ public class HardcoreEliminationCrate implements Listener {
 	
 	private static void updateItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
-		if(title != null && title.equals(HardcoreEliminationShop.getInstance().getName())) {
+		if(title != null && title.equals(SpeedUHCShop.getInstance().getName())) {
 			ItemCreator itemCreator = new ItemCreator(player.getOpenInventory().getItem(4));
 			int index = -1;
 			for(String lore : itemCreator.getLores()) {
@@ -134,7 +134,7 @@ public class HardcoreEliminationCrate implements Listener {
 	private void populateFeatures() {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.HE_KITS) {
+				if(kit.getPlugin() == Plugins.SPEED_UHC_KITS) {
 					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.HARDCORE_ELIMINATION));
 				}
 			}
@@ -167,7 +167,7 @@ public class HardcoreEliminationCrate implements Listener {
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							populateFeatures();
-							new CrateBase(player, Plugins.HE_KITS, HardcoreEliminationCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_HE_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_HE_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_HE_CRATES_OPENED);
+							new CrateBase(player, Plugins.SPEED_UHC_KITS, SpeedUHCCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_HE_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_HE_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_HE_CRATES_OPENED);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
@@ -177,7 +177,7 @@ public class HardcoreEliminationCrate implements Listener {
 					populateFeatures();
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.HE_KITS);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SPEED_UHC_KITS);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
@@ -194,7 +194,7 @@ public class HardcoreEliminationCrate implements Listener {
 	
 	@EventHandler
 	public void onCrateFinished(CrateFinishedEvent event) {
-		if(event.getPlugin() == Plugins.HE_KITS) {
+		if(event.getPlugin() == Plugins.SPEED_UHC_KITS) {
 			Player player = event.getPlayer();
 			giveKey(player.getUniqueId(), -1);
 			FeatureItem won = event.getItemWon();

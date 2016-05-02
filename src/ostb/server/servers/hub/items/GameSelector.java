@@ -280,29 +280,29 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.SKY_WARS_TEAMS);
 		inventory.setItem(16, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_KITS.getDisplay()).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_KITS.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Speed UHC",
 			"",
 			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.HE_KITS),
+			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_KITS),
 			"&7Kits: &aEnabled",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.HE_KITS);
+		items.put(item, Plugins.SPEED_UHC_KITS);
 		inventory.setItem(30, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.HE_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Unique spin-off of Speed UHC",
 			"",
 			"&eGather resources before 1v1 PVP",
 			"&eNatural regeneration is &cOFF",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.HE_KITS),
+			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_NO_KITS),
 			"&7Kits: &cDisabled",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.HE_NO_KITS);
+		items.put(item, Plugins.SPEED_UHC_NO_KITS);
 		inventory.setItem(32, item);
 		player.openInventory(inventory);
 	}

@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,12 +12,13 @@ import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
 
-public class CowSlayer extends KitBase {
-	public CowSlayer() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.LEATHER).setName("Cow Slayer").setLores(new String [] {
+public class Swordsman extends KitBase {
+	
+	public Swordsman() {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.STONE_SWORD).setName("Swordsman").setLores(new String [] {
 			"",
 			"&7Start with:",
-			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aFull Leather Armor",
+			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Sword",
 			"",
 			"&7Unlocked in &bHardcore Elimination Crate",
 			"&7Rarity: " + getRarity().getName()
@@ -36,10 +37,7 @@ public class CowSlayer extends KitBase {
 	@Override
 	public void execute() {
 		for(Player player : getPlayers()) {
-			player.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET));
-			player.getInventory().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
-			player.getInventory().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-			player.getInventory().setBoots(new ItemStack(Material.LEATHER_BOOTS));
+			player.getInventory().setHelmet(new ItemStack(Material.STONE_SWORD));
 		}
 	}
 	

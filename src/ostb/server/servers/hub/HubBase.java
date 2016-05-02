@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.crates.HardcoreEliminationCrate;
+import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.player.LevelHandler;
 import ostb.player.MessageHandler;
@@ -81,7 +81,7 @@ public class HubBase extends ProPlugin {
 				} else if(type.equalsIgnoreCase("sky_wars")) {
 					SkyWarsCrate.giveKey(uuid, amount);
 				} else if(type.equalsIgnoreCase("hardcore_elimination")) {
-					HardcoreEliminationCrate.giveKey(uuid, amount);
+					SpeedUHCCrate.giveKey(uuid, amount);
 				} else {
 					MessageHandler.sendMessage(sender, "Unknown key type, use:");
 					MessageHandler.sendMessage(sender, "voting");

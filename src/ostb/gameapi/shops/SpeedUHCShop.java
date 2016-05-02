@@ -13,29 +13,29 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.gameapi.crates.HardcoreEliminationCrate;
-import ostb.gameapi.games.hardcoreelimination.kits.BlastMiner;
-import ostb.gameapi.games.hardcoreelimination.kits.Butcher;
-import ostb.gameapi.games.hardcoreelimination.kits.CowSlayer;
-import ostb.gameapi.games.hardcoreelimination.kits.Enchanter;
-import ostb.gameapi.games.hardcoreelimination.kits.FeatherFalling;
-import ostb.gameapi.games.hardcoreelimination.kits.Haste;
-import ostb.gameapi.games.hardcoreelimination.kits.Lumberjack;
-import ostb.gameapi.games.hardcoreelimination.kits.Miner;
-import ostb.gameapi.games.hardcoreelimination.kits.Swordsman;
-import ostb.gameapi.games.hardcoreelimination.kits.WallBreather;
+import ostb.gameapi.crates.SpeedUHCCrate;
+import ostb.gameapi.games.speeduhc.kits.BlastMiner;
+import ostb.gameapi.games.speeduhc.kits.Butcher;
+import ostb.gameapi.games.speeduhc.kits.CowSlayer;
+import ostb.gameapi.games.speeduhc.kits.Enchanter;
+import ostb.gameapi.games.speeduhc.kits.FeatherFalling;
+import ostb.gameapi.games.speeduhc.kits.Haste;
+import ostb.gameapi.games.speeduhc.kits.Lumberjack;
+import ostb.gameapi.games.speeduhc.kits.Miner;
+import ostb.gameapi.games.speeduhc.kits.Swordsman;
+import ostb.gameapi.games.speeduhc.kits.WallBreather;
 import ostb.gameapi.kit.KitBase;
 import ostb.server.DB;
 import ostb.server.util.EffectUtil;
 
-public class HardcoreEliminationShop extends ShopBase {
-	private static HardcoreEliminationShop instance = null;
+public class SpeedUHCShop extends ShopBase {
+	private static SpeedUHCShop instance = null;
 	
-	public HardcoreEliminationShop() {
-		super("Shop - Hardcore Elimination", "kit.hardcore_elimination.", DB.PLAYERS_COINS_HE, Plugins.HE_KITS, 1);
+	public SpeedUHCShop() {
+		super("Shop - Speed UHC", "kit.speed_uhc.", DB.PLAYERS_COINS_HE, Plugins.SPEED_UHC_KITS, 1);
 		instance = this;
 		if(OSTB.getPlugin() == Plugins.HUB) {
-			new HardcoreEliminationCrate();
+			new SpeedUHCCrate();
 		}
 		new Butcher();
 		new CowSlayer();
@@ -49,9 +49,9 @@ public class HardcoreEliminationShop extends ShopBase {
 		new BlastMiner();
 	}
 	
-	public static HardcoreEliminationShop getInstance() {
+	public static SpeedUHCShop getInstance() {
 		if(instance == null) {
-			new HardcoreEliminationShop();
+			new SpeedUHCShop();
 		}
 		return instance;
 	}
@@ -64,7 +64,7 @@ public class HardcoreEliminationShop extends ShopBase {
 		if(hasCrate(player, view)) {
 			inventory.setItem(4, view.getItem(4));
 		} else {
-			HardcoreEliminationCrate.addItem(player, inventory);
+			SpeedUHCCrate.addItem(player, inventory);
 		}
 		if(OSTB.getPlugin() == Plugins.HUB) {
 			updateItems(player, inventory);
@@ -79,7 +79,7 @@ public class HardcoreEliminationShop extends ShopBase {
 			type = "none";
 		}
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.HE_KITS && kit.getKitType().equals(type)) {
+			if(kit.getPlugin() == Plugins.SPEED_UHC_KITS && kit.getKitType().equals(type)) {
 				inventory.setItem(kit.getSlot(), kit.getIcon(player));
 			}
 		}
@@ -123,7 +123,7 @@ public class HardcoreEliminationShop extends ShopBase {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(kit.getPlugin() == Plugins.HE_KITS && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
+				if(kit.getPlugin() == Plugins.SPEED_UHC_KITS && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
 					if(kit.use(player)) {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else {

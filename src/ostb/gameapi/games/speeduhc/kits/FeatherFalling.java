@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ public class FeatherFalling extends KitBase {
 	private static boolean enabled = false;
 	
 	public FeatherFalling() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.DIAMOND_BOOTS).setName("Feather Falling").setLores(new String [] {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.DIAMOND_BOOTS).setName("Feather Falling").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTake .5 less fall damage",

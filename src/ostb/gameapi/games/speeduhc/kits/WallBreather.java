@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ public class WallBreather extends KitBase {
 	private static boolean enabled = false;
 	
 	public WallBreather() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.GRAVEL).setName("Wall Breather").setLores(new String [] {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.GRAVEL).setName("Wall Breather").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aCannot take suffocation damage",

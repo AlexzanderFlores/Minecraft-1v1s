@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination;
+package ostb.gameapi.games.speeduhc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,8 +58,8 @@ public class Events implements Listener {
 			if(game.getGameState() == GameStates.STARTED) {
 				int counter = game.getCounter() + 1;
 				if(counter <= 0) {
+					WorldHandler.register();
 					HandlerList.unregisterAll(this);
-					new Battles();
 				} else {
 					if(game.canDisplay()) {
 						String time = CountDownUtil.getCounterAsString(counter);

@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.shops.HardcoreEliminationShop;
+import ostb.gameapi.shops.SpeedUHCShop;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.util.EffectUtil;
@@ -25,7 +25,7 @@ public class Shop extends HubItemBase {
 		super(new ItemCreator(Material.CHEST).setName("&eShop"), 2);
 		name = ChatColor.stripColor(getName());
 		new SkyWarsShop();
-		new HardcoreEliminationShop();
+		new SpeedUHCShop();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class Shop extends HubItemBase {
 			if(name.equals("Sky Wars")) {
 				SkyWarsShop.getInstance().openShop(player);
 			} else if(name.equals("Hardcore Elimination")) {
-				HardcoreEliminationShop.getInstance().openShop(player);
+				SpeedUHCShop.getInstance().openShop(player);
 			}
 			event.setCancelled(true);
 		} else if(title.startsWith("Shop - ")) {

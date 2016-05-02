@@ -1,4 +1,4 @@
-package ostb.gameapi.games.hardcoreelimination.kits;
+package ostb.gameapi.games.speeduhc.kits;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Butcher extends KitBase {
 	private List<Pig> pigs = null;
 	
 	public Butcher() {
-		super(Plugins.HE_KITS, new ItemCreator(Material.GRILLED_PORK).setName("Butcher").setLores(new String [] {
+		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.GRILLED_PORK).setName("Butcher").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Pigs spawn near you",
