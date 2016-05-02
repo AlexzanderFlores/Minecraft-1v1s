@@ -73,8 +73,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		SLAVE("Slave", "slave");
 		
 		private String server = null;
-		private String display = null;
 		private String data = null;
+		private String display = null;
 		
 		private Plugins(String server, String data) {
 			this.server = server;

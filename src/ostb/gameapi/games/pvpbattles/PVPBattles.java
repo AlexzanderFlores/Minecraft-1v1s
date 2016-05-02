@@ -9,10 +9,11 @@ public class PVPBattles extends MiniGame {
 	public PVPBattles(String name) {
 		super(name);
 		setRequiredPlayers(8);
+		setFlintAndSteelUses(4);
+		getTeamHandler().toggleTeamItem();
 		new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES);
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(20);
-		setFlintAndSteelUses(4);
 		new Events();
 	}
 }

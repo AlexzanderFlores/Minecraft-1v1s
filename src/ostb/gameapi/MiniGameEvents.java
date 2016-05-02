@@ -101,7 +101,9 @@ public class MiniGameEvents implements Listener {
 				}
 			}
 			OSTB.getSidebar().update();
-			getMiniGame().decrementCounter();
+			if(getMiniGame().getCounter() > 0) {
+				getMiniGame().decrementCounter();
+			}
 		}
 	}
 	

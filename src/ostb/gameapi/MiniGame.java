@@ -77,6 +77,7 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	private GameStates gameState = GameStates.WAITING;
 	private GameStates oldState = gameState;
+	private TeamHandler teamHandler = null;
 	
 	public MiniGame(String name) {
 		super(name);
@@ -103,6 +104,7 @@ public abstract class MiniGame extends ProPlugin {
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
+		teamHandler = new TeamHandler();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
 			@Override
@@ -306,6 +308,10 @@ public abstract class MiniGame extends ProPlugin {
 	public void setGameState(GameStates gameState) {
 		this.gameState = gameState;
 		getGameState().enable();
+	}
+	
+	public TeamHandler getTeamHandler() {
+		return teamHandler;
 	}
 	
 	public void setToDefaultSidebar() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -24,7 +26,7 @@ import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 
 @SuppressWarnings("deprecation")
-public class DOM extends ModeBase {
+public class DOM {
 	public class CommandPost {
 		private int x = 0;
 		private int y = 0;
@@ -57,16 +59,17 @@ public class DOM extends ModeBase {
 			List<Player> players = new ArrayList<Player>();
 			boolean containsRed = false;
 			boolean containsBlue = false;
+			MiniGame miniGame = OSTB.getMiniGame();
 			for(Player player : ProPlugin.getPlayers()) {
 				if(SpectatorHandler.isEnabled() && !SpectatorHandler.contains(player)) {
 					double x = player.getLocation().getX();
 					double z = player.getLocation().getZ();
 					if(Math.sqrt((x - this.x) * (x - this.x) + (z - this.z) * (z - this.z)) <= 10) {
 						players.add(player);
-						Teams team = getTeam(player);
-						if(team == Teams.RED) {
+						Team team = miniGame.getTeamHandler().getTeam(player);
+						if(team == redTeam) {
 							containsRed = true;
-						} else if(team == Teams.BLUE) {
+						} else if(team == blueTeam) {
 							containsBlue = true;
 						}
 					}
@@ -120,9 +123,9 @@ public class DOM extends ModeBase {
 				players = null;
 			}
 			if(progress == 5) {
-				addScore(Teams.RED);
+				addScore(redTeam);
 			} else if(progress == -5) {
-				addScore(Teams.BLUE);
+				addScore(blueTeam);
 			}
 			String particle = "";
 			if(wool.getData() == DyeColor.WHITE.getData()) {
@@ -138,31 +141,35 @@ public class DOM extends ModeBase {
 	
 	private List<CommandPost> commandPosts = null;
 	private int scoreLimit = 100;
+	private Team redTeam = null;
+	private Team blueTeam = null;
 	private int redScore = 0;
 	private int blueScore = 0;
 	
 	public DOM(int scoreLimit) {
-		super("Domination", "DOM");
 		commandPosts = new ArrayList<CommandPost>();
 		this.scoreLimit = scoreLimit;
+		redTeam = OSTB.getMiniGame().getTeamHandler().addTeam("red");
+		redTeam.setPrefix(ChatColor.RED + "[Red]");
+		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
+		blueTeam.setPrefix(ChatColor.AQUA + "[Blue]");
 	}
 	
-	@Override
-	public Teams getWinning() {
-		int red = getScore(Teams.RED);
-		int blue = getScore(Teams.BLUE);
-		return red > blue ? Teams.RED : blue > red ? Teams.BLUE : null;
+	public Team getWinning() {
+		int red = getScore(redTeam);
+		int blue = getScore(blueTeam);
+		return red > blue ? redTeam : blue > red ? blueTeam : null;
 	}
 	
-	public int getScore(Teams team) {
-		return team == Teams.RED ? redScore : team == Teams.BLUE ? blueScore : 0;
+	public int getScore(Team team) {
+		return team == redTeam ? redScore : team == blueTeam ? blueScore : 0;
 	}
 	
-	public void addScore(Teams team) {
+	public void addScore(Team team) {
 		if(OSTB.getMiniGame().getGameState() != GameStates.ENDING) {
-			if(team == Teams.RED && ++redScore >= scoreLimit) {
+			if(team == redTeam && ++redScore >= scoreLimit) {
 				OSTB.getMiniGame().setGameState(GameStates.ENDING);
-			} else if(team == Teams.BLUE && ++blueScore >= scoreLimit) {
+			} else if(team == blueTeam && ++blueScore >= scoreLimit) {
 				OSTB.getMiniGame().setGameState(GameStates.ENDING);
 			}
 		}

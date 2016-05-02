@@ -3,9 +3,12 @@ package ostb.gameapi.games.pvpbattles;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,19 +21,75 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Team;
 
+import ostb.OSTB;
+import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
+import ostb.customevents.game.GameStartingEvent;
+import ostb.gameapi.SpawnPointHandler;
+import ostb.gameapi.TeamHandler;
 import ostb.player.LevelGiver;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 
+@SuppressWarnings("deprecation")
 public class Events implements Listener {
 	private Map<ArmorStand, TNTPrimed> tntCountDowns = null;
+	private Location redSpawn = null;
+	private Location blueSpawn = null;
 	
 	public Events() {
 		tntCountDowns = new HashMap<ArmorStand, TNTPrimed>();
 		EventUtil.register(this);
+	}
+	
+	@EventHandler
+	public void onGameStarting(GameStartingEvent event) {
+		World world = OSTB.getMiniGame().getMap();
+		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/spawns").getConfig();
+		double x = config.getConfig().getDouble("red.x");
+		double y = config.getConfig().getDouble("red.y");
+		double z = config.getConfig().getDouble("red.z");
+		float yaw = (float) config.getConfig().getDouble("red.yaw");
+		float pitch = (float) config.getConfig().getDouble("red.pitch");
+		redSpawn = new Location(world, x, y, z, yaw, pitch);
+		x = config.getConfig().getDouble("blue.x");
+		y = config.getConfig().getDouble("blue.y");
+		z = config.getConfig().getDouble("blue.z");
+		yaw = (float) config.getConfig().getDouble("blue.yaw");
+		pitch = (float) config.getConfig().getDouble("blue.pitch");
+		blueSpawn = new Location(world, x, y, z, yaw, pitch);
+		TeamHandler teamHandler = OSTB.getMiniGame().getTeamHandler();
+		Team redTeam = teamHandler.getTeam("red");
+		Team blueTeam = teamHandler.getTeam("blue");
+		Random random = new Random();
+		for(Player player : ProPlugin.getPlayers()) {
+			Team team = teamHandler.getTeam(player);
+			if(team == null) {
+				if(redTeam.getSize() < blueTeam.getSize()) {
+					redTeam.addPlayer(player);
+				} else if(blueTeam.getSize() < redTeam.getSize()) {
+					blueTeam.addPlayer(player);
+				} else if(random.nextBoolean()) {
+					redTeam.addPlayer(player);
+				} else {
+					blueTeam.addPlayer(player);
+				}
+			}
+			Location spawn = null;
+			if(team.getName().equals("red")) {
+				spawn = redSpawn.clone();
+			} else if(team.getName().equals("blue")) {
+				spawn = blueSpawn.clone();
+			}
+			int radius = 4;
+			x = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
+			z = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
+			player.teleport(spawn.add(x, 0, z));
+		}
 	}
 	
 	@EventHandler
