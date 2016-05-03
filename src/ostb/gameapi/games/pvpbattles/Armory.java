@@ -18,6 +18,7 @@ import npc.NPCEntity;
 import ostb.OSTB;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.SpectatorHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
@@ -52,7 +53,7 @@ public class Armory implements Listener {
 		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
-				if(OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+				if(SpectatorHandler.contains(player) || OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
 					return;
 				}
 				int repairCost = getRepairCost(player);

@@ -20,6 +20,7 @@ import npc.NPCEntity;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.CoinsHandler;
 import ostb.player.TitleDisplayer;
@@ -51,7 +52,7 @@ public class Shop implements Listener {
 		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
-				if(OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+				if(SpectatorHandler.contains(player) || OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
 					return;
 				}
 				Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
