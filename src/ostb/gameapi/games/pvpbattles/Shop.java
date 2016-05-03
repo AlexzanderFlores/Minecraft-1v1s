@@ -54,7 +54,7 @@ public class Shop implements Listener {
 				if(OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
 					return;
 				}
-				Inventory inventory = Bukkit.createInventory(player, 9 * 5, name);
+				Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
 				inventory.setItem(10, new ItemCreator(Material.IRON_SWORD).setName("&bIron Sword").setLores(new String [] {"", "&7Price: &a2"}).getItemStack());
 				inventory.setItem(11, new ItemCreator(Material.BOW).setName("&bBow").setLores(new String [] {"", "&7Price: &a10", ""}).getItemStack());
 				inventory.setItem(12, new ItemCreator(Material.ARROW).setAmount(16).setName("&bArrow x16").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
@@ -70,6 +70,9 @@ public class Shop implements Listener {
 				inventory.setItem(23, new ItemCreator(new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1)).setName("&bHealth Potion").setLores(new String [] {"", "&7Price: &a15", ""}).getItemStack());
 				inventory.setItem(24, new ItemCreator(new Potion(PotionType.POISON, 1, true).toItemStack(1)).setName("&bPoison Potion").setLores(new String [] {"", "&7Price: &a15", ""}).getItemStack());
 				inventory.setItem(25, new ItemCreator(new Potion(PotionType.INVISIBILITY, 1, true).toItemStack(1)).setName("&bInvis Potion").setLores(new String [] {"", "&7Price: &a15", ""}).getItemStack());
+				
+				inventory.setItem(30, new ItemCreator(Material.EXP_BOTTLE).setName("&bExp Bottle").setLores(new String [] {"", "&7Price: &a3", ""}).getItemStack());
+				inventory.setItem(32, new ItemCreator(Material.WORKBENCH).setName("&bCrafting Table").setLores(new String [] {"", "&7Price: &a10", "&7Click to open", "&7Does &cNOT &7place", ""}).getItemStack());
 				
 				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES).getItemStack(player));
 				player.openInventory(inventory);

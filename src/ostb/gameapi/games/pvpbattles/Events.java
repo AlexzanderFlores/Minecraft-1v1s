@@ -1,7 +1,9 @@
 package ostb.gameapi.games.pvpbattles;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -23,12 +25,17 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
@@ -38,16 +45,21 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
-import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpawnPointHandler;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.TeamHandler;
+import ostb.player.CoinsHandler;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
 import ostb.player.PlayerMove;
 import ostb.player.TitleDisplayer;
+import ostb.player.Vanisher;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
@@ -56,11 +68,15 @@ import ostb.server.util.EventUtil;
 @SuppressWarnings("deprecation")
 public class Events implements Listener {
 	private Map<ArmorStand, TNTPrimed> tntCountDowns = null;
+	private Map<String, Integer> respawningCounters = null;
+	private List<String> respawning = null;
 	private Location redSpawn = null;
 	private Location blueSpawn = null;
 	
 	public Events() {
 		tntCountDowns = new HashMap<ArmorStand, TNTPrimed>();
+		respawningCounters = new HashMap<String, Integer>();
+		respawning = new ArrayList<String>();
 		EventUtil.register(this);
 	}
 	
@@ -79,6 +95,10 @@ public class Events implements Listener {
 		spawn = spawn.add(x, 0, z);
 		player.teleport(spawn);
 		player.setNoDamageTicks(20 * 10);
+		if(player.getAllowFlight()) {
+			player.setFlying(false);
+			player.setAllowFlight(false);
+		}
 		return spawn;
 	}
 	
@@ -122,8 +142,8 @@ public class Events implements Listener {
 					team = blueTeam;
 				}
 				teamHandler.setTeam(player, team);
-				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + " &eTeam").display();
-				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + " &xteam");
+				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + "&eTeam").display();
+				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + "&xteam");
 			}
 			spawn(player);
 		}
@@ -133,7 +153,7 @@ public class Events implements Listener {
 	public void onGameStart(GameStartEvent event) {
 		PlayerMoveEvent.getHandlerList().unregister(PlayerMove.getInstance());
 		MiniGame miniGame = OSTB.getMiniGame();
-		miniGame.setCounter(60 * 15);
+		miniGame.setCounter(60 * 20);
 		miniGame.setAllowPlayerInteraction(true);
 		miniGame.setAllowBowShooting(true);
 		miniGame.setAllowEntityDamage(true);
@@ -141,6 +161,60 @@ public class Events implements Listener {
 		miniGame.setAllowDroppingItems(true);
 		miniGame.setPlayersHaveOneLife(false);
 		miniGame.setAllowItemSpawning(true);
+		miniGame.setAllowPickingUpItems(true);
+		miniGame.setAllowInventoryClicking(true);
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES);
+				for(Player player : ProPlugin.getPlayers()) {
+					player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
+					coinsHandler.getCoins(player);
+					if(coinsHandler.isNewPlayer(player)) {
+						int amount = 100;
+						coinsHandler.addCoins(player, amount);
+						MessageHandler.sendMessage(player, "Giving you &6" + amount + " Coins &xto help you get started");
+					}
+				}
+			}
+		});
+	}
+	
+	@EventHandler
+	public void onMouseClick(MouseClickEvent event) {
+		Player player = event.getPlayer();
+		ItemStack item = player.getItemInHand();
+		if(item.getType() == Material.WORKBENCH) {
+			int amount = item.getAmount();
+			if(--amount <= 0) {
+				player.setItemInHand(new ItemStack(Material.AIR));
+			} else {
+				item.setAmount(amount);
+				player.setItemInHand(item);
+			}
+			player.openWorkbench(player.getLocation(), true);
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event) {
+		if(event.getInventory().getType() == InventoryType.ENCHANTING) {
+			event.getInventory().setItem(1, new ItemStack(Material.INK_SACK, 3, (byte) 4));
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent event) {
+		if(event.getInventory().getType() == InventoryType.ENCHANTING) {
+			event.getInventory().setItem(1, new ItemStack(Material.AIR));
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryItemClick(InventoryItemClickEvent event) {
+		if(event.getInventory().getType() == InventoryType.ENCHANTING) {
+			event.getInventory().setItem(1, new ItemStack(Material.INK_SACK, 3, (byte) 4));
+		}
 	}
 	
 	@EventHandler
@@ -150,12 +224,33 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		event.setRespawnLocation(spawn(event.getPlayer()));
+		Player player = event.getPlayer();
+		event.setRespawnLocation(getRespawningLocation(player.getWorld()));
+		player.setAllowFlight(true);
+		player.setFlying(true);
+		respawning.add(player.getName());
+		respawningCounters.put(player.getName(), 5);
+		Vanisher.add(player);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 999999999));
+		//event.setRespawnLocation(spawn(event.getPlayer()));
 	}
 	
 	@EventHandler
-	public void onPlayerSpectator(PlayerSpectatorEvent event) {
-		event.setCancelled(true);
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if(respawning.contains(event.getPlayer().getName())) {
+			Player player = event.getPlayer();
+			if(!player.getAllowFlight()) {
+				player.setAllowFlight(true);
+			}
+			if(!player.isFlying()) {
+				player.setFlying(true);
+			}
+			player.teleport(getRespawningLocation(player.getWorld()));
+		}
+	}
+	
+	private Location getRespawningLocation(World world) {
+		return new Location(world, 133.5, 39, -135.5, -210.0f, 41.0f);
 	}
 	
 	@EventHandler
@@ -243,61 +338,86 @@ public class Events implements Listener {
 					armorStand.remove();
 				}
 			}
-		} else if(ticks == 20 && OSTB.getMiniGame().getGameState() == GameStates.STARTING) {
-			String prefix = "&e";
-			int counter = OSTB.getMiniGame().getCounter();
-			if(counter == 18) {
-				for(Player player : ProPlugin.getPlayers()) {
-					new TitleDisplayer(player, "&cPlease watch chat", "&cFor game info").setFadeOut(20 * 4).display();
+		} else if(ticks == 20) {
+			GameStates gameState = OSTB.getMiniGame().getGameState();
+			if(gameState == GameStates.STARTED) {
+				Iterator<String> iterator = respawningCounters.keySet().iterator();
+				while(iterator.hasNext()) {
+					String name = iterator.next();
+					Player player = ProPlugin.getPlayer(name);
+					int counter = respawningCounters.get(name);
+					if(--counter <= 0) {
+						iterator.remove();
+						respawning.remove(name);
+						if(player != null) {
+							player.removePotionEffect(PotionEffectType.INVISIBILITY);
+							SpectatorHandler.remove(player);
+							spawn(player);
+							Vanisher.remove(player);
+						}
+					} else {
+						respawningCounters.put(name, counter);
+						if(player != null) {
+							new TitleDisplayer(player, "&eRespawning in &b" + counter + "s", "&eAuto Respawn Passes: &b/vote").setFadeIn(0).setStay(15).setFadeOut(60).display();
+						}
+					}
 				}
-			} else if(counter == 16) {
-				MessageHandler.alertLine("&e");
-				MessageHandler.alert(prefix + "Use the Shop & Armory NPCs for items");
-				MessageHandler.alert("");
-				new Shop(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
-				new Armory(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
-				EffectUtil.playSound(Sound.LEVEL_UP);
-			} else if(counter == 12) {
-				MessageHandler.alert(prefix + "Get levels by killing the enemy players");
-				MessageHandler.alert("");
-				for(Player player : ProPlugin.getPlayers()) {
-					new LevelGiver(player, true);
+			} else if(gameState == GameStates.STARTING) {
+				String prefix = "&e";
+				int counter = OSTB.getMiniGame().getCounter();
+				if(counter == 18) {
+					for(Player player : ProPlugin.getPlayers()) {
+						new TitleDisplayer(player, "&cPlease watch chat", "&cFor game info").setFadeOut(20 * 4).display();
+					}
+				} else if(counter == 16) {
+					MessageHandler.alertLine("&e");
+					MessageHandler.alert(prefix + "Use the Shop & Armory NPCs for items");
+					MessageHandler.alert("");
+					new Shop(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
+					new Armory(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
+					EffectUtil.playSound(Sound.LEVEL_UP);
+				} else if(counter == 12) {
+					MessageHandler.alert(prefix + "Get levels by killing the enemy players");
+					MessageHandler.alert("");
+					for(Player player : ProPlugin.getPlayers()) {
+						new LevelGiver(player, true);
+					}
+					EffectUtil.playSound(Sound.LEVEL_UP);
+				} else if(counter == 8) {
+					MessageHandler.alert(prefix + "Use the Enchanting Table & Anvil at your spawn");
+					MessageHandler.alert("");
+					World world = OSTB.getMiniGame().getMap();
+					String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/";
+					ConfigurationUtil anvilUtil = new ConfigurationUtil(path + "anvil.yml");
+					ConfigurationUtil enchantUtil = new ConfigurationUtil(path + "enchant.yml");
+					Random random = new Random();
+					for(String team : new String [] {"red", "blue"}) {
+						int x = anvilUtil.getConfig().getInt(team + ".x");
+						int y = anvilUtil.getConfig().getInt(team + ".y");
+						int z = anvilUtil.getConfig().getInt(team + ".z");
+						Block block = world.getBlockAt(x, y, z);
+						block.setType(Material.ANVIL);
+						EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
+						ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
+						x = enchantUtil.getConfig().getInt(team + ".x");
+						y = enchantUtil.getConfig().getInt(team + ".y");
+						z = enchantUtil.getConfig().getInt(team + ".z");
+						block = world.getBlockAt(x, y, z);
+						block.setType(Material.ENCHANTMENT_TABLE);
+						EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
+						ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
+					}
+					EffectUtil.playSound(Sound.LEVEL_UP);
+				} else if(counter == 4) {
+					if(OSTB.getPlugin() == Plugins.CTF) {
+						MessageHandler.alert(prefix + "Capture the Enemy Flag!");
+					} else if(OSTB.getPlugin() == Plugins.DOM) {
+						MessageHandler.alert(prefix + "Gain control of the Command Posts!");
+					}
+					MessageHandler.alert("");
+					MessageHandler.alertLine("&e");
+					EffectUtil.playSound(Sound.LEVEL_UP);
 				}
-				EffectUtil.playSound(Sound.LEVEL_UP);
-			} else if(counter == 8) {
-				MessageHandler.alert(prefix + "Use the Enchanting Table & Anvil at your spawn");
-				MessageHandler.alert("");
-				World world = OSTB.getMiniGame().getMap();
-				String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/";
-				ConfigurationUtil anvilUtil = new ConfigurationUtil(path + "anvil.yml");
-				ConfigurationUtil enchantUtil = new ConfigurationUtil(path + "enchant.yml");
-				Random random = new Random();
-				for(String team : new String [] {"red", "blue"}) {
-					int x = anvilUtil.getConfig().getInt(team + ".x");
-					int y = anvilUtil.getConfig().getInt(team + ".y");
-					int z = anvilUtil.getConfig().getInt(team + ".z");
-					Block block = world.getBlockAt(x, y, z);
-					block.setType(Material.ANVIL);
-					EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
-					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
-					x = enchantUtil.getConfig().getInt(team + ".x");
-					y = enchantUtil.getConfig().getInt(team + ".y");
-					z = enchantUtil.getConfig().getInt(team + ".z");
-					block = world.getBlockAt(x, y, z);
-					block.setType(Material.ENCHANTMENT_TABLE);
-					EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
-					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
-				}
-				EffectUtil.playSound(Sound.LEVEL_UP);
-			} else if(counter == 4) {
-				if(OSTB.getPlugin() == Plugins.CTF) {
-					MessageHandler.alert(prefix + "Capture the Enemy Flag!");
-				} else if(OSTB.getPlugin() == Plugins.DOM) {
-					MessageHandler.alert(prefix + "Gain control of the Command Posts!");
-				}
-				MessageHandler.alert("");
-				MessageHandler.alertLine("&e");
-				EffectUtil.playSound(Sound.LEVEL_UP);
 			}
 		}
 	}
@@ -317,7 +437,7 @@ public class Events implements Listener {
 		}
 	}
 	
-	@EventHandler
+	//@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getEntity() instanceof Player && event.getDamager() instanceof TNTPrimed) {
 			event.setDamage(event.getDamage() / 2);

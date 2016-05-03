@@ -13,8 +13,8 @@ public class PVPBattles extends MiniGame {
 		setFlintAndSteelUses(4);
 		getTeamHandler().toggleTeamItem();
 		new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES);
-		CoinsHandler.setKillCoins(5);
-		CoinsHandler.setWinCoins(20);
+		CoinsHandler.setKillCoins(20);
+		CoinsHandler.setWinCoins(75);
 		new Events();
 	}
 }

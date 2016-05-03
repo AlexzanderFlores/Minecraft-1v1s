@@ -1,34 +1,46 @@
 package ostb.gameapi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
+import ostb.ProPlugin;
+import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
+import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
 	private List<Team> teams = null;
+	private Map<String, Integer> shoutUses = null;
 	private boolean enableTeamSelectorItem = false;
 	private ItemStack item = null;
 	private String name = null;
@@ -37,6 +49,36 @@ public class TeamHandler implements Listener {
 		teams = new ArrayList<Team>();
 		name = "Team Selector";
 		item = new ItemCreator(Material.WOOL).setName("&a" + name).getItemStack();
+		shoutUses = new HashMap<String, Integer>();
+		new CommandBase("shout", 1, -1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				if(shoutUses.containsKey(player.getName())) {
+					int uses = shoutUses.get(player.getName());
+					if(--uses <= 0) {
+						shoutUses.remove(player.getName());
+					} else {
+						shoutUses.put(player.getName(), uses);
+					}
+					String msg = "";
+					for(String argument : arguments) {
+						msg += argument + " ";
+					}
+					msg = StringUtil.color(msg);
+					if(!Ranks.OWNER.hasRank(player)) {
+						for(ChatColor badColor : new ChatColor [] {ChatColor.BOLD, ChatColor.MAGIC, ChatColor.UNDERLINE, ChatColor.STRIKETHROUGH}) {
+							msg = msg.replace(badColor + "", "");
+						}
+					}
+					MessageHandler.alert("&6[Shout] " + AccountHandler.getPrefix(player) + "&f: " + msg);
+					MessageHandler.alert("To shout use &e/shout <message>");
+				} else {
+					MessageHandler.sendMessage(player, "&cYou are out of shouts for this game");
+				}
+				return true;
+			}
+		}.setRequiredRank(Ranks.PREMIUM);
 		EventUtil.register(this);
 	}
 	
@@ -107,6 +149,16 @@ public class TeamHandler implements Listener {
 			team.removePlayer(player);
 		}
 		newTeam.addPlayer(player);
+		for(ChatColor color : ChatColor.values()) {
+			if(newTeam.getPrefix().startsWith(color.toString())) {
+				String name = color + player.getName();
+				if(name.length() > 16) {
+					name = name.substring(0, 16);
+				}
+				player.setPlayerListName(name);
+				break;
+			}
+		}
 	}
 	
 	@EventHandler
@@ -114,6 +166,39 @@ public class TeamHandler implements Listener {
 		if(enableTeamSelectorItem && OSTB.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
 			player.getInventory().addItem(item);
+		}
+	}
+	
+	@EventHandler
+	public void onGameStart(GameStartEvent event) {
+		for(Player player : ProPlugin.getPlayers()) {
+			if(Ranks.PREMIUM_PLUS.hasRank(player)) {
+				shoutUses.put(player.getName(), 2);
+			} else if(Ranks.PREMIUM.hasRank(player)) {
+				shoutUses.put(player.getName(), 1);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+		MiniGame miniGame = OSTB.getMiniGame();
+		if(miniGame != null && miniGame.getGameState() != GameStates.STARTED) {
+			return;
+		}
+		Player player = event.getPlayer();
+		Team team = getTeam(player);
+		for(ChatColor color : ChatColor.values()) {
+			if(team.getPrefix().startsWith(color.toString())) {
+				event.setFormat(team.getPrefix() + event.getFormat().replace(player.getName(), color + player.getName()));
+				break;
+			}
+		}
+		for(Player online : ProPlugin.getPlayers()) {
+			Team onlineTeam = getTeam(online);
+			if(onlineTeam != team) {
+				event.getRecipients().remove(online);
+			}
 		}
 	}
 	
@@ -148,11 +233,11 @@ public class TeamHandler implements Listener {
 				MessageHandler.sendMessage(player, "&cError: team not found, please report this");
 				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			} else if(team.hasPlayer(player)) {
-				new TitleDisplayer(player, "&cAlready on the", team.getPrefix() + " &eTeam").display();
+				new TitleDisplayer(player, "&cAlready on the", team.getPrefix() + "&eTeam").display();
 				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			} else {
-				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + " &eTeam").display();
-				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + " &xteam");
+				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + "&eTeam").display();
+				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + "&xteam");
 				setTeam(player, team);
 				EffectUtil.playSound(player, Sound.LEVEL_UP);
 			}

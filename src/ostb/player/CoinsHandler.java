@@ -1,6 +1,8 @@
 package ostb.player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,6 +34,7 @@ public class CoinsHandler implements Listener {
 	private DB table = null;
 	//private Plugins plugin = null;
 	private Map<String, Integer> coins = null;
+	private List<String> newPlayer = null;
 	//private boolean boosterEnabled = false;
 	
 	public CoinsHandler(DB table, Plugins plugin) {
@@ -39,6 +42,7 @@ public class CoinsHandler implements Listener {
 			this.table = table;
 			//this.plugin = plugin;
 			coins = new HashMap<String, Integer>();
+			newPlayer = new ArrayList<String>();
 			handlers.put(plugin, this);
 			new CommandBase("addCoins", 3) {
 				@Override
@@ -95,6 +99,9 @@ public class CoinsHandler implements Listener {
 	
 	public int getCoins(Player player) {
 		if(!coins.containsKey(player.getName())) {
+			if(!table.isUUIDSet(player.getUniqueId()) && !newPlayer.contains(player.getName())) {
+				newPlayer.add(player.getName());
+			}
 			coins.put(player.getName(), table.getInt("uuid", player.getUniqueId().toString(), "coins"));
 		}
 		return coins.get(player.getName());
@@ -107,6 +114,10 @@ public class CoinsHandler implements Listener {
 		}
 		coins.put(player.getName(), amount);
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
+	}
+	
+	public boolean isNewPlayer(Player player) {
+		return newPlayer != null && newPlayer.contains(player.getName());
 	}
 	
 	public ItemStack getItemStack(Player player) {
@@ -166,5 +177,6 @@ public class CoinsHandler implements Listener {
 			}
 			coins.remove(name);
 		}
+		newPlayer.remove(name);
 	}
 }
