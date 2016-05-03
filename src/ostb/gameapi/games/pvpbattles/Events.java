@@ -13,6 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -21,10 +22,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
@@ -35,14 +38,16 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.TeamHandler;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
+import ostb.player.Particles.ParticleTypes;
 import ostb.player.PlayerMove;
 import ostb.player.TitleDisplayer;
-import ostb.player.Particles.ParticleTypes;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
@@ -59,10 +64,29 @@ public class Events implements Listener {
 		EventUtil.register(this);
 	}
 	
+	private Location spawn(Player player) {
+		Random random = new Random();
+		Team team = OSTB.getMiniGame().getTeamHandler().getTeam(player);
+		Location spawn = null;
+		if(team.getName().equals("red")) {
+			spawn = redSpawn.clone();
+		} else if(team.getName().equals("blue")) {
+			spawn = blueSpawn.clone();
+		}
+		int radius = 4;
+		double x = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
+		double z = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
+		spawn = spawn.add(x, 0, z);
+		player.teleport(spawn);
+		player.setNoDamageTicks(20 * 10);
+		return spawn;
+	}
+	
 	@EventHandler
 	public void onGameStarting(GameStartingEvent event) {
 		EventUtil.register(new PlayerMove(false));
 		World world = OSTB.getMiniGame().getMap();
+		world.setGameRuleValue("keepInventory", "true");
 		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/spawn").getConfig();
 		double x = config.getConfig().getDouble("red.x");
 		double y = config.getConfig().getDouble("red.y");
@@ -101,27 +125,37 @@ public class Events implements Listener {
 				new TitleDisplayer(player, "&eYou joined the", team.getPrefix() + " &eTeam").display();
 				MessageHandler.sendMessage(player, "You joined the " + team.getPrefix() + " &xteam");
 			}
-			Location spawn = null;
-			if(team.getName().equals("red")) {
-				spawn = redSpawn.clone();
-			} else if(team.getName().equals("blue")) {
-				spawn = blueSpawn.clone();
-			}
-			int radius = 4;
-			x = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
-			z = random.nextBoolean() ? random.nextInt(radius) : random.nextInt(radius) * -1;
-			player.teleport(spawn.add(x, 0, z));
+			spawn(player);
 		}
 	}
 	
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		PlayerMoveEvent.getHandlerList().unregister(PlayerMove.getInstance());
+		MiniGame miniGame = OSTB.getMiniGame();
+		miniGame.setCounter(60 * 15);
+		miniGame.setAllowPlayerInteraction(true);
+		miniGame.setAllowBowShooting(true);
+		miniGame.setAllowEntityDamage(true);
+		miniGame.setAllowEntityDamageByEntities(true);
+		miniGame.setAllowDroppingItems(true);
+		miniGame.setPlayersHaveOneLife(false);
+		miniGame.setAllowItemSpawning(true);
 	}
 	
 	@EventHandler
 	public void onGameKill(GameKillEvent event) {
 		new LevelGiver(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		event.setRespawnLocation(spawn(event.getPlayer()));
+	}
+	
+	@EventHandler
+	public void onPlayerSpectator(PlayerSpectatorEvent event) {
+		event.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -144,6 +178,15 @@ public class Events implements Listener {
 			TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(event.getBlock().getLocation(), EntityType.PRIMED_TNT);
 			setUpTNT(player, tnt);
 			event.setCancelled(true);
+		} else if(event.getBlock().getType() == Material.FIRE) {
+			final Block block = event.getBlock();
+			new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					block.setType(Material.AIR);
+				}
+			}, 20 * 3);
+			event.setCancelled(false);
 		}
 	}
 	
@@ -236,14 +279,14 @@ public class Events implements Listener {
 					Block block = world.getBlockAt(x, y, z);
 					block.setType(Material.ANVIL);
 					EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
-					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 2, 0));
+					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
 					x = enchantUtil.getConfig().getInt(team + ".x");
 					y = enchantUtil.getConfig().getInt(team + ".y");
 					z = enchantUtil.getConfig().getInt(team + ".z");
 					block = world.getBlockAt(x, y, z);
 					block.setType(Material.ENCHANTMENT_TABLE);
 					EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
-					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 2, 0));
+					ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
 				}
 				EffectUtil.playSound(Sound.LEVEL_UP);
 			} else if(counter == 4) {
@@ -268,7 +311,14 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageByEntityEvent event) {
+	public void onProjectileHit(ProjectileHitEvent event) {
+		if(event.getEntity() instanceof Arrow) {
+			event.getEntity().remove();
+		}
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getEntity() instanceof Player && event.getDamager() instanceof TNTPrimed) {
 			event.setDamage(event.getDamage() / 2);
 		}

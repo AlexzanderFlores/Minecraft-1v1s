@@ -15,7 +15,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import npc.NPCEntity;
+import ostb.OSTB;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
@@ -50,6 +52,9 @@ public class Armory implements Listener {
 		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
+				if(OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+					return;
+				}
 				int repairCost = getRepairCost(player);
 				Inventory inventory = Bukkit.createInventory(player, 9 * (repairCost == -1 ? 3 : 5), name);
 				inventory.setItem(10, new ItemCreator(Material.LEATHER_CHESTPLATE).setName("&bLeather Armor").setLores(new String [] {

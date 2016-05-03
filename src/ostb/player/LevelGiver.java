@@ -16,7 +16,7 @@ public class LevelGiver implements Listener {
 	private boolean demo = false;
 	
 	public LevelGiver(Player player) {
-		this(player, true);
+		this(player, false);
 	}
 	
 	public LevelGiver(Player player, boolean demo) {

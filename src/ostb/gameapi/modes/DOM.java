@@ -150,10 +150,10 @@ public class DOM {
 		commandPosts = new ArrayList<CommandPost>();
 		this.scoreLimit = scoreLimit;
 		redTeam = OSTB.getMiniGame().getTeamHandler().addTeam("red");
-		redTeam.setPrefix(ChatColor.RED + "[Red]");
+		redTeam.setPrefix(ChatColor.RED + "[Red] ");
 		redTeam.setAllowFriendlyFire(false);
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
-		blueTeam.setPrefix(ChatColor.AQUA + "[Blue]");
+		blueTeam.setPrefix(ChatColor.AQUA + "[Blue] ");
 		blueTeam.setAllowFriendlyFire(false);
 	}
 	

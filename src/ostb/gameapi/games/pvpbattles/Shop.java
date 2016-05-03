@@ -17,8 +17,10 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import npc.NPCEntity;
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.CoinsHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.ConfigurationUtil;
@@ -49,11 +51,14 @@ public class Shop implements Listener {
 		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {
+				if(OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+					return;
+				}
 				Inventory inventory = Bukkit.createInventory(player, 9 * 5, name);
 				inventory.setItem(10, new ItemCreator(Material.IRON_SWORD).setName("&bIron Sword").setLores(new String [] {"", "&7Price: &a2"}).getItemStack());
 				inventory.setItem(11, new ItemCreator(Material.BOW).setName("&bBow").setLores(new String [] {"", "&7Price: &a10", ""}).getItemStack());
 				inventory.setItem(12, new ItemCreator(Material.ARROW).setAmount(16).setName("&bArrow x16").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
-				inventory.setItem(13, new ItemCreator(Material.FLINT_AND_STEEL).setName("&bFlint and Steel").setLores(new String [] {"", "&7Price: &a7", "&7Uses: &a4", ""}).getItemStack());
+				inventory.setItem(13, new ItemCreator(Material.FLINT_AND_STEEL).setName("&bFlint and Steel").setLores(new String [] {"", "&7Price: &a7", "&7Uses: &a4", "&7Fire Lasts: &a3 Seconds", ""}).getItemStack());
 				inventory.setItem(14, new ItemCreator(Material.FISHING_ROD).setName("&bFishing Rod").setLores(new String [] {"", "&7Price: &a10", ""}).getItemStack());
 				inventory.setItem(15, new ItemCreator(Material.DIAMOND).setName("&bDiamond").setLores(new String [] {"", "&7Price: &a15", ""}).getItemStack());
 				inventory.setItem(16, new ItemCreator(Material.STICK).setName("&bStick").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
