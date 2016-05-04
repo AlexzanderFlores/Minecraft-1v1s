@@ -72,11 +72,13 @@ public class Events implements Listener {
 	private List<String> respawning = null;
 	private Location redSpawn = null;
 	private Location blueSpawn = null;
+	private List<Block> anvils = null;
 	
 	public Events() {
 		tntCountDowns = new HashMap<ArmorStand, TNTPrimed>();
 		respawningCounters = new HashMap<String, Integer>();
 		respawning = new ArrayList<String>();
+		anvils = new ArrayList<Block>();
 		EventUtil.register(this);
 	}
 	
@@ -397,6 +399,7 @@ public class Events implements Listener {
 						int z = anvilUtil.getConfig().getInt(team + ".z");
 						Block block = world.getBlockAt(x, y, z);
 						block.setType(Material.ANVIL);
+						anvils.add(block);
 						EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, block.getLocation());
 						ParticleTypes.FIREWORK_SPARK.display(block.getLocation().add(0, 1, 0));
 						x = enchantUtil.getConfig().getInt(team + ".x");
@@ -418,6 +421,10 @@ public class Events implements Listener {
 					MessageHandler.alertLine("&e");
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				}
+			}
+		} else if(ticks == 20 * 5) {
+			for(Block block : anvils) {
+				block.setType(Material.ANVIL);
 			}
 		}
 	}
