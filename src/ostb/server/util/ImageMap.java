@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.Overridden;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -35,9 +34,8 @@ public class ImageMap implements Listener {
 	
 	public class CustomRender extends MapRenderer {
 		private Image image = null;
-		private boolean load = true;
 		
-		public CustomRender(BufferedImage image, int x1, int y1) {
+		public CustomRender(BufferedImage image, int x1, int y1, ItemFrame itemFrame) {
 			int x2 = MAP_WIDTH;
 			int y2 = MAP_HEIGHT;
 			if(x1 > image.getWidth() || y1 > image.getHeight()) {
@@ -52,11 +50,9 @@ public class ImageMap implements Listener {
 			this.image = image.getSubimage(x1, y1, x2, y2);
 		}
 		
-		@Overridden
 		public void render(MapView view, MapCanvas canvas, Player player) {
-			if(image != null && load) {
+			if(image != null && player.getTicksLived() <= 20) {
 				canvas.drawImage(0, 0, image);
-				load = false;
 			}
 		}
 	}
@@ -74,7 +70,9 @@ public class ImageMap implements Listener {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		allItemFrames = new ArrayList<ItemFrame>();
+		if(allItemFrames == null) {
+			allItemFrames = new ArrayList<ItemFrame>();
+		}
 		for(Entity entity : itemFrame.getWorld().getEntities()) {
 			if(entity instanceof ItemFrame) {
 				ItemFrame frame = (ItemFrame) entity;
@@ -97,7 +95,7 @@ public class ImageMap implements Listener {
 				for(MapRenderer renderer : mapView.getRenderers()) {
 					mapView.removeRenderer(renderer);
 				}
-				mapView.addRenderer(new CustomRender(image, x, y));
+				mapView.addRenderer(new CustomRender(image, x, y, itemFrame));
 				map.setDurability(mapView.getId());
 				frame.setItem(map);
 				itemFrames.add(frame);
