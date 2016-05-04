@@ -23,7 +23,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -373,6 +372,7 @@ public class Events implements Listener {
 					}
 				} else if(counter == 16) {
 					MessageHandler.alertLine("&e");
+					MessageHandler.alert("");
 					MessageHandler.alert(prefix + "Use the Shop & Armory NPCs for items");
 					MessageHandler.alert("");
 					new Shop(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
@@ -425,6 +425,7 @@ public class Events implements Listener {
 		} else if(ticks == 20 * 5) {
 			for(Block block : anvils) {
 				block.setType(Material.ANVIL);
+				block.setData((byte) 1);
 			}
 		}
 	}
@@ -441,13 +442,6 @@ public class Events implements Listener {
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if(event.getEntity() instanceof Arrow) {
 			event.getEntity().remove();
-		}
-	}
-	
-	//@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if(event.getEntity() instanceof Player && event.getDamager() instanceof TNTPrimed) {
-			event.setDamage(event.getDamage() / 2);
 		}
 	}
 	

@@ -183,6 +183,11 @@ public class Building extends ProPlugin {
 		new CommandBase("test", -1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
+				if(arguments.length == 0) {
+					Player player = (Player) sender;
+					Block block = getRegionBlock(player);
+					MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
+				}
 				if(arguments.length == 2) {
 					String ign = arguments[0];
 					String url = "";
