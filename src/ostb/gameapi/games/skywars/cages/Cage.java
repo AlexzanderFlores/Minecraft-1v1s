@@ -23,7 +23,7 @@ public abstract class Cage extends KitBase {
 	private byte data = 0;
 	
 	public Cage(ItemStack icon, Rarity rarity, int slot) {
-		super(Plugins.SKY_WARS_SOLO, icon, rarity, -1, slot);
+		super(Plugins.SW, icon, rarity, -1, slot);
 		if(cages == null) {
 			cages = new ArrayList<Cage>();
 		}

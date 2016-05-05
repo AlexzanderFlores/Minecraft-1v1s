@@ -17,7 +17,7 @@ public class Medic extends KitBase {
 	private static final int amount = 2;
 	
 	public Medic() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(new Potion(PotionType.REGEN, 1, true).toItemStack(1)).setName("Medic").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(new Potion(PotionType.REGEN, 1, true).toItemStack(1)).setName("Medic").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Splash Regen Potions",

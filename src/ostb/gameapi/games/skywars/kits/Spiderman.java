@@ -22,7 +22,7 @@ public class Spiderman extends KitBase {
 	private static boolean enabled = false;
 	
 	public Spiderman() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.WEB).setName("Spiderman").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.WEB).setName("Spiderman").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " \"Web\" Snowballs",

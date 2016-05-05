@@ -23,7 +23,7 @@ public class Bomber extends KitBase {
 	private static boolean enabled = false;
 	
 	public Bomber() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.TNT).setName("Bomber").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.TNT).setName("Bomber").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " TNT",

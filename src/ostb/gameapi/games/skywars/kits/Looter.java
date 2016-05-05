@@ -25,7 +25,7 @@ public class Looter extends KitBase {
 	private static boolean enabled = false;
 	
 	public Looter() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.CHEST).setName("Looter").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.CHEST).setName("Looter").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aLoot up to " + amount + " chest by breaking them",

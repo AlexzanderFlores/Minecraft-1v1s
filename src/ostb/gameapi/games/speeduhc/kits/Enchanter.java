@@ -14,7 +14,7 @@ import ostb.server.util.UnicodeUtil;
 
 public class Enchanter extends KitBase {
 	public Enchanter() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a3 Sugar Cane",

@@ -34,7 +34,7 @@ public class Ninja extends KitBase {
 	private Random random = null;
 	
 	public Ninja() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.NETHER_STAR).setName("Ninja").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.NETHER_STAR).setName("Ninja").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Throwing Stars",

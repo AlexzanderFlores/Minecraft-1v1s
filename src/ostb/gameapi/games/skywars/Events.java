@@ -43,7 +43,7 @@ public class Events implements Listener {
 		for(Player player : players) {
 			boolean usedCage = false;
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && kit.has(player) && kit.getKitType().equals("cage")) {
+				if(kit.getPlugin() == Plugins.SW && kit.has(player) && kit.getKitType().equals("cage")) {
 					kit.execute(player);
 					usedCage = true;
 					break;

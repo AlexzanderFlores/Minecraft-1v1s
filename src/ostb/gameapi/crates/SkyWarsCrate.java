@@ -134,7 +134,7 @@ public class SkyWarsCrate implements Listener {
 	private void populateFeatures() {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO) {
+				if(kit.getPlugin() == Plugins.SW) {
 					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.SKY_WARS));
 				}
 			}
@@ -167,7 +167,7 @@ public class SkyWarsCrate implements Listener {
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							populateFeatures();
-							new CrateBase(player, Plugins.SKY_WARS_SOLO, SkyWarsCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED);
+							new CrateBase(player, Plugins.SW, SkyWarsCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
@@ -177,7 +177,7 @@ public class SkyWarsCrate implements Listener {
 					populateFeatures();
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SKY_WARS_SOLO);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SW);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
@@ -194,7 +194,7 @@ public class SkyWarsCrate implements Listener {
 	
 	@EventHandler
 	public void onCrateFinished(CrateFinishedEvent event) {
-		if(event.getPlugin() == Plugins.SKY_WARS_SOLO) {
+		if(event.getPlugin() == Plugins.SW) {
 			Player player = event.getPlayer();
 			giveKey(player.getUniqueId(), -1);
 			FeatureItem won = event.getItemWon();

@@ -14,7 +14,7 @@ import ostb.server.util.UnicodeUtil;
 
 public class Miner extends KitBase {
 	public Miner() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.STONE_PICKAXE).setName("Miner").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.STONE_PICKAXE).setName("Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Pickaxe",

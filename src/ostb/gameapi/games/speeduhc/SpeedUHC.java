@@ -17,7 +17,7 @@ public class SpeedUHC extends MiniGame {
 		super("Speed UHC");
 		setRequiredPlayers(4);
 		setSpectatingMode(GameMode.SPECTATOR);
-		new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SPEED_UHC_KITS);
+		new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHCK);
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(15);
 		new OreMultipliers();
@@ -26,7 +26,7 @@ public class SpeedUHC extends MiniGame {
 		new Events();
 		new WorldHandler();
 		new BelowNameHealthScoreboardUtil();
-		if(OSTB.getPlugin() == Plugins.SPEED_UHC_KITS) {
+		if(OSTB.getPlugin() == Plugins.SUHCK) {
 			new SpeedUHCShop();
 		}
 	}

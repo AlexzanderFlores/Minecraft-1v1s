@@ -16,7 +16,7 @@ public class Enchanter extends KitBase {
 	private static final int amount = 16;
 	
 	public Enchanter() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("Enchanter").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Exp Bottles",

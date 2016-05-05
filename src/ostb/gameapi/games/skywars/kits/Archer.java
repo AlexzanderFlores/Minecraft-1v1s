@@ -16,7 +16,7 @@ public class Archer extends KitBase {
 	private static final int amount = 6;
 	
 	public Archer() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.BOW).setName("Archer").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.BOW).setName("Archer").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aBow",

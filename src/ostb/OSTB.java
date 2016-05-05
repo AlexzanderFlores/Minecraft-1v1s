@@ -63,11 +63,11 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		PVP_BATTLES("PVPBattles", "pvp_battles", "PVP Battles"), // Not used on server
 		CTF("CTF", "pvp_battles", "Capture the Flag"),
 		DOM("DOM", "pvp_battles", "Domination"),
-		SKY_WARS_SOLO("SW", "sky_wars", "Solo Sky Wars"),
-		SKY_WARS_TEAMS("SWT", "sky_wars", "Team Sky Wars"),
-		SPEED_UHC_NO_KITS("SUHCNK", "speed_uhc", "Speed UHC No Kits"),
-		SPEED_UHC_KITS("SUHCK", "speed_uhc", "Speed UHC Kits"),
-		PREGENERATOR("Pregenerator", "pregenerator"),
+		SW("SW", "sky_wars", "Solo Sky Wars"),
+		SWT("SWT", "sky_wars", "Team Sky Wars"),
+		SUHCK("SUHCNK", "speed_uhc", "Speed UHC No Kits"),
+		SUHCNK("SUHCK", "speed_uhc", "Speed UHC Kits"),
+		PREGEN("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
 		WORKER("Worker", "worker"),
 		SLAVE("Slave", "slave");
@@ -145,11 +145,11 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 			proPlugin = new CTF();
 		} else if(plugin == Plugins.DOM) {
 			proPlugin = new DOM();
-		} else if(plugin == Plugins.SKY_WARS_SOLO || plugin == Plugins.SKY_WARS_TEAMS) {
+		} else if(plugin == Plugins.SW || plugin == Plugins.SWT) {
 			proPlugin = new SkyWars();
-		} else if(plugin == Plugins.SPEED_UHC_KITS || plugin == Plugins.SPEED_UHC_NO_KITS) {
+		} else if(plugin == Plugins.SUHCK || plugin == Plugins.SUHCNK) {
 			proPlugin = new SpeedUHC();
-		} else if(plugin == Plugins.PREGENERATOR) {
+		} else if(plugin == Plugins.PREGEN) {
 			proPlugin = new Pregenerator();
 		} else if(plugin == Plugins.BUILDING) {
 			proPlugin = new Building();

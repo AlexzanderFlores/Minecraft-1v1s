@@ -30,7 +30,7 @@ public class PVPBattles extends MiniGame {
 		CoinsHandler.setWinCoins(75);
 		new Events();
 		new BelowNameHealthScoreboardUtil();
-		OSTB.setSidebar(new SidebarScoreboardUtil(" &a" + getDisplayName() + " ") {
+		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
 				MiniGame miniGame = OSTB.getMiniGame();
@@ -67,7 +67,7 @@ public class PVPBattles extends MiniGame {
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
 					"&aOutsideTheBlock.org",
-					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"    ",
 				});
 				super.update();

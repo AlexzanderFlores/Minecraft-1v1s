@@ -323,7 +323,7 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public void setToDefaultSidebar() {
-		OSTB.setSidebar(new SidebarScoreboardUtil(" &a" + getDisplayName() + " ") {
+		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
 				if(ServerLogger.updatePlayerCount()) {
@@ -347,7 +347,7 @@ public abstract class MiniGame extends ProPlugin {
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
 					"&aOutsideTheBlock.org",
-					"&eServer #" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"    "
 				});
 				super.update();

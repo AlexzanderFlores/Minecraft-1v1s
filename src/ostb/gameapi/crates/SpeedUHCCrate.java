@@ -134,7 +134,7 @@ public class SpeedUHCCrate implements Listener {
 	private void populateFeatures() {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.SPEED_UHC_KITS) {
+				if(kit.getPlugin() == Plugins.SUHCK) {
 					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.SPEED_UHC));
 				}
 			}
@@ -167,7 +167,7 @@ public class SpeedUHCCrate implements Listener {
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							populateFeatures();
-							new CrateBase(player, Plugins.SPEED_UHC_KITS, SpeedUHCCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_HE_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_HE_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_HE_CRATES_OPENED);
+							new CrateBase(player, Plugins.SUHCK, SpeedUHCCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_HE_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_HE_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_HE_CRATES_OPENED);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
@@ -177,7 +177,7 @@ public class SpeedUHCCrate implements Listener {
 					populateFeatures();
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SPEED_UHC_KITS);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SUHCK);
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
@@ -194,7 +194,7 @@ public class SpeedUHCCrate implements Listener {
 	
 	@EventHandler
 	public void onCrateFinished(CrateFinishedEvent event) {
-		if(event.getPlugin() == Plugins.SPEED_UHC_KITS) {
+		if(event.getPlugin() == Plugins.SUHCK) {
 			Player player = event.getPlayer();
 			giveKey(player.getUniqueId(), -1);
 			FeatureItem won = event.getItemWon();

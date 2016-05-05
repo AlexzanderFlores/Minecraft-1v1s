@@ -21,7 +21,7 @@ public class BlastMiner extends KitBase {
 	private static final int amount = 3;
 	
 	public BlastMiner() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.TNT).setName("Blast Miner").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.TNT).setName("Blast Miner").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " TNT",

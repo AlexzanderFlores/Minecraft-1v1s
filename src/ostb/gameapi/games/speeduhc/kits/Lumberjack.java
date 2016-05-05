@@ -14,7 +14,7 @@ import ostb.server.util.UnicodeUtil;
 
 public class Lumberjack extends KitBase {
 	public Lumberjack() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.STONE_AXE).setName("Lumberjack").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.STONE_AXE).setName("Lumberjack").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Axe",

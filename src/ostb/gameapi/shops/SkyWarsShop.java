@@ -36,7 +36,7 @@ public class SkyWarsShop extends ShopBase {
 	private static SkyWarsShop instance = null;
 	
 	public SkyWarsShop() {
-		super("Shop - Sky Wars", "kit.sky_wars.", DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO, 3);
+		super("Shop - Sky Wars", "kit.sky_wars.", DB.PLAYERS_COINS_SKY_WARS, Plugins.SW, 3);
 		instance = this;
 		if(OSTB.getPlugin() == Plugins.HUB) {
 			new SkyWarsCrate();
@@ -92,7 +92,7 @@ public class SkyWarsShop extends ShopBase {
 			subType = "big_cage";
 		}
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
+			if(kit.getPlugin() == Plugins.SW && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
 				inventory.setItem(kit.getSlot(), kit.getIcon(player));
 			}
 		}
@@ -144,7 +144,7 @@ public class SkyWarsShop extends ShopBase {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(kit.getPlugin() == Plugins.SKY_WARS_SOLO && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
+				if(kit.getPlugin() == Plugins.SW && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
 					if(!kit.use(player)) {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 					}

@@ -258,49 +258,49 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.DOM);
 		inventory.setItem(12, item);
-		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_SOLO.getDisplay()).setLores(new String [] {
+		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SW.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eBe the last player standing!",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SKY_WARS_SOLO),
+			"&7Playing: &a" + getPlayers(Plugins.SW),
 			"&7Team size: &aSolo",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SKY_WARS_SOLO);
+		items.put(item, Plugins.SW);
 		inventory.setItem(14, item);
-		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SKY_WARS_TEAMS.getDisplay()).setAmount(2).setLores(new String [] {
+		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SWT.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eBe the last team standing!",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SKY_WARS_TEAMS),
+			"&7Playing: &a" + getPlayers(Plugins.SWT),
 			"&7Team size: &a2",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SKY_WARS_TEAMS);
+		items.put(item, Plugins.SWT);
 		inventory.setItem(16, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_KITS.getDisplay()).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHCK.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eNatural regeneration is &cOFF",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_KITS),
+			"&7Playing: &a" + getPlayers(Plugins.SUHCK),
 			"&7Kits: &aEnabled",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SPEED_UHC_KITS);
+		items.put(item, Plugins.SUHCK);
 		inventory.setItem(30, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SPEED_UHC_NO_KITS.getDisplay()).setAmount(2).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHCNK.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eNatural regeneration is &cOFF",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SPEED_UHC_NO_KITS),
+			"&7Playing: &a" + getPlayers(Plugins.SUHCNK),
 			"&7Kits: &cDisabled",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SPEED_UHC_NO_KITS);
+		items.put(item, Plugins.SUHCNK);
 		inventory.setItem(32, item);
 		player.openInventory(inventory);
 	}

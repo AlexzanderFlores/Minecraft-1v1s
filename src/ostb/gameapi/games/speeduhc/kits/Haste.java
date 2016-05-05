@@ -15,7 +15,7 @@ import ostb.server.util.UnicodeUtil;
 
 public class Haste extends KitBase {
 	public Haste() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.DIAMOND_PICKAXE).setName("Haste").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.DIAMOND_PICKAXE).setName("Haste").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aGet Haste for the first 2:30",

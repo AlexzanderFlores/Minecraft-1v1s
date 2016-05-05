@@ -16,7 +16,7 @@ public class Pyro extends KitBase {
 	private static final int amount = 2;
 	
 	public Pyro() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.FLINT_AND_STEEL).setName("Pyro").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.FLINT_AND_STEEL).setName("Pyro").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Flint and Steel (4 uses)",

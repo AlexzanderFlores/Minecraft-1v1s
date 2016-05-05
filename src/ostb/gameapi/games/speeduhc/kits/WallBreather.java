@@ -18,7 +18,7 @@ public class WallBreather extends KitBase {
 	private static boolean enabled = false;
 	
 	public WallBreather() {
-		super(Plugins.SPEED_UHC_KITS, new ItemCreator(Material.GRAVEL).setName("Wall Breather").setLores(new String [] {
+		super(Plugins.SUHCK, new ItemCreator(Material.GRAVEL).setName("Wall Breather").setLores(new String [] {
 			"",
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aCannot take suffocation damage",

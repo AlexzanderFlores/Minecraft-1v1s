@@ -16,7 +16,7 @@ public class Fisherman extends KitBase {
 	private static final int amount = 1;
 	
 	public Fisherman() {
-		super(Plugins.SKY_WARS_SOLO, new ItemCreator(Material.FISHING_ROD).setName("Fisherman").setLores(new String [] {
+		super(Plugins.SW, new ItemCreator(Material.FISHING_ROD).setName("Fisherman").setLores(new String [] {
 			"",
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aKnockback " + amount + " Fishingrod",

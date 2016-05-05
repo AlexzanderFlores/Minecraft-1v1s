@@ -14,14 +14,14 @@ public class SkyWars extends MiniGame {
 		setVotingCounter(45);
 		setStartingCounter(10);
 		setFlintAndSteelUses(4);
-		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SKY_WARS_SOLO);
+		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW);
 		CoinsHandler.setKillCoins(2);
 		CoinsHandler.setWinCoins(10);
 		new BelowNameHealthScoreboardUtil();
 		new Events();
 		new ChestHandler();
 		new SkyWarsShop();
-		if(OSTB.getPlugin() == Plugins.SKY_WARS_TEAMS) {
+		if(OSTB.getPlugin() == Plugins.SWT) {
 			
 		}
 	}
