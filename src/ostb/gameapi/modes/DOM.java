@@ -12,8 +12,10 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.scoreboard.Team;
 
+import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -26,7 +28,7 @@ import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 
 @SuppressWarnings("deprecation")
-public class DOM {
+public class DOM implements Listener {
 	public class CommandPost {
 		private int x = 0;
 		private int y = 0;
@@ -155,6 +157,7 @@ public class DOM {
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
 		blueTeam.setPrefix(ChatColor.AQUA + "[Blue] ");
 		blueTeam.setAllowFriendlyFire(false);
+		EventUtil.register(this);
 	}
 	
 	public Team getWinning() {

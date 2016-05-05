@@ -3,6 +3,7 @@ package ostb.gameapi.games.pvpbattles;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
 import ostb.player.CoinsHandler;
+import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.DB;
 
 public class PVPBattles extends MiniGame {
@@ -16,5 +17,6 @@ public class PVPBattles extends MiniGame {
 		CoinsHandler.setKillCoins(20);
 		CoinsHandler.setWinCoins(75);
 		new Events();
+		new BelowNameHealthScoreboardUtil();
 	}
 }

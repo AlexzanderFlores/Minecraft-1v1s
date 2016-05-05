@@ -12,13 +12,20 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
+import de.slikey.effectlib.util.ParticleEffect;
+import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -30,15 +37,15 @@ import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.TeamHandler;
 import ostb.player.MessageHandler;
-import ostb.player.Particles.ParticleTypes;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.CircleUtil;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
-public class CTF {
+public class CTF implements Listener {
 	private int captureLimit = 5;
 	private Team redTeam = null;
 	private Team blueTeam = null;
@@ -46,10 +53,13 @@ public class CTF {
 	private int blueCaptures = 0;
 	private List<BlockState> redFlagLocationRemoved = null;
 	private List<BlockState> blueFlagLocationRemoved = null;
+	private List<ArmorStand> armorStands = null;
 	private Location startingRed = null;
 	private Location startingBlue = null;
 	private Location redFlag = null;
 	private Location blueFlag = null;
+	private CircleUtil redParticles = null;
+	private CircleUtil blueParticles = null;
 	private boolean redFlagPickedUp = false;
 	private boolean blueFlagPickedUp = false;
 	private int standStillCounter = 0; // Used to count how many seconds both flags have been held
@@ -65,6 +75,8 @@ public class CTF {
 		blueTeam.setAllowFriendlyFire(false);
 		redFlagLocationRemoved = new ArrayList<BlockState>();
 		blueFlagLocationRemoved = new ArrayList<BlockState>();
+		armorStands = new ArrayList<ArmorStand>();
+		EventUtil.register(this);
 	}
 
 	public Team getWinning() {
@@ -107,6 +119,27 @@ public class CTF {
 				block.setData(color.getData());
 			}
 		}
+		if(team == redTeam) {
+			if(redParticles != null) {
+				redParticles.delete();
+			}
+			redParticles = new CircleUtil(redFlag.clone(), .85, 6) {
+				@Override
+				public void run(Vector vector, Location location) {
+					ParticleEffect.DRIP_LAVA.display(location.add(0, 2.20, 0), 20);
+				}
+			};
+		} else if(team == blueTeam) {
+			if(blueParticles != null) {
+				blueParticles.delete();
+			}
+			blueParticles = new CircleUtil(blueFlag.clone(), .85, 6) {
+				@Override
+				public void run(Vector vector, Location location) {
+					ParticleEffect.DRIP_WATER.display(location.add(0, 2.20, 0), 20);
+				}
+			};
+		}
 	}
 	
 	private void removeFlag(Team team) {
@@ -148,7 +181,13 @@ public class CTF {
 	}
 	
 	private void giveFlag(Player player, byte data) {
-		player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, data));
+		ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+		armorStand.setVisible(false);
+		armorStand.setCustomNameVisible(true);
+		armorStand.setCustomName(StringUtil.color("&6&l&nFlag"));
+		armorStand.setHelmet(new ItemStack(Material.WOOL, 1, data));
+		player.setPassenger(armorStand);
+		armorStands.add(armorStand);
 	}
 	
 	public int getCaptureLimit() {
@@ -179,14 +218,14 @@ public class CTF {
 		if(ticks == 20) {
 			MiniGame miniGame = OSTB.getMiniGame();
 			GameStates gameState = miniGame.getGameState();
-			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
+			if(gameState == GameStates.STARTING && miniGame.getCounter() == 4) {
 				World world = miniGame.getMap();
-				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/flags.yml");
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/flag.yml");
 				if(config.getFile().exists()) {
 					for(Team team : OSTB.getMiniGame().getTeamHandler().getTeams()) {
-						double x = config.getConfig().getDouble(team.toString().toLowerCase() + ".x");
-						double y = config.getConfig().getDouble(team.toString().toLowerCase() + ".y");
-						double z = config.getConfig().getDouble(team.toString().toLowerCase() + ".z");
+						double x = config.getConfig().getDouble(team.getName().toLowerCase() + ".x");
+						double y = config.getConfig().getDouble(team.getName().toLowerCase() + ".y");
+						double z = config.getConfig().getDouble(team.getName().toLowerCase() + ".z");
 						Location location = new Location(world, x, y, z);
 						if(team == redTeam) {
 							startingRed = location;
@@ -202,7 +241,7 @@ public class CTF {
 					MessageHandler.alert("&4ERROR: &cNo flags found for this map... closing game");
 					miniGame.setGameState(GameStates.ENDING);
 				}
-			} else if(gameState == GameStates.STARTED) {
+			} else if(gameState == GameStates.STARTED && gameState == GameStates.ENDING) {
 				TeamHandler teamHandler = miniGame.getTeamHandler();
 				for(Player player : ProPlugin.getPlayers()) {
 					if(player.getLevel() == 9) {
@@ -225,7 +264,7 @@ public class CTF {
 				}
 				if(redFlagPickedUp && blueFlagPickedUp) {
 					if(standStillCounter == 10) {
-						Bukkit.broadcastMessage(StringUtil.color("&e&lBoth teams are holding flags... Stand still started"));
+						MessageHandler.alert("&e&lBoth teams are holding flags... Stand still started");
 					}
 					int max = 3;
 					if(++standStillCounter >= (60 * max)) {
@@ -251,11 +290,11 @@ public class CTF {
 					standStillCounter = 0;
 				}
 			}
-		} else if(ticks == 20 * 2) {
-			GameStates state = OSTB.getMiniGame().getGameState();
-			if(state == GameStates.STARTED || state == GameStates.ENDING) {
-				ParticleTypes.DRIP_LAVA.displaySpiral(redFlag, 7, 3.5);
-				ParticleTypes.DRIP_WATER.displaySpiral(blueFlag, 7, 3.5);
+			if(redParticles != null && redFlag != null) {
+				redParticles.setLocation(redFlag.clone());
+			}
+			if(blueParticles != null && blueFlag != null) {
+				blueParticles.setLocation(blueFlag.clone());
 			}
 		}
 	}
@@ -265,6 +304,7 @@ public class CTF {
 		Player player = event.getPlayer();
 		MiniGame miniGame = OSTB.getMiniGame();
 		if(miniGame.getGameState() == GameStates.STARTED && !(SpectatorHandler.isEnabled() && SpectatorHandler.contains(event.getPlayer()))) {
+			Entity passenger = player.getPassenger();
 			if(event.getTo().getBlock().getType() == Material.FENCE) {
 				Location to = event.getTo();
 				int x = to.getBlockX();
@@ -276,6 +316,7 @@ public class CTF {
 				int xBlue = blueFlag.getBlockX();
 				int yBlue = blueFlag.getBlockY();
 				int zBlue = blueFlag.getBlockZ();
+				Bukkit.getLogger().info(x + "," + y + "," + z + " vs " + xRed + "," + yRed + "," + zRed + " vs " + xBlue + "," + yBlue + "," + zBlue);
 				TeamHandler teamHandler = miniGame.getTeamHandler();
 				Team team = teamHandler.getTeam(player);
 				if(x == xRed && y == yRed && z == zRed) {
@@ -284,10 +325,12 @@ public class CTF {
 						int yRedStart = startingRed.getBlockY();
 						int zRedStart = startingRed.getBlockZ();
 						if(x == xRedStart && y == yRedStart && z == zRedStart) {
-							if(player.getInventory().getHelmet().getType() == Material.WOOL) {
+							if(passenger != null && passenger instanceof ArmorStand) {
 								// Score for the red team
-								MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has CAPTURED the enemy flag");
+								MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas CAPTURED the enemy flag");
 								addCapture(team);
+								armorStands.remove(passenger);
+								passenger.remove();
 								// Return blue flag
 								new DelayedTask(new Runnable() {
 									@Override
@@ -299,7 +342,7 @@ public class CTF {
 							}
 						} else {
 							// Return red flag
-							MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has RETURNED their flag");
+							MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas RETURNED their flag");
 							removeFlag(redTeam, false);
 							redFlag = startingRed;
 							spawnFlag(redTeam);
@@ -307,7 +350,7 @@ public class CTF {
 					} else if(team == blueTeam) {
 						// Remove the blue flag
 						player.setHealth(player.getMaxHealth());
-						MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has PICKED UP the enemy flag");
+						MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas PICKED UP the enemy flag");
 						redFlagPickedUp = true;
 						removeFlag(redTeam);
 						giveFlag(player, DyeColor.RED.getData());
@@ -318,10 +361,12 @@ public class CTF {
 						int yBlueStart = startingBlue.getBlockY();
 						int zBlueStart = startingBlue.getBlockZ();
 						if(x == xBlueStart && y == yBlueStart && z == zBlueStart) {
-							if(player.getInventory().getHelmet().getType() == Material.WOOL) {
+							if(passenger != null && passenger instanceof ArmorStand) {
 								// Score for the blue team
-								MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has CAPTURED the enemy flag");
+								MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas CAPTURED the enemy flag");
 								addCapture(team);
+								armorStands.remove(passenger);
+								passenger.remove();
 								// Return red flag
 								new DelayedTask(new Runnable() {
 									@Override
@@ -333,7 +378,7 @@ public class CTF {
 							}
 						} else {
 							// Return blue flag
-							MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has RETURNED their flag");
+							MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas RETURNED their flag");
 							removeFlag(blueTeam, false);
 							blueFlag = startingBlue;
 							spawnFlag(blueTeam);
@@ -341,16 +386,16 @@ public class CTF {
 					} else if(team == redTeam) {
 						// Remove the red flag
 						player.setHealth(player.getMaxHealth());
-						MessageHandler.alert(team.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has PICKED UP the enemy flag");
+						MessageHandler.alert(team.getPrefix() + player.getName() + " &ehas PICKED UP the enemy flag");
 						blueFlagPickedUp = true;
 						removeFlag(blueTeam);
 						giveFlag(player, DyeColor.BLUE.getData());
 					}
 				}
 			}
-			ItemStack helmet = player.getInventory().getHelmet();
-			if(helmet != null && helmet.getType() == Material.WOOL) {
-				byte data = player.getInventory().getHelmet().getData().getData();
+			if(passenger != null && passenger instanceof ArmorStand) {
+				ArmorStand armorStand = (ArmorStand) passenger;
+				byte data = armorStand.getHelmet().getData().getData();
 				if(data == DyeColor.RED.getData()) {
 					redFlag = event.getTo();
 				} else if(data == DyeColor.BLUE.getData()) {
@@ -397,9 +442,10 @@ public class CTF {
 	}
 	
 	public void dropFlag(Player player) {
-		ItemStack helmet = player.getInventory().getHelmet();
-		if(helmet != null && helmet.getType() == Material.WOOL) {
-			byte data = player.getInventory().getHelmet().getData().getData();
+		Entity passenger = player.getPassenger();
+		if(passenger != null && passenger instanceof ArmorStand) {
+			ArmorStand armorStand = (ArmorStand) passenger;
+			byte data = armorStand.getHelmet().getData().getData();
 			final Team team = data == DyeColor.RED.getData() ? redTeam : data == DyeColor.BLUE.getData() ? blueTeam : null;
 			Team enemyTeam = team == redTeam ? blueTeam : team == blueTeam ? redTeam : null;
 			if(team != null && enemyTeam != null) {

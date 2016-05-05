@@ -1,6 +1,4 @@
-package ostb.gameapi.games.pvpbattles.dom;
-
-import ostb.gameapi.games.pvpbattles.PVPBattles;
+package ostb.gameapi.games.pvpbattles;
 
 public class DOM extends PVPBattles {
 	public DOM() {
