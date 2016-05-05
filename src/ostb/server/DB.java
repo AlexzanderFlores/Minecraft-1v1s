@@ -134,7 +134,7 @@ public enum DB {
 				database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + table + " (" + query + ")").execute();
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		}
 	}
 	
@@ -154,7 +154,7 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getInt(1) > 0;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -173,7 +173,7 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getInt(1) > 0;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -198,7 +198,7 @@ public enum DB {
 				return resultSet.getInt(requested);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -219,7 +219,7 @@ public enum DB {
 				return resultSet.getInt(requested);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -232,7 +232,7 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + update + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -248,7 +248,7 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -260,7 +260,7 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + (update ? "1" : "0") + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -276,7 +276,7 @@ public enum DB {
 				return resultSet.getString(requested);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -297,7 +297,7 @@ public enum DB {
 				return resultSet.getString(requested);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -323,7 +323,7 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -345,7 +345,7 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -368,7 +368,7 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -381,7 +381,7 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + update + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -397,7 +397,7 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -411,7 +411,7 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getBoolean(requested);
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -428,7 +428,7 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -445,7 +445,7 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -466,7 +466,7 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -491,7 +491,7 @@ public enum DB {
 			}
 			return results;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -516,7 +516,7 @@ public enum DB {
 			}
 			return results;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement, resultSet);
 		}
@@ -529,7 +529,7 @@ public enum DB {
 			statement = getConnection().prepareStatement("DELETE FROM " + getName() + " WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -545,7 +545,7 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -565,7 +565,7 @@ public enum DB {
 			statement = getConnection().prepareStatement("DELETE FROM " + getName());
 			statement.execute();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -579,7 +579,7 @@ public enum DB {
 			return true;
 		} catch(SQLException e) {
 			if(!e.getMessage().startsWith("Duplicate entry")) {
-				e.printStackTrace();
+				Bukkit.getLogger().info(e.getMessage());
 			}
 		} finally {
 			close(statement);
@@ -594,7 +594,7 @@ public enum DB {
 			statement.execute();
 			return true;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		} finally {
 			close(statement);
 		}
@@ -612,7 +612,7 @@ public enum DB {
 				statement.close();
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		}
 	}
 	
@@ -622,7 +622,7 @@ public enum DB {
 				resultSet.close();
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			Bukkit.getLogger().info(e.getMessage());
 		}
 	}
 	
@@ -636,12 +636,13 @@ public enum DB {
 				if(connection == null || connection.isClosed()) {
 					ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/../db.yml");
 					String address = config.getConfig().getString("address");
+					int port = config.getConfig().getInt("port");
 					String user = config.getConfig().getString("user");
 					String password = config.getConfig().getString("password");
-					connection = DriverManager.getConnection("jdbc:mysql://" + address + ":3306/" + toString().toLowerCase(), user, password);
+					connection = DriverManager.getConnection("jdbc:mysql://" + address + ":" + port + "/" + toString().toLowerCase(), user, password);
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				
 			}
 		}
 		
