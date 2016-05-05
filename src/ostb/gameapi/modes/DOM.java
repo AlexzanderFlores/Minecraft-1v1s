@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -19,11 +18,11 @@ import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.customevents.game.GameStartingEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
-import ostb.player.Particles.ParticleTypes;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 
@@ -55,6 +54,10 @@ public class DOM implements Listener {
 			double pX = player.getLocation().getX();
 			double pZ = player.getLocation().getZ();
 			return Math.sqrt((x - pX) * (x - pX) + (z - pZ) * (z - pZ)) <= 10;
+		}
+		
+		public int getProgress() {
+			return progress;
 		}
 		
 		public void update() {
@@ -129,7 +132,7 @@ public class DOM implements Listener {
 			} else if(progress == -5) {
 				addScore(blueTeam);
 			}
-			String particle = "";
+			/*String particle = "";
 			if(wool.getData() == DyeColor.WHITE.getData()) {
 				particle = "fireworksSpark";
 			} else if(wool.getData() == DyeColor.RED.getData()) {
@@ -137,7 +140,7 @@ public class DOM implements Listener {
 			} else if(wool.getData() == DyeColor.BLUE.getData()) {
 				particle = "dripWater";
 			}
-			ParticleTypes.valueOf(particle).displaySpiral(new Location(wool.getWorld(), x, y, z), 10, 5);
+			ParticleTypes.valueOf(particle).displaySpiral(new Location(wool.getWorld(), x, y, z), 10, 5);*/
 		}
 	}
 	
@@ -180,13 +183,57 @@ public class DOM implements Listener {
 		}
 	}
 	
+	private int oldRedScore = 0;
+	private int oldBlueScore = 0;
+	private int oldRedCaptured = 0;
+	private int oldBlueCaptured = 0;
+	
+	private void updateSidebar() {
+		int redCaptured = 0;
+		int blueCaptured = 0;
+		for(CommandPost commandPost : commandPosts) {
+			if(commandPost.getProgress() == 5) {
+				++redCaptured;
+			} else if(commandPost.getProgress() == -5) {
+				++blueCaptured;
+			}
+		}
+		if(oldRedScore != redScore) {
+			oldRedScore = redScore;
+			OSTB.getSidebar().removeScore(15);
+		}
+		if(oldBlueScore != blueScore) {
+			oldBlueScore = blueScore;
+			OSTB.getSidebar().removeScore(15);
+		}
+		if(oldRedCaptured != redCaptured) {
+			oldRedCaptured = redCaptured;
+			OSTB.getSidebar().removeScore(11);
+		}
+		if(oldBlueCaptured != blueCaptured) {
+			oldBlueCaptured = blueCaptured;
+			OSTB.getSidebar().removeScore(11);
+		}
+		OSTB.getSidebar().setText("&eScores", 16);
+		OSTB.getSidebar().setText("&c" + redScore + "&7 - &b" + blueScore, 15);
+		OSTB.getSidebar().setText("&7Score Limit: " + scoreLimit, 14);
+		OSTB.getSidebar().setText("      ", 13);
+		OSTB.getSidebar().setText("&ePosts Captured", 12);
+		OSTB.getSidebar().setText("&c" + redCaptured + "&7 - &b" + blueCaptured + " ", 11);
+	}
+	
+	@EventHandler
+	public void onGameStarting(GameStartingEvent event) {
+		updateSidebar();
+	}
+	
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20) {
 			MiniGame miniGame = OSTB.getMiniGame();
 			GameStates gameState = miniGame.getGameState();
-			if(gameState == GameStates.STARTING && miniGame.getCounter() == 10) {
+			if(gameState == GameStates.STARTING && miniGame.getCounter() == 4) {
 				World world = miniGame.getMap();
 				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/command_posts.yml");
 				if(config.getFile().exists()) {
@@ -204,6 +251,7 @@ public class DOM implements Listener {
 				for(CommandPost commandPost : commandPosts) {
 					commandPost.update();
 				}
+				updateSidebar();
 			}
 		}
 	}

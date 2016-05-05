@@ -22,9 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
-import org.bukkit.util.Vector;
 
-import de.slikey.effectlib.util.ParticleEffect;
 import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -39,7 +37,6 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.TeamHandler;
 import ostb.player.MessageHandler;
 import ostb.server.tasks.DelayedTask;
-import ostb.server.util.CircleUtil;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
@@ -59,8 +56,6 @@ public class CTF implements Listener {
 	private Location startingBlue = null;
 	private Location redFlag = null;
 	private Location blueFlag = null;
-	private CircleUtil redParticles = null;
-	private CircleUtil blueParticles = null;
 	private boolean redFlagPickedUp = false;
 	private boolean blueFlagPickedUp = false;
 	private int standStillCounter = 0; // Used to count how many seconds both flags have been held
@@ -120,7 +115,7 @@ public class CTF implements Listener {
 				block.setData(color.getData());
 			}
 		}
-		if(team == redTeam) {
+		/*if(team == redTeam) {
 			if(redParticles != null) {
 				redParticles.delete();
 			}
@@ -140,7 +135,7 @@ public class CTF implements Listener {
 					ParticleEffect.DRIP_WATER.display(location.add(0, 2.20, 0), 20);
 				}
 			};
-		}
+		}*/
 	}
 	
 	private void removeFlag(Team team) {
@@ -219,10 +214,10 @@ public class CTF implements Listener {
 		OSTB.getSidebar().removeScore(14);
 		OSTB.getSidebar().removeScore(11);
 		OSTB.getSidebar().setText("     ", 16);
-		OSTB.getSidebar().setText("&eRed Captures:", 15);
+		OSTB.getSidebar().setText("&eRed Captures", 15);
 		OSTB.getSidebar().setText("&c" + redCaptures + "&7 / &c" + captureLimit, 14);
 		OSTB.getSidebar().setText("      ", 13);
-		OSTB.getSidebar().setText("&eBlue Captures:", 12);
+		OSTB.getSidebar().setText("&eBlue Captures", 12);
 		OSTB.getSidebar().setText("&b" + blueCaptures + "&7 / &b" + captureLimit, 11);
 	}
 	
@@ -304,12 +299,12 @@ public class CTF implements Listener {
 					standStillCounter = 0;
 				}
 			}
-			if(redParticles != null && redFlag != null) {
+			/*if(redParticles != null && redFlag != null) {
 				redParticles.setLocation(redFlag.clone());
 			}
 			if(blueParticles != null && blueFlag != null) {
 				blueParticles.setLocation(blueFlag.clone());
-			}
+			}*/
 		}
 	}
 	
@@ -420,7 +415,7 @@ public class CTF implements Listener {
 	}
 	
 	@EventHandler
-	public void onGameStarted(GameStartingEvent event) {
+	public void onGameStarting(GameStartingEvent event) {
 		updateSidebar();
 	}
 	
