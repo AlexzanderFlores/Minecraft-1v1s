@@ -184,7 +184,8 @@ public class CTF implements Listener {
 		ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
 		armorStand.setVisible(false);
 		armorStand.setCustomNameVisible(true);
-		armorStand.setCustomName(StringUtil.color("&6&l&nFlag"));
+		String color = data == DyeColor.RED.getData() ? "&c" : data == DyeColor.BLUE.getData() ? "&b" : "&6";
+		armorStand.setCustomName(StringUtil.color(color + "&l&nFlag"));
 		armorStand.setHelmet(new ItemStack(Material.WOOL, 1, data));
 		player.setPassenger(armorStand);
 		armorStands.add(armorStand);
@@ -316,7 +317,7 @@ public class CTF implements Listener {
 				int xBlue = blueFlag.getBlockX();
 				int yBlue = blueFlag.getBlockY();
 				int zBlue = blueFlag.getBlockZ();
-				Bukkit.getLogger().info(x + "," + y + "," + z + " vs " + xRed + "," + yRed + "," + zRed + " vs " + xBlue + "," + yBlue + "," + zBlue);
+				//Bukkit.getLogger().info(x + "," + y + "," + z + " vs " + xRed + "," + yRed + "," + zRed + " vs " + xBlue + "," + yBlue + "," + zBlue);
 				TeamHandler teamHandler = miniGame.getTeamHandler();
 				Team team = teamHandler.getTeam(player);
 				if(x == xRed && y == yRed && z == zRed) {
@@ -442,17 +443,23 @@ public class CTF implements Listener {
 	}
 	
 	public void dropFlag(Player player) {
+		Bukkit.getLogger().info("1");
 		Entity passenger = player.getPassenger();
 		if(passenger != null && passenger instanceof ArmorStand) {
+			Bukkit.getLogger().info("2");
 			ArmorStand armorStand = (ArmorStand) passenger;
 			byte data = armorStand.getHelmet().getData().getData();
+			armorStands.remove(armorStand);
+			armorStand.remove();
 			final Team team = data == DyeColor.RED.getData() ? redTeam : data == DyeColor.BLUE.getData() ? blueTeam : null;
 			Team enemyTeam = team == redTeam ? blueTeam : team == blueTeam ? redTeam : null;
 			if(team != null && enemyTeam != null) {
+				Bukkit.getLogger().info("3");
 				MessageHandler.alert(enemyTeam.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has DROPPED the enemy flag");
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {
+						Bukkit.getLogger().info("4");
 						if(team == redTeam) {
 							redFlagPickedUp = false;
 						} else if(team == blueTeam){
