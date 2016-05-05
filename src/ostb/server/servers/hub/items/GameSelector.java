@@ -145,7 +145,7 @@ public class GameSelector extends HubItemBase {
 					List<Integer> playerCounts = new ArrayList<Integer>();
 					List<Integer> maxPlayers = new ArrayList<Integer>();
 					int limit = plugin == Plugins.HUB ? 9 * 6 : 9;
-					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY server_number LIMIT " + limit).executeQuery();
+					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY server_number,listed_priority LIMIT " + limit).executeQuery();
 					int playing = 0;
 					while(resultSet.next()) {
 						priorities.add(resultSet.getInt("listed_priority"));
