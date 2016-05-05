@@ -78,10 +78,8 @@ public class ServerLogger implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20) {
-			if(!shuttingDown) {
-				updateStatus(false);
-			}
+		if(ticks == 20 && !shuttingDown) {
+			updateStatus(false);
 		}
 	}
 	

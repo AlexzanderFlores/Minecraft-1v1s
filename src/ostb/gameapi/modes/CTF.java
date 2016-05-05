@@ -30,6 +30,7 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameDeathEvent;
+import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame;
@@ -211,6 +212,18 @@ public class CTF implements Listener {
 				OSTB.getMiniGame().setGameState(GameStates.ENDING);
 			}
 		}
+		updateSidebar();
+	}
+	
+	private void updateSidebar() {
+		OSTB.getSidebar().removeScore(14);
+		OSTB.getSidebar().removeScore(11);
+		OSTB.getSidebar().setText("     ", 16);
+		OSTB.getSidebar().setText("&eRed Captures:", 15);
+		OSTB.getSidebar().setText("&c" + redCaptures + "&7 / &c" + captureLimit, 14);
+		OSTB.getSidebar().setText("      ", 13);
+		OSTB.getSidebar().setText("&eBlue Captures:", 12);
+		OSTB.getSidebar().setText("&b" + blueCaptures + "&7 / &b" + captureLimit, 11);
 	}
 	
 	@EventHandler
@@ -404,6 +417,11 @@ public class CTF implements Listener {
 				}
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onGameStarted(GameStartingEvent event) {
+		updateSidebar();
 	}
 	
 	@EventHandler

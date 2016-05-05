@@ -310,6 +310,14 @@ public abstract class MiniGame extends ProPlugin {
 		getGameState().enable();
 	}
 	
+	public GameStates getOldGameState() {
+		return this.oldState;
+	}
+	
+	public void setOldGameState(GameStates oldState) {
+		this.oldState = oldState;
+	}
+	
 	public TeamHandler getTeamHandler() {
 		return teamHandler;
 	}
@@ -325,8 +333,8 @@ public abstract class MiniGame extends ProPlugin {
 				if(getGameState() != GameStates.WAITING) {
 					removeScore(5);
 				}
-				if(getGameState() != oldState) {
-					oldState = getGameState();
+				if(getGameState() != getOldGameState()) {
+					setOldGameState(getGameState());
 					removeScore(6);
 				}
 				int size = ProPlugin.getPlayers().size();
