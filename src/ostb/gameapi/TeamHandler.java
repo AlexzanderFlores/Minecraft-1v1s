@@ -206,16 +206,18 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
 		Player player = event.getPlayer();
-		if(Ranks.PREMIUM.hasRank(player)) {
-			ItemStack item = player.getItemInHand();
-			if(item != null && item.equals(this.item)) {
-				Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-				inventory.setItem(11, new ItemCreator(Material.WOOL, DyeColor.RED.getData()).setName("&cRed Team").getItemStack());
-				inventory.setItem(15, new ItemCreator(Material.WOOL, DyeColor.BLUE.getData()).setName("&bBlue Team").getItemStack());
-				player.openInventory(inventory);
+		ItemStack item = player.getItemInHand();
+		if(item.equals(this.item)) {
+			if(Ranks.PREMIUM.hasRank(player)) {
+				if(item != null && item.equals(this.item)) {
+					Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
+					inventory.setItem(11, new ItemCreator(Material.WOOL, DyeColor.RED.getData()).setName("&cRed Team").getItemStack());
+					inventory.setItem(15, new ItemCreator(Material.WOOL, DyeColor.BLUE.getData()).setName("&bBlue Team").getItemStack());
+					player.openInventory(inventory);
+				}
+			} else {
+				MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
 			}
-		} else {
-			MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
 		}
 	}
 	
