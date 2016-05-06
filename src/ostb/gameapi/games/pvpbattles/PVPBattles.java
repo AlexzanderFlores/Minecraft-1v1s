@@ -7,6 +7,7 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TeamHandler;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
@@ -28,6 +29,8 @@ public class PVPBattles extends MiniGame {
 		new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES);
 		CoinsHandler.setKillCoins(20);
 		CoinsHandler.setWinCoins(75);
+		new StatsHandler(DB.PLAYERS_STATS_PVP_BATTLES, DB.PLAYERS_STATS_PVP_BATTLES_MONTHLY, DB.PLAYERS_STATS_PVP_BATTLES_WEEKLY);
+		StatsHandler.setEloDB(DB.PLAYERS_PVP_BATTLES_ELO);
 		new Ranking();
 		new Events();
 		new BelowNameHealthScoreboardUtil();

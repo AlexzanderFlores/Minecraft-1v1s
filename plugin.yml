@@ -52,18 +52,18 @@ commands:
     usage: /shout <message>
 
   spawn:
-    description: Teleports a player to the spawn of their world
     usage: /spawn
+
+  stats:
+    usage: /stats [name]
 
   report:
     usage: /report <name> <reason>
 
   reports:
-    description: Displays open reports
     usage: /reports
 
   closeReport:
-    description: Closes a report
     usage: /closeReport <id>
 
   vote:

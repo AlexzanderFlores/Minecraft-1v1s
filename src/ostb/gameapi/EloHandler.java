@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
@@ -24,7 +25,15 @@ public class EloHandler implements Listener {
 		new CommandBase("elo", 0, 1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				String target = arguments.length == 0 ? sender.getName() : arguments[0];
+				String target = null;
+				if(arguments.length == 0) {
+					target = sender.getName();
+				} else if(Ranks.PREMIUM_PLUS.hasRank(sender)) {
+					target = arguments[0];
+				} else {
+					MessageHandler.sendMessage(sender, Ranks.PREMIUM_PLUS.getNoPermission());
+					return true;
+				}
 				if(elo.containsKey(target)) {
 					MessageHandler.sendMessage(sender, target + " has an elo of &e" + elo.get(target));
 				} else {
@@ -32,7 +41,7 @@ public class EloHandler implements Listener {
 				}
 				return true;
 			}
-		};
+		}.setRequiredRank(Ranks.PREMIUM);
 		EventUtil.register(this);
 	}
 	
@@ -73,7 +82,7 @@ public class EloHandler implements Listener {
 		UUID uuid = event.getUUID();
 		String name = event.getName();
 		if(elo.containsKey(name)) {
-			final DB db = StatsHandler.getEloDB();
+			DB db = StatsHandler.getEloDB();
 			if(db != null) {
 				int amount = elo.get(name);
 				if(db.isUUIDSet(uuid)) {

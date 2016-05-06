@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -19,6 +18,7 @@ import npc.util.EventUtil;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.gameapi.EloHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -66,12 +66,10 @@ public class Ranking implements Listener {
 		}
 	};
 	private static Map<UUID, EloRank> eloRanks = null;
-	private static Map<UUID, Integer> elos = null;
 	private List<ItemFrame> frames = null;
 	
 	public Ranking() {
 		eloRanks = new HashMap<UUID, EloRank>();
-		elos = new HashMap<UUID, Integer>();
 		frames = new ArrayList<ItemFrame>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
 		frames.addAll(new ImageMap(ImageMap.getItemFrame(14, 7, -2), path).getItemFrames());
@@ -81,16 +79,6 @@ public class Ranking implements Listener {
 			public void run() {
 				DB table = DB.PLAYERS_PVP_BATTLES_ELO;
 				int size = table.getSize();
-				if(size == 0) {
-					Random random = new Random();
-					List<String> uuids = DB.PLAYERS_COINS_PVP_BATTLES.getAllStrings("uuid");
-					for(String uuid : uuids) {
-						table.insert("'" + uuid + "', '" + (random.nextInt(2000) + 1) + "'");
-					}
-					for(int a = 0; a <= 1234; ++a) {
-						table.insert("'" + UUID.randomUUID().toString() + "', '" + (random.nextInt(2000) + 1) + "'");
-					}
-				}
 				for(EloRank eloRank : EloRank.values()) {
 					int start = 0;
 					int end = (int) (size * eloRank.getPercentage());
@@ -100,7 +88,6 @@ public class Ranking implements Listener {
 						required = Integer.valueOf(result.get(result.size() - 1));
 					}
 					eloRank.setRequired(required);
-					MessageHandler.alert(eloRank.getPrefix() + "'s required elo value is " + eloRank.getRequired());
 				}
 			}
 		});
@@ -122,9 +109,9 @@ public class Ranking implements Listener {
 		if(frames.contains(event.getItemFrame())) {
 			Player player = event.getPlayer();
 			EloRank rank = getRank(player);
-			MessageHandler.sendMessage(player, "You are within the percent range for " + rank.getPrefix() + " (Top " + rank.getDisplayPercentage() + "%)");
+			MessageHandler.sendMessage(player, "You are within the percent range for " + rank.getPrefix() + " &x(Top &c" + rank.getDisplayPercentage() + "%&x)");
 			if(Ranks.PREMIUM.hasRank(player)) {
-				MessageHandler.sendMessage(player, "Your exact Elo value is &e" + elos.get(player.getUniqueId()));
+				MessageHandler.sendMessage(player, "Your exact Elo value is &e" + EloHandler.getElo(player));
 			} else {
 				MessageHandler.sendMessage(player, "&cTo view your exact Elo value you must have " + Ranks.PREMIUM.getPrefix());
 			}
@@ -135,18 +122,15 @@ public class Ranking implements Listener {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
-		int elo = 1400;
+		int elo = 1000;
 		if(DB.PLAYERS_PVP_BATTLES_ELO.isUUIDSet(uuid)) {
 			elo = DB.PLAYERS_PVP_BATTLES_ELO.getInt("uuid", uuid.toString(), "elo");
-			elos.put(uuid, elo);
-		} else {
-			elos.put(uuid, elo);
 		}
+		EloHandler.add(player, elo);
 		EloRank rank = EloRank.BRONZE;
 		EloRank [] ranks = EloRank.values();
 		for(int a = ranks.length - 1; a >= 0; --a) {
 			EloRank eloRank = ranks[a];
-			Bukkit.getLogger().info(elo + " vs " + eloRank.getRequired() + " for " + eloRank.getPrefix());
 			if(elo >= eloRank.getRequired()) {
 				rank = eloRank;
 				break;

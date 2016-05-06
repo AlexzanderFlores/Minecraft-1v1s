@@ -24,6 +24,7 @@ import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
@@ -204,15 +205,13 @@ public class StatsHandler implements Listener {
 	private static boolean viewOnly = false;
 	
 	public StatsHandler(DB table) {
-		this(table, null);
+		this(table, null, null);
 	}
 	
-	public StatsHandler(DB table, DB monthly) {
-		if(OSTB.getMiniGame() != null) {
-			return;
-		}
+	public StatsHandler(DB table, DB monthly, DB weekly) {
 		StatsHandler.table = table;
 		StatsHandler.monthly = monthly;
+		StatsHandler.weekly = weekly;
 		if(table == null) {
 			new CommandBase("stats", -1) {
 				@Override
@@ -227,7 +226,6 @@ public class StatsHandler implements Listener {
 			losses = "Losses";
 			kills = "Kills";
 			deaths = "Deaths";
-			//TODO: Make this an inventory with 3 items, 1 for lifetime, 1 for monthly, 1 for weekly
 			new CommandBase("stats", 0, 1) {
 				@Override
 				public boolean execute(CommandSender sender, String[] arguments) {
@@ -240,8 +238,11 @@ public class StatsHandler implements Listener {
 							MessageHandler.sendUnknownCommand(sender);
 							return true;
 						}
-					} else {
+					} else if(Ranks.PREMIUM_PLUS.hasRank(sender)) {
 						name = arguments[0];
+					} else {
+						MessageHandler.sendMessage(sender, Ranks.PREMIUM_PLUS.getNoPermission());
+						return true;
 					}
 					Player player = ProPlugin.getPlayer(name);
 					if(player == null) {
@@ -249,26 +250,29 @@ public class StatsHandler implements Listener {
 					} else {
 						loadStats(player);
 						MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player, false) + "'s Statistics:");
-						MessageHandler.sendMessage(sender, "Key: &cLifetime Stats &7/ &bMonthly Stats");
+						MessageHandler.sendMessage(sender, "Key: &cLifetime Stats &7/ &bMonthly Stats &7/ &bWeekly Stats");
 						if(!gameStats.containsKey(player.getName())) {
 							loadStats(player);
 						}
 						GameStats stats = gameStats.get(player.getName());
-						MessageHandler.sendMessage(sender, "&e" + wins + ": &c" + stats.getWins() + " &7/ &b" + stats.getMonthlyWins());
-						MessageHandler.sendMessage(sender, "&e" + losses + ": &c" + stats.getLosses() + " &7/ &b" + stats.getMonthlyLosses());
-						MessageHandler.sendMessage(sender, "&e" + kills + ": &c" + stats.getKills() + " &7/ &b" + stats.getMonthlyKills());
-						MessageHandler.sendMessage(sender, "&e" + deaths + ": &c" + stats.getDeaths() + " &7/ &b" + stats.getMonthlyDeaths());
+						MessageHandler.sendMessage(sender, "&e" + wins + ": &c" + stats.getWins() + " &7/ &b" + stats.getMonthlyWins() + " &7/ &a" + stats.getWeeklyWins());
+						MessageHandler.sendMessage(sender, "&e" + losses + ": &c" + stats.getLosses() + " &7/ &b" + stats.getMonthlyLosses() + " &7/ &a" + stats.getWeeklyLosses());
+						MessageHandler.sendMessage(sender, "&e" + kills + ": &c" + stats.getKills() + " &7/ &b" + stats.getMonthlyKills() + " &7/ &a" + stats.getWeeklyKills());
+						MessageHandler.sendMessage(sender, "&e" + deaths + ": &c" + stats.getDeaths() + " &7/ &b" + stats.getMonthlyDeaths() + " &7/ &a" + stats.getWeeklyDeaths());
 						double kills = (double) gameStats.get(player.getName()).getKills();
 						double deaths = (double) gameStats.get(player.getName()).getDeaths();
 						double monthlyKills = (double) gameStats.get(player.getName()).getMonthlyKills();
 						double monthlyDeaths = (double) gameStats.get(player.getName()).getMonthlyDeaths();
+						double weeklyKills = (double) gameStats.get(player.getName()).getWeeklyKills();
+						double weeklyDeaths = (double) gameStats.get(player.getName()).getWeeklyDeaths();
 						double kdr = (kills == 0 || deaths == 0 ? 0 : DoubleUtil.round(kills / deaths, 2));
 						double monthlyKdr = (monthlyKills == 0 || monthlyDeaths == 0 ? 0 : DoubleUtil.round(monthlyKills / monthlyDeaths, 2));
-						MessageHandler.sendMessage(sender, "&eKDR: &c" + kdr + " &7/ &b" + monthlyKdr);
+						double weeklyKdr = (weeklyKills == 0 || weeklyDeaths == 0 ? 0 : DoubleUtil.round(weeklyKills / weeklyDeaths, 2));
+						MessageHandler.sendMessage(sender, "&eKDR: &c" + kdr + " &7/ &b" + monthlyKdr + " &7/ &a" + weeklyKdr);
 					}
 					return true;
 				}
-			};
+			}.setRequiredRank(Ranks.PREMIUM);
 			EventUtil.register(this);
 		}
 	}
