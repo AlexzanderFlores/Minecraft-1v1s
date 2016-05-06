@@ -22,13 +22,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
 import ostb.OSTB;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -129,25 +128,11 @@ public class VotingHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if(event.getEntity() instanceof ItemFrame && event.getDamager() instanceof Player) {
-			ItemFrame itemFrame = (ItemFrame) event.getEntity();
-			if(itemFrames.containsKey(itemFrame)) {
-				String map = itemFrames.get(itemFrame);
-				Player player = (Player) event.getDamager();
-				vote(player, map);
-			}
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if(event.getRightClicked() instanceof ItemFrame) {
-			ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
-			if(itemFrames.containsKey(itemFrame)) {
-				String map = itemFrames.get(itemFrame);
-				vote(event.getPlayer(), map);
-			}
+	public void onPlayerItemFrameInteract(PlayerItemFrameInteractEvent event) {
+		ItemFrame itemFrame = event.getItemFrame();
+		if(itemFrames.containsKey(itemFrame)) {
+			String map = itemFrames.get(itemFrame);
+			vote(event.getPlayer(), map);
 		}
 	}
 	

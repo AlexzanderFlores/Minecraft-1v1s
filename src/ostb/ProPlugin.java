@@ -81,6 +81,7 @@ import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerHeadshotEvent;
+import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
@@ -896,7 +897,11 @@ public class ProPlugin extends CountDownUtil implements Listener {
 			if(!getAllowHangingBreakByEntity()) {
 				event.setCancelled(true);
 			}
-			//event.setCancelled(!getAllowHangingBreakByEntity());
+			if(event.getDamager() instanceof Player) {
+				Player player = (Player) event.getDamager();
+				ItemFrame itemFrame = (ItemFrame) event.getEntity();
+				Bukkit.getPluginManager().callEvent(new PlayerItemFrameInteractEvent(player, itemFrame));
+			}
 		} else if(!getAllowEntityDamageByEntities()) {
 			event.setCancelled(true);
 		}
@@ -983,8 +988,12 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if(event.getRightClicked() instanceof ItemFrame && !getAllowHangingBreakByEntity()) {
-			event.setCancelled(true);
+		if(event.getRightClicked() instanceof ItemFrame) {
+			ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
+			Bukkit.getPluginManager().callEvent(new PlayerItemFrameInteractEvent(event.getPlayer(), itemFrame));
+			if(!getAllowHangingBreakByEntity()) {
+				event.setCancelled(true);
+			}
 		}
 	}
 	

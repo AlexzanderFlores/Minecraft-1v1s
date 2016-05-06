@@ -456,10 +456,8 @@ public class CTF implements Listener {
 	}
 	
 	public void dropFlag(Player player) {
-		Bukkit.getLogger().info("1");
 		Entity passenger = player.getPassenger();
 		if(passenger != null && passenger instanceof ArmorStand) {
-			Bukkit.getLogger().info("2");
 			ArmorStand armorStand = (ArmorStand) passenger;
 			byte data = armorStand.getHelmet().getData().getData();
 			armorStands.remove(armorStand);
@@ -467,12 +465,10 @@ public class CTF implements Listener {
 			final Team team = data == DyeColor.RED.getData() ? redTeam : data == DyeColor.BLUE.getData() ? blueTeam : null;
 			Team enemyTeam = team == redTeam ? blueTeam : team == blueTeam ? redTeam : null;
 			if(team != null && enemyTeam != null) {
-				Bukkit.getLogger().info("3");
-				MessageHandler.alert(enemyTeam.getPrefix() + " " + player.getName() + ChatColor.YELLOW + " has DROPPED the enemy flag");
+				MessageHandler.alert(enemyTeam.getPrefix() + player.getName() + " &ehas DROPPED the enemy flag");
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {
-						Bukkit.getLogger().info("4");
 						if(team == redTeam) {
 							redFlagPickedUp = false;
 						} else if(team == blueTeam){

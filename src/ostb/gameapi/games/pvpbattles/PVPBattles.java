@@ -1,23 +1,36 @@
 package ostb.gameapi.games.pvpbattles;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
+import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.TeamHandler;
 import ostb.player.CoinsHandler;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.util.CountDownUtil;
+import ostb.server.util.ImageMap;
 
 public class PVPBattles extends MiniGame {
 	private int lastRedSize = -1;
 	private int lastBlueSize = -1;
+	private List<ItemFrame> frames = null;
 	
 	public PVPBattles(String name) {
 		super(name);
@@ -30,6 +43,10 @@ public class PVPBattles extends MiniGame {
 		CoinsHandler.setWinCoins(75);
 		new Events();
 		new BelowNameHealthScoreboardUtil();
+		frames = new ArrayList<ItemFrame>();
+		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(14, 7, -2), path).getItemFrames());
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(-14, 7, 2), path).getItemFrames());
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
@@ -73,5 +90,18 @@ public class PVPBattles extends MiniGame {
 				super.update();
 			}
 		});
+	}
+	
+	@EventHandler
+	public void onPlayerItemFrameInteract(PlayerItemFrameInteractEvent event) {
+		if(frames.contains(event.getItemFrame())) {
+			Player player = event.getPlayer();
+			MessageHandler.sendMessage(player, "You are within the percent range for BRONZE (" + (new Random().nextInt(100) + 1) + "%)");
+			if(Ranks.PREMIUM.hasRank(player)) {
+				MessageHandler.sendMessage(player, "Your exact Elo value is XXXX");
+			} else {
+				MessageHandler.sendMessage(player, "&cTo view your exact Elo value you must have " + Ranks.PREMIUM.getPrefix());
+			}
+		}
 	}
 }
