@@ -104,6 +104,8 @@ public class MiniGameEvents implements Listener {
 			if(getMiniGame().getCounter() > 0) {
 				getMiniGame().decrementCounter();
 			}
+		} else if(ticks == 20 * 60 * 5 && Bukkit.getOnlinePlayers().isEmpty()) {
+			ProPlugin.restartServer();
 		}
 	}
 	

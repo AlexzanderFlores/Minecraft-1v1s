@@ -37,6 +37,7 @@ public enum DB {
 	PLAYERS_KITS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), kit VARCHAR(40), PRIMARY KEY(id)"),
 	PLAYERS_DEFAULT_KITS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), game VARCHAR(25), type VARCHAR(25), kit VARCHAR(40), PRIMARY KEY(id)"),
 	// Statistics
+	PLAYERS_PVP_BATTLES_ELO("uuid VARCHAR(40), elo INT, PRIMARY KEY(uuid)"),
 	PLAYERS_STAT_RESETS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Votes
 	PLAYERS_LIFETIME_VOTES("uuid VARCHAR(40), amount INT, day INT, streak INT, highest_streak INT, PRIMARY KEY(uuid)"),
@@ -509,6 +510,31 @@ public enum DB {
 		try {
 			String desc = descending ? " DESC " : " ASC ";
 			String max = limit > 0 ? " LIMIT " + limit : "";
+			statement = getConnection().prepareStatement("SELECT " + requested + " FROM " + getName() + " ORDER BY " + orderBy + desc + max);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				results.add(resultSet.getString(requested));
+			}
+			return results;
+		} catch(SQLException e) {
+			Bukkit.getLogger().info(e.getMessage());
+		} finally {
+			close(statement, resultSet);
+		}
+		return null;
+	}
+	
+	public List<String> getOrdered(String orderBy, String requested, int [] limit) {
+		return getOrdered(orderBy, requested, limit, false);
+	}
+	
+	public List<String> getOrdered(String orderBy, String requested, int [] limit, boolean descending) {
+		List<String> results = new ArrayList<String>();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		try {
+			String desc = descending ? " DESC " : " ASC ";
+			String max = limit[0] >= 0 && limit[1] >= 0 ? " LIMIT " + limit[0] + "," + limit[1] : "";
 			statement = getConnection().prepareStatement("SELECT " + requested + " FROM " + getName() + " ORDER BY " + orderBy + desc + max);
 			resultSet = statement.executeQuery();
 			while(resultSet.next()) {
