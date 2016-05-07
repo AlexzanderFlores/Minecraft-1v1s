@@ -24,6 +24,7 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -81,6 +82,16 @@ public class GeneralEvents implements Listener {
 			IChatBaseComponent footer = ChatSerializer.a(TextConverter.convert(StringUtil.color(bottom)));
 			craftPlayer.getHandle().playerConnection.sendPacket(new PacketTabHeader(header, footer));
 		}*/
+	}
+	
+	@EventHandler
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		MessageHandler.sendMessage(player, "");
+		MessageHandler.sendMessage(player, "&4&lTHIS IS BETA");
+		MessageHandler.sendMessage(player, "Expect lag and bugs. Please report any problems here:");
+		MessageHandler.sendMessage(player, "&a&lhttps://twitter.com/OSTBNetwork");
+		MessageHandler.sendMessage(player, "");
 	}
 	
 	@EventHandler
