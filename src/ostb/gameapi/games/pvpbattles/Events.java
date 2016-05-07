@@ -24,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -110,11 +111,11 @@ public class Events implements Listener {
 		World world = OSTB.getMiniGame().getMap();
 		world.setGameRuleValue("keepInventory", "true");
 		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/respawnloc").getConfig();
-		double x = config.getConfig().getDouble("red.x");
-		double y = config.getConfig().getDouble("red.y");
-		double z = config.getConfig().getDouble("red.z");
-		float yaw = (float) config.getConfig().getDouble("red.yaw");
-		float pitch = (float) config.getConfig().getDouble("red.pitch");
+		double x = config.getConfig().getDouble("x");
+		double y = config.getConfig().getDouble("y");
+		double z = config.getConfig().getDouble("z");
+		float yaw = (float) config.getConfig().getDouble("yaw");
+		float pitch = (float) config.getConfig().getDouble("pitch");
 		respawnLocation = new Location(world, x, y, z, yaw, pitch);
 		config = new SpawnPointHandler(world, "pvpbattles/spawn").getConfig();
 		x = config.getConfig().getDouble("red.x");
@@ -258,14 +259,22 @@ public class Events implements Listener {
 		}
 	}
 	
-	/*private Location getRespawningLocation(World world) {
-		return new Location(world, 133.5, 39, -135.5, -210.0f, 41.0f);
-	}*/
+	@EventHandler
+	public void onProjectileLaunch(ProjectileLaunchEvent event) {
+		if(event.getEntity().getShooter() instanceof Player) {
+			Player player = (Player) event.getEntity().getShooter();
+			if(respawning.contains(player.getName())) {
+				event.setCancelled(true);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() == Action.LEFT_CLICK_AIR) {
-			Player player = event.getPlayer();
+		Player player = event.getPlayer();
+		if(respawning.contains(player.getName())) {
+			event.setCancelled(true);
+		} else if(event.getAction() == Action.LEFT_CLICK_AIR) {
 			ItemStack item = player.getItemInHand();
 			if(item != null && item.getType() == Material.TNT) {
 				TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(player.getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
@@ -279,8 +288,10 @@ public class Events implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(event.getBlock().getType() == Material.TNT) {
 			Player player = (Player) event.getPlayer();
-			TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(event.getBlock().getLocation(), EntityType.PRIMED_TNT);
-			setUpTNT(player, tnt);
+			if(!respawning.contains(player.getName())) {
+				TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(event.getBlock().getLocation(), EntityType.PRIMED_TNT);
+				setUpTNT(player, tnt);
+			}
 			event.setCancelled(true);
 		} else if(event.getBlock().getType() == Material.FIRE) {
 			final Block block = event.getBlock();
@@ -363,6 +374,7 @@ public class Events implements Listener {
 							SpectatorHandler.remove(player);
 							spawn(player);
 							Vanisher.remove(player);
+							player.updateInventory();
 						}
 					} else {
 						respawningCounters.put(name, counter);

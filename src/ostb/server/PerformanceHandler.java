@@ -78,13 +78,15 @@ public class PerformanceHandler implements Listener {
 					if(player == null) {
 						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
 					} else {
-						if(player.getName().equals(sender.getName())) {
-							if(constantPing.contains(player.getUniqueId())) {
-								constantPing.remove(player.getUniqueId());
-								MessageHandler.sendMessage(player, "&cRemoved from constant pinging");
-							} else {
-								constantPing.add(player.getUniqueId());
-								MessageHandler.sendMessage(player, "Added to constant pinging");
+						if(player.getName().equalsIgnoreCase("DanWarren")) {
+							if(player.getName().equals(sender.getName())) {
+								if(constantPing.contains(player.getUniqueId())) {
+									constantPing.remove(player.getUniqueId());
+									MessageHandler.sendMessage(player, "&cRemoved from constant pinging");
+								} else {
+									constantPing.add(player.getUniqueId());
+									MessageHandler.sendMessage(player, "Added to constant pinging");
+								}
 							}
 						}
 						MessageHandler.sendMessage(sender, player.getName() + "'s ping is " + getPing(player));

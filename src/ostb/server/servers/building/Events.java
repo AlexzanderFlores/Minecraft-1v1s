@@ -108,7 +108,7 @@ public class Events implements Listener {
 		}
 	}
 	
-	@EventHandler
+	//@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.getRightClicked() instanceof ItemFrame) {
 			ItemFrame itemFrame = (ItemFrame) event.getRightClicked();

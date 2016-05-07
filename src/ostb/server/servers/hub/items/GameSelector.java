@@ -302,6 +302,7 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.SUHCNK);
 		inventory.setItem(32, item);
+		//ItemUtil.addEnchantGlassPaneIncrement(inventory);
 		player.openInventory(inventory);
 	}
 	

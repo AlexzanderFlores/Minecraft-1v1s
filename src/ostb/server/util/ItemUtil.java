@@ -50,6 +50,30 @@ public class ItemUtil {
 		return size;
 	}
 	
+	public static void addEnchantGlassPaneIncrement(Inventory inventory) {
+		byte data = 0;
+		for(int a = 0; a < inventory.getSize(); ++a) {
+			ItemStack itemStack = inventory.getItem(a);
+			if(itemStack == null || itemStack.getType() == Material.AIR) {
+				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data++).setGlow(true).getItemStack();
+				if(data > 15) {
+					data = 0;
+				}
+				inventory.setItem(a, itemStack);
+			}
+		}
+	}
+	
+	public static void addEnchantGlassPane(Inventory inventory, byte data) {
+		for(int a = 0; a < inventory.getSize(); ++a) {
+			ItemStack itemStack = inventory.getItem(a);
+			if(itemStack == null || itemStack.getType() == Material.AIR) {
+				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).getItemStack();
+				inventory.setItem(a, itemStack);
+			}
+		}
+	}
+	
 	public static Inventory getPlayerSelector(Player player, String name) {
 		return getPlayerSelector(player, name, false);
 	}
