@@ -137,6 +137,11 @@ public class Ranking implements Listener {
 			}
 		}
 		eloRanks.put(uuid, rank);
+		if(DB.PLAYERS_PVP_BATTLES_RANK.isUUIDSet(uuid)) {
+			DB.PLAYERS_PVP_BATTLES_RANK.updateString("rank", rank.toString(), "uuid", uuid.toString());
+		} else {
+			DB.PLAYERS_PVP_BATTLES_RANK.insert("'" + uuid.toString() + "', '" + rank.toString() + "'");
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

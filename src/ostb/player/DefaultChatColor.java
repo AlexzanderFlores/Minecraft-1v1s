@@ -2,6 +2,7 @@ package ostb.player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
@@ -77,17 +77,22 @@ public class DefaultChatColor implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(name)) {
-			final Player player = event.getPlayer();
+			Player player = event.getPlayer();
+			final UUID uuid = player.getUniqueId();
 			final String color = ChatColor.stripColor(event.getItem().getItemMeta().getLore().get(0)).replace("Color Code: ", "");
 			colors.put(player.getName(), color);
 			MessageHandler.sendMessage(player, "You selected color code&" + color + " " + color);
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
-					if(DB.PLAYERS_CHAT_COLOR.isUUIDSet(player.getUniqueId())) {
-						DB.PLAYERS_CHAT_COLOR.updateString("color", color, "uuid", player.getUniqueId().toString());
+					if(color.equals("f")) {
+						DB.PLAYERS_CHAT_COLOR.deleteUUID(uuid);
 					} else {
-						DB.PLAYERS_CHAT_COLOR.insert("'" + player.getUniqueId().toString() + "', '" + color + "'");
+						if(DB.PLAYERS_CHAT_COLOR.isUUIDSet(uuid)) {
+							DB.PLAYERS_CHAT_COLOR.updateString("color", color, "uuid", uuid.toString());
+						} else {
+							DB.PLAYERS_CHAT_COLOR.insert("'" + uuid.toString() + "', '" + color + "'");
+						}
 					}
 				}
 			});
@@ -96,7 +101,7 @@ public class DefaultChatColor implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		if(Ranks.PREMIUM_PLUS.hasRank(player)) {
@@ -107,7 +112,10 @@ public class DefaultChatColor implements Listener {
 					colors.put(player.getName(), "f");
 				}
 			}
-			event.setFormat(event.getFormat().replace(event.getMessage(), StringUtil.color("&" + colors.get(player.getName())) + event.getMessage()));
+			String format = event.getFormat();
+			String prefix = format.split(":")[0] + ": ";
+			String message = StringUtil.color("&" + colors.get(player.getName())) + format.replace(prefix, "");
+			event.setFormat(prefix + message);
 		}
 	}
 	
