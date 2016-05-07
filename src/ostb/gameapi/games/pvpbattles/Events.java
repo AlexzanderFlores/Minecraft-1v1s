@@ -47,6 +47,7 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
+import ostb.gameapi.EloHandler;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpawnPointHandler;
@@ -187,7 +188,7 @@ public class Events implements Listener {
 					}
 				}
 			}
-		});
+		}, 2);
 	}
 	
 	@EventHandler
@@ -230,6 +231,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameKill(GameKillEvent event) {
 		new LevelGiver(event.getPlayer());
+		EloHandler.calculateWin(event.getPlayer(), event.getKilled(), false);
 	}
 	
 	@EventHandler

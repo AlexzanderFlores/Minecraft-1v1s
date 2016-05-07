@@ -73,26 +73,17 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
-		Bukkit.getLogger().info("");
-		Bukkit.getLogger().info("1");
-		Bukkit.getLogger().info("");
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				String target = "";
 				for(int a = 0; a < max; ++a) {
-					target = getPath() + "/world" + a + ".zip";
+					target = getPath() + "world" + a + ".zip";
 					if(!new File(target).exists()) {
 						break;
 					}
 				}
-				Bukkit.getLogger().info("");
-				Bukkit.getLogger().info(target);
-				Bukkit.getLogger().info("");
 				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
-				Bukkit.getLogger().info("");
-				Bukkit.getLogger().info("2");
-				Bukkit.getLogger().info("");
 				ProPlugin.restartServer();
 			}
 		}, 20 * 3);

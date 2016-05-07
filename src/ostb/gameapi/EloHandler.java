@@ -45,7 +45,7 @@ public class EloHandler implements Listener {
 		EventUtil.register(this);
 	}
 	
-	public static void calculateWin(Player winner, Player loser) {
+	public static void calculateWin(Player winner, Player loser, boolean display) {
 		int elo1 = getElo(loser);
 		int elo2 = getElo(winner);
 		int K = 32;
@@ -58,13 +58,15 @@ public class EloHandler implements Listener {
 		//int draw = (int) Math.round(K * (0.5 - percentage));
 		int winnerResult = add(winner, amount);
 		int loserResult = add(loser, -amount);
-		String newWinner = AccountHandler.getPrefix(winner) + " &6" + winnerResult + " &a(+" + amount + ")";
-		String newLoser = AccountHandler.getPrefix(loser) + " &6" + loserResult + " &c(" + amount * -1 + ")";
-		for(Player player : new Player [] {winner, loser}) {
-			MessageHandler.sendLine(player);
-			MessageHandler.sendMessage(player, newWinner);
-			MessageHandler.sendMessage(player, newLoser);
-			MessageHandler.sendLine(player);
+		if(display) {
+			String newWinner = AccountHandler.getPrefix(winner) + " &6" + winnerResult + " &a(+" + amount + ")";
+			String newLoser = AccountHandler.getPrefix(loser) + " &6" + loserResult + " &c(" + amount * -1 + ")";
+			for(Player player : new Player [] {winner, loser}) {
+				MessageHandler.sendLine(player);
+				MessageHandler.sendMessage(player, newWinner);
+				MessageHandler.sendMessage(player, newLoser);
+				MessageHandler.sendLine(player);
+			}
 		}
 	}
 	
@@ -86,7 +88,7 @@ public class EloHandler implements Listener {
 			if(db != null) {
 				int amount = elo.get(name);
 				if(db.isUUIDSet(uuid)) {
-					db.updateInt("amount", amount, "uuid", uuid.toString());
+					db.updateInt("elo", amount, "uuid", uuid.toString());
 				} else {
 					db.insert("'" + uuid.toString() + "', '" + amount + "'");
 				}
