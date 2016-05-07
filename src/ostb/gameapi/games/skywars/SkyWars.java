@@ -3,6 +3,7 @@ package ostb.gameapi.games.skywars;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.StatsHandler;
 import ostb.gameapi.games.skywars.mapeffects.Frozen;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
@@ -18,6 +19,7 @@ public class SkyWars extends MiniGame {
 		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW);
 		CoinsHandler.setKillCoins(2);
 		CoinsHandler.setWinCoins(10);
+		new StatsHandler(DB.PLAYERS_STATS_SKY_WARS, DB.PLAYERS_STATS_SKY_WARS_MONTHLY, DB.PLAYERS_STATS_SKY_WARS_WEEKLY);
 		new BelowNameHealthScoreboardUtil();
 		new Events();
 		new ChestHandler();

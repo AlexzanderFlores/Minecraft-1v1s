@@ -380,6 +380,7 @@ public class StatsHandler implements Listener {
 		loadStats(player);
 		gameStats.get(player.getName()).addWins();
 		gameStats.get(player.getName()).addMonthlyWins();
+		gameStats.get(player.getName()).addWeeklyWins();
 	}
 	
 	public static void addLoss(Player player) {
@@ -389,6 +390,7 @@ public class StatsHandler implements Listener {
 		loadStats(player);
 		gameStats.get(player.getName()).addLosses();
 		gameStats.get(player.getName()).addMonthlyLosses();
+		gameStats.get(player.getName()).addWeeklyLosses();
 	}
 	
 	public static void addKill(Player player) {
@@ -398,6 +400,7 @@ public class StatsHandler implements Listener {
 		loadStats(player);
 		gameStats.get(player.getName()).addKills();
 		gameStats.get(player.getName()).addMonthlyKills();
+		gameStats.get(player.getName()).addWeeklyKills();
 	}
 	
 	public static void addDeath(Player player) {
@@ -407,6 +410,7 @@ public class StatsHandler implements Listener {
 		loadStats(player);
 		gameStats.get(player.getName()).addDeaths();
 		gameStats.get(player.getName()).addMonthlyDeaths();
+		gameStats.get(player.getName()).addWeeklyDeaths();
 	}
 	
 	public static void removeDeath(Player player) {
