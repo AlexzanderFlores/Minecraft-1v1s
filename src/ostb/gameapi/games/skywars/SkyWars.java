@@ -3,6 +3,7 @@ package ostb.gameapi.games.skywars;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.games.skywars.mapeffects.Frozen;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
@@ -24,5 +25,7 @@ public class SkyWars extends MiniGame {
 		if(OSTB.getPlugin() == Plugins.SWT) {
 			
 		}
+		// Map effects
+		new Frozen();
 	}
 }

@@ -25,6 +25,7 @@ import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.gameapi.games.skywars.cages.SmallCage;
 import ostb.gameapi.kit.KitBase;
+import ostb.gameapi.mapeffects.MapEffectHandler;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -37,6 +38,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameStarting(GameStartingEvent event) {
 		World world = OSTB.getMiniGame().getMap();
+		new MapEffectHandler(world);
 		SpawnPointHandler spawnPointHandler = new SpawnPointHandler(world);
 		List<Player> players = ProPlugin.getPlayers();
 		spawnPointHandler.teleport(players);
