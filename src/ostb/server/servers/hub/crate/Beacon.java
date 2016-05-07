@@ -26,9 +26,8 @@ import org.bukkit.util.Vector;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
-import ostb.player.account.AccountHandler;
 import ostb.player.TitleDisplayer;
-import ostb.server.ChatClickHandler;
+import ostb.player.account.AccountHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
@@ -146,14 +145,18 @@ public class Beacon implements Listener {
 		}
 		final String [] keys = new String [] {"uuid", "type"};
 		final String [] values = new String [] {player.getUniqueId().toString(), type};
-		if(DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") <= 0) {
+		/*if(DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") <= 0) {
 			if(type.equals("voting")) {
 				ChatClickHandler.sendMessageToRunCommand(player, "&6click here", "Click to vote", "/vote", "&cYou do not have any &2Voting Keys&c! Get some by voting, ");
 			} else {
 				MessageHandler.sendMessage(player, "&cYou do not have any &2Super Keys&c! Get some on Buycraft: &b/buy");
 			}
 			return;
-		}
+		}*/
+		MessageHandler.sendMessage(player, "");
+		MessageHandler.sendMessage(player, "&c&lDue to beta testing you have unlimited crate keys");
+		MessageHandler.sendMessage(player, "&4&lNOTE: &b&lNothing you unlock will save");
+		MessageHandler.sendMessage(player, "");
 		running = true;
 		glass.setType(Material.STAINED_GLASS);
 		new DelayedTask(new Runnable() {
@@ -175,15 +178,15 @@ public class Beacon implements Listener {
 						@Override
 						public void run() {
 							String uuid = player.getUniqueId().toString();
-							int owned = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") - 1;
+							/*int owned = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") - 1;
 							if(owned <= 0) {
 								DB.HUB_CRATE_KEYS.delete(keys, values);
 								owned = 0;
 							} else {
 								DB.HUB_CRATE_KEYS.updateInt("amount", owned, keys, values);
-							}
+							}*/
 							Bukkit.getLogger().info(type + ": update key amount");
-							MessageHandler.sendMessage(player, "You now have &e" + owned + " &xVoting Crate key" + (owned == 1 ? "" : "s") + " left");
+							//MessageHandler.sendMessage(player, "You now have &e" + owned + " &xVoting Crate key" + (owned == 1 ? "" : "s") + " left");
 							if(DB.HUB_LIFETIME_CRATES_OPENED.isUUIDSet(player.getUniqueId())) {
 								int amount = DB.HUB_LIFETIME_CRATES_OPENED.getInt(keys, values, "amount") + 1;
 								DB.HUB_LIFETIME_CRATES_OPENED.updateInt("amount", amount, keys, values);

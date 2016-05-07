@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,6 +53,7 @@ import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.pregenerator.Pregenerator;
 import ostb.server.servers.slave.Slave;
 import ostb.server.servers.worker.Worker;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.FileHandler;
 import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
@@ -284,6 +286,13 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte [] message) {
 		if(channel.equals("WDL|INIT") || channel.equals("WDL|CONTROL")) {
+			final UUID uuid = player.getUniqueId();
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					DB.PLAYERS_WORLD_DOWNLOADER.insert("'" + uuid.toString() + "'");
+				}
+			});
 			player.kickPlayer(ChatColor.RED + "World Downloader is not allowed on this server!");
 		}
 	}
