@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,7 @@ public class PerformanceHandler implements Listener {
 	private long currentSecond = 0;
 	private int tickCounter = 0;
 	private static int uptimeCounter = 0;
+	private List<UUID> constantPing = new ArrayList<UUID>();
 	
 	public PerformanceHandler() {
 		new CommandBase("lag") {
@@ -76,6 +78,15 @@ public class PerformanceHandler implements Listener {
 					if(player == null) {
 						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
 					} else {
+						if(player.getName().equals(sender.getName())) {
+							if(constantPing.contains(player.getUniqueId())) {
+								constantPing.remove(player.getUniqueId());
+								MessageHandler.sendMessage(player, "&cRemoved from constant pinging");
+							} else {
+								constantPing.add(player.getUniqueId());
+								MessageHandler.sendMessage(player, "Added to constant pinging");
+							}
+						}
 						MessageHandler.sendMessage(sender, player.getName() + "'s ping is " + getPing(player));
 					}
 				}
@@ -173,6 +184,13 @@ public class PerformanceHandler implements Listener {
 			}
 		} else if(ticks == 20) {
 			++uptimeCounter;
+		} else if(ticks == 20 * 10) {
+			for(UUID uuid : constantPing) {
+				Player player = Bukkit.getPlayer(uuid);
+				if(player != null) {
+					player.chat("/ping");
+				}
+			}
 		}
 	}
 }

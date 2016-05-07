@@ -36,7 +36,7 @@ public abstract class MiniGame extends ProPlugin {
 	private int requiredPlayers = 4;
 	private int votingCounter = 60;
 	private int startingCounter = 30;
-	private int endingCounter = 5;
+	private int endingCounter = 15;
 	private int killCoins = 0;
 	private int winCoins = 0;
 	private boolean autoJoin = true;
@@ -104,6 +104,7 @@ public abstract class MiniGame extends ProPlugin {
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
+		new EndingLobby();
 		teamHandler = new TeamHandler();
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0) {
@@ -159,7 +160,7 @@ public abstract class MiniGame extends ProPlugin {
 		setRequiredPlayers(4);
 		setVotingCounter(60);
 		setStartingCounter(30);
-		setEndingCounter(5);
+		setEndingCounter(15);
 		setAutoJoin(true);
 		setCanJoinWhileStarting(true);
 		setUseSpectatorChatChannel(true);

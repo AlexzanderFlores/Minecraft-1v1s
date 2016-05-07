@@ -69,7 +69,24 @@ public class Building extends ProPlugin {
 				int z = location.getBlockZ();
 				float yaw = location.getYaw();
 				float pitch = location.getPitch();
-				if(arguments.length == 2) {
+				if(arguments.length == 1) {
+					String action = arguments[0];
+					if(action.equalsIgnoreCase("setRespawnLoc")) {
+						String target = action.toLowerCase().replace("set", "");
+						ConfigurationUtil config = getConfig(player, target);
+						config.getConfig().set("x", x + .5);
+						config.getConfig().set("y", y + 1);
+						config.getConfig().set("z", z + .5);
+						config.getConfig().set("yaw", yaw);
+						config.getConfig().set("pitch", pitch);
+						if(config.save()) {
+							MessageHandler.sendMessage(player, "Set " + target);
+						} else {
+							MessageHandler.sendMessage(player, "&cError on saving config file");
+						}
+						return true;
+					}
+				} else if(arguments.length == 2) {
 					String action = arguments[0];
 					String team = arguments[1].toLowerCase();
 					if(!action.equalsIgnoreCase("setCP") && !team.equals("red") && !team.equals("blue")) {
@@ -144,7 +161,8 @@ public class Building extends ProPlugin {
 				MessageHandler.sendMessage(player, "&f/pvpBattles setShop <red | blue>");
 				MessageHandler.sendMessage(player, "&f/pvpBattles setArmory <red | blue>");
 				MessageHandler.sendMessage(player, "&f/pvpBattles setFlag <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setCP [index]");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setCP <index>");
+				MessageHandler.sendMessage(player, "&f/pvpBattles setRespawnLoc");
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);

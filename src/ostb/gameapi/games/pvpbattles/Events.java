@@ -71,6 +71,7 @@ public class Events implements Listener {
 	private List<String> respawning = null;
 	private Location redSpawn = null;
 	private Location blueSpawn = null;
+	private Location respawnLocation = null;
 	private List<Block> anvils = null;
 	
 	public Events() {
@@ -108,12 +109,19 @@ public class Events implements Listener {
 		EventUtil.register(new PlayerMove(false));
 		World world = OSTB.getMiniGame().getMap();
 		world.setGameRuleValue("keepInventory", "true");
-		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/spawn").getConfig();
+		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/respawnloc").getConfig();
 		double x = config.getConfig().getDouble("red.x");
 		double y = config.getConfig().getDouble("red.y");
 		double z = config.getConfig().getDouble("red.z");
 		float yaw = (float) config.getConfig().getDouble("red.yaw");
 		float pitch = (float) config.getConfig().getDouble("red.pitch");
+		respawnLocation = new Location(world, x, y, z, yaw, pitch);
+		config = new SpawnPointHandler(world, "pvpbattles/spawn").getConfig();
+		x = config.getConfig().getDouble("red.x");
+		y = config.getConfig().getDouble("red.y");
+		z = config.getConfig().getDouble("red.z");
+		yaw = (float) config.getConfig().getDouble("red.yaw");
+		pitch = (float) config.getConfig().getDouble("red.pitch");
 		redSpawn = new Location(world, x, y, z, yaw, pitch);
 		x = config.getConfig().getDouble("blue.x");
 		y = config.getConfig().getDouble("blue.y");
@@ -226,7 +234,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		event.setRespawnLocation(getRespawningLocation(player.getWorld()));
+		event.setRespawnLocation(respawnLocation);
 		player.setAllowFlight(true);
 		player.setFlying(true);
 		respawning.add(player.getName());
@@ -246,13 +254,13 @@ public class Events implements Listener {
 			if(!player.isFlying()) {
 				player.setFlying(true);
 			}
-			player.teleport(getRespawningLocation(player.getWorld()));
+			player.teleport(respawnLocation);
 		}
 	}
 	
-	private Location getRespawningLocation(World world) {
+	/*private Location getRespawningLocation(World world) {
 		return new Location(world, 133.5, 39, -135.5, -210.0f, 41.0f);
-	}
+	}*/
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
