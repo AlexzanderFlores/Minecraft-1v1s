@@ -19,7 +19,6 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
-import ostb.server.tasks.DelayedTask;
 import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
@@ -94,15 +93,7 @@ public class BanHandler extends Punishment implements Listener {
 						// Execute the ban if the player is online
 						final Player player = ProPlugin.getPlayer(arguments[0]);
 						if(player != null) {
-							ProPlugin.sendPlayerToServer(player, "slave");
-							new DelayedTask(new Runnable() {
-								@Override
-								public void run() {
-									if(player.isOnline()) {
-										player.kickPlayer(message);
-									}
-								}
-							}, 15);
+							player.kickPlayer(message.replace("&x", "").replace("&c", ""));
 						}
 					}
 				} catch(IllegalArgumentException e) {

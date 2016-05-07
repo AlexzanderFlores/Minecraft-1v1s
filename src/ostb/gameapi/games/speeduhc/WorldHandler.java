@@ -77,6 +77,7 @@ public class WorldHandler implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20) {
+			Bukkit.getLogger().info("1");
 			radius -= .5;
 			setBorder();
 		}

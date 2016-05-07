@@ -73,6 +73,9 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
+		Bukkit.getLogger().info("");
+		Bukkit.getLogger().info("1");
+		Bukkit.getLogger().info("");
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -83,7 +86,13 @@ public class Events implements Listener {
 						break;
 					}
 				}
+				Bukkit.getLogger().info("");
+				Bukkit.getLogger().info(target);
+				Bukkit.getLogger().info("");
 				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
+				Bukkit.getLogger().info("");
+				Bukkit.getLogger().info("2");
+				Bukkit.getLogger().info("");
 				ProPlugin.restartServer();
 			}
 		}, 20 * 3);
