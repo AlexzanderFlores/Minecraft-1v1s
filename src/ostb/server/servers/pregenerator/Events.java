@@ -83,6 +83,9 @@ public class Events implements Listener {
 						break;
 					}
 				}
+				Bukkit.getLogger().info("");
+				Bukkit.getLogger().info(target);
+				Bukkit.getLogger().info("");
 				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				ProPlugin.restartServer();
 			}

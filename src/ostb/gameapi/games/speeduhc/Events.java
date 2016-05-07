@@ -34,6 +34,7 @@ import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
@@ -58,6 +59,10 @@ public class Events implements Listener {
 			if(game.getGameState() == GameStates.STARTED) {
 				int counter = game.getCounter() + 1;
 				if(counter <= 0) {
+					MessageHandler.alert("&cPVP is now &eenabled");
+					MessageHandler.alert("&c/Go to &e(0, 0)");
+					game.setAllowEntityDamage(true);
+					game.setAllowEntityDamageByEntities(true);
 					WorldHandler.register();
 					HandlerList.unregisterAll(this);
 				} else {

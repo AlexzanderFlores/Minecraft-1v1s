@@ -19,6 +19,7 @@ import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
 
 public class WorldHandler implements Listener {
+	private static WorldHandler instance = null;
 	private static World world = null;
 	private static double radius = 1500;
 	
@@ -28,6 +29,7 @@ public class WorldHandler implements Listener {
 		if(files.length == 0) {
 			ProPlugin.restartServer();
 		} else {
+			instance = this;
 			File file = files[files.length - 1];
 			File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
 			FileHandler.copyFile(file, zip);
@@ -45,7 +47,7 @@ public class WorldHandler implements Listener {
 	}
 	
 	public static void register() {
-		EventUtil.register(new WorldHandler());
+		EventUtil.register(instance);
 	}
 	
 	public static void setBorder() {
