@@ -1,6 +1,7 @@
 package ostb.gameapi;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import anticheat.events.PlayerBanEvent;
 import npc.NPCRegistrationHandler.NPCs;
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -28,6 +30,8 @@ import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.TitleDisplayer;
+import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
@@ -139,10 +143,20 @@ public class MiniGameEvents implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onGameStart(GameStartEvent event) {
 		getMiniGame().setCounter(0);
-		for(Player player : ProPlugin.getPlayers()) {
-			player.getInventory().clear();
-			player.getInventory().setHeldItemSlot(0);
-		}
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				for(Player player : ProPlugin.getPlayers()) {
+					UUID uuid = player.getUniqueId();
+					if(DB.NETWORK_ANTI_CHEAT_BAN_QUEUE.isUUIDSet(uuid)) {
+						Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, DB.NETWORK_ANTI_CHEAT_BAN_QUEUE.getString("cheat", "uuid", uuid.toString())));
+					} else {
+						player.getInventory().clear();
+						player.getInventory().setHeldItemSlot(0);
+					}
+				}
+			}
+		});
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
