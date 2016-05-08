@@ -32,6 +32,7 @@ import ostb.server.servers.hub.items.HubSelector;
 import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
+import ostb.server.servers.hub.parkous.EndlessParkour;
 import ostb.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {

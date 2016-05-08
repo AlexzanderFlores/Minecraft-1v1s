@@ -20,7 +20,6 @@ public class FileHandler {
 		String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
 		for(String plugin : new String [] {"OSTB.jar", "NPC_OSTB.jar", "AntiCheat.jar", "EffectLib.jar", "ViaVersion.jar", "ProtocolLib.jar"}) {
 			File file = new File(path + plugin);
-			Bukkit.getLogger().info(file.getPath());
 			if(file.exists()) {
 				File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
 				if(update.exists()) {
@@ -80,8 +79,8 @@ public class FileHandler {
 	
 	public static boolean copyFile(File source, File target) {
 		try {
-			//Files.copy(source, target);
 			FileUtils.copyFile(source, target);
+			Bukkit.getLogger().info("Copied \"" + source.getPath() + "\" to \"" + target.getPath() + "\"");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -94,7 +93,6 @@ public class FileHandler {
 	
 	public static boolean copyFolder(File source, File target) {
 		try {
-			//Files.copy(source, target);
 			FileUtils.copyDirectory(source, target);
 		} catch (IOException e) {
 			e.printStackTrace();

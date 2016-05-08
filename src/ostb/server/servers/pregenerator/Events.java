@@ -15,18 +15,30 @@ import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
-import ostb.customevents.TimeEvent;
+import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
 
 public class Events implements Listener {
-	private boolean running = false;
 	private World world = null;
 	private final int max = 50;
 	
 	public Events() {
+		final Events instance = this;
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill cancel");
+				int worlds = instance.getWorlds();
+				if(worlds < max) {
+					instance.run();
+				} else {
+					ProPlugin.restartServer();
+				}
+			}
+		}, 20 * 5);
 		EventUtil.register(this);
 	}
 	
@@ -47,7 +59,6 @@ public class Events implements Listener {
 	}
 	
 	private void run() {
-		running = true;
 		world = Bukkit.createWorld(new WorldCreator("world"));
 		world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
 		world.setTime(0);
@@ -59,33 +70,19 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onTime(TimeEvent event) {
-		long ticks = event.getTicks();
-		if(!running && ticks == (20 * 2)) {
-			int worlds = getWorlds();
-			if(worlds < max) {
-				run();
-			} else {
-				ProPlugin.restartServer();
-			}
-		}
-	}
-	
-	@EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				int id = 0;
+				String target = "none";
 				for(int a = 0; a < max; ++a) {
-					if(!new File(getPath() + "world" + a + ".zip").exists()) {
-						id = a;
+					target = getPath() + "world" + a + ".zip";
+					if(!new File(target).exists()) {
 						break;
 					}
 				}
-				String localPath = Bukkit.getWorldContainer().getPath() + "/" + world.getName();
-				ZipUtil.zipFolder(localPath, localPath + ".zip");
-				FileHandler.copyFile(localPath + ".zip", Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/world" + id + ".zip");
+				DB.NETWORK_PREGEN_PATHS.insert("'" + target + "'");
+				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {

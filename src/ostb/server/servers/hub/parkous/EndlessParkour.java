@@ -1,4 +1,4 @@
-package ostb.server.servers.hub;
+package ostb.server.servers.hub.parkous;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +29,8 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.servers.hub.Events;
+import ostb.server.servers.hub.ParkourNPC;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -218,15 +220,15 @@ public class EndlessParkour implements Listener {
 	private void remove(final Player player, boolean teleport) {
 		final String name = player.getName();
 		if(blocks.containsKey(name)) {
-			Block block = blocks.get(name);
 			blocks.remove(name);
-			block.setType(Material.AIR);
-			block.setData((byte) 0);
-			for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
-				Block near = block.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
-				near.setType(Material.AIR);
-				near.setData((byte) 0);
-			}
+			final Block block = blocks.get(name);
+			remove(block);
+			new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					remove(block);
+				}
+			}, 1);
 			if(Ranks.PREMIUM.hasRank(player)) {
 				player.setAllowFlight(true);
 			}
@@ -276,6 +278,16 @@ public class EndlessParkour implements Listener {
 			Events.giveSidebar(player);
 		}
 		lastScoredOn.remove(name);
+	}
+	
+	private void remove(Block block) {
+		block.setType(Material.AIR);
+		block.setData((byte) 0);
+		for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
+			Block near = block.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
+			near.setType(Material.AIR);
+			near.setData((byte) 0);
+		}
 	}
 	
 	private void loadTopData() {
