@@ -16,7 +16,6 @@ import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
-import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
@@ -62,7 +61,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(!running && ticks == (20 * 5)) {
+		if(!running && ticks == (20 * 2)) {
 			int worlds = getWorlds();
 			if(worlds < max) {
 				run();
@@ -77,19 +76,16 @@ public class Events implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				if(!new File(getPath()).exists()) {
-					DB.NETWORK_PREGEN_PATHS.insert("'not dir'");
-				} else {
-					String target = "";
-					for(int a = 0; a < max; ++a) {
-						target = getPath() + "world" + a + ".zip";
-						if(!new File(target).exists()) {
-							break;
-						}
+				int id = 0;
+				for(int a = 0; a < max; ++a) {
+					if(!new File(getPath() + "world" + a + ".zip").exists()) {
+						id = a;
+						break;
 					}
-					DB.NETWORK_PREGEN_PATHS.insert("'" + target + "'");
-					ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				}
+				String localPath = Bukkit.getWorldContainer().getPath() + "/" + world.getName();
+				ZipUtil.zipFolder(localPath, localPath + ".zip");
+				FileHandler.copyFile(localPath + ".zip", Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/world" + id + ".zip");
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {

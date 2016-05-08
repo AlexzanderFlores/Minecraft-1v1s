@@ -2,9 +2,7 @@ package ostb.server.servers.building;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,11 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Giant;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
 
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -25,7 +19,6 @@ import com.sk89q.worldedit.regions.Region;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -36,9 +29,6 @@ import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class Building extends ProPlugin {
-	private Map<String, Giant> recentGiant = new HashMap<String, Giant>();
-	private Map<String, ArmorStand> armorStands = new HashMap<String, ArmorStand>();
-	
 	public Building() {
 		super("Building");
 		addGroup("24/7");
@@ -213,43 +203,6 @@ public class Building extends ProPlugin {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
-				if(arguments.length == 0) {
-					Giant giant = (Giant) player.getWorld().spawnEntity(player.getLocation(), EntityType.GIANT);
-					//giant.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 999999999));
-					giant.setNoDamageTicks(999999999);
-					giant.getEquipment().setItemInHand(player.getItemInHand());
-					recentGiant.put(player.getName(), giant);
-					ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-					armorStand.setGravity(false);
-					//armorStand.setVisible(false);
-					armorStand.setPassenger(giant);
-					armorStands.put(player.getName(), armorStand);
-				}
-				if(arguments.length == 1) {
-					if(arguments[0].equalsIgnoreCase("enchant")) {
-						ItemStack inHand = player.getItemInHand();
-						if(inHand != null && inHand.getType() != Material.AIR) {
-							ItemStack item = new ItemCreator(inHand).setGlow(true).getItemStack();
-							player.setItemInHand(item);
-						}
-					} else if(arguments[0].equalsIgnoreCase("getDistance")) {
-						if(armorStands.containsKey(player.getName())) {
-							ArmorStand armorStand = armorStands.get(player.getName());
-							if(armorStand == null || armorStand.isDead()) {
-								MessageHandler.sendMessage(player, "&cNo Recent Armor Stand");
-							} else {
-								Location pLoc = player.getLocation();
-								Location aLoc = armorStand.getLocation();
-								double x = pLoc.getX() - aLoc.getX();
-								double y = pLoc.getY() - aLoc.getY();
-								double z = pLoc.getZ() - aLoc.getZ();
-								MessageHandler.sendMessage(player, "Distance: (" + x + ", " + y + ", " + z + ")");
-							}
-						} else {
-							MessageHandler.sendMessage(player, "&cNo Recent Armor Stand");
-						}
-					}
-				}
 				if(arguments.length == 2) {
 					player.getInventory().addItem(new ItemCreator(Material.valueOf(arguments[0]), Byte.valueOf(arguments[1])).setGlow(true).getItemStack());
 					//Block block = getRegionBlock(player);
@@ -317,36 +270,5 @@ public class Building extends ProPlugin {
 			}
 		}
 		return null;
-	}
-	
-	@EventHandler
-	public void onTime(TimeEvent event) {
-		super.onTime(event);
-		long ticks = event.getTicks();
-		if(ticks == 1) {
-			for(String name : armorStands.keySet()) {
-				Player player = ProPlugin.getPlayer(name);
-				if(player != null && (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)) {
-					ArmorStand armorStand = armorStands.get(name);
-					if(armorStand != null && !armorStand.isDead()) {
-						Location pLoc = player.getLocation();
-						Location aLoc = armorStand.getLocation();
-						int x = (int) (pLoc.getX() - aLoc.getX());
-						int y = (int) (pLoc.getY() - aLoc.getY());
-						int z = (int) (pLoc.getZ() - aLoc.getZ());
-						MessageHandler.sendMessage(player, "Distance: (" + x + ", " + y + ", " + z + ")");
-						Giant giant = null;
-						if(armorStand.getPassenger() != null) {
-							giant = (Giant) armorStand.getPassenger();
-							armorStand.eject();
-						}
-						armorStand.teleport(player.getLocation().add(0, -7, -3));
-						if(giant != null) {
-							armorStand.setPassenger(giant);
-						}
-					}
-				}
-			}
-		}
 	}
 }
