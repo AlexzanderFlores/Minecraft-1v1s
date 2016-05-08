@@ -86,7 +86,7 @@ public class Events implements Listener {
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {
-						ProPlugin.restartServer();
+						//ProPlugin.restartServer();
 					}
 				}, 20 * 2);
 			}
@@ -95,7 +95,6 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onServerRestart(ServerRestartEvent event) {
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill cancel");
 		World world = Bukkit.getWorlds().get(0);
 		Bukkit.unloadWorld(world, false);
 		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world.getName()));

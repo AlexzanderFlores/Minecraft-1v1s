@@ -33,6 +33,7 @@ import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
 import ostb.server.servers.hub.parkous.EndlessParkour;
+import ostb.server.servers.hub.parkous.Parkour;
 import ostb.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {
@@ -70,6 +71,7 @@ public class HubBase extends ProPlugin {
 		new Tutorial();
 		new DailyRewards();
 		new ParkourNPC();
+		new Parkour();
 		new EndlessParkour();
 		new CommandBase("giveKey", 3) {
 			@Override
