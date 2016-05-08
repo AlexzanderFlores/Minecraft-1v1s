@@ -16,6 +16,7 @@ import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
+import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
@@ -24,7 +25,7 @@ import ostb.server.util.ZipUtil;
 public class Events implements Listener {
 	private boolean running = false;
 	private World world = null;
-	private final int max = 30;
+	private final int max = 50;
 	
 	public Events() {
 		EventUtil.register(this);
@@ -54,7 +55,7 @@ public class Events implements Listener {
 		world.setGameRuleValue("naturalRegeneration", "false");
 		world.setDifficulty(Difficulty.HARD);
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set 1500 1500 0 0");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 60");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 100");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
 	}
 	
@@ -76,18 +77,25 @@ public class Events implements Listener {
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				String target = "";
-				for(int a = 0; a < max; ++a) {
-					target = getPath() + "world" + a + ".zip";
-					if(!new File(target).exists()) {
-						break;
+				if(!new File(getPath()).exists()) {
+					DB.NETWORK_PREGEN_PATHS.insert("'not dir'");
+				} else {
+					String target = "";
+					for(int a = 0; a < max; ++a) {
+						target = getPath() + "world" + a + ".zip";
+						if(!new File(target).exists()) {
+							break;
+						}
 					}
+					DB.NETWORK_PREGEN_PATHS.insert("'" + target + "'");
+					ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				}
-				Bukkit.getLogger().info("");
-				Bukkit.getLogger().info(target);
-				Bukkit.getLogger().info("");
-				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
-				ProPlugin.restartServer();
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						ProPlugin.restartServer();
+					}
+				}, 20 * 2);
 			}
 		}, 20 * 3);
 	}

@@ -104,6 +104,9 @@ commands:
   gms:
     usage: /gms
 
+  reloadImageMaps:
+    usage: /reloadImageMaps
+
   restartServer:
     usage: /restartServer <minutes>
 

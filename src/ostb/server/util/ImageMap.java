@@ -5,7 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -24,16 +27,25 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import ostb.OSTB;
+import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
 
 @SuppressWarnings("deprecation")
 public class ImageMap implements Listener {
 	private static final int MAP_WIDTH = 128;
 	private static final int MAP_HEIGHT = 128;
+	private static boolean registeredCommand = false;
+	private static Map<String, Integer> players = null;
 	private static List<ItemFrame> allItemFrames = null;
+	private static List<ImageMap> imageMaps = null;
 	private List<ItemFrame> itemFrames = null;
+	private String path = null;
+	private int width = 0;
+	private int height = 0;
 	
 	public class CustomRender extends MapRenderer {
 		private Image image = null;
+		private boolean load = true;
 		
 		public CustomRender(BufferedImage image, int x1, int y1, ItemFrame itemFrame) {
 			int x2 = MAP_WIDTH;
@@ -50,9 +62,19 @@ public class ImageMap implements Listener {
 			this.image = image.getSubimage(x1, y1, x2, y2);
 		}
 		
+		@Override
 		public void render(MapView view, MapCanvas canvas, Player player) {
-			if(image != null && player.getTicksLived() <= 20) {
+			if(image != null && (load || players.containsKey(player.getName()))) {
+				load = false;
 				canvas.drawImage(0, 0, image);
+				if(players.containsKey(player.getName())) {
+					int counter = players.get(player.getName());
+					if(--counter <= 0) {
+						players.remove(player.getName());
+					} else {
+						players.put(player.getName(), counter);
+					}
+				}
 			}
 		}
 	}
@@ -62,6 +84,39 @@ public class ImageMap implements Listener {
 	}
 	
 	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
+		if(!registeredCommand) {
+			registeredCommand = true;
+			new CommandBase("reloadImageMaps", true) {
+				@Override
+				public boolean execute(CommandSender sender, String [] arguments) {
+					Player player = (Player) sender;
+					players.put(player.getName(), allItemFrames.size());
+					for(ImageMap map : imageMaps) {
+						map.execute();
+					}
+					return true;
+				}
+			}.setRequiredRank(Ranks.OWNER);
+		}
+		if(players == null) {
+			players = new HashMap<String, Integer>();
+		}
+		if(allItemFrames == null) {
+			allItemFrames = new ArrayList<ItemFrame>();
+		}
+		this.itemFrames = new ArrayList<ItemFrame>();
+		itemFrames.add(itemFrame);
+		this.path = path;
+		this.width = width;
+		this.height = height;
+		execute();
+		if(imageMaps == null) {
+			imageMaps = new ArrayList<ImageMap>();
+		}
+		imageMaps.add(this);
+	}
+	
+	private void execute() {
 		Bukkit.getLogger().info("Loading image from \"" + path + "\"");
 		File file = new File(path);
 		BufferedImage image = null;
@@ -70,16 +125,13 @@ public class ImageMap implements Listener {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		if(allItemFrames == null) {
-			allItemFrames = new ArrayList<ItemFrame>();
-		}
+		ItemFrame itemFrame = itemFrames.get(0);
 		for(Entity entity : itemFrame.getWorld().getEntities()) {
 			if(entity instanceof ItemFrame) {
 				ItemFrame frame = (ItemFrame) entity;
 				allItemFrames.add(frame);
 			}
 		}
-		itemFrames = new ArrayList<ItemFrame>();
 		Location location = itemFrame.getLocation();
 		BlockFace face = itemFrame.getFacing();
 		int x1 = location.getBlockX();

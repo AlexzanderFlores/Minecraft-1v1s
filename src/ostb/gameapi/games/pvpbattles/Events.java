@@ -372,10 +372,10 @@ public class Events implements Listener {
 						iterator.remove();
 						respawning.remove(name);
 						if(player != null) {
+							Vanisher.remove(player);
 							player.removePotionEffect(PotionEffectType.INVISIBILITY);
 							SpectatorHandler.remove(player);
 							spawn(player);
-							Vanisher.remove(player);
 							player.updateInventory();
 						}
 					} else {
