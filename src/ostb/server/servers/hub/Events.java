@@ -70,14 +70,17 @@ public class Events implements Listener {
 				}
 				setText(new String [] {
 					" ",
+					"&eFollow us!",
+					"&b@OSTBNetwork",
+					"  ",
 					"&ePlayers",
 					"&b" + players,
-					"  ",
+					"   ",
 					"&eRank",
 					rankString,
-					"   ",
-					"&eHub #" + HubBase.getHubNumber(),
 					"    ",
+					"&eHub #" + HubBase.getHubNumber(),
+					"     ",
 				});
 				super.update(player);
 			}

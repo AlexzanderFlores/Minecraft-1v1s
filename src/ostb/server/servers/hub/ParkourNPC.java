@@ -22,7 +22,7 @@ public class ParkourNPC implements Listener {
 	private LivingEntity livingEntity = null;
 	private String name = null;
 	private static Location endlessLocation = null;
-	private Location courseLocation = null;
+	private static Location courseLocation = null;
 	
 	public ParkourNPC() {
 		name = "Parkour";
@@ -56,6 +56,10 @@ public class ParkourNPC implements Listener {
 	
 	public static Location getEndlessLocation() {
 		return endlessLocation;
+	}
+	
+	public static Location getCourseLocation() {
+		return courseLocation;
 	}
 	
 	@EventHandler

@@ -48,6 +48,7 @@ public abstract class CircleUtil implements Listener {
 			if(counter >= 360) {
 				counter = 0;
 			} else {
+				Location location = this.location.clone();
 				if(entity != null) {
 					location = entity.getLocation();
 				}
