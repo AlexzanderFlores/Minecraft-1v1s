@@ -130,7 +130,7 @@ public class Features extends HubItemBase {
 					if(player != null) {
 						InventoryView inventory = player.getOpenInventory();
 						for(int slot : slots) {
-							inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, (byte) data).setName(" ").getItemStack());
+							inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, (byte) data).setGlow(true).setName(" ").getItemStack());
 						}
 					}
 				}

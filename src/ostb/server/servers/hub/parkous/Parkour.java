@@ -75,7 +75,7 @@ public class Parkour implements Listener {
 		for(int a = 0, x = 1444; x <= 1459; ++a, ++x) {
 			woolBlocks.put(a, new Location(world, x, 20, -1299));
 		}
-		spawnArmorStands();
+		spawnArmorStands(-1);
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(OSTB.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -130,12 +130,13 @@ public class Parkour implements Listener {
 		EventUtil.register(this);
 	}
 	
-	private void spawnArmorStands() {
+	private void spawnArmorStands(int delay) {
 		World world = Bukkit.getWorlds().get(0);
 		for(ArmorStand armorStand : armorStands.keySet()) {
 			armorStands.get(armorStand).delete();
 			armorStand.remove();
 		}
+		armorStands.clear();
 		Random random = new Random();
 		for(final Location location : new Location [] {new Location(world, 1569, 6, -1299), new Location(world, 1533, 16, -1296.5), new Location(world, 1526, 18, -1298.5)}) {
 			new DelayedTask(new Runnable() {
@@ -158,7 +159,7 @@ public class Parkour implements Listener {
 						}
 					});
 				}
-			}, random.nextInt(20 * 3) + 1);
+			}, delay == -1 ? random.nextInt(20 * 3) + 1 : delay);
 		}
 	}
 	
@@ -204,8 +205,9 @@ public class Parkour implements Listener {
 			woolBlocks.put(index, block.getLocation());
 		} else if(ticks == 20 * 2 && --squidCounter > 0) {
 			Random random = new Random();
+			float volume = 2.5f;
 			Location leftLoc = leftCannons.get(random.nextInt(leftCannons.size()));
-			EffectUtil.playSound(Sound.EXPLODE, leftLoc, 10.0f);
+			EffectUtil.playSound(Sound.EXPLODE, leftLoc, volume);
 			Squid leftSquid = (Squid) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.SQUID);
 			leftSquid.setFireTicks(999999999);
 			ArmorStand armorStand = (ArmorStand) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.ARMOR_STAND);
@@ -214,7 +216,7 @@ public class Parkour implements Listener {
 			armorStand.setPassenger(leftSquid);
 			squids.put(leftSquid, true);
 			Location rightLoc = rightCannons.get(random.nextInt(rightCannons.size()));
-			EffectUtil.playSound(Sound.EXPLODE, rightLoc, 10.0f);
+			EffectUtil.playSound(Sound.EXPLODE, rightLoc, volume);
 			Squid rightSquid = (Squid) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.SQUID);
 			rightSquid.setFireTicks(999999999);
 			armorStand = (ArmorStand) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.ARMOR_STAND);
@@ -222,6 +224,8 @@ public class Parkour implements Listener {
 			armorStand.setVisible(false);
 			armorStand.setPassenger(rightSquid);
 			squids.put(rightSquid, false);
+		} else if(ticks == 20 * 60) {
+			spawnArmorStands(1);
 		}
 	}
 	

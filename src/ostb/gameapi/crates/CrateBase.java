@@ -123,7 +123,7 @@ public class CrateBase implements Listener {
 						data = (byte) random.nextInt(15);
 					} while(data == 8);
 				}
-				inventoryView.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setName(" ").getItemStack());
+				inventoryView.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).setName(" ").getItemStack());
 			}
 		} else {
 			remove();
