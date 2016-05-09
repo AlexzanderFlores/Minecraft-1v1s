@@ -1,7 +1,12 @@
 package ostb.server.servers.hub.parkous;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,13 +16,19 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Squid;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import anticheat.util.EventUtil;
 import de.slikey.effectlib.util.ParticleEffect;
+import npc.util.DelayedTask;
 import ostb.OSTB;
+import ostb.customevents.TimeEvent;
 import ostb.player.TitleDisplayer;
 import ostb.server.servers.hub.ParkourNPC;
 import ostb.server.util.CircleUtil;
@@ -26,42 +37,141 @@ import ostb.server.util.CircleUtil;
 public class Parkour implements Listener {
 	private List<String> players = null;
 	private List<ArmorStand> armorStands = null;
+	private List<Location> leftCannons = null;
+	private List<Location> rightCannons = null;
+	private Map<Squid, Boolean> squids = null;
+	private final double range = .15;
+	private final double speed = 1.5;
+	private int squidCounter = -1;
 	
 	public Parkour() {
 		players = new ArrayList<String>();
 		armorStands = new ArrayList<ArmorStand>();
+		leftCannons = new ArrayList<Location>();
+		rightCannons = new ArrayList<Location>();
+		squids = new HashMap<Squid, Boolean>();
 		World world = Bukkit.getWorlds().get(0);
-		for(Location location : new Location [] {new Location(world, 1569, 6, -1299), new Location(world, 1533, 17, -1297), new Location(world, 1526, 19, -1299), new Location(world, 1266, 22, -1298)}) {
-			final ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
-			armorStand.setGravity(false);
-			armorStand.setVisible(false);
-			armorStand.setHelmet(new ItemStack(Material.NETHERRACK));
-			armorStands.add(armorStand);
-			new CircleUtil(location, 1, 6) {
+		leftCannons.add(new Location(world, 1495, 21, -1281));
+		leftCannons.add(new Location(world, 1490, 20, -1282));
+		leftCannons.add(new Location(world, 1485, 19, -1283));
+		leftCannons.add(new Location(world, 1480, 19, -1282));
+		leftCannons.add(new Location(world, 1474, 21, -1281));
+		leftCannons.add(new Location(world, 1468, 22, -1280));
+		rightCannons.add(new Location(world, 1495, 21, -1318));
+		rightCannons.add(new Location(world, 1490, 20, -1317));
+		rightCannons.add(new Location(world, 1485, 19, -1316));
+		rightCannons.add(new Location(world, 1480, 19, -1317));
+		rightCannons.add(new Location(world, 1474, 21, -1318));
+		rightCannons.add(new Location(world, 1468, 22, -1319));
+		Random random = new Random();
+		for(final Location location : new Location [] {new Location(world, 1569, 6, -1299), new Location(world, 1533, 16, -1297), new Location(world, 1526, 18, -1299), new Location(world, 1266, 21, -1298)}) {
+			new DelayedTask(new Runnable() {
 				@Override
-				public void run(Vector vector, Location location) {
-					armorStand.teleport(location);
-					ParticleEffect.FLAME.display(location.add(0, 2.20, 0), 15);
+				public void run() {
+					location.getChunk().load(true);
+					final ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+					armorStand.setGravity(false);
+					armorStand.setVisible(false);
+					armorStand.setHelmet(new ItemStack(Material.NETHERRACK));
+					armorStands.add(armorStand);
+					new CircleUtil(location, 1, 6) {
+						@Override
+						public void run(Vector vector, Location location) {
+							armorStand.teleport(location);
+							ParticleEffect.FLAME.display(location.add(0, 2.20, 0), 15);
+						}
+					};
 				}
-			};
+			}, random.nextInt(20 * 3) + 1);
 		}
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(OSTB.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				for(ArmorStand armorStand : armorStands) {
-					for(Entity entity : armorStand.getNearbyEntities(1, 1, 1)) {
+					for(Entity entity : armorStand.getNearbyEntities(range, range, range)) {
 						if(entity instanceof Player) {
 							Player player = (Player) entity;
-							if(players.contains(player.getName())) {
+							if(!players.contains(player.getName())) {
 								player.teleport(ParkourNPC.getCourseLocation());
 								player.setFireTicks(20 * 2);
+								player.damage(0);
 								new TitleDisplayer(player, "&cAvoid the Netherrack!").display();
 							}
 						}
 					}
 				}
+				try {
+					Iterator<Squid> iterator = squids.keySet().iterator();
+					while(iterator.hasNext()) {
+						Squid squid = iterator.next();
+						if(squid.getTicksLived() >= 20 * 5 || squid.getVehicle() == null || !(squid.getVehicle() instanceof ArmorStand)) {
+							if(squid.getVehicle() != null) {
+								squid.getVehicle().remove();
+							}
+							iterator.remove();
+							squid.remove();
+						} else {
+							double range = 2;
+							for(Entity entity : squid.getNearbyEntities(range, range, range)) {
+								if(entity instanceof Player) {
+									Player player = (Player) entity;
+									if(!players.contains(player.getName())) {
+										player.teleport(ParkourNPC.getCourseLocation());
+										player.setFireTicks(20 * 2);
+										player.damage(0);
+										new TitleDisplayer(player, "&cAvoid the Squids!").display();
+									}
+								}
+							}
+							ArmorStand armorStand = (ArmorStand) squid.getVehicle();
+							Location location = armorStand.getLocation().add(0, 0, squids.get(squid) ? -speed : speed);
+							squid.leaveVehicle();
+							armorStand.teleport(location);
+							armorStand.setPassenger(squid);
+						}
+					}
+				} catch(ConcurrentModificationException e) {
+					
+				}
 			}
 		}, 1, 1);
 		EventUtil.register(this);
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if(event.getAction() == Action.PHYSICAL && !players.contains(event.getPlayer().getName())) {
+			Location location = event.getPlayer().getLocation();
+			int x = location.getBlockX();
+			int y = location.getBlockY();
+			int z = location.getBlockZ();
+			if(x == 1498 && y == 19 && z == -1301) {
+				squidCounter = 15;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 2 && --squidCounter > 0) {
+			Random random = new Random();
+			Location leftLoc = leftCannons.get(random.nextInt(leftCannons.size()));
+			Squid leftSquid = (Squid) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.SQUID);
+			leftSquid.setFireTicks(999999999);
+			ArmorStand armorStand = (ArmorStand) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.ARMOR_STAND);
+			armorStand.setGravity(false);
+			armorStand.setVisible(false);
+			armorStand.setPassenger(leftSquid);
+			squids.put(leftSquid, true);
+			Location rightLoc = rightCannons.get(random.nextInt(rightCannons.size()));
+			Squid rightSquid = (Squid) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.SQUID);
+			rightSquid.setFireTicks(999999999);
+			armorStand = (ArmorStand) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.ARMOR_STAND);
+			armorStand.setGravity(false);
+			armorStand.setVisible(false);
+			armorStand.setPassenger(rightSquid);
+			squids.put(rightSquid, false);
+		}
 	}
 }
