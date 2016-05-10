@@ -20,6 +20,7 @@ import ostb.ProPlugin;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
+import ostb.customevents.player.CoinGiveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -108,6 +109,9 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
+		CoinGiveEvent event = new CoinGiveEvent(player, amount);
+		Bukkit.getPluginManager().callEvent(event);
+		amount = event.getAmount();
 		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins");
 		if(coins.containsKey(player.getName())) {
 			amount += coins.get(player.getName());

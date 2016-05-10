@@ -1,0 +1,83 @@
+package ostb.gameapi;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+
+import anticheat.events.PlayerLeaveEvent;
+import anticheat.util.EventUtil;
+import ostb.OSTB;
+import ostb.customevents.player.AsyncPlayerJoinEvent;
+import ostb.customevents.player.CoinGiveEvent;
+import ostb.customevents.player.MouseClickEvent;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler;
+import ostb.server.DB;
+import ostb.server.util.ItemCreator;
+
+public class CoinBoosters implements Listener {
+	private Map<String, Integer> boosters = null;
+	private ItemStack item = null;
+	private String user = null;
+	private final String url = "store.OutsideTheBlock.org/category/679889";
+	
+	public CoinBoosters() {
+		boosters = new HashMap<String, Integer>();
+		item = new ItemCreator(Material.DIAMOND).setName("&eClick to Enable x2 Coin Booster").setGlow(true).getItemStack();
+		EventUtil.register(this);
+	}
+	
+	@EventHandler
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if(OSTB.getMiniGame().getJoiningPreGame()) {
+			UUID uuid = player.getUniqueId();
+			String [] keys = new String [] {"uuid", "game_name"};
+			String [] values = new String [] {uuid.toString(), OSTB.getMiniGame().getName()};
+			boosters.put(player.getName(), DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount"));
+		}
+		player.getInventory().addItem(item);
+	}
+	
+	@EventHandler
+	public void onMouseClick(MouseClickEvent event) {
+		Player player = event.getPlayer();
+		ItemStack item = player.getItemInHand();
+		if(this.item.equals(item)) {
+			int amount = boosters.get(player.getName());
+			if(amount > 0) {
+				if(user == null) {
+					user = AccountHandler.getPrefix(player);
+					MessageHandler.alert(user + "&xhas enabled a x2 coin booster for this server! Get a booster here:");
+					MessageHandler.alert(url);
+				} else {
+					MessageHandler.sendMessage(player, user + "&chas already enabled a coin booster for this server");
+				}
+			} else {
+				MessageHandler.sendMessage(player, "&cYou do not have any coin boosters! Get some here:");
+				MessageHandler.sendMessage(player, url);
+			}
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onCoinGive(CoinGiveEvent event) {
+		if(user != null) {
+			MessageHandler.sendMessage(event.getPlayer(), user + "has an active x2 Coins booster!");
+			MessageHandler.sendMessage(event.getPlayer(), url);
+			event.setAmount(event.getAmount() * 2);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		boosters.remove(event.getPlayer().getName());
+	}
+}

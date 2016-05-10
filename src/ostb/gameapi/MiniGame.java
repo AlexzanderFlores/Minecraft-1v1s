@@ -105,12 +105,21 @@ public abstract class MiniGame extends ProPlugin {
 		new MapRating();
 		new VotingHandler();
 		new EndingLobby();
+		new CoinBoosters();
 		teamHandler = new TeamHandler();
 		setGameState(GameStates.WAITING);
-		new CommandBase("startGame", 0) {
+		new CommandBase("startGame", 0, 1) {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {
 				setGameState(GameStates.VOTING);
+				if(arguments.length == 1) {
+					try {
+						setCounter(Integer.valueOf(arguments[0]));
+						return true;
+					} catch(NumberFormatException e) {
+						return false;
+					}
+				}
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
