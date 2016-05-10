@@ -206,24 +206,27 @@ public class Parkour implements Listener {
 		} else if(ticks == 20 * 2 && --squidCounter > 0) {
 			Random random = new Random();
 			float volume = 2.5f;
-			Location leftLoc = leftCannons.get(random.nextInt(leftCannons.size()));
-			EffectUtil.playSound(Sound.EXPLODE, leftLoc, volume);
-			Squid leftSquid = (Squid) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.SQUID);
-			leftSquid.setFireTicks(999999999);
-			ArmorStand armorStand = (ArmorStand) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.ARMOR_STAND);
-			armorStand.setGravity(false);
-			armorStand.setVisible(false);
-			armorStand.setPassenger(leftSquid);
-			squids.put(leftSquid, true);
-			Location rightLoc = rightCannons.get(random.nextInt(rightCannons.size()));
-			EffectUtil.playSound(Sound.EXPLODE, rightLoc, volume);
-			Squid rightSquid = (Squid) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.SQUID);
-			rightSquid.setFireTicks(999999999);
-			armorStand = (ArmorStand) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.ARMOR_STAND);
-			armorStand.setGravity(false);
-			armorStand.setVisible(false);
-			armorStand.setPassenger(rightSquid);
-			squids.put(rightSquid, false);
+			if(random.nextBoolean()) {
+				Location leftLoc = leftCannons.get(random.nextInt(leftCannons.size()));
+				EffectUtil.playSound(Sound.EXPLODE, leftLoc, volume);
+				Squid leftSquid = (Squid) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.SQUID);
+				leftSquid.setFireTicks(999999999);
+				ArmorStand armorStand = (ArmorStand) leftLoc.getWorld().spawnEntity(leftLoc, EntityType.ARMOR_STAND);
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setPassenger(leftSquid);
+				squids.put(leftSquid, true);
+			} else {
+				Location rightLoc = rightCannons.get(random.nextInt(rightCannons.size()));
+				EffectUtil.playSound(Sound.EXPLODE, rightLoc, volume);
+				Squid rightSquid = (Squid) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.SQUID);
+				rightSquid.setFireTicks(999999999);
+				ArmorStand armorStand = (ArmorStand) rightLoc.getWorld().spawnEntity(rightLoc, EntityType.ARMOR_STAND);
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setPassenger(rightSquid);
+				squids.put(rightSquid, false);
+			}
 		} else if(ticks == 20 * 60) {
 			spawnArmorStands(1);
 		}
