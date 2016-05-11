@@ -9,6 +9,7 @@ import ostb.ProPlugin;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TeamHandler;
+import ostb.gameapi.games.pvpbattles.mapeffects.Divided_Kingdom;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
@@ -77,5 +78,7 @@ public class PVPBattles extends MiniGame {
 				super.update();
 			}
 		});
+		// Map effects
+		new Divided_Kingdom();
 	}
 }

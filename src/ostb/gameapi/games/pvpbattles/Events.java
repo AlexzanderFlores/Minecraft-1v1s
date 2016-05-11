@@ -50,6 +50,7 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.EloHandler;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.mapeffects.MapEffectHandler;
 import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.TeamHandler;
@@ -111,6 +112,7 @@ public class Events implements Listener {
 		EventUtil.register(new PlayerMove(false));
 		World world = OSTB.getMiniGame().getMap();
 		world.setGameRuleValue("keepInventory", "true");
+		new MapEffectHandler(world);
 		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/respawnloc").getConfig();
 		double x = config.getConfig().getDouble("x");
 		double y = config.getConfig().getDouble("y");

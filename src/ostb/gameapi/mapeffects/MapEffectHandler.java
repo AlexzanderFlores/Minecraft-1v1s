@@ -1,17 +1,17 @@
 package ostb.gameapi.mapeffects;
 
-import org.bukkit.World;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.World;
 
 public class MapEffectHandler {
     private static List<MapEffectsBase> effects = null;
 
     public MapEffectHandler(World world) {
         for(MapEffectsBase effect : effects) {
-            if(effect.getName() != null && effect.getName().equals(world.getName())) {
-                effect.execute(world);
+        	if(effect.getName() != null && effect.getName().equals(world.getName())) {
+            	effect.execute(world);
                 break;
             }
         }

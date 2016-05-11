@@ -10,11 +10,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import anticheat.events.PlayerLeaveEvent;
 import ostb.OSTB;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.CoinGiveEvent;
 import ostb.customevents.player.MouseClickEvent;
+import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.DB;

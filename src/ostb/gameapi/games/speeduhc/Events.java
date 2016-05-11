@@ -24,7 +24,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
-import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -37,6 +36,7 @@ import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
