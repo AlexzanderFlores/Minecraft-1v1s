@@ -37,7 +37,6 @@ public class SpawnPointHandler {
 				counter = 0;
 			}
 			Location location = getSpawns().get(counter++);
-			Bukkit.getLogger().info(location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
 			player.teleport(location);
 		}
 	}

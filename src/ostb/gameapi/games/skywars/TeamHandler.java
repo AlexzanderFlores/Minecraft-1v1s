@@ -12,12 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
@@ -29,7 +30,7 @@ import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
-	private List<Team> teams = null;
+	private static List<Team> teams = null;
 	private List<String> colors = null;
 	private Map<String, List<String>> ignores = null;
 	private String name = null;
@@ -70,6 +71,17 @@ public class TeamHandler implements Listener {
 							MessageHandler.sendMessage(player, offlinePlayer.getName());
 						}
 					}
+				} else if(arguments[0].equalsIgnoreCase("listTeams")) {
+					int index = 0;
+					MessageHandler.sendMessage(player, "Teams: (" + teams.size() + ")");
+					for(Team team : teams) {
+						MessageHandler.sendMessage(player, "Team #" + (++index));
+						MessageHandler.sendMessage(player, "Prefix + Name: " + team.getPrefix() + team.getName());
+						MessageHandler.sendMessage(player, "Players: (" + team.getPlayers().size() + ")");
+						for(OfflinePlayer offlinePlayer : team.getPlayers()) {
+							MessageHandler.sendMessage(player, "  - " + offlinePlayer.getName());
+						}
+					}
 				} else if(arguments[0].equalsIgnoreCase("leave")) {
 					Team team = getTeam(player);
 					if(team == null) {
@@ -101,6 +113,38 @@ public class TeamHandler implements Listener {
 		EventUtil.register(this);
 	}
 	
+	public static List<Team> getTeams() {
+		return teams;
+	}
+	
+	private void setTeam(Player playerOne, Player playerTwo) {
+		Team team = OSTB.getScoreboard().registerNewTeam(playerOne.getName());
+		team.addPlayer(playerOne);
+		if(playerTwo != null) {
+			team.addPlayer(playerTwo);
+		}
+		team.setAllowFriendlyFire(false);
+		team.setPrefix(StringUtil.color(colors.get(0)));
+		teams.add(team);
+		colors.remove(0);
+		alert(team, playerOne.getName() + " has joined the team");
+		if(playerTwo != null) {
+			alert(team, playerTwo.getName() + " has joined the team");
+		}
+		String tab = team.getPrefix() + playerOne.getName();
+		if(tab.length() > 16) {
+			tab = tab.substring(0, 16);
+		}
+		playerOne.setPlayerListName(tab);
+		if(playerTwo != null) {
+			tab = team.getPrefix() + playerTwo.getName();
+			if(tab.length() > 16) {
+				tab = tab.substring(0, 16);
+			}
+			playerTwo.setPlayerListName(tab);
+		}
+	}
+	
 	private void alert(Team team, String alert) {
 		for(OfflinePlayer offlinePlayer : team.getPlayers()) {
 			if(offlinePlayer.isOnline()) {
@@ -110,7 +154,7 @@ public class TeamHandler implements Listener {
 		}
 	}
 	
-	private Team getTeam(Player player) {
+	public static Team getTeam(Player player) {
 		for(Team team : teams) {
 			if(team.hasPlayer(player)) {
 				return team;
@@ -138,7 +182,7 @@ public class TeamHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		new TitleDisplayer(event.getPlayer(), "&bTeam Commands:", "&b/team").setFadeOut(20 * 5).display();;
 	}
 	
@@ -153,24 +197,18 @@ public class TeamHandler implements Listener {
 				if(sender == null) {
 					MessageHandler.sendMessage(player, "&c" + senderName + " is no longer online");
 				} else {
-					Team team = OSTB.getScoreboard().registerNewTeam(senderName);
-					team.addPlayer(sender);
-					team.addPlayer(player);
-					team.setAllowFriendlyFire(false);
-					team.setPrefix(StringUtil.color(colors.get(0)));
-					teams.add(team);
-					colors.remove(0);
-					alert(team, senderName + " has joined the team");
-					alert(team, player.getName() + " has joined the team");
+					setTeam(sender, player);
 				}
 			} else if(event.getSlot() == 13) {
 				List<String> ignore = ignores.get(player.getName());
 				if(ignore == null) {
 					ignore = new ArrayList<String>();
 				}
-				ignore.add(senderName);
-				ignores.put(player.getName(), ignore);
-				MessageHandler.sendMessage(player, "You will no longer get team invited from " + senderName);
+				if(!ignore.contains(senderName)) {
+					ignore.add(senderName);
+					ignores.put(player.getName(), ignore);
+				}
+				MessageHandler.sendMessage(player, "You will no longer get team invites from " + senderName);
 			}
 			player.closeInventory();
 			event.setCancelled(true);
@@ -180,5 +218,25 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		remove(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onGameStarting(GameStartingEvent event) {
+		List<Player> noTeam = new ArrayList<Player>();
+		for(Player player : ProPlugin.getPlayers()) {
+			if(getTeam(player) == null) {
+				noTeam.add(player);
+			}
+		}
+		while(noTeam.size() % 2 != 0 && noTeam.size() > 1) {
+			setTeam(noTeam.get(0), noTeam.get(1));
+			noTeam.remove(0);
+			noTeam.remove(0);
+		}
+		for(Player player : ProPlugin.getPlayers()) {
+			if(getTeam(player) == null) {
+				setTeam(player, null);
+			}
+		}
 	}
 }
