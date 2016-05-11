@@ -47,7 +47,7 @@ public class Events implements Listener {
 	}
 	
 	private String getPath() {
-		return Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/";
+		return Bukkit.getWorldContainer().getPath() + "/worlds/";
 	}
 	
 	private Location getGround(Location location) {
@@ -86,7 +86,7 @@ public class Events implements Listener {
 				new DelayedTask(new Runnable() {
 					@Override
 					public void run() {
-						//ProPlugin.restartServer();
+						ProPlugin.restartServer();
 					}
 				}, 20 * 2);
 			}
