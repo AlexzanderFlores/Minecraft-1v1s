@@ -1,5 +1,7 @@
 package ostb.server;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -7,7 +9,9 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import anticheat.util.AsyncDelayedTask;
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
@@ -19,8 +23,42 @@ public class GlobalCommands {
 	public GlobalCommands() {
 		new CommandBase("booster", -1) {
 			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				MessageHandler.sendMessage(sender, "URL: &cstore.OutsideTheBlock.org/category/679889");
+			public boolean execute(final CommandSender sender, final String [] arguments) {
+				if(arguments.length == 3 && Ranks.OWNER.hasRank(sender)) {
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								Plugins plugin = Plugins.valueOf(arguments[0].toUpperCase());
+								String name = arguments[1];
+								UUID uuid = AccountHandler.getUUID(name);
+								if(uuid == null) {
+									MessageHandler.sendMessage(sender, "&c" + name + " has never logged in before");
+								} else {
+									try {
+										int toAdd = Integer.valueOf(arguments[2]);
+										String [] keys = new String [] {"uuid", "game_name"};
+										String [] values = new String [] {uuid.toString(), plugin.getData()};
+										int amount = toAdd;
+										if(DB.PLAYERS_COIN_BOOSTERS.isKeySet(keys, values)) {
+											amount = DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount") + toAdd;
+											DB.PLAYERS_COIN_BOOSTERS.updateInt("amount", amount, keys, values);
+										} else {
+											DB.PLAYERS_COIN_BOOSTERS.insert("'" + uuid.toString() + "', '" + plugin.getData() + "', '" + amount + "'");
+										}
+										MessageHandler.sendMessage(sender, "Gave " + name + " " + toAdd + " boosters for " + plugin.getData() + " (" + amount + " total)");
+									} catch(NumberFormatException e) {
+										MessageHandler.sendMessage(sender, "&cInvalid integer value \"&e" + arguments[2] + "&c\"");
+									}
+								}
+							} catch(IllegalArgumentException e) {
+								MessageHandler.sendMessage(sender, "&cUnknown plugin \"&e" + arguments[0].toUpperCase() + "&c\"");
+							}
+						}
+					});
+				} else {
+					MessageHandler.sendMessage(sender, "URL: &cstore.OutsideTheBlock.org/category/679889");
+				}
 				return true;
 			}
 		};
