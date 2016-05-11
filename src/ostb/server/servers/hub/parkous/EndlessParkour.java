@@ -31,6 +31,7 @@ import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.servers.hub.Events;
 import ostb.server.servers.hub.ParkourNPC;
+import ostb.server.servers.hub.parkous.ParkourStartEvent.ParkourTypes;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -128,6 +129,7 @@ public class EndlessParkour implements Listener {
 	
 	private boolean start(Player player) {
 		if(counter <= 0) {
+			Bukkit.getPluginManager().callEvent(new ParkourStartEvent(player, ParkourTypes.ENDLESS));
 			counter = 5;
 			if(player.getAllowFlight()) {
 				player.setFlying(false);
@@ -308,6 +310,13 @@ public class EndlessParkour implements Listener {
 				}
 			}
 		});
+	}
+	
+	@EventHandler
+	public void onParkourStart(ParkourStartEvent event) {
+		if(event.getType() == ParkourTypes.COURSE) {
+			remove(event.getPlayer(), false);
+		}
 	}
 	
 	@EventHandler

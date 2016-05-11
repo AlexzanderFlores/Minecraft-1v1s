@@ -49,6 +49,7 @@ import ostb.server.DB;
 import ostb.server.servers.hub.Events;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.servers.hub.ParkourNPC;
+import ostb.server.servers.hub.parkous.ParkourStartEvent.ParkourTypes;
 import ostb.server.util.CircleUtil;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EffectUtil;
@@ -195,6 +196,7 @@ public class Parkour implements Listener {
 	
 	private void start(Player player) {
 		if(!players.contains(player.getName())) {
+			Bukkit.getPluginManager().callEvent(new ParkourStartEvent(player, ParkourTypes.COURSE));
 			players.add(player.getName());
 			if(player.getAllowFlight()) {
 				player.setFlying(false);
@@ -228,11 +230,13 @@ public class Parkour implements Listener {
 		}
 	}
 	
-	private void remove(Player player) {
+	private void remove(Player player, boolean teleport) {
 		String name = player.getName();
 		if(players.contains(name)) {
 			players.remove(name);
-			player.teleport(ParkourNPC.getCourseLocation());
+			if(teleport) {
+				player.teleport(ParkourNPC.getCourseLocation());
+			}
 			HubItemBase.giveItems(player);
 			if(Ranks.PREMIUM.hasRank(player)) {
 				player.setAllowFlight(true);
@@ -250,6 +254,13 @@ public class Parkour implements Listener {
 			player.teleport(checkpoints.get(player.getName()));
 		} else {
 			player.teleport(ParkourNPC.getCourseLocation());
+		}
+	}
+
+	@EventHandler
+	public void onParkourStart(ParkourStartEvent event) {
+		if(event.getType() == ParkourTypes.COURSE) {
+			remove(event.getPlayer(), false);
 		}
 	}
 	
@@ -289,7 +300,7 @@ public class Parkour implements Listener {
 				MessageHandler.sendMessage(player, "&cYou have no checkpoint set");
 			}
 		} else if(this.exitParkour.equals(item)) {
-			remove(player);
+			remove(player, true);
 		}
 	}
 	
@@ -371,7 +382,7 @@ public class Parkour implements Listener {
 					start(event.getPlayer());
 				}
 			}
-		} else if(y <= 0) {
+		} else if(y <= 0 && players.contains(event.getPlayer().getName())) {
 			died(event.getPlayer());
 		}
 	}
@@ -386,7 +397,7 @@ public class Parkour implements Listener {
 	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		Player player = event.getPlayer();
-		remove(player);
+		remove(player, false);
 		timers.remove(player);
 		if(!Ranks.PREMIUM.hasRank(player)) {
 			checkpoints.remove(player.getName());
