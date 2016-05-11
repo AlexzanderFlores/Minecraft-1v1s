@@ -15,7 +15,6 @@ import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
 import ostb.ProPlugin;
 import ostb.customevents.ServerRestartEvent;
-import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
@@ -81,7 +80,6 @@ public class Events implements Listener {
 						break;
 					}
 				}
-				DB.NETWORK_PREGEN_PATHS.insert("'" + target + "'");
 				ZipUtil.zipFolder(Bukkit.getWorldContainer().getPath() + "/" + world.getName(), target);
 				new DelayedTask(new Runnable() {
 					@Override
