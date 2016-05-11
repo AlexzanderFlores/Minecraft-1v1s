@@ -25,8 +25,6 @@ import org.bukkit.entity.Squid;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -116,7 +114,7 @@ public class Parkour implements Listener {
 						if(entity instanceof Player) {
 							Player player = (Player) entity;
 							if(players.contains(player.getName())) {
-								player.teleport(ParkourNPC.getCourseLocation());
+								died(player);
 								player.setFireTicks(20 * 2);
 								player.damage(0);
 								new TitleDisplayer(player, "&cAvoid the Netherrack!").display();
@@ -140,7 +138,7 @@ public class Parkour implements Listener {
 								if(entity instanceof Player) {
 									Player player = (Player) entity;
 									if(!players.contains(player.getName())) {
-										player.teleport(ParkourNPC.getCourseLocation());
+										died(player);
 										player.setFireTicks(20 * 2);
 										player.damage(0);
 										new TitleDisplayer(player, "&cAvoid the Squids!").display();
@@ -216,7 +214,7 @@ public class Parkour implements Listener {
 					setText(new String [] {
 						" ",
 						"&eCheckpoints",
-						"&b" + checkpointPasses.get(player.getName()),
+						"&b" + (checkpointPasses.containsKey(player.getName()) ? checkpointPasses.get(player.getName()) : 0),
 						"  ",
 						"&eTime",
 						timers.get(player.getName()).getCounterAsString(ChatColor.AQUA),
@@ -224,8 +222,9 @@ public class Parkour implements Listener {
 					});
 				}
 			};
-			sidebar.update(player);
 			scoreboards.put(player.getName(), sidebar);
+			player.setScoreboard(sidebar.getScoreboard());
+			sidebar.update(player);
 		}
 	}
 	
@@ -246,6 +245,14 @@ public class Parkour implements Listener {
 		}
 	}
 	
+	private void died(Player player) {
+		if(checkpoints.containsKey(player.getName())) {
+			player.teleport(checkpoints.get(player.getName()));
+		} else {
+			player.teleport(ParkourNPC.getCourseLocation());
+		}
+	}
+	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.getAction() == Action.PHYSICAL && players.contains(event.getPlayer().getName())) {
@@ -262,19 +269,22 @@ public class Parkour implements Listener {
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
 		Player player = event.getPlayer();
+		String name = player.getName();
 		ItemStack item = player.getItemInHand();
 		if(this.setCheckpoint.equals(item)) {
-			int amount = checkpointPasses.containsKey(player.getName()) ? checkpointPasses.get(player.getName()) : 0;
+			int amount = checkpointPasses.containsKey(name) ? checkpointPasses.get(name) : 0;
 			if(amount > 0) {
 				--amount;
-				checkpoints.put(player.getName(), player.getLocation());
+				checkpoints.put(name, player.getLocation());
+				new TitleDisplayer(player, "&bCheckpoint Set").display();
 			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have any checkpoints, get some with &a/vote");
+				new TitleDisplayer(player, "&cNo Checkpoints", "&cGet some with &a/vote").display();
 				amount += 10;
 			}
+			checkpointPasses.put(name, amount);
 		} else if(this.returnToCheckpoint.equals(item)) {
-			if(checkpoints.containsKey(player.getName())) {
-				player.teleport(checkpoints.get(player.getName()));
+			if(checkpoints.containsKey(name)) {
+				player.teleport(checkpoints.get(name));
 			} else {
 				MessageHandler.sendMessage(player, "&cYou have no checkpoint set");
 			}
@@ -314,7 +324,10 @@ public class Parkour implements Listener {
 			for(String name : scoreboards.keySet()) {
 				if(players.contains(name)) {
 					Player player = ProPlugin.getPlayer(name);
-					scoreboards.get(name).update(player);
+					if(player != null) {
+						timers.get(name).incrementCounter();
+						scoreboards.get(name).update(player);
+					}
 				}
 			}
 		} else if(ticks == 20 * 2 && --squidCounter > 0) {
@@ -359,7 +372,7 @@ public class Parkour implements Listener {
 				}
 			}
 		} else if(y <= 0) {
-			remove(event.getPlayer());
+			died(event.getPlayer());
 		}
 	}
 	
@@ -367,14 +380,6 @@ public class Parkour implements Listener {
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		if(chunks.contains(event.getChunk())) {
 			event.setCancelled(false);
-		}
-	}
-	
-	@EventHandler
-	public void onEntityDamage(EntityDamageEvent event) {
-		if(event.getCause() == DamageCause.VOID && event.getEntity() instanceof Player) {
-			Player player = (Player) event.getEntity();
-			remove(player);
 		}
 	}
 	
@@ -394,6 +399,8 @@ public class Parkour implements Listener {
 		int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", player.getUniqueId().toString(), "amount");
 		if(amount > 0) {
 			checkpointPasses.put(player.getName(), amount);
+		} else {
+			checkpointPasses.put(player.getName(), 100);
 		}
 	}
 	
