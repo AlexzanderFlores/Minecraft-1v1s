@@ -1,7 +1,9 @@
 package ostb.gameapi.games.skywars;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.Team;
 
@@ -18,6 +21,7 @@ import ostb.ProPlugin;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -27,11 +31,14 @@ import ostb.server.util.StringUtil;
 public class TeamHandler implements Listener {
 	private List<Team> teams = null;
 	private List<String> colors = null;
+	private Map<String, List<String>> ignores = null;
 	private String name = null;
 	
 	public TeamHandler() {
 		teams = new ArrayList<Team>();
 		colors = new ArrayList<String>();
+		ignores = new HashMap<String, List<String>>();
+		name = "Team Invite - ";
 		colors.add("&1");
 		colors.add("&2");
 		colors.add("&3");
@@ -44,17 +51,15 @@ public class TeamHandler implements Listener {
 		colors.add("&c");
 		colors.add("&d");
 		colors.add("&e");
-		name = "Team Invite - ";
 		new CommandBase("team", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				if(arguments.length == 0 || arguments[0].equalsIgnoreCase("help")) {
 					MessageHandler.sendMessage(player, "Team commands:");
-					MessageHandler.sendMessage(player, "/team help &eDisplays help");
-					MessageHandler.sendMessage(player, "/team list &eDisplays your team's players");
-					MessageHandler.sendMessage(player, "/team leave &eLeave your team");
 					MessageHandler.sendMessage(player, "/team <name> &eInvite a player to your team");
+					MessageHandler.sendMessage(player, "/team leave &eLeave your team");
+					MessageHandler.sendMessage(player, "/team list &eDisplays your team's players");
 				} else if(arguments[0].equalsIgnoreCase("list")) {
 					Team team = getTeam(player);
 					if(team == null) {
@@ -78,10 +83,16 @@ public class TeamHandler implements Listener {
 					if(target == null) {
 						MessageHandler.sendMessage(player, "&c" + name + " is not online");
 					} else {
-						Inventory inventory = Bukkit.createInventory(target, 9 * 3, name + player.getName());
-						inventory.setItem(11, new ItemCreator(Material.WOOL, 5).setName("&aAccept").getItemStack());
-						inventory.setItem(14, new ItemCreator(Material.WOOL, 14).setName("&cDeny").getItemStack());
-						target.openInventory(inventory);
+						List<String> ignore = ignores.get(target.getName());
+						if(ignore == null || !ignore.contains(player.getName())) {
+							Inventory inventory = Bukkit.createInventory(target, 9 * 3, "Team Invite - " + player.getName());
+							inventory.setItem(11, new ItemCreator(Material.WOOL, 5).setName("&aAccept").getItemStack());
+							inventory.setItem(13, new ItemCreator(Material.WOOL, 15).setName("&cIgnore " + player.getName()).getItemStack());
+							inventory.setItem(15, new ItemCreator(Material.WOOL, 14).setName("&cDeny").getItemStack());
+							target.openInventory(inventory);
+						} else {
+							MessageHandler.sendMessage(player, "&c" + target.getName() + " ignored team invited from you for this game");
+						}
 					}
 				}
 				return true;
@@ -120,15 +131,24 @@ public class TeamHandler implements Listener {
 				teams.remove(team);
 			}
 		}
+		if(ignores.containsKey(player.getName())) {
+			ignores.get(player.getName()).clear();
+			ignores.remove(player.getName());
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		new TitleDisplayer(event.getPlayer(), "&bTeam Commands:", "&b/team").setFadeOut(20 * 5).display();;
 	}
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().startsWith(name)) {
 			Player player = event.getPlayer();
+			String [] split = event.getTitle().split(" - ");
+			String senderName = split[split.length - 1];
 			if(event.getSlot() == 11) {
-				String [] split = event.getTitle().split(" ");
-				String senderName = split[split.length - 1];
 				Player sender = ProPlugin.getPlayer(senderName);
 				if(sender == null) {
 					MessageHandler.sendMessage(player, "&c" + senderName + " is no longer online");
@@ -138,10 +158,19 @@ public class TeamHandler implements Listener {
 					team.addPlayer(player);
 					team.setAllowFriendlyFire(false);
 					team.setPrefix(StringUtil.color(colors.get(0)));
+					teams.add(team);
 					colors.remove(0);
 					alert(team, senderName + " has joined the team");
 					alert(team, player.getName() + " has joined the team");
 				}
+			} else if(event.getSlot() == 13) {
+				List<String> ignore = ignores.get(player.getName());
+				if(ignore == null) {
+					ignore = new ArrayList<String>();
+				}
+				ignore.add(senderName);
+				ignores.put(player.getName(), ignore);
+				MessageHandler.sendMessage(player, "You will no longer get team invited from " + senderName);
 			}
 			player.closeInventory();
 			event.setCancelled(true);

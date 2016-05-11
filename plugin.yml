@@ -60,6 +60,9 @@ commands:
   stats:
     usage: /stats [name]
 
+  team:
+    usage: /team
+
   report:
     usage: /report <name> <reason>
 

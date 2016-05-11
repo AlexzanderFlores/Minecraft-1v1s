@@ -25,7 +25,8 @@ public class SkyWars extends MiniGame {
 		new ChestHandler();
 		new SkyWarsShop();
 		if(OSTB.getPlugin() == Plugins.SWT) {
-			
+			new TeamHandler();
+			setRequiredPlayers(8);
 		}
 		// Map effects
 		new Frozen();
