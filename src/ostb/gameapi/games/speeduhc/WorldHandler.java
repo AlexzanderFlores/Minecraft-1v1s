@@ -1,6 +1,7 @@
 package ostb.gameapi.games.speeduhc;
 
 import java.io.File;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,12 +69,13 @@ public class WorldHandler implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onGameStarting(GameStartingEvent event) {
 		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
-		File file = files[files.length - 1];
+		int index = new Random().nextInt(files.length - 1);
+		File file = files[index];
+		Bukkit.getLogger().info("Loading world #" + index);
 		File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
 		FileHandler.copyFile(file, zip);
 		ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/");
 		world = Bukkit.createWorld(new WorldCreator("world"));
-		FileHandler.delete(file);
 		FileHandler.delete(zip);
 		OSTB.getMiniGame().setMap(world);
 		world.getWorldBorder().setCenter(0, 0);

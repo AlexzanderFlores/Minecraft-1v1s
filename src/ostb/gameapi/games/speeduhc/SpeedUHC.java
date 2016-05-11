@@ -16,6 +16,7 @@ public class SpeedUHC extends MiniGame {
 	public SpeedUHC() {
 		super("Speed UHC");
 		setRequiredPlayers(4);
+		setStartingCounter(10);
 		setSpectatingMode(GameMode.SPECTATOR);
 		new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHCK);
 		CoinsHandler.setKillCoins(5);
