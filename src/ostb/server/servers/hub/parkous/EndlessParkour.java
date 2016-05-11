@@ -220,15 +220,15 @@ public class EndlessParkour implements Listener {
 	private void remove(final Player player, boolean teleport) {
 		final String name = player.getName();
 		if(blocks.containsKey(name)) {
-			blocks.remove(name);
 			final Block block = blocks.get(name);
+			blocks.remove(name);
 			remove(block);
 			new DelayedTask(new Runnable() {
 				@Override
 				public void run() {
 					remove(block);
 				}
-			}, 1);
+			}, 20);
 			if(Ranks.PREMIUM.hasRank(player)) {
 				player.setAllowFlight(true);
 			}
@@ -238,19 +238,21 @@ public class EndlessParkour implements Listener {
 		}
 		if(scores.containsKey(name)) {
 			final int score = scores.get(name);
-			cancelRemove(name);
-			MessageHandler.sendMessage(player, "Want to return to where you were? &e" + url);
-			MessageHandler.sendMessage(player, "Your score of &e" + score + " &xis saved for only &e2:30 &xso be quick!");
-			taskIds.put(name, new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					if(player.isOnline()) {
-						MessageHandler.sendMessage(player, "&cYour previous score of &e" + score + " &cwas removed");
+			if(score >= 50) {
+				cancelRemove(name);
+				MessageHandler.sendMessage(player, "Want to return to where you were? &e" + url);
+				MessageHandler.sendMessage(player, "Your score of &e" + score + " &xis saved for only &e2:30 &xso be quick!");
+				taskIds.put(name, new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						if(player.isOnline()) {
+							MessageHandler.sendMessage(player, "&cYour previous score of &e" + score + " &cwas removed");
+						}
+						storedScores.remove(name);
 					}
-					storedScores.remove(name);
-				}
-			}, 20 * 60 * 2 + 30).getId());
-			storedScores.put(name, score);
+				}, 20 * 60 * 2 + 30).getId());
+				storedScores.put(name, score);
+			}
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
@@ -281,12 +283,14 @@ public class EndlessParkour implements Listener {
 	}
 	
 	private void remove(Block block) {
-		block.setType(Material.AIR);
-		block.setData((byte) 0);
-		for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
-			Block near = block.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
-			near.setType(Material.AIR);
-			near.setData((byte) 0);
+		if(block != null) {
+			block.setType(Material.AIR);
+			block.setData((byte) 0);
+			for(Vector offset : new Vector [] {new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(0, -1, 0)}) {
+				Block near = block.getRelative(offset.getBlockX(), offset.getBlockY(), offset.getBlockZ());
+				near.setType(Material.AIR);
+				near.setData((byte) 0);
+			}
 		}
 	}
 	
@@ -340,7 +344,7 @@ public class EndlessParkour implements Listener {
 		int x = to.getBlockX();
 		if(x == 1589) {
 			int y = to.getBlockY();
-			if(y == 5) {
+			if(y == 5 || y == 6) {
 				int z = to.getBlockZ();
 				if(z >= -1264 && z <= -1262) {
 					if(!start(player)) {

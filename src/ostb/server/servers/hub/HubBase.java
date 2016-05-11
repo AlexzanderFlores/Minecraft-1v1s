@@ -88,8 +88,9 @@ public class HubBase extends ProPlugin {
 				} else {
 					MessageHandler.sendMessage(sender, "Unknown key type, use:");
 					MessageHandler.sendMessage(sender, "voting");
+					MessageHandler.sendMessage(sender, "super");
 					MessageHandler.sendMessage(sender, "sky_wars");
-					MessageHandler.sendMessage(sender, "hardcore_elimination");
+					MessageHandler.sendMessage(sender, "speed_uhc");
 				}
 				return true;
 			}

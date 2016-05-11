@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import npc.NPCEntity;
+import ostb.player.MessageHandler;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 
@@ -19,6 +20,7 @@ public class Tutorial implements Listener {
 		new NPCEntity(EntityType.GUARDIAN, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), 1682.5, 6.5, -1295.5)) {
 			@Override
 			public void onInteract(Player player) {
+				MessageHandler.sendMessage(player, "&cComing soon");
 				EffectUtil.playSound(player, Sound.SWIM);
 			}
 		};

@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,20 +25,36 @@ import org.bukkit.entity.Squid;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import anticheat.events.AsyncPlayerLeaveEvent;
+import anticheat.events.PlayerLeaveEvent;
 import anticheat.util.EventUtil;
 import de.slikey.effectlib.util.ParticleEffect;
 import npc.util.DelayedTask;
 import ostb.OSTB;
+import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.customevents.player.AsyncPlayerJoinEvent;
+import ostb.customevents.player.MouseClickEvent;
+import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.player.account.AccountHandler.Ranks;
+import ostb.player.scoreboard.SidebarScoreboardUtil;
+import ostb.server.DB;
+import ostb.server.servers.hub.Events;
+import ostb.server.servers.hub.HubItemBase;
 import ostb.server.servers.hub.ParkourNPC;
 import ostb.server.util.CircleUtil;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.EffectUtil;
+import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class Parkour implements Listener {
@@ -47,6 +65,13 @@ public class Parkour implements Listener {
 	private Map<Integer, Location> woolBlocks = null;
 	private Map<ArmorStand, CircleUtil> armorStands = null;
 	private Map<Squid, Boolean> squids = null;
+	private Map<String, Integer> checkpointPasses = null;
+	private Map<String, Location> checkpoints = null;
+	private Map<String, SidebarScoreboardUtil> scoreboards = null;
+	private Map<String, CountDownUtil> timers = null;
+	private ItemStack setCheckpoint = null;
+	private ItemStack returnToCheckpoint = null;
+	private ItemStack exitParkour = null;
 	private final double range = .15;
 	private final double speed = 1.5;
 	private int squidCounter = -1;
@@ -59,6 +84,13 @@ public class Parkour implements Listener {
 		woolBlocks = new HashMap<Integer, Location>();
 		armorStands = new HashMap<ArmorStand, CircleUtil>();
 		squids = new HashMap<Squid, Boolean>();
+		checkpointPasses = new HashMap<String, Integer>();
+		checkpoints = new HashMap<String, Location>();
+		scoreboards = new HashMap<String, SidebarScoreboardUtil>();
+		timers = new HashMap<String, CountDownUtil>();
+		setCheckpoint = new ItemCreator(Material.BED).setName("&bSet Checkpoint").getItemStack();
+		returnToCheckpoint = new ItemCreator(Material.EYE_OF_ENDER).setName("&bReturn to Checkpoint").getItemStack();
+		exitParkour = new ItemCreator(Material.WOOD_DOOR).setName("&cExit Parkour").getItemStack();
 		World world = Bukkit.getWorlds().get(0);
 		leftCannons.add(new Location(world, 1495, 21, -1281));
 		leftCannons.add(new Location(world, 1490, 20, -1282));
@@ -83,7 +115,7 @@ public class Parkour implements Listener {
 					for(Entity entity : armorStand.getNearbyEntities(range, range, range)) {
 						if(entity instanceof Player) {
 							Player player = (Player) entity;
-							if(!players.contains(player.getName())) {
+							if(players.contains(player.getName())) {
 								player.teleport(ParkourNPC.getCourseLocation());
 								player.setFireTicks(20 * 2);
 								player.damage(0);
@@ -163,9 +195,60 @@ public class Parkour implements Listener {
 		}
 	}
 	
+	private void start(Player player) {
+		if(!players.contains(player.getName())) {
+			players.add(player.getName());
+			if(player.getAllowFlight()) {
+				player.setFlying(false);
+				player.setAllowFlight(false);
+			}
+			player.getInventory().clear();
+			player.getInventory().setItem(0, setCheckpoint);
+			player.getInventory().setItem(1, returnToCheckpoint);
+			player.getInventory().setItem(8, exitParkour);
+			Events.removeSidebar(player);
+			timers.put(player.getName(), new CountDownUtil());
+			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aEndless Parkour ") {
+				@Override
+				public void update(Player player) {
+					removeScore(5);
+					removeScore(2);
+					setText(new String [] {
+						" ",
+						"&eCheckpoints",
+						"&b" + checkpointPasses.get(player.getName()),
+						"  ",
+						"&eTime",
+						timers.get(player.getName()).getCounterAsString(ChatColor.AQUA),
+						"   "
+					});
+				}
+			};
+			sidebar.update(player);
+			scoreboards.put(player.getName(), sidebar);
+		}
+	}
+	
+	private void remove(Player player) {
+		String name = player.getName();
+		if(players.contains(name)) {
+			players.remove(name);
+			player.teleport(ParkourNPC.getCourseLocation());
+			HubItemBase.giveItems(player);
+			if(Ranks.PREMIUM.hasRank(player)) {
+				player.setAllowFlight(true);
+			}
+			if(scoreboards.containsKey(name)) {
+				scoreboards.get(name).remove();
+				scoreboards.remove(name);
+				Events.giveSidebar(player);
+			}
+		}
+	}
+	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() == Action.PHYSICAL && !players.contains(event.getPlayer().getName())) {
+		if(event.getAction() == Action.PHYSICAL && players.contains(event.getPlayer().getName())) {
 			Location location = event.getPlayer().getLocation();
 			int x = location.getBlockX();
 			int y = location.getBlockY();
@@ -173,6 +256,30 @@ public class Parkour implements Listener {
 			if(x == 1498 && y == 19 && z == -1301) {
 				squidCounter = 15;
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onMouseClick(MouseClickEvent event) {
+		Player player = event.getPlayer();
+		ItemStack item = player.getItemInHand();
+		if(this.setCheckpoint.equals(item)) {
+			int amount = checkpointPasses.containsKey(player.getName()) ? checkpointPasses.get(player.getName()) : 0;
+			if(amount > 0) {
+				--amount;
+				checkpoints.put(player.getName(), player.getLocation());
+			} else {
+				MessageHandler.sendMessage(player, "&cYou do not have any checkpoints, get some with &a/vote");
+				amount += 10;
+			}
+		} else if(this.returnToCheckpoint.equals(item)) {
+			if(checkpoints.containsKey(player.getName())) {
+				player.teleport(checkpoints.get(player.getName()));
+			} else {
+				MessageHandler.sendMessage(player, "&cYou have no checkpoint set");
+			}
+		} else if(this.exitParkour.equals(item)) {
+			remove(player);
 		}
 	}
 	
@@ -203,6 +310,13 @@ public class Parkour implements Listener {
 			block.setType(Material.WOOL);
 			block.setData((byte) random.nextInt(16));
 			woolBlocks.put(index, block.getLocation());
+		} else if(ticks == 20) {
+			for(String name : scoreboards.keySet()) {
+				if(players.contains(name)) {
+					Player player = ProPlugin.getPlayer(name);
+					scoreboards.get(name).update(player);
+				}
+			}
 		} else if(ticks == 20 * 2 && --squidCounter > 0) {
 			Random random = new Random();
 			float volume = 2.5f;
@@ -233,9 +347,81 @@ public class Parkour implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Location to = event.getTo();
+		int y = to.getBlockY();
+		if(y == 5 || y == 6) {
+			int x = to.getBlockX();
+			if(x == 1589) {
+				int z = to.getBlockZ();
+				if(z >= -1300 && z <= -1298) {
+					start(event.getPlayer());
+				}
+			}
+		} else if(y <= 0) {
+			remove(event.getPlayer());
+		}
+	}
+	
+	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		if(chunks.contains(event.getChunk())) {
 			event.setCancelled(false);
+		}
+	}
+	
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if(event.getCause() == DamageCause.VOID && event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			remove(player);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		Player player = event.getPlayer();
+		remove(player);
+		timers.remove(player);
+		if(!Ranks.PREMIUM.hasRank(player)) {
+			checkpoints.remove(player.getName());
+		}
+	}
+	
+	@EventHandler
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", player.getUniqueId().toString(), "amount");
+		if(amount > 0) {
+			checkpointPasses.put(player.getName(), amount);
+		}
+	}
+	
+	@EventHandler
+	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
+		String name = event.getName();
+		UUID uuid = event.getUUID();
+		if(checkpointPasses.containsKey(name)) {
+			DB.HUB_PARKOUR_CHECKPOINTS.updateInt("amount", checkpointPasses.get(name), "uuid", uuid.toString());
+			checkpointPasses.remove(name);
+		}
+		if(checkpoints.containsKey(name)) {
+			Location location = checkpoints.get(name);
+			double x = location.getBlockX() + .5;
+			double y = location.getBlockY() + .5;
+			double z = location.getBlockZ() + .5;
+			double yaw = (double) ((int) location.getYaw());
+			double pitch = (double) ((int) location.getPitch());
+			if(DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.isUUIDSet(uuid)) {
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("x", x, "uuid", uuid.toString());
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("y", y, "uuid", uuid.toString());
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("z", z, "uuid", uuid.toString());
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("yaw", yaw, "uuid", uuid.toString());
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("pitch", pitch, "uuid", uuid.toString());
+			} else {
+				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.insert("'" + uuid.toString() + "', '" + x + "', '" + y + "', '" + z + "', '" + yaw + "', '" + pitch + "'");
+			}
+			checkpoints.remove(name);
 		}
 	}
 }

@@ -1,5 +1,8 @@
 package ostb.server.servers.hub;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -12,6 +15,7 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
 public abstract class HubItemBase implements Listener {
+	private static List<HubItemBase> items = null;
 	public ItemCreator item = null;
 	public int slot = -1;
 	
@@ -19,6 +23,10 @@ public abstract class HubItemBase implements Listener {
 		this.item = item;
 		this.slot = slot;
 		EventUtil.register(this);
+		if(items == null) {
+			items = new ArrayList<HubItemBase>();
+		}
+		items.add(this);
 	}
 	
 	public void giveItem(Player player) {
@@ -56,4 +64,10 @@ public abstract class HubItemBase implements Listener {
 	public abstract void onPlayerJoin(PlayerJoinEvent event);
 	public abstract void onMouseClick(MouseClickEvent event);
 	public abstract void onInventoryItemClick(InventoryItemClickEvent event);
+	
+	public static void giveItems(Player player) {
+		for(HubItemBase item : items) {
+			item.giveItem(player);
+		}
+	}
 }
