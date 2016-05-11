@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
+import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -57,13 +58,13 @@ public class Events implements Listener {
 		if(ticks == 20) {
 			MiniGame game = OSTB.getMiniGame();
 			if(game.getGameState() == GameStates.STARTED) {
-				int counter = game.getCounter() + 1;
+				int counter = game.getCounter();
 				if(counter <= 0) {
 					MessageHandler.alert("&cPVP is now &eenabled");
 					MessageHandler.alert("&c/Go to &e(0, 0)");
 					game.setAllowEntityDamage(true);
 					game.setAllowEntityDamageByEntities(true);
-					WorldHandler.register();
+					WorldHandler.shrink();
 					HandlerList.unregisterAll(this);
 				} else {
 					if(game.canDisplay()) {
@@ -131,6 +132,16 @@ public class Events implements Listener {
 		}
 		logSpawns = true;
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				for(Player player : ProPlugin.getPlayers()) {
+					new TitleDisplayer(player, "&bHealing All...").display();
+					player.setHealth(player.getMaxHealth());
+					player.setFoodLevel(20);
+				}
+			}
+		}, 20 * 30);
 	}
 	
 	@EventHandler

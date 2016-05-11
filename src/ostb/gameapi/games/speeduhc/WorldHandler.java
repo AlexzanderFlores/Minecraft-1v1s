@@ -8,46 +8,36 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.customevents.game.GameStartingEvent;
 import ostb.server.BiomeSwap;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
 
 public class WorldHandler implements Listener {
-	private static WorldHandler instance = null;
 	private static World world = null;
 	private static double radius = 1500;
+	private static boolean shrink = false;
+	private static File [] files = null;
 	
 	public WorldHandler() {
 		BiomeSwap.setUpUHC();
-		File [] files = new File(Bukkit.getWorldContainer().getPath() + "/../resources/maps/pregen/").listFiles();
+		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
 		if(files.length == 0) {
 			ProPlugin.restartServer();
 		} else {
-			instance = this;
-			File file = files[files.length - 1];
-			File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
-			FileHandler.copyFile(file, zip);
-			ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/");
-			world = Bukkit.createWorld(new WorldCreator("world"));
-			FileHandler.delete(file);
-			FileHandler.delete(zip);
-			OSTB.getMiniGame().setMap(world);
-			world.getWorldBorder().setCenter(0, 0);
-			world.getWorldBorder().setDamageAmount(1.0d);
-			world.getWorldBorder().setWarningDistance(25);
-			world.getWorldBorder().setWarningTime(20);
-			setBorder();
+			EventUtil.register(this);
 		}
 	}
 	
-	public static void register() {
-		EventUtil.register(instance);
+	public static void shrink() {
+		shrink = true;
 	}
 	
 	public static void setBorder() {
@@ -75,11 +65,28 @@ public class WorldHandler implements Listener {
 		return world;
 	}
 	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onGameStarting(GameStartingEvent event) {
+		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
+		File file = files[files.length - 1];
+		File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
+		FileHandler.copyFile(file, zip);
+		ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/");
+		world = Bukkit.createWorld(new WorldCreator("world"));
+		FileHandler.delete(file);
+		FileHandler.delete(zip);
+		OSTB.getMiniGame().setMap(world);
+		world.getWorldBorder().setCenter(0, 0);
+		world.getWorldBorder().setDamageAmount(1.0d);
+		world.getWorldBorder().setWarningDistance(25);
+		world.getWorldBorder().setWarningTime(20);
+		setBorder();
+	}
+	
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20) {
-			Bukkit.getLogger().info("1");
+		if(ticks == 20 && shrink) {
 			radius -= .5;
 			setBorder();
 		}

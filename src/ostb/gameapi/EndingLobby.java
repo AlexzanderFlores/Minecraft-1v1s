@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
+import ostb.server.util.EventUtil;
 
 public class EndingLobby implements Listener {
 	private List<String> topPlayers = null;
