@@ -155,9 +155,11 @@ public class TeamHandler implements Listener {
 	}
 	
 	public static Team getTeam(Player player) {
-		for(Team team : teams) {
-			if(team.hasPlayer(player)) {
-				return team;
+		if(teams != null) {
+			for(Team team : teams) {
+				if(team.hasPlayer(player)) {
+					return team;
+				}
 			}
 		}
 		return null;
