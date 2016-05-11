@@ -17,6 +17,14 @@ import ostb.server.util.StringUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("booster", -1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				MessageHandler.sendMessage(sender, "URL: &cstore.OutsideTheBlock.org/category/679889");
+				return true;
+			}
+		};
+		
 		new CommandBase("sendCommand", 2, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

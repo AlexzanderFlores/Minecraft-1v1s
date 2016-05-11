@@ -18,6 +18,7 @@ import ostb.customevents.player.CoinGiveEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.util.ItemCreator;
 
@@ -25,7 +26,7 @@ public class CoinBoosters implements Listener {
 	private Map<String, Integer> boosters = null;
 	private ItemStack item = null;
 	private String user = null;
-	private final String url = "store.OutsideTheBlock.org/category/679889";
+	private final String command = "Get boosters with &6/booster";
 	
 	public CoinBoosters() {
 		boosters = new HashMap<String, Integer>();
@@ -37,10 +38,14 @@ public class CoinBoosters implements Listener {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if(OSTB.getMiniGame().getJoiningPreGame()) {
-			UUID uuid = player.getUniqueId();
-			String [] keys = new String [] {"uuid", "game_name"};
-			String [] values = new String [] {uuid.toString(), OSTB.getMiniGame().getName()};
-			boosters.put(player.getName(), DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount"));
+			if(Ranks.OWNER.hasRank(player)) {
+				boosters.put(player.getName(), 0);
+			} else {
+				UUID uuid = player.getUniqueId();
+				String [] keys = new String [] {"uuid", "game_name"};
+				String [] values = new String [] {uuid.toString(), OSTB.getMiniGame().getName()};
+				boosters.put(player.getName(), DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount"));
+			}
 		}
 		player.getInventory().addItem(item);
 	}
@@ -54,14 +59,12 @@ public class CoinBoosters implements Listener {
 			if(amount > 0) {
 				if(user == null) {
 					user = AccountHandler.getPrefix(player);
-					MessageHandler.alert(user + "&xhas enabled a x2 coin booster for this server! Get a booster here:");
-					MessageHandler.alert(url);
+					MessageHandler.alert(user + " &xhas enabled a x2 coin booster for " + OSTB.getPlugin().getDisplay() + "! " + command);
 				} else {
-					MessageHandler.sendMessage(player, user + "&chas already enabled a coin booster for this server");
+					MessageHandler.sendMessage(player, user + " &chas already enabled a coin booster for " + OSTB.getPlugin().getDisplay() + ". " + command);
 				}
 			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have any coin boosters! Get some here:");
-				MessageHandler.sendMessage(player, url);
+				MessageHandler.sendMessage(player, "&cYou do not have any coin boosters! " + command);
 			}
 			event.setCancelled(true);
 		}
@@ -70,8 +73,7 @@ public class CoinBoosters implements Listener {
 	@EventHandler
 	public void onCoinGive(CoinGiveEvent event) {
 		if(user != null) {
-			MessageHandler.sendMessage(event.getPlayer(), user + "has an active x2 Coins booster!");
-			MessageHandler.sendMessage(event.getPlayer(), url);
+			MessageHandler.sendMessage(event.getPlayer(), user + " &xhas an active x2 Coins booster! " + command);
 			event.setAmount(event.getAmount() * 2);
 		}
 	}
