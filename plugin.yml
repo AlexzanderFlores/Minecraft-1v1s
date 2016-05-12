@@ -190,3 +190,7 @@ commands:
 
   pvpBattles:
     usage: /pvpBattles <addional arguments>
+
+# Worker commands
+  purchase:
+    usage: /purchase <name> <package name>

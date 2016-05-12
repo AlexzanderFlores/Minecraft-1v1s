@@ -73,6 +73,7 @@ public class HubBase extends ProPlugin {
 		new ParkourNPC();
 		new Parkour();
 		new EndlessParkour();
+		new RecentSupporters();
 		new CommandBase("giveKey", 3) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
