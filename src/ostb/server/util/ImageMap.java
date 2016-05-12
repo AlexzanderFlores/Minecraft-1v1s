@@ -5,9 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -35,7 +34,6 @@ public class ImageMap implements Listener {
 	private static final int MAP_WIDTH = 128;
 	private static final int MAP_HEIGHT = 128;
 	private static boolean registeredCommand = false;
-	private static Map<String, Integer> players = null;
 	private static List<ItemFrame> allItemFrames = null;
 	private static List<ImageMap> imageMaps = null;
 	private List<ItemFrame> itemFrames = null;
@@ -64,17 +62,9 @@ public class ImageMap implements Listener {
 		
 		@Override
 		public void render(MapView view, MapCanvas canvas, Player player) {
-			if(image != null && (load || players.containsKey(player.getName()))) {
+			if(image != null && load) {
 				load = false;
 				canvas.drawImage(0, 0, image);
-				if(players.containsKey(player.getName())) {
-					int counter = players.get(player.getName());
-					if(--counter <= 0) {
-						players.remove(player.getName());
-					} else {
-						players.put(player.getName(), counter);
-					}
-				}
 			}
 		}
 	}
@@ -89,17 +79,12 @@ public class ImageMap implements Listener {
 			new CommandBase("reloadImageMaps", true) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
-					Player player = (Player) sender;
-					players.put(player.getName(), allItemFrames.size());
 					for(ImageMap map : imageMaps) {
 						map.execute();
 					}
 					return true;
 				}
 			}.setRequiredRank(Ranks.OWNER);
-		}
-		if(players == null) {
-			players = new HashMap<String, Integer>();
 		}
 		if(allItemFrames == null) {
 			allItemFrames = new ArrayList<ItemFrame>();
@@ -113,10 +98,17 @@ public class ImageMap implements Listener {
 		if(imageMaps == null) {
 			imageMaps = new ArrayList<ImageMap>();
 		}
+		Iterator<ImageMap> iterator = imageMaps.iterator();
+		while(iterator.hasNext()) {
+			ImageMap map = iterator.next();
+			if(map.getItemFrames().get(0).equals(itemFrame)) {
+				iterator.remove();
+			}
+		}
 		imageMaps.add(this);
 	}
 	
-	private void execute() {
+	public void execute() {
 		Bukkit.getLogger().info("Loading image from \"" + path + "\"");
 		File file = new File(path);
 		BufferedImage image = null;
@@ -129,7 +121,9 @@ public class ImageMap implements Listener {
 		for(Entity entity : itemFrame.getWorld().getEntities()) {
 			if(entity instanceof ItemFrame) {
 				ItemFrame frame = (ItemFrame) entity;
-				allItemFrames.add(frame);
+				if(!allItemFrames.contains(frame)) {
+					allItemFrames.add(frame);
+				}
 			}
 		}
 		Location location = itemFrame.getLocation();
@@ -142,6 +136,7 @@ public class ImageMap implements Listener {
 				int x = b * MAP_WIDTH;
 				int y = a * MAP_HEIGHT;
 				ItemFrame frame = getItemFrame(x1, y1, z1);
+				frame.setItem(new ItemStack(Material.AIR));
 				ItemStack map = new ItemStack(Material.MAP);
 				MapView mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
 				for(MapRenderer renderer : mapView.getRenderers()) {
@@ -150,7 +145,9 @@ public class ImageMap implements Listener {
 				mapView.addRenderer(new CustomRender(image, x, y, itemFrame));
 				map.setDurability(mapView.getId());
 				frame.setItem(map);
-				itemFrames.add(frame);
+				if(!itemFrames.contains(frame)) {
+					itemFrames.add(frame);
+				}
 				switch(face) {
 					case NORTH:
 						--x1;
@@ -185,6 +182,10 @@ public class ImageMap implements Listener {
 	
 	public List<ItemFrame> getItemFrames() {
 		return itemFrames;
+	}
+	
+	public static List<ImageMap> getImageMaps() {
+		return imageMaps;
 	}
 	
 	public static ItemFrame getItemFrame(int x1, int y1, int z1) {
