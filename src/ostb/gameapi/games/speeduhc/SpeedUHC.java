@@ -5,6 +5,7 @@ import org.bukkit.GameMode;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.scenarios.scenarios.AppleRates;
 import ostb.gameapi.scenarios.scenarios.CutClean;
 import ostb.gameapi.scenarios.scenarios.OreMultipliers;
 import ostb.gameapi.shops.SpeedUHCShop;
@@ -24,6 +25,7 @@ public class SpeedUHC extends MiniGame {
 		new OreMultipliers();
 		OreMultipliers.setMultiplier(2);
 		new CutClean();
+		new AppleRates(50);
 		new Events();
 		new WorldHandler();
 		new BelowNameHealthScoreboardUtil();

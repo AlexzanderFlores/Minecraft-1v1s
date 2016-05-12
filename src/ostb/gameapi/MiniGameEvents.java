@@ -161,6 +161,7 @@ public class MiniGameEvents implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onGameEnding(GameEndingEvent event) {
+		getMiniGame().resetFlags();
 		getMiniGame().setCounter(getMiniGame().getEndingCounter());
 	}
 	

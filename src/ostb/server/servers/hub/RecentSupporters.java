@@ -16,7 +16,6 @@ import org.bukkit.event.Listener;
 
 import anticheat.events.TimeEvent;
 import anticheat.util.AsyncDelayedTask;
-import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.DB;
 import ostb.server.DB.Databases;
@@ -71,7 +70,6 @@ public class RecentSupporters implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				MessageHandler.alert("Updating...");
 				List<UUID> uuids = new ArrayList<UUID>();
 				List<String> packageNames = new ArrayList<String>();
 				List<String> names = new ArrayList<String>();

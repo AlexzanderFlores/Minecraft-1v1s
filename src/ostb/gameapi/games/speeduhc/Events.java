@@ -61,13 +61,12 @@ public class Events implements Listener {
 				int counter = game.getCounter();
 				if(counter <= 0) {
 					MessageHandler.alert("&cPVP is now &eenabled");
-					MessageHandler.alert("&c/Go to &e(0, 0)");
 					game.setAllowEntityDamage(true);
 					game.setAllowEntityDamageByEntities(true);
 					WorldHandler.shrink();
 					HandlerList.unregisterAll(this);
 				} else {
-					if(game.canDisplay()) {
+					if(counter % 60 * 5 == 0 || (counter % 10 == 0 && counter <= 60) || counter <= 5) {
 						String time = CountDownUtil.getCounterAsString(counter);
 						for(Player player : Bukkit.getOnlinePlayers()) {
 							new TitleDisplayer(player, "&cPVP", time).setFadeIn(0).setStay(15).setFadeOut(30).display();
@@ -123,7 +122,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		OSTB.getProPlugin().removeFlags();
-		OSTB.getMiniGame().setCounter(60 * 10);
+		OSTB.getMiniGame().setCounter(60 * 15);
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
