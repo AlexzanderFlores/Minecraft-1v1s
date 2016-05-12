@@ -16,7 +16,7 @@ import ostb.server.util.ConfigurationUtil;
 public enum DB {
 	// Account & other
 	PLAYERS_ACCOUNTS("uuid VARCHAR(40), name VARCHAR(16), address VARCHAR(40), rank VARCHAR(20), join_time VARCHAR(10), PRIMARY KEY(uuid)"),
-	PLAYERS_NO_RANK("uuid VARCHAR(40), PRIMARY KEY(uuid)"),
+	//PLAYERS_NO_RANK("uuid VARCHAR(40), PRIMARY KEY(uuid)"),
 	PLAYERS_IP_ADDRESSES("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), address VARCHAR(40), time VARCHAR(25), PRIMARY KEY(id)"),
 	PLAYERS_LOCATIONS("uuid VARCHAR(40), location VARCHAR(100), PRIMARY KEY(uuid)"),
 	PLAYERS_DISABLED_MESSAGES("uuid VARCHAR(40), PRIMARY KEY(uuid)"),
