@@ -97,7 +97,7 @@ public class VotingHandler implements Listener {
 			for(int a = 0; a < maps.size(); ++a) {
 				String map = maps.get(a);
 				String render = name + "/" + map + "/Render.png";
-				for(ItemFrame itemFrame : new ImageMap(itemFrames[a], render).getItemFrames()) {
+				for(ItemFrame itemFrame : new ImageMap(itemFrames[a], map, render).getItemFrames()) {
 					this.itemFrames.put(itemFrame, map);
 					walls.put(lobby.getBlockAt(itemFrame.getLocation()).getRelative(0, 0, 1), map);
 				}

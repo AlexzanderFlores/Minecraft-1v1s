@@ -75,8 +75,8 @@ public class Ranking implements Listener {
 		frames = new ArrayList<ItemFrame>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
 		World lobby = OSTB.getMiniGame().getLobby();
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, 14, 7, -2), path).getItemFrames());
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, -14, 7, 2), path).getItemFrames());
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, 14, 7, -2), "Elo", path).getItemFrames());
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, -14, 7, 2), "Elo", path).getItemFrames());
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {

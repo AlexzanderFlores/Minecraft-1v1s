@@ -93,7 +93,7 @@ public class RecentSupporters implements Listener {
 					names.add(AccountHandler.getName(uuid));
 				}
 				for(int a = 0; a < 3; ++a) {
-					new ImageMap(itemFrames.get(a), loadImage(names.get(a), a), 3, 4).getItemFrames();
+					new ImageMap(itemFrames.get(a), "Supporter " + a, loadImage(names.get(a), a), 3, 4);
 					nameStands.get(a).setCustomName(StringUtil.color("&b" + names.get(a)));
 					packageStands.get(a).setCustomName(StringUtil.color("&b" + packageNames.get(a)));
 				}

@@ -26,9 +26,9 @@ import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import ostb.OSTB;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
+import ostb.server.DB;
 
 @SuppressWarnings("deprecation")
 public class ImageMap {
@@ -39,6 +39,7 @@ public class ImageMap {
 	private static Map<ItemFrame, Integer> itemFrameMaps = null;
 	private ItemFrame itemFrame = null;
 	private List<ItemFrame> itemFrames = null;
+	private String name = null;
 	private String path = null;
 	private int width = 0;
 	private int height = 0;
@@ -71,11 +72,11 @@ public class ImageMap {
 		}
 	}
 	
-	public ImageMap(ItemFrame itemFrame, String path) {
-		this(itemFrame, path, 5, 3);
+	public ImageMap(ItemFrame itemFrame, String name, String path) {
+		this(itemFrame, name, path, 5, 3);
 	}
 	
-	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
+	public ImageMap(ItemFrame itemFrame, String name, String path, int width, int height) {
 		if(!registeredCommand) {
 			registeredCommand = true;
 			new CommandBase("reloadImageMaps", true) {
@@ -93,6 +94,7 @@ public class ImageMap {
 		}
 		itemFrames = new ArrayList<ItemFrame>();
 		this.itemFrame = itemFrame;
+		this.name = name;
 		this.path = path;
 		this.width = width;
 		this.height = height;
@@ -103,7 +105,7 @@ public class ImageMap {
 		Iterator<ImageMap> iterator = imageMaps.iterator();
 		while(iterator.hasNext()) {
 			ImageMap map = iterator.next();
-			if(map.getItemFrames().get(0).equals(itemFrame)) {
+			if(map.getName().equals(this.name)) {
 				iterator.remove();
 			}
 		}
@@ -124,27 +126,25 @@ public class ImageMap {
 		int x1 = location.getBlockX();
 		int y1 = location.getBlockY();
 		int z1 = location.getBlockZ();
-		for(int a = 0; a < height; ++a, --y1) {
+		for(int a = 0, counter = 0; a < height; ++a, --y1) {
 			for(int b = 0; b < width; ++b) {
 				int x = b * MAP_WIDTH;
 				int y = a * MAP_HEIGHT;
 				ItemFrame frame = getItemFrame(itemFrame.getWorld(), x1, y1, z1);
-				int id = itemFrameMaps.containsKey(frame) ? itemFrameMaps.get(frame) : -1;
-				MapView mapView = null;
-				if(id == -1) {
-					if(OSTB.getMiniGame() == null) {
-						mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
-					} else {
-						do {
-							mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
-						} while(mapView.getId() <= 36);
-					}
-					itemFrameMaps.put(frame, (int) mapView.getId());
-					if(!itemFrames.contains(frame)) {
-						itemFrames.add(frame);
-					}
+				int id = -1;
+				if(itemFrameMaps.containsKey(frame)) {
+					id = itemFrameMaps.get(frame);
+				} else if(DB.NETWORK_MAP_IDS.isKeySet("name", name)) {
+					id = DB.NETWORK_MAP_IDS.getInt("name", name, "map_id");
+					itemFrameMaps.put(frame, id);
 				} else {
-					mapView = Bukkit.getMap((short) id);
+					Bukkit.getLogger().info("Unknown map id logged for \"" + name + "\"");
+					return;
+				}
+				id += counter++;
+				MapView mapView = Bukkit.getMap((short) id);
+				while(mapView == null || mapView.getId() < id) {
+					mapView = Bukkit.createMap(frame.getWorld());
 				}
 				for(MapRenderer renderer : mapView.getRenderers()) {
 					mapView.removeRenderer(renderer);
@@ -153,6 +153,7 @@ public class ImageMap {
 				ItemStack map = new ItemStack(Material.MAP);
 				map.setDurability(mapView.getId());
 				frame.setItem(map);
+				itemFrames.add(frame);
 				switch(face) {
 					case NORTH:
 						--x1;
@@ -183,6 +184,10 @@ public class ImageMap {
 					return;
 			}
 		}
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public List<ItemFrame> getItemFrames() {
