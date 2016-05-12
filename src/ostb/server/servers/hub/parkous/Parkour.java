@@ -208,7 +208,7 @@ public class Parkour implements Listener {
 			player.getInventory().setItem(8, exitParkour);
 			Events.removeSidebar(player);
 			timers.put(player.getName(), new CountDownUtil());
-			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aEndless Parkour ") {
+			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aParkour ") {
 				@Override
 				public void update(Player player) {
 					removeScore(5);
