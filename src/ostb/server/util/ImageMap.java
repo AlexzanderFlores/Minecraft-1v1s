@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -25,15 +27,18 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import ostb.OSTB;
+import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
 
 @SuppressWarnings("deprecation")
 public class ImageMap {
 	private static final int MAP_WIDTH = 128;
 	private static final int MAP_HEIGHT = 128;
-	//private static boolean registeredCommand = false;
-	//private static List<ImageMap> imageMaps = null;
-	private static Map<ItemFrame, Integer> itemFrames = null;
+	private static boolean registeredCommand = false;
+	private static List<ImageMap> imageMaps = null;
+	private static Map<ItemFrame, Integer> itemFrameMaps = null;
 	private ItemFrame itemFrame = null;
+	private List<ItemFrame> itemFrames = null;
 	private String path = null;
 	private int width = 0;
 	private int height = 0;
@@ -71,7 +76,7 @@ public class ImageMap {
 	}
 	
 	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
-		/*if(!registeredCommand) {
+		if(!registeredCommand) {
 			registeredCommand = true;
 			new CommandBase("reloadImageMaps", true) {
 				@Override
@@ -82,16 +87,17 @@ public class ImageMap {
 					return true;
 				}
 			}.setRequiredRank(Ranks.OWNER);
-		}*/
-		if(itemFrames == null) {
-			itemFrames = new HashMap<ItemFrame, Integer>();
 		}
+		if(itemFrameMaps == null) {
+			itemFrameMaps = new HashMap<ItemFrame, Integer>();
+		}
+		itemFrames = new ArrayList<ItemFrame>();
 		this.itemFrame = itemFrame;
 		this.path = path;
 		this.width = width;
 		this.height = height;
 		execute();
-		/*if(imageMaps == null) {
+		if(imageMaps == null) {
 			imageMaps = new ArrayList<ImageMap>();
 		}
 		Iterator<ImageMap> iterator = imageMaps.iterator();
@@ -101,7 +107,7 @@ public class ImageMap {
 				iterator.remove();
 			}
 		}
-		imageMaps.add(this);*/
+		imageMaps.add(this);
 	}
 	
 	public void execute() {
@@ -123,11 +129,20 @@ public class ImageMap {
 				int x = b * MAP_WIDTH;
 				int y = a * MAP_HEIGHT;
 				ItemFrame frame = getItemFrame(itemFrame.getWorld(), x1, y1, z1);
-				int id = itemFrames.containsKey(frame) ? itemFrames.get(frame) : -1;
+				int id = itemFrameMaps.containsKey(frame) ? itemFrameMaps.get(frame) : -1;
 				MapView mapView = null;
 				if(id == -1) {
-					mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
-					itemFrames.put(frame, (int) mapView.getId());
+					if(OSTB.getMiniGame() == null) {
+						mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
+					} else {
+						do {
+							mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
+						} while(mapView.getId() <= 36);
+					}
+					itemFrameMaps.put(frame, (int) mapView.getId());
+					if(!itemFrames.contains(frame)) {
+						itemFrames.add(frame);
+					}
 				} else {
 					mapView = Bukkit.getMap((short) id);
 				}
@@ -171,7 +186,7 @@ public class ImageMap {
 	}
 	
 	public List<ItemFrame> getItemFrames() {
-		return new ArrayList<ItemFrame>(itemFrames.keySet());
+		return itemFrames;
 	}
 	
 	public static ItemFrame getItemFrame(World world, int x1, int y1, int z1) {
