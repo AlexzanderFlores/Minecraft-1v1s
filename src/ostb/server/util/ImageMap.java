@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -27,17 +25,14 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import ostb.OSTB;
-import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.CommandBase;
 
 @SuppressWarnings("deprecation")
 public class ImageMap {
 	private static final int MAP_WIDTH = 128;
 	private static final int MAP_HEIGHT = 128;
-	private static boolean registeredCommand = false;
-	private static List<ImageMap> imageMaps = null;
-	private static Map<ItemFrame, MapView> itemFrames = null;
+	//private static boolean registeredCommand = false;
+	//private static List<ImageMap> imageMaps = null;
+	private static Map<ItemFrame, Integer> itemFrames = null;
 	private ItemFrame itemFrame = null;
 	private String path = null;
 	private int width = 0;
@@ -76,43 +71,27 @@ public class ImageMap {
 	}
 	
 	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
-		if(!registeredCommand) {
+		/*if(!registeredCommand) {
 			registeredCommand = true;
-			new CommandBase("reloadImageMaps", 0, 1, true) {
+			new CommandBase("reloadImageMaps", true) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
-					if(arguments.length == 0) {
-						for(ImageMap map : imageMaps) {
-							map.execute();
-						}
-					} else {
-						Player player = (Player) sender;
-						ItemStack item = new ItemStack(Material.MAP);
-						int max = Integer.valueOf(arguments[0]);
-						int counter = 0;
-						MapView mapView = null;
-						for(ItemFrame itemFrame : itemFrames.keySet()) {
-							if(counter++ > max) {
-								break;
-							}
-							mapView = itemFrames.get(itemFrame);
-						}
-						item.setDurability(mapView.getId());
-						player.setItemInHand(item);
+					for(ImageMap map : imageMaps) {
+						map.execute();
 					}
 					return true;
 				}
 			}.setRequiredRank(Ranks.OWNER);
-		}
+		}*/
 		if(itemFrames == null) {
-			itemFrames = new HashMap<ItemFrame, MapView>();
+			itemFrames = new HashMap<ItemFrame, Integer>();
 		}
 		this.itemFrame = itemFrame;
 		this.path = path;
 		this.width = width;
 		this.height = height;
 		execute();
-		if(imageMaps == null) {
+		/*if(imageMaps == null) {
 			imageMaps = new ArrayList<ImageMap>();
 		}
 		Iterator<ImageMap> iterator = imageMaps.iterator();
@@ -122,7 +101,7 @@ public class ImageMap {
 				iterator.remove();
 			}
 		}
-		imageMaps.add(this);
+		imageMaps.add(this);*/
 	}
 	
 	public void execute() {
@@ -144,11 +123,13 @@ public class ImageMap {
 				int x = b * MAP_WIDTH;
 				int y = a * MAP_HEIGHT;
 				ItemFrame frame = getItemFrame(itemFrame.getWorld(), x1, y1, z1);
-				MapView mapView = itemFrames.get(frame);
-				if(mapView == null) {
+				int id = itemFrames.containsKey(frame) ? itemFrames.get(frame) : -1;
+				MapView mapView = null;
+				if(id == -1) {
 					mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
-					itemFrames.put(frame, mapView);
-					MessageHandler.alert("Creating map with ID " + mapView.getId() + " : " + frame.getEntityId());
+					itemFrames.put(frame, (int) mapView.getId());
+				} else {
+					mapView = Bukkit.getMap((short) id);
 				}
 				for(MapRenderer renderer : mapView.getRenderers()) {
 					mapView.removeRenderer(renderer);

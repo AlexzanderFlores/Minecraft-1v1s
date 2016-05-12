@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -17,11 +16,8 @@ import org.bukkit.event.Listener;
 
 import anticheat.events.TimeEvent;
 import anticheat.util.AsyncDelayedTask;
-import npc.util.DelayedTask;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
-import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.DB.Databases;
 import ostb.server.util.EventUtil;
@@ -61,19 +57,6 @@ public class RecentSupporters implements Listener {
 		
 		update();
 		EventUtil.register(this);
-		
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				new CommandBase("test") {
-					@Override
-					public boolean execute(CommandSender sender, String [] arguments) {
-						update();
-						return true;
-					}
-				}.setRequiredRank(Ranks.OWNER);
-			}
-		}, 20 * 2);
 	}
 	
 	@EventHandler
@@ -110,7 +93,7 @@ public class RecentSupporters implements Listener {
 					names.add(AccountHandler.getName(uuid));
 				}
 				for(int a = 0; a < 3; ++a) {
-					new ImageMap(itemFrames.get(a), loadImage(names.get(a), a), 3, 4);
+					new ImageMap(itemFrames.get(a), loadImage(names.get(a), a), 3, 4).getItemFrames();
 					nameStands.get(a).setCustomName(StringUtil.color("&b" + names.get(a)));
 					packageStands.get(a).setCustomName(StringUtil.color("&b" + packageNames.get(a)));
 				}
