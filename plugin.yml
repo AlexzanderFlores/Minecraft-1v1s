@@ -45,6 +45,9 @@ commands:
     usage: /msg <name> <message>
     aliases: [m]
 
+  noRank:
+    usage: /noRank
+
   ping:
     usage: /ping [name]
 

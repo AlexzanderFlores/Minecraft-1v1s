@@ -17,6 +17,8 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.server.BiomeSwap;
+import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ZipUtil;
@@ -69,7 +71,7 @@ public class WorldHandler implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onGameStarting(GameStartingEvent event) {
 		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
-		int index = new Random().nextInt(files.length - 1);
+		final int index = new Random().nextInt(files.length - 1);
 		File file = files[index];
 		Bukkit.getLogger().info("Loading world #" + index);
 		File zip = new File(Bukkit.getWorldContainer().getPath() + "/world.zip");
@@ -83,6 +85,18 @@ public class WorldHandler implements Listener {
 		world.getWorldBorder().setWarningDistance(25);
 		world.getWorldBorder().setWarningTime(20);
 		setBorder();
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				String world = index + "";
+				if(DB.NETWORK_PREGEN_USES.isKeySet("world", world)) {
+					int uses = DB.NETWORK_PREGEN_USES.getInt("world", world, "uses") + 1;
+					DB.NETWORK_PREGEN_USES.updateInt("uses", uses, "world", world);
+				} else {
+					DB.NETWORK_PREGEN_USES.insert("'" + world + "', '1'");
+				}
+			}
+		});
 	}
 	
 	@EventHandler

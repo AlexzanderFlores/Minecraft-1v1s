@@ -250,7 +250,11 @@ public class AccountHandler implements Listener {
 		final Player player = event.getPlayer();
 		final String address = event.getAddress().getHostAddress();
 		if(DB.PLAYERS_ACCOUNTS.isUUIDSet(player.getUniqueId())) {
-			setRank(player, Ranks.valueOf(DB.PLAYERS_ACCOUNTS.getString("uuid", player.getUniqueId().toString(), "rank")));
+			Ranks rank = Ranks.valueOf(DB.PLAYERS_ACCOUNTS.getString("uuid", player.getUniqueId().toString(), "rank"));
+			if(Ranks.PREMIUM.hasRank(player) && DB.PLAYERS_NO_RANK.isUUIDSet(player.getUniqueId())) {
+				rank = Ranks.PLAYER;
+			}
+			setRank(player, rank);
 			if(OSTB.getPlugin() == Plugins.HUB) {
 				new AsyncDelayedTask(new Runnable() {
 					@Override
