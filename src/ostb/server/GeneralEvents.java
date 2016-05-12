@@ -35,8 +35,8 @@ import ostb.server.util.StringUtil;
 
 public class GeneralEvents implements Listener {
 	private List<String> blockedCommands = null;
-	/*private List<String> delayed = null;
-	private int delay = 3;*/
+	private List<String> delayed = null;
+	private int delay = 3;
 	
 	public GeneralEvents() {
 		blockedCommands = new ArrayList<String>();
@@ -46,7 +46,7 @@ public class GeneralEvents implements Listener {
 		blockedCommands.add("/kill");
 		blockedCommands.add("/suicide");
 		blockedCommands.add("/afk");
-		//delayed = new ArrayList<String>();
+		delayed = new ArrayList<String>();
 		EventUtil.register(this);
 	}
 	
@@ -145,7 +145,7 @@ public class GeneralEvents implements Listener {
 		Player player = event.getPlayer();
 		
 		// Chat delay for non premium players
-		/*if(delayed.contains(player.getName())) {
+		if(delayed.contains(player.getName())) {
 			MessageHandler.sendMessage(player, "&cSlow down! Non " + Ranks.PREMIUM.getPrefix() + "&cchat delay of &e" + delay + " &cseconds");
 			event.setCancelled(true);
 			return;
@@ -158,7 +158,7 @@ public class GeneralEvents implements Listener {
 					delayed.remove(name);
 				}
 			}, 20 * delay);
-		}*/
+		}
 		
 		// Color codes for premium and above
 		if(Ranks.PREMIUM.hasRank(player)) {

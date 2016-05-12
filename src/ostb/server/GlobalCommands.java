@@ -21,27 +21,6 @@ import ostb.server.util.StringUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
-		new CommandBase("noRank", true) {
-			@Override
-			public boolean execute(final CommandSender sender, final String [] arguments) {
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						Player player = (Player) sender;
-						UUID uuid = player.getUniqueId();
-						if(DB.PLAYERS_NO_RANK.isUUIDSet(uuid)) {
-							DB.PLAYERS_NO_RANK.deleteUUID(uuid);
-							MessageHandler.sendMessage(player, "You will no longer have your rank hidden");
-						} else {
-							DB.PLAYERS_NO_RANK.insert("'" + uuid.toString() + "'");
-							MessageHandler.sendMessage(player, "Your rank will now be hidden");
-						}
-					}
-				});
-				return true;
-			}
-		}.setRequiredRank(Ranks.PREMIUM).enableDelay(2);
-		
 		new CommandBase("booster", -1) {
 			@Override
 			public boolean execute(final CommandSender sender, final String [] arguments) {
