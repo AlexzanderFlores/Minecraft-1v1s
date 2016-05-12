@@ -92,14 +92,18 @@ public class VotingHandler implements Listener {
 			holograms.put(map, armorStand);
 			updateHologram(map);
 		}
-		ItemFrame [] itemFrames = new ItemFrame [] {ImageMap.getItemFrame(lobby, 12, 7, 7), ImageMap.getItemFrame(lobby, 2, 7, 7), ImageMap.getItemFrame(lobby, -8, 7, 7)};
-		for(int a = 0; a < maps.size(); ++a) {
-			String map = maps.get(a);
-			String render = name + "/" + map + "/Render.png";
-			for(ItemFrame itemFrame : new ImageMap(itemFrames[a], render).getItemFrames()) {
-				this.itemFrames.put(itemFrame, map);
-				walls.put(lobby.getBlockAt(itemFrame.getLocation()).getRelative(0, 0, 1), map);
+		try {
+			ItemFrame [] itemFrames = new ItemFrame [] {ImageMap.getItemFrame(lobby, 12, 7, 7), ImageMap.getItemFrame(lobby, 2, 7, 7), ImageMap.getItemFrame(lobby, -8, 7, 7)};
+			for(int a = 0; a < maps.size(); ++a) {
+				String map = maps.get(a);
+				String render = name + "/" + map + "/Render.png";
+				for(ItemFrame itemFrame : new ImageMap(itemFrames[a], render).getItemFrames()) {
+					this.itemFrames.put(itemFrame, map);
+					walls.put(lobby.getBlockAt(itemFrame.getLocation()).getRelative(0, 0, 1), map);
+				}
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		EventUtil.register(this);
 	}
