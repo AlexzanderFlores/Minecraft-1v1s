@@ -121,16 +121,6 @@ public class RecentSupporters implements Listener {
 				packageNames = null;
 				names.clear();
 				names = null;
-				
-				new DelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						MessageHandler.alert("Image Map Count: " + ImageMap.getImageMaps().size());
-						for(ImageMap map : ImageMap.getImageMaps()) {
-							map.execute();
-						}
-					}
-				}, 20);
 			}
 		}, 20 * 3);
 	}

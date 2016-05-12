@@ -5,8 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -19,24 +21,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import ostb.OSTB;
+import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 
 @SuppressWarnings("deprecation")
-public class ImageMap implements Listener {
+public class ImageMap {
 	private static final int MAP_WIDTH = 128;
 	private static final int MAP_HEIGHT = 128;
 	private static boolean registeredCommand = false;
-	private static List<ItemFrame> allItemFrames = null;
 	private static List<ImageMap> imageMaps = null;
-	private List<ItemFrame> itemFrames = null;
+	private static Map<ItemFrame, MapView> itemFrames = null;
+	private ItemFrame itemFrame = null;
 	private String path = null;
 	private int width = 0;
 	private int height = 0;
@@ -45,7 +47,7 @@ public class ImageMap implements Listener {
 		private Image image = null;
 		private boolean load = true;
 		
-		public CustomRender(BufferedImage image, int x1, int y1, ItemFrame itemFrame) {
+		public CustomRender(BufferedImage image, int x1, int y1) {
 			int x2 = MAP_WIDTH;
 			int y2 = MAP_HEIGHT;
 			if(x1 > image.getWidth() || y1 > image.getHeight()) {
@@ -76,21 +78,36 @@ public class ImageMap implements Listener {
 	public ImageMap(ItemFrame itemFrame, String path, int width, int height) {
 		if(!registeredCommand) {
 			registeredCommand = true;
-			new CommandBase("reloadImageMaps", true) {
+			new CommandBase("reloadImageMaps", 0, 1, true) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
-					for(ImageMap map : imageMaps) {
-						map.execute();
+					if(arguments.length == 0) {
+						for(ImageMap map : imageMaps) {
+							map.execute();
+						}
+					} else {
+						Player player = (Player) sender;
+						ItemStack item = new ItemStack(Material.MAP);
+						int max = Integer.valueOf(arguments[0]);
+						int counter = 0;
+						MapView mapView = null;
+						for(ItemFrame itemFrame : itemFrames.keySet()) {
+							if(counter++ > max) {
+								break;
+							}
+							mapView = itemFrames.get(itemFrame);
+						}
+						item.setDurability(mapView.getId());
+						player.setItemInHand(item);
 					}
 					return true;
 				}
 			}.setRequiredRank(Ranks.OWNER);
 		}
-		if(allItemFrames == null) {
-			allItemFrames = new ArrayList<ItemFrame>();
+		if(itemFrames == null) {
+			itemFrames = new HashMap<ItemFrame, MapView>();
 		}
-		this.itemFrames = new ArrayList<ItemFrame>();
-		itemFrames.add(itemFrame);
+		this.itemFrame = itemFrame;
 		this.path = path;
 		this.width = width;
 		this.height = height;
@@ -117,15 +134,6 @@ public class ImageMap implements Listener {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		ItemFrame itemFrame = itemFrames.get(0);
-		for(Entity entity : itemFrame.getWorld().getEntities()) {
-			if(entity instanceof ItemFrame) {
-				ItemFrame frame = (ItemFrame) entity;
-				if(!allItemFrames.contains(frame)) {
-					allItemFrames.add(frame);
-				}
-			}
-		}
 		Location location = itemFrame.getLocation();
 		BlockFace face = itemFrame.getFacing();
 		int x1 = location.getBlockX();
@@ -135,19 +143,20 @@ public class ImageMap implements Listener {
 			for(int b = 0; b < width; ++b) {
 				int x = b * MAP_WIDTH;
 				int y = a * MAP_HEIGHT;
-				ItemFrame frame = getItemFrame(x1, y1, z1);
-				frame.setItem(new ItemStack(Material.AIR));
-				ItemStack map = new ItemStack(Material.MAP);
-				MapView mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
+				ItemFrame frame = getItemFrame(itemFrame.getWorld(), x1, y1, z1);
+				MapView mapView = itemFrames.get(frame);
+				if(mapView == null) {
+					mapView = OSTB.getInstance().getServer().createMap(itemFrame.getWorld());
+					itemFrames.put(frame, mapView);
+					MessageHandler.alert("Creating map with ID " + mapView.getId() + " : " + frame.getEntityId());
+				}
 				for(MapRenderer renderer : mapView.getRenderers()) {
 					mapView.removeRenderer(renderer);
 				}
-				mapView.addRenderer(new CustomRender(image, x, y, itemFrame));
+				mapView.addRenderer(new CustomRender(image, x, y));
+				ItemStack map = new ItemStack(Material.MAP);
 				map.setDurability(mapView.getId());
 				frame.setItem(map);
-				if(!itemFrames.contains(frame)) {
-					itemFrames.add(frame);
-				}
 				switch(face) {
 					case NORTH:
 						--x1;
@@ -181,24 +190,7 @@ public class ImageMap implements Listener {
 	}
 	
 	public List<ItemFrame> getItemFrames() {
-		return itemFrames;
-	}
-	
-	public static List<ImageMap> getImageMaps() {
-		return imageMaps;
-	}
-	
-	public static ItemFrame getItemFrame(int x1, int y1, int z1) {
-		for(ItemFrame itemFrame : allItemFrames) {
-			Location location = itemFrame.getLocation();
-			int x2 = location.getBlockX();
-			int y2 = location.getBlockY();
-			int z2 = location.getBlockZ();
-			if(x1 == x2 && y1 == y2 && z1 == z2) {
-				return itemFrame;
-			}
-		}
-		return null;
+		return new ArrayList<ItemFrame>(itemFrames.keySet());
 	}
 	
 	public static ItemFrame getItemFrame(World world, int x1, int y1, int z1) {

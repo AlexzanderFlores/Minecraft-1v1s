@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import npc.util.EventUtil;
+import ostb.OSTB;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -72,8 +74,9 @@ public class Ranking implements Listener {
 		eloRanks = new HashMap<UUID, EloRank>();
 		frames = new ArrayList<ItemFrame>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(14, 7, -2), path).getItemFrames());
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(-14, 7, 2), path).getItemFrames());
+		World lobby = OSTB.getMiniGame().getLobby();
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, 14, 7, -2), path).getItemFrames());
+		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, -14, 7, 2), path).getItemFrames());
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
