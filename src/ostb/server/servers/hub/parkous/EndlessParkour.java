@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
+import npc.events.NPCClickedEvent;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -362,6 +363,16 @@ public class EndlessParkour implements Listener {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onNPCClicked(NPCClickedEvent event) {
+		Player player = event.getPlayer();
+		if(blocks.containsKey(player.getName())) {
+			MessageHandler.sendMessage(player, "&cYou cannot interact with NPCs while playing Endless Parkour");
+			MessageHandler.sendMessage(player, "&cPlease leave parkour then interact with the NPC again");
+			event.setCancelled(true);
 		}
 	}
 	

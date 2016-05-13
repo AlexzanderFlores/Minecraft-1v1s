@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import de.slikey.effectlib.util.ParticleEffect;
+import npc.events.NPCClickedEvent;
 import npc.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -274,6 +275,16 @@ public class Parkour implements Listener {
 			if(x == 1498 && y == 19 && z == -1301) {
 				squidCounter = 15;
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onNPCClicked(NPCClickedEvent event) {
+		Player player = event.getPlayer();
+		if(players.contains(player.getName())) {
+			MessageHandler.sendMessage(player, "&cYou cannot interact with NPCs while playing Parkour");
+			MessageHandler.sendMessage(player, "&cPlease leave parkour then interact with the NPC again");
+			event.setCancelled(true);
 		}
 	}
 	
