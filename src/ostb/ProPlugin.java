@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
@@ -93,7 +92,6 @@ import ostb.server.DB.Databases;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
-import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.StringUtil;
@@ -578,7 +576,6 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	//TODO: Find when this is used, remove if it isn't needed
 	public static void restartServer(long delay) {
 		MessageHandler.alert("Server restarting in &b" + (delay / 20) + " &aseconds!");
-		EffectUtil.playSound(Sound.NOTE_STICKS);
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {

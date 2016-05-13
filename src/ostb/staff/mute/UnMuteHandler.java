@@ -47,10 +47,9 @@ public class UnMuteHandler extends Punishment {
 							// Compile the message string
 							String message = getReason(AccountHandler.getRank(sender), arguments, reason, result, true);
 							String time = TimeUtil.getTime();
-							// Log the unban
-							DB.STAFF_UNMUTES.insert("'" + uuid.toString() + "', '" + staffUUID + "', '" + reason + "', '" + time.substring(0, 7) + "', '" + time + "'");
+							String date = time.substring(0, 7);
 							// Unmute
-							DB.STAFF_MUTES.deleteUUID(uuid);
+							
 							Player player = Bukkit.getPlayer(uuid);
 							if(player != null) {
 								MuteHandler.unMute(player, false);

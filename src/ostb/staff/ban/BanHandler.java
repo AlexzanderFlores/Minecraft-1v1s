@@ -19,96 +19,102 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
 public class BanHandler extends Punishment implements Listener {
 	public enum Violations {CHEATING, CHARGING_BACK}
-	//private String invName = null;
 	
 	public BanHandler() {
 		super("Banned");
-		//invName = "Select Ban Type";
 		// Command syntax: /ban <name> <reason> <proof>
 		new CommandBase("ban", 2, -1) {
 			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				// See if they are not attaching proof to the command, if they aren't and they aren't an owner don't run the command
-				if(arguments.length == 2 && AccountHandler.getRank(sender) != Ranks.OWNER) {
-					return false;
-				}
-				// Use a try/catch to view if the given reason is valid
-				try {
-					Violations reason = Violations.valueOf(arguments[1].toUpperCase());
-					// Detect if the command should be activated
-					PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
-					if(result.isValid()) {
-						UUID uuid = result.getUUID();
-						// See if the player is already banned
-						String [] keys = new String [] {"uuid", "active"};
-						String [] values = new String [] {uuid.toString(), "1"};
-						if(DB.STAFF_BAN.isKeySet(keys, values)) {
-							MessageHandler.sendMessage(sender, "&cThat player is already banned");
-							return true;
+			public boolean execute(final CommandSender sender, final String [] arguments) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						// See if they are not attaching proof to the command, if they aren't and they aren't an owner don't run the command
+						if(arguments.length == 2 && AccountHandler.getRank(sender) != Ranks.OWNER) {
+							return;
 						}
-						// Get the staff data
-						String staff = "CONSOLE";
-						String staffUUID = staff;
-						if(sender instanceof Player) {
-							Player player = (Player) sender;
-							staff = player.getName();
-							staffUUID = player.getUniqueId().toString();
-						}
-						// Compile the message and proof strings
-						final String message = getReason(AccountHandler.getRank(sender), arguments, reason.toString(), result);
-						String time = TimeUtil.getTime();
-						String date = time.substring(0, 7);
-						int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-						DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
-						int id = DB.STAFF_BAN.getInt(keys, values, "id");
-						String proof = (arguments.length == 2 ? "none" : arguments[2]);
-						DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
-						// Perform any final execution instructions
-						MessageHandler.alert(message);
-						Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, sender));
-						// Ban other accounts attached to the IP
-						int counter = 0;
-						for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
-							if(!uuidString.equals(uuid.toString())) {
-								Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
-								if(player != null) {
-									player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
+						// Use a try/catch to view if the given reason is valid
+						try {
+							Violations reason = Violations.valueOf(arguments[1].toUpperCase());
+							// Detect if the command should be activated
+							PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
+							if(result.isValid()) {
+								UUID uuid = result.getUUID();
+								// See if the player is already banned
+								String [] keys = new String [] {"uuid", "active"};
+								String [] values = new String [] {uuid.toString(), "1"};
+								if(DB.STAFF_BAN.isKeySet(keys, values)) {
+									MessageHandler.sendMessage(sender, "&cThat player is already banned");
+									return;
 								}
-								DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
-								keys = new String [] {"uuid", "active"};
-								values = new String [] {uuidString, "1"};
-								id = DB.STAFF_BAN.getInt(keys, values, "id");
+								// Get the staff data
+								String staff = "CONSOLE";
+								String staffUUID = staff;
+								if(sender instanceof Player) {
+									Player player = (Player) sender;
+									staff = player.getName();
+									staffUUID = player.getUniqueId().toString();
+								}
+								// Compile the message and proof strings
+								final String message = getReason(AccountHandler.getRank(sender), arguments, reason.toString(), result);
+								String time = TimeUtil.getTime();
+								String date = time.substring(0, 7);
+								int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+								int id = DB.STAFF_BAN.getInt(keys, values, "id");
+								String proof = (arguments.length == 2 ? "none" : arguments[2]);
 								DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
-								++counter;
+								// Perform any final execution instructions
+								MessageHandler.alert(message);
+								Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, sender));
+								// Ban other accounts attached to the IP
+								int counter = 0;
+								for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
+									if(!uuidString.equals(uuid.toString())) {
+										Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
+										if(player != null) {
+											player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
+										}
+										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+										keys = new String [] {"uuid", "active"};
+										values = new String [] {uuidString, "1"};
+										id = DB.STAFF_BAN.getInt(keys, values, "id");
+										DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
+										++counter;
+									}
+								}
+								if(counter > 0) {
+									MessageHandler.alert("&cBanned &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
+								}
+								// Execute the ban if the player is online
+								final Player player = ProPlugin.getPlayer(arguments[0]);
+								if(player != null) {
+									player.kickPlayer(message.replace("&x", "").replace("&c", ""));
+								}
 							}
-						}
-						if(counter > 0) {
-							MessageHandler.alert("&cBanning &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
-						}
-						// Execute the ban if the player is online
-						final Player player = ProPlugin.getPlayer(arguments[0]);
-						if(player != null) {
-							player.kickPlayer(message.replace("&x", "").replace("&c", ""));
+						} catch(IllegalArgumentException e) {
+							// Display all the valid options
+							MessageHandler.sendMessage(sender, "&c\"" + arguments[1] + "\" is an unknown violation, use one of the following:");
+							String reasons = "";
+							for(Violations reason : Violations.values()) {
+								reasons += "&a" + reason + "&e, ";
+							}
+							MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
 						}
 					}
-				} catch(IllegalArgumentException e) {
-					// Display all the valid options
-					MessageHandler.sendMessage(sender, "&c\"" + arguments[1] + "\" is an unknown violation, use one of the following:");
-					String reasons = "";
-					for(Violations reason : Violations.values()) {
-						reasons += "&a" + reason + "&e, ";
-					}
-					MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
-				}
+				});
 				return true;
 			}
 		}.setRequiredRank(Ranks.STAFF);
 	}
+	
+	//uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unbanned VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unban_date VARCHAR(10), unban_time VARCHAR(25), day INT, active INT
 	
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {

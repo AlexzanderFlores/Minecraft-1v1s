@@ -145,6 +145,7 @@ public class MuteHandler extends Punishment {
 								// Update the database
 								UUID uuid = result.getUUID();
 								String time = TimeUtil.getTime();
+								String date = time.substring(0, 7);
 								// Set times for temporary mutes, note that being muted twice for any reason(s) will result in a lifetime mute
 								// Key: DAYS/HOURS
 								if(muteLengths == null) {
@@ -160,7 +161,7 @@ public class MuteHandler extends Punishment {
 								if(!muteLengths.get(reason).equals("NEVER")) {
 									int days = Integer.valueOf(muteLengths.get(reason).split("/")[0]);
 									int hours = Integer.valueOf(muteLengths.get(reason).split("/")[1]);
-									int previousMutes = DB.STAFF_UNMUTES.getSize(new String [] {"uuid", "reason"}, new String [] {uuid.toString(), "Mute expired"});
+									int previousMutes = DB.STAFF_MUTES.getSize(new String [] {"uuid", "active"}, new String [] {uuid.toString(), "0"});
 									if(previousMutes > 0) {
 										days *= previousMutes;
 										hours *= previousMutes;
@@ -175,7 +176,8 @@ public class MuteHandler extends Punishment {
 									address = player.getAddress().getAddress().getHostAddress();
 									uuid = player.getUniqueId();
 								}
-								DB.STAFF_MUTES.insert("'" + uuid.toString() + "', '" + staffUUID + "', '" + address + "', '" + reason.toString() + "', '" + arguments[2] + "', '" + time.substring(0, 7) + "', '" + time + "', '" + expires + "'");
+								//uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unmuted VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unmute_date VARCHAR(10), unmute_time VARCHAR(25), expires VARCHAR(25), active INT
+								DB.STAFF_MUTES.insert("'" + uuid.toString() + "', '" + staffUUID + "', '" + address + "', '" + reason.toString() + "', '" + arguments[2] + "', '" + date+ "', '" + time + "', '" + expires + "'");
 								// Perform any final execution instructions
 								MessageHandler.alert(message);
 								// Execute the mute if the player is online
@@ -234,10 +236,8 @@ public class MuteHandler extends Punishment {
 		MessageHandler.sendMessage(player, "&eYour mute has expired! Be sure to follow all rules please! &b/rules");
 		MessageHandler.sendLine(player);
 		remove(player);
-		String time = TimeUtil.getTime();
 		if(editDatabase) {
-			DB.STAFF_UNMUTES.insert("'" + player.getUniqueId().toString() + "', 'CONSOLE', 'Mute expired', '" + time.substring(0, 7) + "', '" + time + "'");
-			DB.STAFF_MUTES.deleteUUID(player.getUniqueId());
+			String time = TimeUtil.getTime();
 		}
 	}
 	
