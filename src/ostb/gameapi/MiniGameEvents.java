@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,8 +13,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import anticheat.events.PlayerBanEvent;
 import npc.NPCRegistrationHandler.NPCs;
@@ -36,6 +39,7 @@ import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 
+@SuppressWarnings("deprecation")
 public class MiniGameEvents implements Listener {
 	public MiniGameEvents() {
 		EventUtil.register(this);
@@ -255,6 +259,15 @@ public class MiniGameEvents implements Listener {
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if(event.getSpawnReason() != SpawnReason.CUSTOM && event.getEntity().getWorld().equals(getMiniGame().getLobby())) {
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onCraftItem(CraftItemEvent event) {
+		ItemStack item = event.getRecipe().getResult();
+		if(item.getType() == Material.GOLDEN_APPLE && item.getData().getData() == 1) {
+			event.getWhoClicked().closeInventory();
 			event.setCancelled(true);
 		}
 	}
