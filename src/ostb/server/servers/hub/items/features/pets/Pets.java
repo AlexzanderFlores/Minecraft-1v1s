@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -361,7 +360,7 @@ public class Pets extends FeatureBase {
 		if(event.getTitle().equals(getInvName())) {
 			event.setCancelled(true);
 			Player player = event.getPlayer();
-			final UUID uuid = player.getUniqueId();
+			//final UUID uuid = player.getUniqueId();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.EMERALD_BLOCK || item.getType() == Material.REDSTONE_BLOCK) {
 				if(Ranks.PREMIUM.hasRank(player)) {
@@ -391,9 +390,11 @@ public class Pets extends FeatureBase {
 				}
 				display(player);
 			} else {
+				player.closeInventory();
+				MessageHandler.sendMessage(player, "&cPets are still under development. Your unlocked pets will still be there once they are released!");
 				//String type = item.getType().toString().toUpperCase();
 				//String name = ChatColor.stripColor(event.getItemTitle());
-				if(item.getType() == Material.BARRIER) {
+				/*if(item.getType() == Material.BARRIER) {
 					boolean update = false;
 					final PetTypes petType = pets.get(player.getName());
 					if(petType != null && update) {
@@ -421,7 +422,7 @@ public class Pets extends FeatureBase {
 						});
 						MessageHandler.sendMessage(player, "You have selected &e" + ChatColor.stripColor(petType.getName()));
 					}
-				}
+				}*/
 			}
 		}
 	}
