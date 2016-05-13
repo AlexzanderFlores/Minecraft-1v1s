@@ -138,7 +138,7 @@ public class Parkour implements Listener {
 							for(Entity entity : squid.getNearbyEntities(range, range, range)) {
 								if(entity instanceof Player) {
 									Player player = (Player) entity;
-									if(!players.contains(player.getName())) {
+									if(players.contains(player.getName())) {
 										died(player);
 										player.setFireTicks(20 * 2);
 										player.damage(0);

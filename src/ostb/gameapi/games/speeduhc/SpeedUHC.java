@@ -24,6 +24,7 @@ public class SpeedUHC extends MiniGame {
 		CoinsHandler.setWinCoins(15);
 		new OreMultipliers();
 		OreMultipliers.setMultiplier(2);
+		new BelowNameHealthScoreboardUtil();
 		new CutClean();
 		new AppleRates(50);
 		new Events();

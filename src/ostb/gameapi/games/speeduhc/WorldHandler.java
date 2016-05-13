@@ -103,7 +103,7 @@ public class WorldHandler implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20 && shrink) {
-			radius -= .5;
+			radius -= 2.5;
 			setBorder();
 		}
 	}
