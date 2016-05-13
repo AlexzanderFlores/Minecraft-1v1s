@@ -203,28 +203,11 @@ public class Building extends ProPlugin {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
-				if(arguments.length == 2) {
+				if(arguments.length == 0) {
+					Block block = getRegionBlock(player);
+					MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
+				} else if(arguments.length == 2) {
 					player.getInventory().addItem(new ItemCreator(Material.valueOf(arguments[0]), Byte.valueOf(arguments[1])).setGlow(true).getItemStack());
-					//Block block = getRegionBlock(player);
-					//MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
-				}
-				if(arguments.length == 2) {
-					String ign = arguments[0];
-					String url = "";
-					switch(Integer.valueOf(arguments[1])) {
-					case 1:
-						url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=340&wt=20&abg=240&abd=130&ajg=330&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=186";
-						break;
-					case 2:
-						url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=30&abg=310&abd=50&ajg=340&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=727";
-						break;
-					case 3:
-						url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=10&w=330&wt=30&abg=330&abd=110&ajg=350&ajd=10&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=761";
-						break;
-					default:
-						return false;
-					}
-					FileHandler.downloadImage(url, Bukkit.getWorldContainer().getPath() + "/plugins/test.png");
 				}
 				return true;
 			}
