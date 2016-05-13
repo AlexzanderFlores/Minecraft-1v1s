@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import ostb.ProPlugin;
-import ostb.customevents.player.PlayerBanEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -50,7 +49,7 @@ public class BanHandler extends Punishment implements Listener {
 								String [] keys = new String [] {"uuid", "active"};
 								String [] values = new String [] {uuid.toString(), "1"};
 								if(DB.STAFF_BAN.isKeySet(keys, values)) {
-									MessageHandler.sendMessage(sender, "&cThat player is already banned");
+									MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is already " + getName());
 									return;
 								}
 								// Get the staff data
@@ -66,13 +65,12 @@ public class BanHandler extends Punishment implements Listener {
 								String time = TimeUtil.getTime();
 								String date = time.substring(0, 7);
 								int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', 'null', '" + staffUUID + "', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 								int id = DB.STAFF_BAN.getInt(keys, values, "id");
 								String proof = (arguments.length == 2 ? "none" : arguments[2]);
 								DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
 								// Perform any final execution instructions
 								MessageHandler.alert(message);
-								Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, sender));
 								// Ban other accounts attached to the IP
 								int counter = 0;
 								for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
@@ -81,7 +79,7 @@ public class BanHandler extends Punishment implements Listener {
 										if(player != null) {
 											player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
 										}
-										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + staffUUID + "', 'null', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 										keys = new String [] {"uuid", "active"};
 										values = new String [] {uuidString, "1"};
 										id = DB.STAFF_BAN.getInt(keys, values, "id");
@@ -93,7 +91,7 @@ public class BanHandler extends Punishment implements Listener {
 									MessageHandler.alert("&cBanned &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
 								}
 								// Execute the ban if the player is online
-								final Player player = ProPlugin.getPlayer(arguments[0]);
+								Player player = ProPlugin.getPlayer(arguments[0]);
 								if(player != null) {
 									player.kickPlayer(message.replace("&x", "").replace("&c", ""));
 								}

@@ -2,7 +2,6 @@ package ostb.staff.mute;
 
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,7 +10,6 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
-import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
 public class UnMuteHandler extends Punishment {
@@ -44,21 +42,15 @@ public class UnMuteHandler extends Punishment {
 							for(int a = 1; a < arguments.length; ++a) {
 								reason += arguments[a] + " ";
 							}
-							// Compile the message string
-							String message = getReason(AccountHandler.getRank(sender), arguments, reason, result, true);
-							String time = TimeUtil.getTime();
-							String date = time.substring(0, 7);
 							// Unmute
-							
-							Player player = Bukkit.getPlayer(uuid);
-							if(player != null) {
-								MuteHandler.unMute(player, false);
-							}
+							MuteHandler.unMute(staffUUID, result.getUUID(), true);
 							// Perform any final execution instructions
+							//Compile the message string
+							String message = getReason(AccountHandler.getRank(sender), arguments, reason, result, true);
 							MessageHandler.alert(message);
 						}
 					} else {
-						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not currently muted");
+						MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not muted");
 					}
 				}
 				return true;

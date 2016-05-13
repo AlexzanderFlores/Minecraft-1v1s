@@ -21,12 +21,28 @@ import ostb.staff.mute.UnMuteHandler;
 
 public class Punishment implements Listener {
 	public enum ChatViolations {
-		DISRESPECT,
-		DEATH_COMMENTS,
-		INAPPROPRIATE,
-		SPAM,
-		ADVERTISEMENT,
-		DDOS_THREATS,
+		DISRESPECT(0, 1),
+		DEATH_COMMENTS(0, 1),
+		INAPPROPRIATE(0, 1),
+		SPAM(0, 1),
+		ADVERTISEMENT(0, 1),
+		DDOS_THREATS(1, 0);
+		
+		private int days = 0;
+		private int hours = 0;
+		
+		private ChatViolations(int days, int hours) {
+			this.days = days;
+			this.hours = hours;
+		}
+		
+		public int getDays() {
+			return this.days;
+		}
+		
+		public int getHours() {
+			return this.hours;
+		}
 	}
 	
 	public class PunishmentExecuteReuslts {

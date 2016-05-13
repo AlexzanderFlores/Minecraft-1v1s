@@ -1,6 +1,5 @@
 package ostb.staff.mute;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,29 +27,25 @@ import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
 public class MuteHandler extends Punishment {
-	private Map<ChatViolations, String> muteLengths = null;
-	private static Map<String, MuteData> muteData = null;
-	private static List<String> checkedForMuted = null;
+	private static Map<String, MuteData> muteData = new HashMap<String, MuteData>();
+	private static List<String> checkedForMuted = new ArrayList<String>();
 	
 	public static class MuteData {
-		private int id = 0;
 		private String player = null;
 		private String time = null;
 		private String expires = null;
 		private String staffName = null;
 		private String reason = null;
-		private String proof = null;
+		private List<String> proof = null;
 		
 		public MuteData(Player player) {
 			this.player = player.getName();
-			PreparedStatement statement = null;
-			ResultSet resultSet = null;
 			DB table = DB.STAFF_MUTES;
+			ResultSet resultSet = null;
 			try {
-				statement = table.getConnection().prepareStatement("SELECT * FROM " + table.getName() + " WHERE uuid = '" + player.getUniqueId().toString() + "'");
-				resultSet = statement.executeQuery();
+				String query = "SELECT * FROM " + table.getName() + " WHERE uuid = '" + player.getUniqueId().toString() + "' AND active = '1' LIMIT 1";
+				resultSet = table.getConnection().prepareStatement(query).executeQuery();
 				while(resultSet.next()) {
-					id = resultSet.getInt("id") + 1;
 					this.time = resultSet.getString("time");
 					this.expires = resultSet.getString("expires");
 					if(!hasExpired(player)) {
@@ -59,43 +56,39 @@ public class MuteHandler extends Punishment {
 							this.staffName = AccountHandler.getName(UUID.fromString(uuid));
 						}
 						this.reason = resultSet.getString("reason");
-						this.proof = resultSet.getString("proof");
 					}
 				}
-				if(muteData == null) {
-					muteData = new HashMap<String, MuteData>();
-				}
+				proof = DB.STAFF_MUTE_PROOF.getAllStrings("proof", new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"});
 				muteData.put(this.player, this);
 			} catch(SQLException e) {
 				e.printStackTrace();
 			} finally {
-				DB.close(statement, resultSet);
+				DB.close(resultSet);
 			}
 		}
 		
-		public MuteData(Player player, String time, String expires, String staff, String reason, String proof, int id) {
-			this.id = id;
+		public MuteData(Player player, String time, String expires, String staff, String reason, String proof) {
 			this.player = player.getName();
 			this.time = time;
 			this.expires = expires;
 			this.staffName = staff;
 			this.reason = reason;
-			this.proof = proof;
-			if(muteData == null) {
-				muteData = new HashMap<String, MuteData>();
-			}
+			this.proof = new ArrayList<String>();
 			muteData.put(this.player, this);
 		}
 		
 		public void display(Player player) {
 			if(this.player.equals(player.getName())) {
+				String proofs = "";
+				for(String proofString : proof) {
+					proofs += proofString + " ";
+				}
 				MessageHandler.sendLine(player);
-				MessageHandler.sendMessage(player, (this.player.equals(player.getName()) ? "You have" : this.player + " has") + " been muted: (ID #" + id + ")");
-				MessageHandler.sendMessage(player, "Muted by: " + staffName);
-				MessageHandler.sendMessage(player, "Muted for: " + reason.replace("_", " ") + " " + proof.replace("_", " "));
-				MessageHandler.sendMessage(player, "Muted at: " + time);
-				MessageHandler.sendMessage(player, "Expires on: " + expires);
-				MessageHandler.sendMessage(player, "Appeal your mute: " + appeal);
+				MessageHandler.sendMessage(player, (this.player.equals(player.getName()) ? "You have" : this.player + " has") + " been muted by &e" + staffName + " &xfor &e" + reason.replace("_", " ") + " " + proofs);
+				MessageHandler.sendMessage(player, "Muted at &e" + time);
+				MessageHandler.sendMessage(player, "Expires on &e" + expires);
+				MessageHandler.sendMessage(player, "Appeal your mute &e" + appeal);
+				MessageHandler.sendMessage(player, "Purchase unmute pass &ehttp://store.outsidetheblock.org/category/680458");
 				MessageHandler.sendLine(player);
 			}
 		}
@@ -105,7 +98,7 @@ public class MuteHandler extends Punishment {
 				long timeCheck = Long.valueOf(TimeUtil.getTime().split(" ")[0].replace("/", "").replace(":", ""));
 				long expiresCheck = Long.valueOf(expires.split(" ")[0].replace("/", "").replace(":", ""));
 				if(expiresCheck <= timeCheck) {
-					unMute(player, true);
+					unMute("CONSOLE", player.getUniqueId(), true);
 					return true;
 				}
 			}
@@ -127,8 +120,11 @@ public class MuteHandler extends Punishment {
 							// Detect if the command should be activated
 							PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
 							if(result.isValid()) {
+								UUID uuid = result.getUUID();
 								// See if the player is already muted
-								if(DB.STAFF_MUTES.isUUIDSet(result.getUUID())) {
+								String [] keys = new String [] {"uuid", "active"};
+								String [] values = new String [] {uuid.toString(), "1"};
+								if(DB.STAFF_MUTES.isKeySet(keys, values)) {
 									MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is already " + getName());
 									return;
 								}
@@ -141,48 +137,50 @@ public class MuteHandler extends Punishment {
 									rank = AccountHandler.getRank(player);
 								}
 								// Compile the message and proof strings
-								String message = getReason( rank, arguments, reason.toString(), result);
+								String message = getReason(rank, arguments, reason.toString(), result);
 								// Update the database
-								UUID uuid = result.getUUID();
 								String time = TimeUtil.getTime();
 								String date = time.substring(0, 7);
 								// Set times for temporary mutes, note that being muted twice for any reason(s) will result in a lifetime mute
-								// Key: DAYS/HOURS
-								if(muteLengths == null) {
-									muteLengths = new HashMap<ChatViolations, String>();
-									muteLengths.put(ChatViolations.DISRESPECT, "0/1");
-									muteLengths.put(ChatViolations.DEATH_COMMENTS, "0/1");
-									muteLengths.put(ChatViolations.INAPPROPRIATE, "0/1");
-									muteLengths.put(ChatViolations.SPAM, "0/1");
-									muteLengths.put(ChatViolations.ADVERTISEMENT, "0/1");
-									muteLengths.put(ChatViolations.DDOS_THREATS, "1/0");
-								}
 								String expires = "NEVER";
-								if(!muteLengths.get(reason).equals("NEVER")) {
-									int days = Integer.valueOf(muteLengths.get(reason).split("/")[0]);
-									int hours = Integer.valueOf(muteLengths.get(reason).split("/")[1]);
-									int previousMutes = DB.STAFF_MUTES.getSize(new String [] {"uuid", "active"}, new String [] {uuid.toString(), "0"});
+								int days = reason.getDays();
+								int hours = reason.getHours();
+								if(days > 0 || hours > 0) {
+									int previousMutes = DB.STAFF_MUTES.getSize(keys, new String [] {uuid.toString(), "0"});
 									if(previousMutes > 0) {
 										days *= previousMutes;
 										hours *= previousMutes;
 									}
 									expires = TimeUtil.addDate(days, hours);
 								}
-								String address = null;
-								Player player = ProPlugin.getPlayer(arguments[0]);
-								if(player == null) {
-									address = AccountHandler.getAddress(uuid);
-								} else {
-									address = player.getAddress().getAddress().getHostAddress();
-									uuid = player.getUniqueId();
-								}
-								//uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unmuted VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unmute_date VARCHAR(10), unmute_time VARCHAR(25), expires VARCHAR(25), active INT
-								DB.STAFF_MUTES.insert("'" + uuid.toString() + "', '" + staffUUID + "', '" + address + "', '" + reason.toString() + "', '" + arguments[2] + "', '" + date+ "', '" + time + "', '" + expires + "'");
+								DB.STAFF_MUTES.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null', '" + reason.toString() + "', '" + date + "', '" + time + "', 'null', 'null', '" + expires + "', '1'");
+								int id = DB.STAFF_MUTES.getInt(keys, values, "id");
+								String proof = (arguments.length == 2 ? "none" : arguments[2]);
+								DB.STAFF_MUTE_PROOF.insert("'" + id + "', '" + proof + "'");
 								// Perform any final execution instructions
 								MessageHandler.alert(message);
+								// Mute other accounts attached to the IP
+								int counter = 0;
+								for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
+									if(!uuidString.equals(uuid.toString())) {
+										Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
+										if(player != null) {
+											player.kickPlayer(ChatColor.RED + "You have been muted due to sharing the IP of " + arguments[0]);
+										}
+										DB.STAFF_MUTES.insert("'" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null', '" + reason.toString() + "', '" + arguments[2] + "', '" + date + "', '" + time + "', 'null', 'null', '" + expires + "', '1'");
+										values = new String [] {uuidString, "1"};
+										id = DB.STAFF_MUTES.getInt(keys, values, "id");
+										DB.STAFF_MUTE_PROOF.insert("'" + id + "', '" + proof + "'");
+										++counter;
+									}
+								}
+								if(counter > 0) {
+									MessageHandler.alert("&cMuted &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
+								}
 								// Execute the mute if the player is online
+								Player player = ProPlugin.getPlayer(arguments[0]);
 								if(player != null) {
-									new MuteData(player, time, expires, sender.getName(), reason.toString(), arguments[2], DB.STAFF_MUTES.getInt("uuid", result.getUUID().toString(), "id"));
+									new MuteData(player, time, expires, sender.getName(), reason.toString(), arguments[2]);
 									muteData.get(player.getName()).display(player);
 								}
 							}
@@ -207,37 +205,38 @@ public class MuteHandler extends Punishment {
 		if(Ranks.isStaff(player)) {
 			return false;
 		} else {
-			if(checkedForMuted == null) {
-				checkedForMuted = new ArrayList<String>();
-			}
 			if(!checkedForMuted.contains(player.getName())) {
 				checkedForMuted.add(player.getName());
-				String address = player.getAddress().getAddress().getHostAddress();
 				if(DB.STAFF_MUTES.isUUIDSet(player.getUniqueId())) {
 					new MuteData(player);
-					DB.STAFF_MUTES.updateString("address", address, "uuid", player.getUniqueId().toString());
 				}
 			}
-			return muteData != null && muteData.containsKey(player.getName());
+			return muteData.containsKey(player.getName());
 		}
 	}
 	
 	public static void remove(Player player) {
-		if(checkedForMuted != null && checkedForMuted.contains(player.getName())) {
-			checkedForMuted.remove(player.getName());
-		}
-		if(muteData != null && muteData.containsKey(player.getName())) {
-			muteData.remove(player.getName());
-		}
+		checkedForMuted.remove(player.getName());
+		muteData.remove(player.getName());
 	}
 	
-	public static void unMute(Player player, boolean editDatabase) {
-		MessageHandler.sendLine(player);
-		MessageHandler.sendMessage(player, "&eYour mute has expired! Be sure to follow all rules please! &b/rules");
-		MessageHandler.sendLine(player);
-		remove(player);
+	public static void unMute(String staff, UUID uuid, boolean editDatabase) {
+		Player player = Bukkit.getPlayer(uuid);
+		if(player != null) {
+			MessageHandler.sendLine(player);
+			MessageHandler.sendMessage(player, "&eYour mute has expired! Be sure to follow all rules please! &b/rules");
+			MessageHandler.sendLine(player);
+			remove(player);
+		}
 		if(editDatabase) {
+			String [] keys = new String [] {"uuid", "active"};
+			String [] values = new String [] {uuid.toString(), "1"};
 			String time = TimeUtil.getTime();
+			String date = time.substring(0, 7);
+			DB.STAFF_MUTES.updateString("who_unmuted", staff, keys, values);
+			DB.STAFF_MUTES.updateString("unmute_date", date, keys, values);
+			DB.STAFF_MUTES.updateString("unmute_time", time, keys, values);
+			DB.STAFF_MUTES.updateString("active", "0", keys, values);
 		}
 	}
 	
@@ -250,7 +249,7 @@ public class MuteHandler extends Punishment {
 	@EventHandler
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
-		if(checkMute(player) && muteData != null && !muteData.get(player.getName()).hasExpired(player)) {
+		if(checkMute(player) && !muteData.get(player.getName()).hasExpired(player)) {
 			muteData.get(player.getName()).display(player);
 			event.setCancelled(true);
 		}
