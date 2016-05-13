@@ -175,8 +175,12 @@ public class CoinsHandler implements Listener {
 			UUID uuid = event.getUUID();
 			int amount = coins.get(name);
 			if(table.isUUIDSet(uuid)) {
-				table.updateInt("coins", amount, "uuid", uuid.toString());
-			} else {
+				if(amount <= 0) {
+					table.delete("uuid", uuid.toString());
+				} else {
+					table.updateInt("coins", amount, "uuid", uuid.toString());
+				}
+			} else if(amount > 0) {
 				table.insert("'" + uuid.toString() + "', '" + amount + "'");
 			}
 			coins.remove(name);

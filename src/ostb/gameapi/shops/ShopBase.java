@@ -141,6 +141,7 @@ public abstract class ShopBase implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
+			player.getInventory().remove(itemStack);
 			player.getInventory().addItem(itemStack);
 		} else {
 			PlayerJoinEvent.getHandlerList().unregister(this);
