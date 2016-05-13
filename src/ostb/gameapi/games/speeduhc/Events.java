@@ -122,7 +122,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		OSTB.getProPlugin().removeFlags();
-		OSTB.getMiniGame().setCounter(60 * 15);
+		OSTB.getMiniGame().setCounter(60 * 10);
 		String command = "spreadPlayers 0 0 100 500 false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
