@@ -28,7 +28,6 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -40,7 +39,7 @@ import ostb.server.util.UnicodeUtil;
 public abstract class KitBase implements Listener {
 	private static List<KitBase> kits = null;
 	private static int lastSlot = -1;
-	private Plugins plugin = null;
+	private String pluginData = null;
 	private String kitType = null;
 	private String kitSubType = null;
 	private ItemStack icon = null;
@@ -62,7 +61,7 @@ public abstract class KitBase implements Listener {
 		if(kits == null) {
 			kits = new ArrayList<KitBase>();
 		}
-		this.plugin = plugin;
+		pluginData = plugin.getData();
 		kitType = "kit";
 		kitSubType = "";
 		if(slot > -1) {
@@ -135,7 +134,6 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public boolean owns(Player player) {
-		if(Ranks.OWNER.hasRank(player)) return true;
 		if(!unlocked.containsKey(player.getName())) {
 			unlocked.put(player.getName(), DB.PLAYERS_KITS.isKeySet(new String [] {"uuid", "kit"}, new String [] {player.getUniqueId().toString(), getPermission()}));
 		}
@@ -151,7 +149,7 @@ public abstract class KitBase implements Listener {
 			PlayerKitSelectEvent event = new PlayerKitSelectEvent(player, this);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				if(getPlugin() == OSTB.getPlugin()) {
+				if(getPluginData().equals(OSTB.getPlugin().getData())) {
 					for(KitBase kit : kits) {
 						if(kit.getKitType().equals(getKitType())) {
 							kit.remove(player);
@@ -161,19 +159,19 @@ public abstract class KitBase implements Listener {
 				}
 				if(!defaultKit) {
 					DefaultKit.setDefaultKit(player, this);
-					MessageHandler.sendMessage(player, "Selected &e" + getName());
-					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				}
+				MessageHandler.sendMessage(player, "Selected &e" + getName());
+				EffectUtil.playSound(player, Sound.LEVEL_UP);
 				return true;
 			}
 		} else if(price > 0) {
 			PlayerKitPurchaseEvent event = new PlayerKitPurchaseEvent(player, this);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				if(CoinsHandler.getCoinsHandler(getPlugin()).getCoins(player) >= getPrice()) {
+				if(CoinsHandler.getCoinsHandler(getPluginData()).getCoins(player) >= getPrice()) {
 					giveKit(player);
 					use(player);
-					CoinsHandler.getCoinsHandler(getPlugin()).addCoins(player, getPrice() * -1);
+					CoinsHandler.getCoinsHandler(getPluginData()).addCoins(player, getPrice() * -1);
 					return true;
 				} else {
 					MessageHandler.sendMessage(player, "&cYou do not have enough coins for this kit");
@@ -204,8 +202,8 @@ public abstract class KitBase implements Listener {
 		}
 	}
 	
-	public Plugins getPlugin() {
-		return plugin;
+	public String getPluginData() {
+		return pluginData;
 	}
 	
 	public String getName() {
@@ -241,9 +239,6 @@ public abstract class KitBase implements Listener {
 	}
 	
 	public boolean has(Player player) {
-		for(String user : users) {
-			Bukkit.getLogger().info(getName() + ": " + user);
-		}
 		return users != null && users.contains(player.getName()) && !SpectatorHandler.contains(player);
 	}
 	

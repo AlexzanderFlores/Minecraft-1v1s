@@ -50,7 +50,7 @@ public abstract class ShopBase implements Listener {
 			total = 0;
 			owned = 0;
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == plugin && kit.getKitType().equals(kitType) && kit.getKitSubType().equals(kitSubType)) {
+				if(kit.getPluginData().equals(plugin.getData()) && kit.getKitType().equals(kitType) && kit.getKitSubType().equals(kitSubType)) {
 					++total;
 					if(kit.owns(player)) {
 						++owned;
@@ -68,7 +68,7 @@ public abstract class ShopBase implements Listener {
 	public ShopBase(String name, String permission, DB table, Plugins plugin, int maxPages) {
 		this.name = name;
 		this.permission = permission;
-		new CoinsHandler(table, plugin);
+		new CoinsHandler(table, plugin.getData());
 		this.plugin = plugin;
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
@@ -94,12 +94,12 @@ public abstract class ShopBase implements Listener {
 	public void updateCoinsItem(Player player) {
 		String title = player.getOpenInventory().getTitle();
 		if(title != null && title.equals(getName())) {
-			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 4, CoinsHandler.getCoinsHandler(plugin).getItemStack(player));
+			player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 4, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
 		}
 	}
 	
 	public void updateCoinsItem(Player player, Inventory inventory) {
-		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(plugin).getItemStack(player));
+		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
 	}
 	
 	public void openShop(Player player) {

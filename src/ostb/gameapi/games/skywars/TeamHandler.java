@@ -17,10 +17,13 @@ import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.CommandBase;
@@ -90,21 +93,25 @@ public class TeamHandler implements Listener {
 						remove(player);
 					}
 				} else {
-					String name = arguments[0];
-					Player target = ProPlugin.getPlayer(name);
-					if(target == null) {
-						MessageHandler.sendMessage(player, "&c" + name + " is not online");
-					} else {
-						List<String> ignore = ignores.get(target.getName());
-						if(ignore == null || !ignore.contains(player.getName())) {
-							Inventory inventory = Bukkit.createInventory(target, 9 * 3, "Team Invite - " + player.getName());
-							inventory.setItem(11, new ItemCreator(Material.WOOL, 5).setName("&aAccept").getItemStack());
-							inventory.setItem(13, new ItemCreator(Material.WOOL, 15).setName("&cIgnore " + player.getName()).getItemStack());
-							inventory.setItem(15, new ItemCreator(Material.WOOL, 14).setName("&cDeny").getItemStack());
-							target.openInventory(inventory);
+					if(OSTB.getMiniGame().getJoiningPreGame()) {
+						String name = arguments[0];
+						Player target = ProPlugin.getPlayer(name);
+						if(target == null) {
+							MessageHandler.sendMessage(player, "&c" + name + " is not online");
 						} else {
-							MessageHandler.sendMessage(player, "&c" + target.getName() + " ignored team invited from you for this game");
+							List<String> ignore = ignores.get(target.getName());
+							if(ignore == null || !ignore.contains(player.getName())) {
+								Inventory inventory = Bukkit.createInventory(target, 9 * 3, "Team Invite - " + player.getName());
+								inventory.setItem(11, new ItemCreator(Material.WOOL, 5).setName("&aAccept").getItemStack());
+								inventory.setItem(13, new ItemCreator(Material.WOOL, 15).setName("&cIgnore " + player.getName()).getItemStack());
+								inventory.setItem(15, new ItemCreator(Material.WOOL, 14).setName("&cDeny").getItemStack());
+								target.openInventory(inventory);
+							} else {
+								MessageHandler.sendMessage(player, "&c" + target.getName() + " ignored team invited from you for this game");
+							}
 						}
+					} else {
+						MessageHandler.sendMessage(player, "&cYou cannot invite players to teams at this time");
 					}
 				}
 				return true;
@@ -170,11 +177,16 @@ public class TeamHandler implements Listener {
 		if(team != null) {
 			alert(team, "&c" + player.getName() + " has left the team");
 			team.removePlayer(player);
-			if(team.getSize() <= 1) {
+			if(team.getSize() <= 0) {
 				alert(team, "&cTeam deleted");
 				colors.add(team.getPrefix());
 				team.unregister();
 				teams.remove(team);
+				if(teams.size() == 1) {
+					Bukkit.getPluginManager().callEvent(new GameWinEvent(team));
+				} else if(teams.isEmpty()) {
+					OSTB.getMiniGame().setGameState(GameStates.ENDING);
+				}
 			}
 		}
 		if(ignores.containsKey(player.getName())) {
@@ -185,7 +197,9 @@ public class TeamHandler implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		new TitleDisplayer(event.getPlayer(), "&bTeam Commands:", "&b/team").setFadeOut(20 * 5).display();;
+		if(OSTB.getMiniGame().getJoiningPreGame()) {
+			new TitleDisplayer(event.getPlayer(), "&bTeam Commands:", "&b/team").setFadeOut(20 * 5).display();
+		}
 	}
 	
 	@EventHandler
@@ -215,6 +229,11 @@ public class TeamHandler implements Listener {
 			player.closeInventory();
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onGameDeath(GameDeathEvent event) {
+		remove(event.getPlayer());
 	}
 	
 	@EventHandler

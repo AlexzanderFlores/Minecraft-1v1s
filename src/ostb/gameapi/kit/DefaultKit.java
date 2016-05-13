@@ -35,7 +35,7 @@ public class DefaultKit implements Listener {
 		} else {
 			Player player = event.getPlayer();
 			UUID uuid = player.getUniqueId();
-			for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().toString()})) {
+			for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
 				KitBase kit = null;
 				for(KitBase kitBase : KitBase.getKits()) {
 					if(kitBase.getName().equals(kitName)) {
@@ -57,7 +57,7 @@ public class DefaultKit implements Listener {
 		if(defaultKits.containsKey(name)) {
 			KitBase kit = defaultKits.get(name);
 			UUID uuid = event.getUUID();
-			String game = kit.getPlugin().toString();
+			String game = kit.getPluginData();
 			String [] keys = new String [] {"uuid", "game", "type"};
 			String [] values = new String [] {uuid.toString(), game, kit.getKitType()};
 			if(DB.PLAYERS_DEFAULT_KITS.isKeySet(keys, values)) {

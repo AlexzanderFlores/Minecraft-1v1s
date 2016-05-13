@@ -79,7 +79,7 @@ public class SpeedUHCShop extends ShopBase {
 			type = "none";
 		}
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.SUHCK && kit.getKitType().equals(type)) {
+			if(kit.getPluginData().equals(Plugins.SUHCK.getData()) && kit.getKitType().equals(type)) {
 				inventory.setItem(kit.getSlot(), kit.getIcon(player));
 			}
 		}
@@ -123,7 +123,7 @@ public class SpeedUHCShop extends ShopBase {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(kit.getPlugin() == Plugins.SUHCK && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
+				if(kit.getPluginData().equals(Plugins.SUHCK.getData()) && name.startsWith(kit.getName()) && kit.getSlot() == event.getSlot()) {
 					if(kit.use(player)) {
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 					} else {

@@ -29,7 +29,7 @@ import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class CoinsHandler implements Listener {
-	private static Map<Plugins, CoinsHandler> handlers = new HashMap<Plugins, CoinsHandler>();
+	private static Map<String, CoinsHandler> handlers = new HashMap<String, CoinsHandler>();
 	private static int killCoins = 0;
 	private static int winCoins = 0;
 	private DB table = null;
@@ -38,13 +38,13 @@ public class CoinsHandler implements Listener {
 	private List<String> newPlayer = null;
 	//private boolean boosterEnabled = false;
 	
-	public CoinsHandler(DB table, Plugins plugin) {
-		if(!handlers.containsKey(plugin)) {
+	public CoinsHandler(DB table, String pluginData) {
+		if(!handlers.containsKey(pluginData)) {
 			this.table = table;
 			//this.plugin = plugin;
 			coins = new HashMap<String, Integer>();
 			newPlayer = new ArrayList<String>();
-			handlers.put(plugin, this);
+			handlers.put(pluginData, this);
 			new CommandBase("addCoins", 3) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
@@ -60,12 +60,13 @@ public class CoinsHandler implements Listener {
 						}
 						return true;
 					}
-					if(handlers.containsKey(plugin)) {
+					String pluginData = plugin.getData();
+					if(handlers.containsKey(pluginData)) {
 						Player player = ProPlugin.getPlayer(name);
 						if(player == null) {
 							MessageHandler.sendMessage(sender, "&c" + name + " is not online");
 						} else {
-							CoinsHandler handler = handlers.get(plugin);
+							CoinsHandler handler = handlers.get(pluginData);
 							handler.addCoins(player, amount);
 						}
 					} else {
@@ -78,8 +79,8 @@ public class CoinsHandler implements Listener {
 		}
 	}
 	
-	public static CoinsHandler getCoinsHandler(Plugins plugin) {
-		return handlers.get(plugin);
+	public static CoinsHandler getCoinsHandler(String pluginData) {
+		return handlers.get(pluginData);
 	}
 	
 	public static int getWinCoins() {

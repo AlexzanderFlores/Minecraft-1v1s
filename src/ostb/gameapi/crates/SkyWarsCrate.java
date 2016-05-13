@@ -134,7 +134,7 @@ public class SkyWarsCrate implements Listener {
 	private void populateFeatures() {
 		if(features.isEmpty()) {
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == Plugins.SW) {
+				if(kit.getPluginData().equals(Plugins.SW.getData())) {
 					features.add(new FeatureItem(kit.getName(), kit.getIcon(), kit.getKitRarity(), FeatureType.SKY_WARS));
 				}
 			}
@@ -177,7 +177,7 @@ public class SkyWarsCrate implements Listener {
 					populateFeatures();
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SW);
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SW.getData());
 					int coins = coinsHandler.getCoins(player);
 					if(coins >= cost) {
 						coinsHandler.addCoins(player, cost * -1);
@@ -201,7 +201,7 @@ public class SkyWarsCrate implements Listener {
 			String name = won.getName();
 			if(won.getItemStack().getType() == Material.GOLD_INGOT) {
 				int coins = Integer.valueOf(name.split(" ")[0]);
-				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin());
+				CoinsHandler handler = CoinsHandler.getCoinsHandler(event.getPlugin().getData());
 				handler.addCoins(player, coins);
 				return;
 			} else if(won.getItemStack().getType() == Material.TRIPWIRE_HOOK) {
@@ -209,7 +209,7 @@ public class SkyWarsCrate implements Listener {
 				return;
 			}
 			for(KitBase kit : KitBase.getKits()) {
-				if(kit.getPlugin() == event.getPlugin() && name.equals(kit.getName())) {
+				if(kit.getPluginData().equals(event.getPlugin().getData()) && name.equals(kit.getName())) {
 					kit.giveKit(player);
 					return;
 				}

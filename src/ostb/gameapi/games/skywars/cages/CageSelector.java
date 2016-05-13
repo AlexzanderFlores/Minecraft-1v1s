@@ -63,7 +63,7 @@ public class CageSelector implements Listener {
 			subType = "big_cage";
 		}
 		for(KitBase kit : KitBase.getKits()) {
-			if(kit.getPlugin() == Plugins.SW && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
+			if(kit.getPluginData().equals(Plugins.SW.getData()) && type.equals(kit.getKitType()) && subType.equals(kit.getKitSubType())) {
 				inventory.setItem(kit.getSlot() - 18, kit.getIcon(player));
 			}
 		}
@@ -110,7 +110,7 @@ public class CageSelector implements Listener {
 			}
 			for(KitBase kit : KitBase.getKits()) {
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(kit.getPlugin() == Plugins.SW && name.startsWith(kit.getName()) && kit.getSlot() - 18 == event.getSlot()) {
+				if(kit.getPluginData().equals(Plugins.SW.getData()) && name.startsWith(kit.getName()) && kit.getSlot() - 18 == event.getSlot()) {
 					if(kit.use(player)) {
 						player.closeInventory();
 					} else {

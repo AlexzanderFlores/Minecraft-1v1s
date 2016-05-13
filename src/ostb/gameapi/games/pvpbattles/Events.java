@@ -179,7 +179,7 @@ public class Events implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES);
+				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES.getData());
 				for(Player player : ProPlugin.getPlayers()) {
 					player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
 					coinsHandler.getCoins(player);
