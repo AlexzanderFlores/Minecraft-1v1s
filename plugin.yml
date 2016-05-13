@@ -107,6 +107,9 @@ commands:
   globalHubUpdate:
     usage: /globalHubUpdate [stop]
 
+  hubAlert:
+    usage: /hubAlert <alert>
+
   gmc:
     usage: /gmc
 

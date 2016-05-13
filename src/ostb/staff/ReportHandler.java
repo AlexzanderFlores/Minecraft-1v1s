@@ -69,7 +69,12 @@ public class ReportHandler implements Listener {
 							UUID uuid = UUID.fromString(DB.STAFF_REPORTS.getString("id", id, "uuid"));
 							String reported = AccountHandler.getName(uuid);
 							String text = DB.STAFF_REPORTS.getString("id", id, "text");
-							String location = ChatColor.stripColor(DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location").split("is on ")[1]);
+							String location = null;
+							try {
+								ChatColor.stripColor(DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location").split("is on ")[1]);
+							} catch(Exception e) {
+								location = "N/A";
+							}
 							MessageHandler.sendLine(sender);
 							if(sender instanceof Player) {
 								Player player = (Player) sender;

@@ -6,17 +6,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.customevents.TimeEvent;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB.Databases;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
 public class CommandDispatcher implements Listener {
 	public CommandDispatcher() {
+		new CommandBase("hubAlert", -1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				String alert = "";
+				for(String arg : arguments) {
+					alert += arg + " ";
+				}
+				sendToGame("hub", "say " + alert);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
 		EventUtil.register(this);
 	}
 	
