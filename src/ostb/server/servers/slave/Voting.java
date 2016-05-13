@@ -85,6 +85,7 @@ public class Voting implements Listener {
 					}
 					Bukkit.getLogger().info("voting: update weekly votes");
 					Beacon.giveKey(playerUUID, 1 * multiplier, "voting");
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}
 		});

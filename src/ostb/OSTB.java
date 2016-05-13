@@ -47,7 +47,6 @@ import ostb.server.GeneralEvents;
 import ostb.server.GlobalCommands;
 import ostb.server.PerformanceHandler;
 import ostb.server.RestarterHandler;
-import ostb.server.networking.Client;
 import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.pregenerator.Pregenerator;
@@ -107,7 +106,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	private static Plugins plugin = null;
 	private static ProPlugin proPlugin = null;
 	private static MiniGame miniGame = null;
-	private static Client client = null;
 	private static String serverName = null;
 	private static SidebarScoreboardUtil sidebar = null;
 	private static BelowNameScoreboardUtil belowName = null;
@@ -191,8 +189,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		new LanguageLogger();
 		new AntiCheatListener();
 		Glow.register();
-		client = new Client("192.198.207.74", 4500, 5000);
-		client.start();
 	}
 	
 	@Override
@@ -203,11 +199,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		}
 		for(Databases database : Databases.values()) {
 			database.disconnect();
-		}
-		if(client != null) {
-			client.shutdown(true);
-		} else if(plugin == Plugins.SLAVE && Slave.getServer() != null) {
-			Slave.getServer().shutdown();
 		}
 		FileHandler.checkForUpdates();
 	}
@@ -271,10 +262,6 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	
 	public static Scoreboard getScoreboard() {
 		return getSidebar().getScoreboard();
-	}
-	
-	public static Client getClient() {
-		return client;
 	}
 	
 	public static int getMaxPlayers() {

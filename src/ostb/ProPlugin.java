@@ -90,8 +90,6 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.DB.Databases;
-import ostb.server.networking.Instruction;
-import ostb.server.networking.Instruction.Inst;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
@@ -575,18 +573,6 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		if(player.getPassenger() != null) {
 			player.getPassenger().leaveVehicle();
 		}
-	}
-	
-	public static void dispatchCommandToServer(String server, String command) {
-		OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_SEND_TO_CLIENT.toString(), Inst.CLIENT_COMMAND.toString(), server, command}));
-	}
-	
-	public static void dispatchCommandToGroup(String group, String command) {
-		OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_SEND_TO_GROUP.toString(), Inst.CLIENT_COMMAND.toString(), group, command}));
-	}
-	
-	public static void dispatchCommandToAll(String command) {
-		OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_SEND_TO_ALL.toString(), Inst.CLIENT_COMMAND.toString(), command}));
 	}
 	
 	//TODO: Find when this is used, remove if it isn't needed
