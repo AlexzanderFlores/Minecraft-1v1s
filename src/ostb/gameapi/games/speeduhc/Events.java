@@ -30,7 +30,6 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
@@ -213,14 +212,14 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		if(GracePeriod.isRunning() && event.getBucket() == Material.LAVA_BUCKET) {
+		if(OSTB.getMiniGame().getCounter() > 0 && event.getBucket() == Material.LAVA_BUCKET) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && OSTB.getMiniGame().getCounter() > 0) {
 			ItemStack item = event.getPlayer().getItemInHand();
 			if(item != null && item.getType() == Material.FLINT_AND_STEEL) {
 				event.setCancelled(true);
