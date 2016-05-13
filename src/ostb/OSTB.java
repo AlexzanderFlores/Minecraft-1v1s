@@ -141,24 +141,28 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		serverName = serverName.split("/")[0].toUpperCase();
 		Bukkit.getLogger().info(serverName);
 		plugin = Plugins.valueOf(serverName.replaceAll("[\\d]", ""));
-		if(plugin == Plugins.HUB) {
-			proPlugin = new MainHub();
-		} else if(plugin == Plugins.CTF) {
-			proPlugin = new CTF();
-		} else if(plugin == Plugins.DOM) {
-			proPlugin = new DOM();
-		} else if(plugin == Plugins.SW || plugin == Plugins.SWT) {
-			proPlugin = new SkyWars();
-		} else if(plugin == Plugins.SUHCK || plugin == Plugins.SUHCNK) {
-			proPlugin = new SpeedUHC();
-		} else if(plugin == Plugins.PREGEN) {
-			proPlugin = new Pregenerator();
-		} else if(plugin == Plugins.BUILDING) {
-			proPlugin = new Building();
-		} else if(plugin == Plugins.WORKER) {
-			proPlugin = new Worker();
-		} else if(plugin == Plugins.SLAVE) {
-			proPlugin = new Slave();
+		try {
+			if(plugin == Plugins.HUB) {
+				proPlugin = new MainHub();
+			} else if(plugin == Plugins.CTF) {
+				proPlugin = new CTF();
+			} else if(plugin == Plugins.DOM) {
+				proPlugin = new DOM();
+			} else if(plugin == Plugins.SW || plugin == Plugins.SWT) {
+				proPlugin = new SkyWars();
+			} else if(plugin == Plugins.SUHCK || plugin == Plugins.SUHCNK) {
+				proPlugin = new SpeedUHC();
+			} else if(plugin == Plugins.PREGEN) {
+				proPlugin = new Pregenerator();
+			} else if(plugin == Plugins.BUILDING) {
+				proPlugin = new Building();
+			} else if(plugin == Plugins.WORKER) {
+				proPlugin = new Worker();
+			} else if(plugin == Plugins.SLAVE) {
+				proPlugin = new Slave();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		DB.values(); // Call the enumeration constructors for each item to initialize them
 		maxPlayers = Bukkit.getMaxPlayers();

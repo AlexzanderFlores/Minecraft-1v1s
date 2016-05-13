@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import npc.util.EventUtil;
+import ostb.server.util.EventUtil;
 
 public class Campfire implements Listener {
 	private List<ArmorStand> stands = null;

@@ -1,7 +1,5 @@
 package ostb.gameapi.games.speeduhc;
 
-import org.bukkit.GameMode;
-
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
@@ -18,13 +16,11 @@ public class SpeedUHC extends MiniGame {
 		super("Speed UHC");
 		setRequiredPlayers(4);
 		setStartingCounter(10);
-		setSpectatingMode(GameMode.SPECTATOR);
 		new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHCK);
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(15);
 		new OreMultipliers();
 		OreMultipliers.setMultiplier(2);
-		new BelowNameHealthScoreboardUtil();
 		new CutClean();
 		new AppleRates(50);
 		new Events();

@@ -9,7 +9,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -58,6 +61,7 @@ public class SpectatorHandler implements Listener {
 	private static ItemStack exit = null;
 	private static ItemStack nextGame = null;
 	private static boolean enabled = false;
+	private static final double range = 10;
 	
 	public SpectatorHandler() {
 		spectators = new ArrayList<String>();
@@ -96,6 +100,26 @@ public class SpectatorHandler implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				if(spectators != null && !spectators.isEmpty()) {
+					for(Player player : getPlayers()) {
+						boolean nearBy = false;
+						for(Entity entity : player.getNearbyEntities(range, range, range)) {
+							if(entity instanceof LivingEntity || entity instanceof Projectile) {
+								nearBy = true;
+								player.setGameMode(GameMode.SPECTATOR);
+								break;
+							}
+						}
+						if(!nearBy && player.getGameMode() == GameMode.SPECTATOR) {
+							player.setGameMode(GameMode.CREATIVE);
+						}
+					}
+				}
+			}
+		}, 20, 20);
 		EventUtil.register(this);
 	}
 	
@@ -110,32 +134,30 @@ public class SpectatorHandler implements Listener {
 			if(!playerSpectateStartEvent.isCancelled()) {
 				spectators.add(player.getName());
 				GameMode gameMode = OSTB.getMiniGame().getSpectatingMode();
-				player.setGameMode(gameMode);
-				if(gameMode != GameMode.SPECTATOR) {
-					player.getInventory().clear();
-					player.getInventory().setArmorContents(null);
-					player.getInventory().setItem(0, teleporter);
-					if(OSTB.getMiniGame() == null) {
-						player.getInventory().setItem(8, exit);
+				player.getInventory().clear();
+				player.getInventory().setArmorContents(null);
+				player.getInventory().setItem(0, teleporter);
+				if(OSTB.getMiniGame() == null) {
+					player.getInventory().setItem(8, exit);
+				} else {
+					if(OSTB.getMiniGame().getAutoJoin()) {
+						player.getInventory().setItem(7, exit);
+						player.getInventory().setItem(8, nextGame);
 					} else {
-						if(OSTB.getMiniGame().getAutoJoin()) {
-							player.getInventory().setItem(7, exit);
-							player.getInventory().setItem(8, nextGame);
-						} else {
-							player.getInventory().setItem(8, exit);
-						}
+						player.getInventory().setItem(8, exit);
 					}
-					player.getInventory().setHeldItemSlot(0);
-					for(Player online : Bukkit.getOnlinePlayers()) {
-						online.hidePlayer(player);
-						if(contains(online)) {
-							player.hidePlayer(online);
-						}
-					}
-					player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
-					player.setAllowFlight(true);
-					player.setFlying(true);
 				}
+				player.getInventory().setHeldItemSlot(0);
+				for(Player online : Bukkit.getOnlinePlayers()) {
+					online.hidePlayer(player);
+					if(contains(online)) {
+						player.hidePlayer(online);
+					}
+				}
+				player.setGameMode(gameMode);
+				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
+				player.setAllowFlight(true);
+				player.setFlying(true);
 				playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.ADDED);
 				Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
 			}

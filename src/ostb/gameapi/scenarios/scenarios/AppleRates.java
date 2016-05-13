@@ -1,17 +1,16 @@
 package ostb.gameapi.scenarios.scenarios;
 
-import org.bukkit.block.Block;
-
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 
-import anticheat.util.EventUtil;
+import ostb.server.util.EventUtil;
 
 public class AppleRates implements Listener {
 	private int rates = 0;

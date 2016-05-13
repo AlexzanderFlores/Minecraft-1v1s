@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import anticheat.util.AsyncDelayedTask;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
@@ -17,6 +16,7 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.StringUtil;
 
 public class GlobalCommands {

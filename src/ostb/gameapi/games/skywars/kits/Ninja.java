@@ -18,6 +18,7 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.items.Features.Rarity;
@@ -77,7 +78,7 @@ public class Ninja extends KitBase {
 	public void onMouseClick(MouseClickEvent event) {
 		if(enabled && event.getClickType() == ClickType.RIGHT_CLICK) {
 			Player player = event.getPlayer();
-			if(!delayed.contains(player.getName())) {
+			if(!SpectatorHandler.contains(player) && !delayed.contains(player.getName())) {
 				final String name = player.getName();
 				delayed.add(name);
 				new DelayedTask(new Runnable() {
