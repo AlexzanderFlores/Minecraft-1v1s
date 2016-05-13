@@ -151,7 +151,9 @@ public class GameSelector extends HubItemBase {
 						priorities.add(resultSet.getInt("listed_priority"));
 						serverNumbers.add(resultSet.getInt("server_number"));
 						lores.add(resultSet.getString("lore"));
-						playerCounts.add(resultSet.getInt("players"));
+						int playerCount = resultSet.getInt("players");
+						playerCounts.add(playerCount);
+						playing += playerCount;
 						maxPlayers.add(resultSet.getInt("max_players"));
 					}
 					players.put(plugin, playing);
