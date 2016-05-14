@@ -13,11 +13,14 @@ import org.bukkit.event.Listener;
 import com.vexsoftware.votifier.model.VotifierEvent;
 
 import ostb.OSTB.Plugins;
+import ostb.gameapi.crates.SkyWarsCrate;
+import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.servers.hub.crate.Beacon;
+import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
@@ -96,16 +99,22 @@ public class Voting implements Listener {
 					}
 					Beacon.giveKey(playerUUID, 1 * multiplier, "voting");
 					for(CoinsHandler handler : handlers) {
-						handler.addCoins(playerUUID, 20);
+						handler.addCoins(playerUUID, 20 * multiplier);
 					}
 					Bukkit.getLogger().info("voting: giving 3 sky wars loot passes");
-					int toAdd = 3;
+					int toAdd = 3 * multiplier;
 					if(DB.PLAYERS_SKY_WARS_LOOT_PASSES.isUUIDSet(playerUUID)) {
 						int amount = DB.PLAYERS_SKY_WARS_LOOT_PASSES.getInt("uuid", uuid, "amount") + toAdd;
 						DB.PLAYERS_SKY_WARS_LOOT_PASSES.updateInt("amount", amount, "uuid", uuid);
 					} else {
 						DB.PLAYERS_SKY_WARS_LOOT_PASSES.insert("'" + uuid + "', '" + toAdd + "'");
 					}
+					Bukkit.getLogger().info("voting: giving key fragment");
+					KeyFragments.give(playerUUID, 1 * multiplier);
+					Bukkit.getLogger().info("voting: giving sky wars key");
+					SkyWarsCrate.giveKey(playerUUID, 1 * multiplier);
+					Bukkit.getLogger().info("voting: giving speed uhc key");
+					SpeedUHCCrate.giveKey(playerUUID, 1 * multiplier);
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}

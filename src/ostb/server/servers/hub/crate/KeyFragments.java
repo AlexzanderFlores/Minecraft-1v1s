@@ -54,8 +54,11 @@ public class KeyFragments implements Listener {
 		EventUtil.register(this);
 	}
 	
-	public static void give(Player player, final int toAdd) {
-		final UUID uuid = player.getUniqueId();
+	public static void give(Player player, int toAdd) {
+		give(player.getUniqueId(), toAdd);
+	}
+	
+	public static void give(final UUID uuid, final int toAdd) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {

@@ -65,9 +65,9 @@ public class SpeedUHCCrate implements Listener {
 						"&7Right click to purchase a key",
 						"",
 						"&eKeys owned: &a" + getKeys(player),
-						"&7Lifetime Speed UHC crates opened: &a" + DB.HUB_LIFETIME_HE_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-						"&7Monthly Speed UHC crates opened: &a" + DB.HUB_MONTHLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-						"&7Weekly Speed UHC crates opened: &a" + DB.HUB_WEEKLY_HE_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+						"&7Lifetime Speed UHC crates opened: &a" + DB.HUB_LIFETIME_SPEED_UHC_CRATES_OPENED.getInt("uuid", uuid, "amount"),
+						"&7Monthly Speed UHC crates opened: &a" + DB.HUB_MONTHLY_SPEED_UHC_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
+						"&7Weekly Speed UHC crates opened: &a" + DB.HUB_WEEKLY_SPEED_UHC_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
 						""
 					};
 				} else {
@@ -109,18 +109,18 @@ public class SpeedUHCCrate implements Listener {
 	
 	private static int getKeys(Player player) {
 		Bukkit.getLogger().info("speed UHC crate: get keys");
-		return DB.HUB_HE_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
+		return DB.HUB_SPEED_UHC_CRATE_KEYS.getInt("uuid", player.getUniqueId().toString(), "amount");
 	}
 	
 	public static void giveKey(final UUID uuid, final int toAdd) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				if(DB.HUB_HE_CRATE_KEYS.isUUIDSet(uuid)) {
-					int amount = DB.HUB_HE_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
-					DB.HUB_HE_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
+				if(DB.HUB_SPEED_UHC_CRATE_KEYS.isUUIDSet(uuid)) {
+					int amount = DB.HUB_SPEED_UHC_CRATE_KEYS.getInt("uuid", uuid.toString(), "amount") + toAdd;
+					DB.HUB_SPEED_UHC_CRATE_KEYS.updateInt("amount", amount, "uuid", uuid.toString());
 				} else {
-					DB.HUB_HE_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
+					DB.HUB_SPEED_UHC_CRATE_KEYS.insert("'" + uuid.toString() + "', '" + toAdd + "'");
 				}
 				Player player = Bukkit.getPlayer(uuid);
 				if(player != null) {
@@ -167,7 +167,7 @@ public class SpeedUHCCrate implements Listener {
 						}, 20 * 2);
 						if(getKeys(player) > 0) {
 							populateFeatures();
-							new CrateBase(player, Plugins.SUHCK, SpeedUHCCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_HE_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_HE_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_HE_CRATES_OPENED);
+							new CrateBase(player, Plugins.SUHCK, SpeedUHCCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_SPEED_UHC_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_SPEED_UHC_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_SPEED_UHC_CRATES_OPENED);
 						} else {
 							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 						}
