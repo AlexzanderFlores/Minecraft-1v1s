@@ -36,14 +36,14 @@ public class CoinBoosters implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		Player player = event.getPlayer();
 		if(OSTB.getMiniGame().getJoiningPreGame()) {
+			Player player = event.getPlayer();
 			UUID uuid = player.getUniqueId();
 			String [] keys = new String [] {"uuid", "game_name"};
 			String [] values = new String [] {uuid.toString(), OSTB.getPlugin().getData()};
 			boosters.put(player.getName(), DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount"));
+			player.getInventory().addItem(item);
 		}
-		player.getInventory().addItem(item);
 	}
 	
 	@EventHandler

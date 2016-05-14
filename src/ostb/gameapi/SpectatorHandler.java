@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -107,7 +108,7 @@ public class SpectatorHandler implements Listener {
 					for(Player player : getPlayers()) {
 						boolean nearBy = false;
 						for(Entity entity : player.getNearbyEntities(range, range, range)) {
-							if(entity instanceof LivingEntity || entity instanceof Projectile) {
+							if((entity instanceof LivingEntity || entity instanceof Projectile) && !(entity instanceof ArmorStand)) {
 								if(entity instanceof Player) {
 									Player nearPlayer = (Player) entity;
 									if(contains(nearPlayer)) {

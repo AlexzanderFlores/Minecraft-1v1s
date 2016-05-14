@@ -123,6 +123,14 @@ public class Voting implements Listener {
 					} else {
 						DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.insert("'" + uuid + "', '" + toAdd + "'");
 					}
+					Bukkit.getLogger().info("voting: giving speed uhc rescatter passes");
+					toAdd = 1 * multiplier;
+					if(DB.PLAYERS_SPEED_UHC_RESCATTER.isUUIDSet(playerUUID)) {
+						int amount = DB.PLAYERS_SPEED_UHC_RESCATTER.getInt("uuid", uuid, "amount") + toAdd;
+						DB.PLAYERS_SPEED_UHC_RESCATTER.updateInt("amount", amount, "uuid", uuid);
+					} else {
+						DB.PLAYERS_SPEED_UHC_RESCATTER.insert("'" + uuid + "', '" + toAdd + "'");
+					}
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}
