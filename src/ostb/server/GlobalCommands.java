@@ -24,6 +24,7 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.StringUtil;
 import ostb.server.util.TimeUtil;
+import ostb.staff.StaffMode;
 
 public class GlobalCommands {
 	public GlobalCommands() {
@@ -217,8 +218,10 @@ public class GlobalCommands {
 					String players = "";
 					int online = 0;
 					for(Player player : ProPlugin.getPlayers()) {
-						players += AccountHandler.getRank(player).getColor() + player.getName() + ", ";
-						++online;
+						if(!StaffMode.contains(player)) {
+							players += AccountHandler.getRank(player).getColor() + player.getName() + ", ";
+							++online;
+						}
 					}
 					MessageHandler.sendMessage(sender, online + " Players: " + players.substring(0, players.length() - 2));
 					if(OSTB.getMiniGame() != null && SpectatorHandler.isEnabled() && SpectatorHandler.getNumberOf() > 0) {
@@ -230,7 +233,7 @@ public class GlobalCommands {
 								++online;
 							}
 						}
-						MessageHandler.sendMessage(sender, "Spectators (&e" + online + "&a): " + spectators.substring(0, spectators.length() - 2));
+						MessageHandler.sendMessage(sender, "Spectators (&e" + online + "&x): " + spectators.substring(0, spectators.length() - 2));
 					}
 				}
 				return true;

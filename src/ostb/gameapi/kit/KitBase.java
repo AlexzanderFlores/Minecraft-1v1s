@@ -28,6 +28,8 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -135,7 +137,12 @@ public abstract class KitBase implements Listener {
 	
 	public boolean owns(Player player) {
 		if(!unlocked.containsKey(player.getName())) {
-			unlocked.put(player.getName(), DB.PLAYERS_KITS.isKeySet(new String [] {"uuid", "kit"}, new String [] {player.getUniqueId().toString(), getPermission()}));
+			Ranks rank = AccountHandler.getRank(player);
+			if(rank == Ranks.YOUTUBER || rank == Ranks.OWNER) {
+				unlocked.put(player.getName(), true);
+			} else {
+				unlocked.put(player.getName(), DB.PLAYERS_KITS.isKeySet(new String [] {"uuid", "kit"}, new String [] {player.getUniqueId().toString(), getPermission()}));
+			}
 		}
 		return unlocked.get(player.getName());
 	}

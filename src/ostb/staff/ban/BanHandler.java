@@ -40,76 +40,80 @@ public class BanHandler extends Punishment implements Listener {
 							return;
 						}
 						// Use a try/catch to view if the given reason is valid
+						Violations reason = Violations.CHEATING;
 						try {
-							Violations reason = Violations.valueOf(arguments[1].toUpperCase());
-							// Detect if the command should be activated
-							PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
-							if(result.isValid()) {
-								UUID uuid = result.getUUID();
-								// See if the player is already banned
-								String [] keys = new String [] {"uuid", "active"};
-								String [] values = new String [] {uuid.toString(), "1"};
-								if(DB.STAFF_BAN.isKeySet(keys, values)) {
-									MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is already " + getName());
-									return;
-								}
-								// Get the staff data
-								String staff = "CONSOLE";
-								String staffUUID = staff;
-								if(sender instanceof Player) {
-									Player player = (Player) sender;
-									staff = player.getName();
-									staffUUID = player.getUniqueId().toString();
-								}
-								// Compile the message and proof strings
-								final String message = getReason(AccountHandler.getRank(sender), arguments, reason.toString(), result);
-								String time = TimeUtil.getTime();
-								String date = time.substring(0, 7);
-								int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null',  '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
-								int id = DB.STAFF_BAN.getInt(keys, values, "id");
-								String proof = (arguments.length == 2 ? "none" : arguments[2]);
-								DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
-								// Perform any final execution instructions
-								MessageHandler.alert(message);
-								// Ban other accounts attached to the IP
-								int counter = 0;
-								for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
-									if(!uuidString.equals(uuid.toString())) {
-										Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
-										if(player != null) {
-											player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
-										}
-										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
-										keys = new String [] {"uuid", "active"};
-										values = new String [] {uuidString, "1"};
-										id = DB.STAFF_BAN.getInt(keys, values, "id");
-										DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
-										++counter;
-									}
-								}
-								if(counter > 0) {
-									MessageHandler.alert("&cBanned &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
-								}
-								// Execute the ban if the player is online
-								final Player player = ProPlugin.getPlayer(arguments[0]);
-								if(player != null) {
-									new DelayedTask(new Runnable() {
-										@Override
-										public void run() {
-											player.kickPlayer(message.replace("&x", "").replace("&c", ""));
-										}
-									});
-								}
-							}
+							reason = Violations.valueOf(arguments[1].toUpperCase());
 						} catch(IllegalArgumentException e) {
-							// Display all the valid options
-							MessageHandler.sendMessage(sender, "&c\"" + arguments[1] + "\" is an unknown violation, use one of the following:");
-							String reasons = "";
-							for(Violations reason : Violations.values()) {
-								reasons += "&a" + reason + "&e, ";
+							if(sender instanceof Player) {
+								// Display all the valid options
+								MessageHandler.sendMessage(sender, "&c\"" + arguments[1] + "\" is an unknown violation, use one of the following:");
+								String reasons = "";
+								for(Violations reasonList : Violations.values()) {
+									reasons += "&a" + reasonList + "&e, ";
+								}
+								MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
+								return;
 							}
-							MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
+						}
+						// Detect if the command should be activated
+						PunishmentExecuteReuslts result = executePunishment(sender, arguments, false);
+						if(result.isValid()) {
+							UUID uuid = result.getUUID();
+							// See if the player is already banned
+							String [] keys = new String [] {"uuid", "active"};
+							String [] values = new String [] {uuid.toString(), "1"};
+							if(DB.STAFF_BAN.isKeySet(keys, values)) {
+								MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is already " + getName());
+								return;
+							}
+							// Get the staff data
+							String staff = "CONSOLE";
+							String staffUUID = staff;
+							if(sender instanceof Player) {
+								Player player = (Player) sender;
+								staff = player.getName();
+								staffUUID = player.getUniqueId().toString();
+							}
+							// Compile the message and proof strings
+							final String message = getReason(AccountHandler.getRank(sender), arguments, reason.toString(), result);
+							String time = TimeUtil.getTime();
+							String date = time.substring(0, 7);
+							int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+							DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null',  '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+							int id = DB.STAFF_BAN.getInt(keys, values, "id");
+							String proof = (arguments.length == 2 ? "none" : arguments[2]);
+							DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
+							// Perform any final execution instructions
+							MessageHandler.alert(message);
+							// Ban other accounts attached to the IP
+							int counter = 0;
+							for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
+								if(!uuidString.equals(uuid.toString())) {
+									Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
+									if(player != null) {
+										player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
+									}
+									DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+									keys = new String [] {"uuid", "active"};
+									values = new String [] {uuidString, "1"};
+									id = DB.STAFF_BAN.getInt(keys, values, "id");
+									DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
+									++counter;
+								}
+							}
+							if(counter > 0) {
+								MessageHandler.alert("&cBanned &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
+							}
+							// Execute the ban if the player is online
+							final Player player = ProPlugin.getPlayer(arguments[0]);
+							if(player != null) {
+								new DelayedTask(new Runnable() {
+									@Override
+									public void run() {
+										player.kickPlayer(message.replace("&x", "").replace("&c", ""));
+									}
+								});
+							}
 						}
 					}
 				});
