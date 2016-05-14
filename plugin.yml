@@ -63,6 +63,9 @@ commands:
   stats:
     usage: /stats [name]
 
+  sysTime:
+    usage: /sysTime
+
   team:
     usage: /team
 

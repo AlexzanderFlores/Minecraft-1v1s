@@ -18,9 +18,18 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.StringUtil;
+import ostb.server.util.TimeUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("sysTime") {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				MessageHandler.sendMessage(sender, TimeUtil.getTime());
+				return true;
+			}
+		};
+		
 		new CommandBase("booster", -1) {
 			@Override
 			public boolean execute(final CommandSender sender, final String [] arguments) {

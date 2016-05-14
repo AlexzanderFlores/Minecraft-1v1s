@@ -110,7 +110,7 @@ public class Punishment implements Listener {
 		if(uuid == null) {
 			MessageHandler.sendMessage(sender, "&cNo player data found for " + arguments[0]);
 		} else {
-			if(Bukkit.getPlayer(uuid) == null && DB.PLAYERS_LOCATIONS.isUUIDSet(uuid)) {
+			if(!reversingPunishment && Bukkit.getPlayer(uuid) == null && DB.PLAYERS_LOCATIONS.isUUIDSet(uuid)) {
 				String server = DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location");
 				if(sender instanceof Player) {
 					Player staff = (Player) sender;

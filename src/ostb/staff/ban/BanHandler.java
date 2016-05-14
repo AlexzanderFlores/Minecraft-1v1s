@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
+import npc.util.DelayedTask;
 import ostb.ProPlugin;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -65,7 +66,7 @@ public class BanHandler extends Punishment implements Listener {
 								String time = TimeUtil.getTime();
 								String date = time.substring(0, 7);
 								int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', 'null', '" + staffUUID + "', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+								DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null',  '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 								int id = DB.STAFF_BAN.getInt(keys, values, "id");
 								String proof = (arguments.length == 2 ? "none" : arguments[2]);
 								DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
@@ -79,7 +80,7 @@ public class BanHandler extends Punishment implements Listener {
 										if(player != null) {
 											player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
 										}
-										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + reason + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 										keys = new String [] {"uuid", "active"};
 										values = new String [] {uuidString, "1"};
 										id = DB.STAFF_BAN.getInt(keys, values, "id");
@@ -91,9 +92,14 @@ public class BanHandler extends Punishment implements Listener {
 									MessageHandler.alert("&cBanned &e" + counter + " &caccount" + (counter == 1 ? "" : "s") + " that shared the same IP as &e" + arguments[0]);
 								}
 								// Execute the ban if the player is online
-								Player player = ProPlugin.getPlayer(arguments[0]);
+								final Player player = ProPlugin.getPlayer(arguments[0]);
 								if(player != null) {
-									player.kickPlayer(message.replace("&x", "").replace("&c", ""));
+									new DelayedTask(new Runnable() {
+										@Override
+										public void run() {
+											player.kickPlayer(message.replace("&x", "").replace("&c", ""));
+										}
+									});
 								}
 							}
 						} catch(IllegalArgumentException e) {
