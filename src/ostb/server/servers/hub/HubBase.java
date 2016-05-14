@@ -80,7 +80,7 @@ public class HubBase extends ProPlugin {
 				UUID uuid = AccountHandler.getUUID(arguments[0]);
 				int amount = Integer.valueOf(arguments[1]);
 				String type = arguments[2];
-				if(type.equalsIgnoreCase("voting")) {
+				if(type.equalsIgnoreCase("voting") || type.equalsIgnoreCase("super")) {
 					Beacon.giveKey(uuid, amount, arguments[2]);
 				} else if(type.equalsIgnoreCase("sky_wars")) {
 					SkyWarsCrate.giveKey(uuid, amount);

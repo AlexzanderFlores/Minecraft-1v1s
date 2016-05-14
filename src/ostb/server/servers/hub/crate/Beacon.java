@@ -28,6 +28,7 @@ import ostb.player.MessageHandler;
 import ostb.player.Particles.ParticleTypes;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
+import ostb.server.ChatClickHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
@@ -114,14 +115,14 @@ public class Beacon implements Listener {
 			@Override
 			public void run() {
 				String [] keys = new String [] {"uuid", "type"};
-				String [] values = new String [] {uuid.toString(), type};
+				String [] values = new String [] {uuid.toString(), type.toLowerCase()};
 				if(DB.HUB_CRATE_KEYS.isKeySet(keys, values)) {
 					int amount = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") + toAdd;
 					DB.HUB_CRATE_KEYS.updateInt("amount", amount, keys, values);
 				} else {
-					DB.HUB_CRATE_KEYS.insert("'" + uuid + "', '" + type + "', '" + toAdd + "'");
+					DB.HUB_CRATE_KEYS.insert("'" + uuid + "', '" + type.toLowerCase() + "', '" + toAdd + "'");
 				}
-				Bukkit.getLogger().info(type + ": give player key");
+				Bukkit.getLogger().info(type.toLowerCase() + ": give player key");
 			}
 		});
 	}
@@ -145,18 +146,14 @@ public class Beacon implements Listener {
 		}
 		final String [] keys = new String [] {"uuid", "type"};
 		final String [] values = new String [] {player.getUniqueId().toString(), type};
-		/*if(DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") <= 0) {
+		if(DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") <= 0) {
 			if(type.equals("voting")) {
 				ChatClickHandler.sendMessageToRunCommand(player, "&6click here", "Click to vote", "/vote", "&cYou do not have any &2Voting Keys&c! Get some by voting, ");
 			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have any &2Super Keys&c! Get some on Buycraft: &b/buy");
+				MessageHandler.sendMessage(player, "&cYou do not have any &2Super Keys&c! Get some on Buycraft: &bhttp://store.outsidetheblock.org/category/679824");
 			}
 			return;
-		}*/
-		MessageHandler.sendMessage(player, "");
-		MessageHandler.sendMessage(player, "&c&lDue to beta testing you have unlimited crate keys");
-		MessageHandler.sendMessage(player, "&4&lNOTE: &b&lNothing you unlock will save");
-		MessageHandler.sendMessage(player, "");
+		}
 		running = true;
 		glass.setType(Material.STAINED_GLASS);
 		new DelayedTask(new Runnable() {
@@ -164,7 +161,7 @@ public class Beacon implements Listener {
 			public void run() {
 				FeatureItem item = null;
 				int chance = random.nextInt(100) + 1;
-				Rarity rarity = chance <= 10 ? Rarity.RARE : chance <= 35 ? Rarity.UNCOMMON : Rarity.COMMON;
+				Rarity rarity = type.equals("super") ? Rarity.RARE : chance <= 10 ? Rarity.RARE : chance <= 35 ? Rarity.UNCOMMON : Rarity.COMMON;
 				do {
 					item = items.get(random.nextInt(items.size()));
 				} while(item.getRarity() != rarity);
@@ -178,15 +175,15 @@ public class Beacon implements Listener {
 						@Override
 						public void run() {
 							String uuid = player.getUniqueId().toString();
-							/*int owned = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") - 1;
+							int owned = DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") - 1;
 							if(owned <= 0) {
 								DB.HUB_CRATE_KEYS.delete(keys, values);
 								owned = 0;
 							} else {
 								DB.HUB_CRATE_KEYS.updateInt("amount", owned, keys, values);
-							}*/
+							}
 							Bukkit.getLogger().info(type + ": update key amount");
-							//MessageHandler.sendMessage(player, "You now have &e" + owned + " &xVoting Crate key" + (owned == 1 ? "" : "s") + " left");
+							MessageHandler.sendMessage(player, "You now have &e" + owned + " &xVoting Crate key" + (owned == 1 ? "" : "s") + " left");
 							if(DB.HUB_LIFETIME_CRATES_OPENED.isUUIDSet(player.getUniqueId())) {
 								int amount = DB.HUB_LIFETIME_CRATES_OPENED.getInt(keys, values, "amount") + 1;
 								DB.HUB_LIFETIME_CRATES_OPENED.updateInt("amount", amount, keys, values);
