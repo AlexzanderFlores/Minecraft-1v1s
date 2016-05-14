@@ -32,6 +32,7 @@ public enum DB {
 	PLAYERS_CHAT_LANGUAGE("uuid VARCHAR(40), language VARCHAR(15), PRIMARY KEY(uuid)"),
 	PLAYERS_WORLD_DOWNLOADER("uuid VARCHAR(40), PRIMARY KEY(uuid)"),
 	PLAYERS_COIN_BOOSTERS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), game_name VARCHAR(25), amount INT, PRIMARY KEY(id)"),
+	PLAYERS_SKY_WARS_LOOT_PASSES("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Play time
 	PLAYERS_LIFETIME_PLAYTIME("uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, PRIMARY KEY(uuid)"),
 	PLAYERS_MONTHLY_PLAYTIME("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, month INT,  PRIMARY KEY(id)"),
@@ -128,6 +129,7 @@ public enum DB {
 	private String table = null;
 	private String keys = "";
 	private Databases database = null;
+	private static boolean displayErrors = true;
 	
 	private DB(String query) {
 		String databaseName = toString().split("_")[0];
@@ -148,7 +150,7 @@ public enum DB {
 				database.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + table + " (" + query + ")").execute();
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
@@ -168,7 +170,11 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getInt(1) > 0;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -187,7 +193,11 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getInt(1) > 0;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -212,7 +222,11 @@ public enum DB {
 				return resultSet.getInt(requested);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -233,7 +247,11 @@ public enum DB {
 				return resultSet.getInt(requested);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -246,7 +264,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + update + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -262,7 +284,11 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -274,7 +300,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + update + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -286,7 +316,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + (update ? "1" : "0") + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -302,7 +336,11 @@ public enum DB {
 				return resultSet.getString(requested);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -323,7 +361,11 @@ public enum DB {
 				return resultSet.getString(requested);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -349,7 +391,11 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -371,7 +417,11 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -394,7 +444,11 @@ public enum DB {
 				results.add(resultSet.getString(colum));
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -407,7 +461,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("UPDATE " + getName() + " SET " + set + " = '" + update + "' WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -423,7 +481,11 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -437,7 +499,11 @@ public enum DB {
 			resultSet = statement.executeQuery();
 			return resultSet.next() && resultSet.getBoolean(requested);
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -454,7 +520,11 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -471,7 +541,11 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -492,7 +566,11 @@ public enum DB {
 				return resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -517,7 +595,11 @@ public enum DB {
 			}
 			return results;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -542,7 +624,11 @@ public enum DB {
 			}
 			return results;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -567,7 +653,11 @@ public enum DB {
 			}
 			return results;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement, resultSet);
 		}
@@ -580,7 +670,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("DELETE FROM " + getName() + " WHERE " + key + " = '" + value + "'");
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -596,7 +690,11 @@ public enum DB {
 			statement = getConnection().prepareStatement(query);
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -616,7 +714,11 @@ public enum DB {
 			statement = getConnection().prepareStatement("DELETE FROM " + getName());
 			statement.execute();
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -630,7 +732,11 @@ public enum DB {
 			return true;
 		} catch(SQLException e) {
 			if(!e.getMessage().startsWith("Duplicate entry")) {
-				Bukkit.getLogger().info(e.getMessage());
+				if(displayErrors) {
+					e.printStackTrace();
+				} else {
+					Bukkit.getLogger().info(e.getMessage());
+				}
 			}
 		} finally {
 			close(statement);
@@ -645,7 +751,11 @@ public enum DB {
 			statement.execute();
 			return true;
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		} finally {
 			close(statement);
 		}
@@ -663,7 +773,11 @@ public enum DB {
 				statement.close();
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		}
 	}
 	
@@ -673,7 +787,11 @@ public enum DB {
 				resultSet.close();
 			}
 		} catch(SQLException e) {
-			Bukkit.getLogger().info(e.getMessage());
+			if(displayErrors) {
+				e.printStackTrace();
+			} else {
+				Bukkit.getLogger().info(e.getMessage());
+			}
 		}
 	}
 	

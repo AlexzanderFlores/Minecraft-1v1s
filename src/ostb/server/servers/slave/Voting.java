@@ -1,6 +1,8 @@
 package ostb.server.servers.slave;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -10,6 +12,8 @@ import org.bukkit.event.Listener;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 
+import ostb.OSTB.Plugins;
+import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -18,6 +22,8 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
 public class Voting implements Listener {
+	private static List<CoinsHandler> handlers = null;
+	
 	public Voting() {
 		new CommandBase("test", 1) {
 			@Override
@@ -26,6 +32,10 @@ public class Voting implements Listener {
 				return true;
 			}
 		};
+		handlers = new ArrayList<CoinsHandler>();
+		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES.getData()));
+		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW.getData()));
+		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHCK.getData()));
 		EventUtil.register(this);
 	}
 	
@@ -40,6 +50,7 @@ public class Voting implements Listener {
 			public void run() {
 				UUID playerUUID = AccountHandler.getUUID(name);
 				if(playerUUID != null) {
+					Bukkit.getLogger().info("voting: update lifetime votes");
 					String uuid = playerUUID.toString();
 					int streak = 1;
 					int multiplier = 1;
@@ -62,7 +73,7 @@ public class Voting implements Listener {
 					} else {
 						DB.PLAYERS_LIFETIME_VOTES.insert("'" + uuid + "', '1', '" + currentDay + "', '1', '1'");
 					}
-					Bukkit.getLogger().info("voting: update lifetime votes");
+					Bukkit.getLogger().info("voting: update monthly votes");
 					Calendar calendar = Calendar.getInstance();
 					String month = calendar.get(Calendar.MONTH) + "";
 					String [] keys = new String [] {"uuid", "month"};
@@ -73,7 +84,7 @@ public class Voting implements Listener {
 					} else {
 						DB.PLAYERS_MONTHLY_VOTES.insert("'" + uuid + "', '1', '" + month + "'");
 					}
-					Bukkit.getLogger().info("voting: update monthly votes");
+					Bukkit.getLogger().info("voting: update weekly votes");
 					String week = calendar.get(Calendar.WEEK_OF_YEAR) + "";
 					keys[1] = "week";
 					values[1] = week;
@@ -83,8 +94,18 @@ public class Voting implements Listener {
 					} else {
 						DB.PLAYERS_WEEKLY_VOTES.insert("'" + uuid + "', '1', '" + week + "'");
 					}
-					Bukkit.getLogger().info("voting: update weekly votes");
 					Beacon.giveKey(playerUUID, 1 * multiplier, "voting");
+					for(CoinsHandler handler : handlers) {
+						handler.addCoins(playerUUID, 20);
+					}
+					Bukkit.getLogger().info("voting: giving 3 sky wars loot passes");
+					int toAdd = 3;
+					if(DB.PLAYERS_SKY_WARS_LOOT_PASSES.isUUIDSet(playerUUID)) {
+						int amount = DB.PLAYERS_SKY_WARS_LOOT_PASSES.getInt("uuid", uuid, "amount") + toAdd;
+						DB.PLAYERS_SKY_WARS_LOOT_PASSES.updateInt("amount", amount, "uuid", uuid);
+					} else {
+						DB.PLAYERS_SKY_WARS_LOOT_PASSES.insert("'" + uuid + "', '" + toAdd + "'");
+					}
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}

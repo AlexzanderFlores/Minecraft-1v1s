@@ -121,6 +121,15 @@ public class CoinsHandler implements Listener {
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
 	}
 	
+	public void addCoins(UUID uuid, int toAdd) {
+		if(table.isUUIDSet(uuid)) {
+			int coins = table.getInt("uuid", uuid.toString(), "coins") + toAdd;
+			table.updateInt("coins", coins, "uuid", uuid.toString());
+		} else {
+			table.insert("'" + uuid.toString() + "', '" + toAdd + "'");
+		}
+	}
+	
 	public boolean isNewPlayer(Player player) {
 		return newPlayer != null && newPlayer.contains(player.getName());
 	}

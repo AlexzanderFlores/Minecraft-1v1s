@@ -24,6 +24,7 @@ public class SkyWars extends MiniGame {
 		new Events();
 		new ChestHandler();
 		new SkyWarsShop();
+		new LootPassHandler();
 		if(OSTB.getPlugin() == Plugins.SWT) {
 			new TeamHandler();
 			setRequiredPlayers(8);
