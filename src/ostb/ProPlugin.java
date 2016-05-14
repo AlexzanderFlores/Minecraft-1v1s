@@ -127,6 +127,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	private boolean allowBedEntering = false;
 	private boolean allowHangingBreakByEntity = false;
 	private boolean allowEntityExplode = false;
+	private boolean autoVanishStaff = false;
 	private boolean removeEntitiesUponLoadingWorld = true;
 	private boolean resetPlayerUponJoining = true;
 	private boolean allowInventoryClicking = false;
@@ -178,6 +179,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		setAllowBedEntering(false);
 		setAllowHangingBreakByEntity(false);
 		setAllowEntityExplode(false);
+		setAutoVanishStaff(true);
 		setRemoveEntitiesUponLoadingWorld(true);
 		setResetPlayerUponJoining(true);
 		setAllowInventoryClicking(false);
@@ -212,6 +214,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		setAllowBedEntering(true);
 		setAllowHangingBreakByEntity(true);
 		setAllowEntityExplode(true);
+		setAutoVanishStaff(false);
 		setRemoveEntitiesUponLoadingWorld(false);
 		setResetPlayerUponJoining(false);
 		setAllowInventoryClicking(true);
@@ -456,6 +459,14 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	
 	public void setAllowEntityExplode(boolean allowEntityExplode) {
 		this.allowEntityExplode = allowEntityExplode;
+	}
+	
+	public boolean getAutoVanishStaff() {
+		return this.autoVanishStaff;
+	}
+	
+	public void setAutoVanishStaff(boolean autoVanishStaff) {
+		this.autoVanishStaff = autoVanishStaff;
 	}
 	
 	public boolean getRemoveEntitiesUponLoadingWorld() {

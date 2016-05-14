@@ -54,11 +54,17 @@ commands:
   r:
     usage: /r <message>
 
+  seen:
+    usage: /seen <name>
+
   shout:
     usage: /shout <message>
 
   spawn:
     usage: /spawn
+
+  staff:
+    usage: staff
 
   stats:
     usage: /stats [name]
@@ -159,8 +165,11 @@ commands:
   s:
     usage: /s <message>
 
-  v:
-    usage: /v [tp] [name]
+  staffHere:
+    usage: /staffHere
+
+  sm:
+    usage: /sm [tp] [name]
 
   unban:
     usage: /unban <name>

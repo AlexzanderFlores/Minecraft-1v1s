@@ -75,6 +75,7 @@ public class Punishment implements Listener {
 		new ReportHandler();
 		new ViolationPrevention();
 		new CommandLogger();
+		new StaffMode();
 	}
 	
 	public Punishment(String name) {

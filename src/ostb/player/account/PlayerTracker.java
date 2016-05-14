@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,16 +16,102 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.ChatClickHandler;
+import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
+import ostb.staff.StaffMode;
 
 public class PlayerTracker implements Listener {
 	private List<String> queue = null;
 	
 	public PlayerTracker() {
 		queue = new ArrayList<String>();
+		new CommandBase("seen", 1) {
+            @Override
+            public boolean execute(final CommandSender sender, final String[] arguments) {
+                new AsyncDelayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        UUID uuid = AccountHandler.getUUID(arguments[0]);
+                        if(uuid == null) {
+                            MessageHandler.sendMessage(sender, "&c" + arguments[0] + " has never logged in before");
+                        } else if(DB.PLAYERS_LOCATIONS.isUUIDSet(uuid)) {
+                        	String prefix = DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "prefix");
+                            String location = DB.PLAYERS_LOCATIONS.getString("uuid", uuid.toString(), "location");
+                            if(sender instanceof Player) {
+                                Player player = (Player) sender;
+                                ChatClickHandler.sendMessageToRunCommand(player, " &b&lCLICK TO JOIN", "Click to join " + location, "/join " + location, prefix + " &eis on " + location);
+                            } else {
+                                MessageHandler.sendMessage(sender, location);
+                            }
+                        } else {
+                        	MessageHandler.sendMessage(sender, "&cCould not find " + arguments[0]);
+                        }
+                    }
+                });
+                return true;
+            }
+        }.enableDelay(1);
+        new CommandBase("staff") {
+            @Override
+            public boolean execute(final CommandSender sender, String[] arguments) {
+                new AsyncDelayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<String> staffUUIDs = DB.STAFF_ONLINE.getAllStrings("uuid");
+                        if(staffUUIDs.isEmpty()) {
+                            MessageHandler.sendMessage(sender, "&cThere are currently no staff available!");
+                        } else {
+                            MessageHandler.sendMessage(sender, "&aOnline Staff (&b" + staffUUIDs.size() + "&a)");
+                            for(String uuid : staffUUIDs) {
+                            	String prefix = DB.STAFF_ONLINE.getString("uuid", uuid.toString(), "prefix");
+                                String server = DB.STAFF_ONLINE.getString("uuid", uuid, "server");
+                                if(server.equalsIgnoreCase("VANISHED")) {
+                                	MessageHandler.sendMessage(sender, prefix + " &eis &cVANISHED");
+                                } else {
+                                	if(sender instanceof Player) {
+                                        Player player = (Player) sender;
+                                        ChatClickHandler.sendMessageToRunCommand(player, " &b&lCLICK TO JOIN", "Click to join " + server, "/join " + server, prefix + " &eis on " + server);
+                                    } else {
+                                        MessageHandler.sendMessage(sender, server);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                return true;
+            }
+        }.enableDelay(1);
+        new CommandBase("staffHere") {
+            @Override
+            public boolean execute(CommandSender sender, String[] arguments) {
+                List<String> onlineStaff = new ArrayList<String>();
+                for(Player online : Bukkit.getOnlinePlayers()) {
+                    if(Ranks.isStaff(online)) {
+                        onlineStaff.add(AccountHandler.getPrefix(online, true, true) + (StaffMode.contains(online) ? " &a(SM)" : ""));
+                    }
+                }
+                if(!onlineStaff.isEmpty()) {
+                    MessageHandler.sendMessage(sender, "");
+                    String message = "Staff on this server: (&b" + onlineStaff.size() + "&x) ";
+                    for(String staff : onlineStaff) {
+                        message += staff + "&f, ";
+                    }
+                    MessageHandler.sendMessage(sender, message.substring(0, message.length() - 2));
+                    MessageHandler.sendMessage(sender, "");
+                    MessageHandler.sendMessage(sender, "View this any time: &c/staffHere");
+                    MessageHandler.sendMessage(sender, "");
+                    onlineStaff.clear();
+                }
+                onlineStaff = null;
+                return true;
+            }
+        }.setRequiredRank(Ranks.TRIAL);
 		EventUtil.register(this);
 	}
 	
@@ -39,8 +127,7 @@ public class PlayerTracker implements Listener {
 						Player player = ProPlugin.getPlayer(name);
 						if(player != null) {
 							UUID uuid = player.getUniqueId();
-							//OSTB.getClient().sendMessageToServer(new Instruction(new String [] {Inst.SERVER_LOG_PLAYER.toString(), uuid.toString(), OSTB.getServerName()}));
-							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + OSTB.getServerName() + "'");
+							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + OSTB.getServerName() + "'");
 						}
 						queue.remove(0);
 					}
@@ -59,8 +146,7 @@ public class PlayerTracker implements Listener {
 			} else {
 				location = OSTB.getServerName();
 			}
-			DB.STAFF_ONLINE.insert("'" + player.getUniqueId().toString() + "', '" + location + "'");
-			queue.add(player.getName());
+			DB.STAFF_ONLINE.insert("'" + player.getUniqueId().toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + location + "'");
 		} else if(AccountHandler.getRank(player) != Ranks.YOUTUBER){
 			queue.add(player.getName());
 		}
