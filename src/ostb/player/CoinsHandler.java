@@ -22,6 +22,7 @@ import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinGiveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
@@ -74,7 +75,7 @@ public class CoinsHandler implements Listener {
 					}
 					return true;
 				}
-			};
+			}.setRequiredRank(Ranks.OWNER);
 			EventUtil.register(this);
 		}
 	}

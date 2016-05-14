@@ -58,6 +58,7 @@ import ostb.server.util.ItemUtil;
 
 public class SpectatorHandler implements Listener {
 	private static List<String> spectators = null;
+	private static List<String> beenTold = null;
 	private static ItemStack teleporter = null;
 	private static ItemStack exit = null;
 	private static ItemStack nextGame = null;
@@ -66,6 +67,7 @@ public class SpectatorHandler implements Listener {
 	
 	public SpectatorHandler() {
 		spectators = new ArrayList<String>();
+		beenTold = new ArrayList<String>();
 		teleporter = new ItemCreator(Material.WATCH).setName("&aTeleport to Player").getItemStack();
 		if(OSTB.getMiniGame() == null) {
 			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aExit Spectating").getItemStack();
@@ -114,6 +116,12 @@ public class SpectatorHandler implements Listener {
 									if(contains(nearPlayer)) {
 										continue;
 									}
+								}
+								if(!beenTold.contains(player.getName())) {
+									beenTold.add(player.getName());
+									MessageHandler.sendMessage(player, "");
+									MessageHandler.sendMessage(player, "&cNote: &xIf you get too close to a living entity or a projectile you will go into spectating game mode");
+									MessageHandler.sendMessage(player, "");
 								}
 								nearBy = true;
 								player.setGameMode(GameMode.SPECTATOR);
@@ -238,6 +246,7 @@ public class SpectatorHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		remove(event.getPlayer());
+		beenTold.remove(event.getPlayer().getName());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
