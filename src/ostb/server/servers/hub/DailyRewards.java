@@ -69,6 +69,8 @@ public class DailyRewards implements Listener {
 			"&eReaching vote streak milestones",
 			"&ewill give you exclusive perks!",
 			"",
+			"&c&l(Coming soon, not done yet)",
+			"",
 			"&76 Streak: &aExclusive random arrow particle trail",
 			"&711 Streak: &aAccess to beta testing servers",
 			"&716 Streak: &aToggle your pet being upside down",
