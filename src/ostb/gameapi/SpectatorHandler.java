@@ -108,6 +108,12 @@ public class SpectatorHandler implements Listener {
 						boolean nearBy = false;
 						for(Entity entity : player.getNearbyEntities(range, range, range)) {
 							if(entity instanceof LivingEntity || entity instanceof Projectile) {
+								if(entity instanceof Player) {
+									Player nearPlayer = (Player) entity;
+									if(contains(nearPlayer)) {
+										continue;
+									}
+								}
 								nearBy = true;
 								player.setGameMode(GameMode.SPECTATOR);
 								break;
