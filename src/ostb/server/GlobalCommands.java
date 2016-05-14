@@ -109,7 +109,7 @@ public class GlobalCommands {
 						}
 					});
 				} else {
-					MessageHandler.sendMessage(sender, "URL: &cstore.OutsideTheBlock.org/category/679889");
+					MessageHandler.sendMessage(sender, "&cstore.OutsideTheBlock.org/category/679889");
 				}
 				return true;
 			}
@@ -157,7 +157,7 @@ public class GlobalCommands {
 		new CommandBase("buy") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				MessageHandler.sendMessage(sender, "&cComing soon");
+				MessageHandler.sendMessage(sender, "&chttp://store.outsidetheblock.org/");
 				return true;
 			}
 		};
