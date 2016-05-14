@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,11 +18,27 @@ import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.StringUtil;
 import ostb.server.util.TimeUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("vote") {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				MessageHandler.sendLine(sender, "&6");
+				MessageHandler.sendMessage(sender, "http://minecraftservers.org/server/350324");
+				MessageHandler.sendMessage(sender, "&c2nd link coming soon");
+				MessageHandler.sendLine(sender, "&6");
+				if(sender instanceof Player) {
+					Player player = (Player) sender;
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
+				}
+				return true;
+			}
+		};
+		
 		new CommandBase("sysTime") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

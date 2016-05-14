@@ -17,7 +17,6 @@ import org.bukkit.inventory.Inventory;
 
 import npc.NPCEntity;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
@@ -88,7 +87,7 @@ public class DailyRewards implements Listener {
 			if(slot == 11) {
 				if(event.getClickType() == ClickType.LEFT) {
 					player.closeInventory();
-					MessageHandler.sendMessage(player, "&cLink coming soon");
+					player.performCommand("vote");
 					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
