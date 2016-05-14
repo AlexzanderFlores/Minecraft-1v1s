@@ -1,11 +1,9 @@
 package ostb.server.servers.hub;
 
 import java.io.File;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -14,15 +12,8 @@ import org.bukkit.entity.Player;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.crates.SpeedUHCCrate;
-import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.player.LevelHandler;
-import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler;
-import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
-import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.Crate;
 import ostb.server.servers.hub.crate.KeyExchange;
 import ostb.server.servers.hub.crate.KeyFragments;
@@ -74,28 +65,6 @@ public class HubBase extends ProPlugin {
 		new Parkour();
 		new EndlessParkour();
 		new RecentSupporters();
-		new CommandBase("giveKey", 3) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				UUID uuid = AccountHandler.getUUID(arguments[0]);
-				int amount = Integer.valueOf(arguments[1]);
-				String type = arguments[2];
-				if(type.equalsIgnoreCase("voting") || type.equalsIgnoreCase("super")) {
-					Beacon.giveKey(uuid, amount, arguments[2]);
-				} else if(type.equalsIgnoreCase("sky_wars")) {
-					SkyWarsCrate.giveKey(uuid, amount);
-				} else if(type.equalsIgnoreCase("hardcore_elimination")) {
-					SpeedUHCCrate.giveKey(uuid, amount);
-				} else {
-					MessageHandler.sendMessage(sender, "Unknown key type, use:");
-					MessageHandler.sendMessage(sender, "voting");
-					MessageHandler.sendMessage(sender, "super");
-					MessageHandler.sendMessage(sender, "sky_wars");
-					MessageHandler.sendMessage(sender, "speed_uhc");
-				}
-				return true;
-			}
-		}.setRequiredRank(Ranks.OWNER);
 	}
 	
 	public static int getHubNumber() {

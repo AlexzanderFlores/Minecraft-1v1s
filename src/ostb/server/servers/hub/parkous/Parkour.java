@@ -301,7 +301,6 @@ public class Parkour implements Listener {
 				new TitleDisplayer(player, "&bCheckpoint Set").display();
 			} else {
 				new TitleDisplayer(player, "&cNo Checkpoints", "&cGet some with &a/vote").display();
-				amount += 10;
 			}
 			checkpointPasses.put(name, amount);
 		} else if(this.returnToCheckpoint.equals(item)) {
@@ -422,7 +421,7 @@ public class Parkour implements Listener {
 		if(amount > 0) {
 			checkpointPasses.put(player.getName(), amount);
 		} else {
-			checkpointPasses.put(player.getName(), 100);
+			MessageHandler.sendMessage(player, "&cYou have no checkpoints, get more with &a/vote");
 		}
 	}
 	

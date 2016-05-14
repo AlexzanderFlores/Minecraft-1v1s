@@ -131,6 +131,15 @@ public class Voting implements Listener {
 					} else {
 						DB.PLAYERS_SPEED_UHC_RESCATTER.insert("'" + uuid + "', '" + toAdd + "'");
 					}
+					Bukkit.getLogger().info("voting: giving parkour course checkpoints");
+					toAdd = 10 * multiplier;
+					if(DB.HUB_PARKOUR_CHECKPOINTS.isUUIDSet(playerUUID)) {
+						int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", uuid, "amount") + toAdd;
+						DB.HUB_PARKOUR_CHECKPOINTS.updateInt("amount", amount, "uuid", uuid);
+					} else {
+						DB.HUB_PARKOUR_CHECKPOINTS.insert("'" + uuid + "', '" + toAdd + "'");
+					}
+					Bukkit.getLogger().info("voting: giving exp");
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}

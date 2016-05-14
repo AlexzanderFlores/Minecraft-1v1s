@@ -174,6 +174,7 @@ public class DailyRewards implements Listener {
 					inventory.setItem(34, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
 						"",
 						"&e+250 &aNetwork Experience",
+						"&c(Coming soon)",
 						""
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());

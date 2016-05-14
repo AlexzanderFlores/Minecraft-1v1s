@@ -272,6 +272,8 @@ public class ArrowTrails extends FeatureBase {
 			"&7to other players. Useful for staying",
 			"&7hidden but still using your perks!",
 			"",
+			"&c(COMING SOON)",
+			"",
 		});
 		return loadItem.getItemStack();
 	}
@@ -301,6 +303,8 @@ public class ArrowTrails extends FeatureBase {
 			"&7will see trail particles from other",
 			"&7players. If they annoy you then you",
 			"&7can disable them",
+			"",
+			"&c(COMING SOON)",
 			"",
 		});
 		return loadItem.getItemStack();

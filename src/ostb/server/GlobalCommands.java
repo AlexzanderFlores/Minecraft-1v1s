@@ -14,9 +14,12 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.crates.SkyWarsCrate;
+import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.StringUtil;
@@ -24,6 +27,29 @@ import ostb.server.util.TimeUtil;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("giveKey", 3) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				UUID uuid = AccountHandler.getUUID(arguments[0]);
+				int amount = Integer.valueOf(arguments[1]);
+				String type = arguments[2];
+				if(type.equalsIgnoreCase("voting") || type.equalsIgnoreCase("super")) {
+					Beacon.giveKey(uuid, amount, arguments[2]);
+				} else if(type.equalsIgnoreCase("sky_wars")) {
+					SkyWarsCrate.giveKey(uuid, amount);
+				} else if(type.equalsIgnoreCase("hardcore_elimination")) {
+					SpeedUHCCrate.giveKey(uuid, amount);
+				} else {
+					MessageHandler.sendMessage(sender, "Unknown key type, use:");
+					MessageHandler.sendMessage(sender, "voting");
+					MessageHandler.sendMessage(sender, "super");
+					MessageHandler.sendMessage(sender, "sky_wars");
+					MessageHandler.sendMessage(sender, "speed_uhc");
+				}
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		
 		new CommandBase("vote") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
