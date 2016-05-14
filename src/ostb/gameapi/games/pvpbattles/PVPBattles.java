@@ -35,6 +35,7 @@ public class PVPBattles extends MiniGame {
 		new Ranking();
 		new Events();
 		new BelowNameHealthScoreboardUtil();
+		new AutoRespawn();
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {

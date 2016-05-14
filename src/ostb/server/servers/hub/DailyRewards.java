@@ -141,7 +141,7 @@ public class DailyRewards implements Listener {
 						"&7Open in the Sky Wars shop",
 						""
 					}).getItemStack()));
-					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSpeed UHCCrate Key").setLores(new String [] {
+					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSpeed UHC Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Speed UHC crate",
 						"",
@@ -150,9 +150,9 @@ public class DailyRewards implements Listener {
 					}).getItemStack()));
 					
 					// Other
-					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Fast Respawn").setLores(new String [] {
+					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Auto Respawn").setLores(new String [] {
 						"",
-						"&e+15 &aPVP Battles Fast Respawn",
+						"&e+15 &aPVP Battles Auto Respawn",
 						"",
 						"&7Capture the Flag & Domination",
 						"&7Respawn instantly instead of a 5 second delay",
@@ -163,6 +163,7 @@ public class DailyRewards implements Listener {
 						"&e+1 &aSpeed UHC Rescatter",
 						"",
 						"&7Rescatter yourself with /rescatter",
+						"&7Only works for the first 20 seconds",
 						""
 					}).getItemStack());
 					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {

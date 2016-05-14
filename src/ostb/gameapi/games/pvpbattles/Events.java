@@ -239,14 +239,17 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		event.setRespawnLocation(respawnLocation);
-		player.setAllowFlight(true);
-		player.setFlying(true);
-		respawning.add(player.getName());
-		respawningCounters.put(player.getName(), 5);
-		Vanisher.add(player);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 999999999));
-		//event.setRespawnLocation(spawn(event.getPlayer()));
+		if(AutoRespawn.useAutoRespawn(player)) {
+			event.setRespawnLocation(spawn(player));
+		} else {
+			event.setRespawnLocation(respawnLocation);
+			player.setAllowFlight(true);
+			player.setFlying(true);
+			respawning.add(player.getName());
+			respawningCounters.put(player.getName(), 5);
+			Vanisher.add(player);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 999999999));
+		}
 	}
 	
 	@EventHandler

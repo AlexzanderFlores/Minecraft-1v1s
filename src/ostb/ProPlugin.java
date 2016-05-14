@@ -573,17 +573,6 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		}
 	}
 	
-	//TODO: Find when this is used, remove if it isn't needed
-	public static void restartServer(long delay) {
-		MessageHandler.alert("Server restarting in &b" + (delay / 20) + " &aseconds!");
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				restartServer();
-			}
-		}, delay);
-	}
-	
 	public static void restartServer() {
 		restarting = true;
 		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/banned-ips.json"));
@@ -599,7 +588,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 			public void run() {
 				Bukkit.getServer().shutdown();
 			}
-		}, 30);
+		}, 20 * 3);
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
