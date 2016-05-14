@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import anticheat.events.PlayerLeaveEvent;
 import anticheat.util.AsyncDelayedTask;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
@@ -20,9 +21,11 @@ import ostb.server.util.EventUtil;
 
 public class LootPassHandler implements Listener {
 	private List<String> canUsePass = null;
+	private List<String> usedLootPass = null;
 	
 	public LootPassHandler() {
 		canUsePass = new ArrayList<String>();
+		usedLootPass = new ArrayList<String>();
 		EventUtil.register(this);
 	}
 	
@@ -45,26 +48,37 @@ public class LootPassHandler implements Listener {
 		Block block = event.getBlock();
 		if(block.getType() == Material.CHEST) {
 			Player player = event.getPlayer();
-			if(canUsePass.contains(player.getName())) {
-				canUsePass.remove(player.getNoDamageTicks());
-				ChestHandler.restock(block);
-				new TitleDisplayer(player, "&bRestocked Chest", "&cGet more with &a/vote").display();
-				final UUID uuid = player.getUniqueId();
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						int amount = DB.PLAYERS_SKY_WARS_LOOT_PASSES.getInt("uuid", uuid.toString(), "amount") - 1;
-						if(amount <= 0) {
-							DB.PLAYERS_SKY_WARS_LOOT_PASSES.deleteUUID(uuid);
-						} else {
-							DB.PLAYERS_SKY_WARS_LOOT_PASSES.updateInt("amount", amount, "uuid", uuid.toString());
-						}
-					}
-				});
+			if(usedLootPass.contains(player.getName())) {
+				new TitleDisplayer(player, "&cYou can only use &e1 &cpass per game").display();
 			} else {
-				new TitleDisplayer(player, "&cYou are out of restocks", "&cGet more with &a/vote").display();
+				if(canUsePass.contains(player.getName())) {
+					canUsePass.remove(player.getName());
+					usedLootPass.add(player.getName());
+					ChestHandler.restock(block);
+					new TitleDisplayer(player, "&bRestocked Chest", "&cGet more with &a/vote").display();
+					final UUID uuid = player.getUniqueId();
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							int amount = DB.PLAYERS_SKY_WARS_LOOT_PASSES.getInt("uuid", uuid.toString(), "amount") - 1;
+							if(amount <= 0) {
+								DB.PLAYERS_SKY_WARS_LOOT_PASSES.deleteUUID(uuid);
+							} else {
+								DB.PLAYERS_SKY_WARS_LOOT_PASSES.updateInt("amount", amount, "uuid", uuid.toString());
+							}
+						}
+					});
+				} else {
+					new TitleDisplayer(player, "&cYou are out of restocks", "&cGet more with &a/vote").display();
+				}
 			}
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		canUsePass.remove(event.getPlayer().getName());
+		usedLootPass.remove(event.getPlayer().getName());
 	}
 }
