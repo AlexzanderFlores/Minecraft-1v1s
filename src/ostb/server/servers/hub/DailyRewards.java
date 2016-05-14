@@ -104,9 +104,9 @@ public class DailyRewards implements Listener {
 						"&e+" + coins + " &aSky Wars Coins",
 						""
 					}).getItemStack());
-					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bHardcore Elimination Coins").setLores(new String [] {
+					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bSpeed UHC Coins").setLores(new String [] {
 						"",
-						"&e+" + coins + " &aHardcore Elimination Coins",
+						"&e+" + coins + " &aSpeed UHC Coins",
 						""
 					}).getItemStack());
 					
@@ -141,11 +141,11 @@ public class DailyRewards implements Listener {
 						"&7Open in the Sky Wars shop",
 						""
 					}).getItemStack()));
-					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bHardcore Elimination Crate Key").setLores(new String [] {
+					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSpeed UHCCrate Key").setLores(new String [] {
 						"",
-						"&e+1 &aKey to the Hardcore Elimination crate",
+						"&e+1 &aKey to the Speed UHC crate",
 						"",
-						"&7Open in the Hardcore Elimination shop",
+						"&7Open in the Speed UHC shop",
 						""
 					}).getItemStack()));
 					
@@ -158,9 +158,9 @@ public class DailyRewards implements Listener {
 						"&7Respawn instantly instead of a 5 second delay",
 						""
 					}).getItemStack());
-					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bHardcore Elimination Rescatter").setLores(new String [] {
+					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bSpeed UHC Rescatter Passes").setLores(new String [] {
 						"",
-						"&e+1 &aHardcore Elimination Rescatter",
+						"&e+1 &aSpeed UHC Rescatter",
 						"",
 						"&7Rescatter yourself with /rescatter",
 						""

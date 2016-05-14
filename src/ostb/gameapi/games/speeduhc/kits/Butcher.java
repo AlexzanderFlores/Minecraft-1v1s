@@ -34,7 +34,7 @@ public class Butcher extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a" + amount + " Pigs spawn near you",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Unlocked in &bSpeed UHC Crate",
 			"&7Rarity: " + getRarity().getName()
 		}).getItemStack(), getRarity(), -1, 20);
 	}

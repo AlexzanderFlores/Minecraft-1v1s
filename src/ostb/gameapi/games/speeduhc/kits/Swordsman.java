@@ -20,7 +20,7 @@ public class Swordsman extends KitBase {
 			"&7Start with:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aStone Sword",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Unlocked in &bSpeed UHC Crate",
 			"&7Rarity: " + getRarity().getName()
 		}).getItemStack(), getRarity(), -1);
 	}

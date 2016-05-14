@@ -20,7 +20,7 @@ public class Haste extends KitBase {
 			"&7Abilities:",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aGet Haste for the first 2:30",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Unlocked in &bSpeed UHC Crate",
 			"&7Rarity: " + getRarity().getName()
 		}).getItemStack(), getRarity(), -1);
 	}

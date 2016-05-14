@@ -56,7 +56,7 @@ public class Beacon implements Listener {
 	private static String keyFragmentName = null;
 	private static String votingKeyx3Name = null;
 	private static String skyWarsCrateKey = null;
-	private static String hardcoreEliminationCrateKey = null;
+	private static String speedUHCCrateKey = null;
 	
 	public Beacon(String originalName, String type, Block glass, Vector standOffset) {
 		random = new Random();
@@ -76,7 +76,7 @@ public class Beacon implements Listener {
 		keyFragmentName = "Key Fragment";
 		votingKeyx3Name = "Voting Key x3";
 		skyWarsCrateKey = "Sky Wars Crate Key";
-		hardcoreEliminationCrateKey = "Hardcore Elimination Crate Key";
+		speedUHCCrateKey = "Speed UHC Elimination Crate Key";
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -84,7 +84,7 @@ public class Beacon implements Listener {
 				items.add(new FeatureItem(getKeyFragmentName(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
 				items.add(new FeatureItem(getVotingKeyx3(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.RARE, FeatureType.REWARD_CRATE));
 				items.add(new FeatureItem(getSkyWarsCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
-				items.add(new FeatureItem(getHardcoreEliminationCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
+				items.add(new FeatureItem(getSpeedUHCCrateKey(), new ItemStack(Material.TRIPWIRE_HOOK), Rarity.UNCOMMON, FeatureType.REWARD_CRATE));
 			}
 		});
 		EventUtil.register(this);
@@ -102,8 +102,8 @@ public class Beacon implements Listener {
 		return skyWarsCrateKey;
 	}
 	
-	public static String getHardcoreEliminationCrateKey() {
-		return hardcoreEliminationCrateKey;
+	public static String getSpeedUHCCrateKey() {
+		return speedUHCCrateKey;
 	}
 	
 	public String getType() {

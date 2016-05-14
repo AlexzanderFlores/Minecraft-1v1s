@@ -30,7 +30,7 @@ public class BlastMiner extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT cannot damage players",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &aTNT only explodes during grace period",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Unlocked in &bSpeed UHC Crate",
 			"&7Rarity: " + getRarity().getName()
 		}).getItemStack(), getRarity(), -1);
 	}

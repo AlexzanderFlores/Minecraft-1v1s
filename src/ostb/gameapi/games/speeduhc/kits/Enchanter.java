@@ -20,7 +20,7 @@ public class Enchanter extends KitBase {
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a3 Sugar Cane",
 			"   &7" + UnicodeUtil.getUnicode("25B6") + " &a1 Leather",
 			"",
-			"&7Unlocked in &bHardcore Elimination Crate",
+			"&7Unlocked in &bSpeed UHC Crate",
 			"&7Rarity: " + getRarity().getName()
 		}).getItemStack(), getRarity(), -1, 29);
 	}

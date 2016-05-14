@@ -91,7 +91,7 @@ public class FeatureItem {
 			SkyWarsCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}
-		if(getName().equals(Beacon.getHardcoreEliminationCrateKey())) {
+		if(getName().equals(Beacon.getSpeedUHCCrateKey())) {
 			SpeedUHCCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}

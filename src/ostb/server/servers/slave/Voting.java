@@ -115,6 +115,7 @@ public class Voting implements Listener {
 					SkyWarsCrate.giveKey(playerUUID, 1 * multiplier);
 					Bukkit.getLogger().info("voting: giving speed uhc key");
 					SpeedUHCCrate.giveKey(playerUUID, 1 * multiplier);
+					
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}
