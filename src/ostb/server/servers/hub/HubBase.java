@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.player.LevelHandler;
+import ostb.player.TeamScoreboardHandler;
 import ostb.server.ServerLogger;
 import ostb.server.servers.hub.crate.Crate;
 import ostb.server.servers.hub.crate.KeyExchange;
@@ -65,6 +66,7 @@ public class HubBase extends ProPlugin {
 		new Parkour();
 		new EndlessParkour();
 		new RecentSupporters();
+		new TeamScoreboardHandler();
 	}
 	
 	public static int getHubNumber() {

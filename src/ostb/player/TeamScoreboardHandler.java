@@ -1,16 +1,14 @@
 package ostb.player;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import ostb.OSTB;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
 import ostb.player.account.AccountHandler;
@@ -19,31 +17,35 @@ import ostb.server.util.EventUtil;
 
 @SuppressWarnings("deprecation")
 public class TeamScoreboardHandler implements Listener {
-	private List<Team> teams = null;
-	
 	public TeamScoreboardHandler() {
-		teams = new ArrayList<Team>();
-		for(Ranks rank : Ranks.values()) {
-			Team team = OSTB.getScoreboard().registerNewTeam(rank.getPrefix());
-			team.setPrefix(team.getName());
-			teams.add(team);
-		}
 		EventUtil.register(this);
 	}
 	
 	private void set(Player player) {
 		remove(player);
-		for(Team team : teams) {
-			if(team.getName().equals(AccountHandler.getRank(player).getPrefix())) {
-				team.addPlayer(player);
-				break;
+		for(Player online : Bukkit.getOnlinePlayers()) {
+			Scoreboard scoreboard = online.getScoreboard();
+			for(Ranks rank : Ranks.values()) {
+				Team team = scoreboard.getTeam(rank.getPrefix());
+				if(team == null) {
+					String name = rank.getPrefix().replace(" ", "");
+					name = name.substring(0, name.length() - 2);
+					Bukkit.getLogger().info("\"" + name + "\"");
+					team = scoreboard.registerNewTeam(name);
+				}
+				if(team.getPrefix().equals(AccountHandler.getRank(player).getPrefix())) {
+					team.addPlayer(player);
+				}
 			}
 		}
 	}
 	
 	private void remove(Player player) {
-		for(Team team : teams) {
-			team.removePlayer(player);
+		for(Player online : Bukkit.getOnlinePlayers()) {
+			Scoreboard scoreboard = online.getScoreboard();
+			for(Team team : scoreboard.getTeams()) {
+				team.removePlayer(player);
+			}
 		}
 	}
 	
