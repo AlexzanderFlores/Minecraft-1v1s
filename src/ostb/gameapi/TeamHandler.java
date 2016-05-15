@@ -190,10 +190,12 @@ public class TeamHandler implements Listener {
 		}
 		Player player = event.getPlayer();
 		Team team = getTeam(player);
-		for(ChatColor color : ChatColor.values()) {
-			if(team.getPrefix().startsWith(color.toString())) {
-				event.setFormat(team.getPrefix() + event.getFormat().replace(player.getName(), color + player.getName()));
-				break;
+		if(team != null) {
+			for(ChatColor color : ChatColor.values()) {
+				if(team.getPrefix().startsWith(color.toString())) {
+					event.setFormat(team.getPrefix() + event.getFormat().replace(player.getName(), color + player.getName()));
+					break;
+				}
 			}
 		}
 		for(Player online : ProPlugin.getPlayers()) {

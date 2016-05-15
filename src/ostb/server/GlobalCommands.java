@@ -56,7 +56,7 @@ public class GlobalCommands {
 			public boolean execute(CommandSender sender, String [] arguments) {
 				MessageHandler.sendLine(sender, "&6");
 				MessageHandler.sendMessage(sender, "http://minecraftservers.org/server/350324");
-				MessageHandler.sendMessage(sender, "http://minecraft-mp.com/server-s121622");
+				MessageHandler.sendMessage(sender, "http://minecraft-mp.com/server/121622/vote/");
 				MessageHandler.sendLine(sender, "&6");
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
