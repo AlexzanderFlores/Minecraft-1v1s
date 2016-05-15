@@ -30,6 +30,7 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
@@ -139,17 +140,22 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerRankChange(PlayerRankChangeEvent event) {
-		Player player = event.getPlayer();
-		if(sidebars.containsKey(player.getName())) {
-			sidebars.get(player.getName()).update(player);
-			if(event.getRank() == Ranks.PLAYER && player.getAllowFlight()) {
-				player.setFlying(false);
-				player.setAllowFlight(false);
-			} else if(event.getRank() != Ranks.PLAYER && !player.getAllowFlight()) {
-				player.setAllowFlight(true);
+	public void onPlayerRankChange(final PlayerRankChangeEvent event) {
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				Player player = event.getPlayer();
+				if(sidebars.containsKey(player.getName())) {
+					sidebars.get(player.getName()).update(player);
+					if(event.getRank() == Ranks.PLAYER && player.getAllowFlight()) {
+						player.setFlying(false);
+						player.setAllowFlight(false);
+					} else if(event.getRank() != Ranks.PLAYER && !player.getAllowFlight()) {
+						player.setAllowFlight(true);
+					}
+				}
 			}
-		}
+		});
 	}
 	
 	@EventHandler

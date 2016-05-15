@@ -1,42 +1,52 @@
 package ostb.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.CommandBase;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
 @SuppressWarnings("deprecation")
 public class TeamScoreboardHandler implements Listener {
 	public TeamScoreboardHandler() {
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				new CommandBase("test", true) {
+					@Override
+					public boolean execute(CommandSender sender, String [] arguments) {
+						Player player = (Player) sender;
+						Scoreboard scoreboard = player.getScoreboard();
+						for(Team team : scoreboard.getTeams()) {
+							MessageHandler.sendMessage(player, team.getName() + " &x: " + team.getPrefix() + " &x : " + team.getSize());
+						}
+						return true;
+					}
+				};
+			}
+		}, 20 * 5);
 		EventUtil.register(this);
 	}
 	
 	private void set(Player player) {
 		remove(player);
+		Ranks pRank = AccountHandler.getRank(player);
 		for(Player online : Bukkit.getOnlinePlayers()) {
-			Scoreboard scoreboard = online.getScoreboard();
-			for(Ranks rank : Ranks.values()) {
-				Team team = scoreboard.getTeam(rank.getPrefix());
-				if(team == null) {
-					String name = rank.getPrefix().replace(" ", "");
-					name = name.substring(0, name.length() - 2);
-					Bukkit.getLogger().info("\"" + name + "\"");
-					team = scoreboard.registerNewTeam(name);
-				}
-				if(team.getPrefix().equals(AccountHandler.getRank(player).getPrefix())) {
-					team.addPlayer(player);
-				}
-			}
+			Ranks oRank = AccountHandler.getRank(online);
+			online.getScoreboard().getTeam(getName(pRank)).addPlayer(player);
+			player.getScoreboard().getTeam(getName(oRank)).addPlayer(online);
 		}
 	}
 	
@@ -49,8 +59,20 @@ public class TeamScoreboardHandler implements Listener {
 		}
 	}
 	
+	private String getName(Ranks rank) {
+		String name = rank.getPrefix().replace(" ", "");
+		name = name.substring(0, name.length() - 2);
+		return name;
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		Scoreboard scoreboard = player.getScoreboard();
+		for(Ranks rank : Ranks.values()) {
+			Team team = scoreboard.registerNewTeam(getName(rank));
+			team.setPrefix(rank.getColor()+"");
+		}
 		set(event.getPlayer());
 	}
 	
