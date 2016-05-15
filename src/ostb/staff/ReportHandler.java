@@ -60,103 +60,7 @@ public class ReportHandler implements Listener {
                             MessageHandler.sendPlayersOnly(sender);
                             return;
                         }
-                        if(option.equalsIgnoreCase("create")) {
-                            Plugins plugin = OSTB.getPlugin();
-                            MiniGame game = OSTB.getMiniGame();
-                            if(plugin == Plugins.HUB) {
-                                MessageHandler.sendMessage(player, "&cYou cannot create a report on this server");
-                                return;
-                            } else if(game != null && game.getGameState() != GameStates.STARTING && game.getGameState() != GameStates.STARTED) {
-                                MessageHandler.sendMessage(player, "&cYou cannot create a report before the game starts or is starting");
-                                return;
-                            }
-                            if(arguments.length == 3 || arguments.length == 4) {
-                                String name = arguments[1];
-                                Player target = ProPlugin.getPlayer(name);
-                                if(name.equalsIgnoreCase(sender.getName()) && target != null && !Ranks.OWNER.hasRank(target)) {
-                                    MessageHandler.sendMessage(player, "&cYou cannot report yourself");
-                                } else if(target != null && Ranks.isStaff(target) && !Ranks.OWNER.hasRank(target)) {
-                                    MessageHandler.sendMessage(player, "&cYou cannot report a staff this way, please report staff here:");
-                                    MessageHandler.sendMessage(player, "http://forum.promcgames.com/forums/complaints-about-staff.12/");
-                                } else {
-                                    if(player != null && DB.STAFF_REPORTS.isKeySet(new String [] {"uuid", "opened"}, new String [] {player.getUniqueId().toString(), "1"})) {
-                                        MessageHandler.sendMessage(player, "&cYou already have an open report deployed.");
-                                        return;
-                                    }
-                                    UUID uuid = AccountHandler.getUUID(name);
-                                    if(uuid == null) {
-                                        MessageHandler.sendMessage(sender, "&c" + arguments[0] + " has never logged in before");
-                                    } else {
-                                        try {
-                                            ReportReasons reason = ReportReasons.valueOf(arguments[2].toUpperCase());
-                                            if(reason == ReportReasons.CHAT_FILTER_DETECTION && sender instanceof Player) {
-                                                MessageHandler.sendMessage(sender, "&cPlayers cannot create a report for this reason");
-                                                return;
-                                            }
-                                            String proof = (arguments.length == 4 ? arguments[3] : "none");
-                                            if(proof.equals("none")) {
-                                                if(reason == ReportReasons.CHAT_VIOLATION) {
-                                                    MessageHandler.sendMessage(sender, "&cYou must attach proof for chat violations");
-                                                    return;
-                                                } else if(target == null) {
-                                                    MessageHandler.sendMessage(sender, "&cYou must attach proof for reports of offline players");
-                                                    return;
-                                                }
-                                            } else {
-                                                if(reason != ReportReasons.CHAT_FILTER_DETECTION && !Pattern.compile("http[s]{0,1}://[a-zA-Z0-9\\./\\?=_%&#-+$@'\"\\|,!*]*").matcher(proof).find()) {
-                                                    MessageHandler.sendMessage(sender, "&cYour proof must be a URL to a FULL SCREEN screen shot");
-                                                    return;
-                                                } else if(proof.contains("gyazo.com")) {
-                                                    MessageHandler.sendMessage(sender, "&cGyazo links cannot be used as proof");
-                                                    return;
-                                                } else if(reason == ReportReasons.CHEATING || reason == ReportReasons.FAST_BOW) {
-                                                    if(!proof.toLowerCase().contains("youtube.com/") && !proof.toLowerCase().contains("youtu.be/")) {
-                                                        MessageHandler.sendMessage(sender, "&cYour proof must be a youtube URL");
-                                                        return;
-                                                    }
-                                                    if(proof.contains("&")) {
-                                                        proof = proof.split("&")[0];
-                                                    }
-                                                }
-                                            }
-                                            String reportingUUID = "CONSOLE";
-                                            if(player != null) {
-                                                reportingUUID = player.getUniqueId().toString();
-                                            }
-                                            DB.STAFF_REPORTS.insert("'" + reportingUUID + "', '" + uuid.toString() + "', '" + null + "', '" + reason.toString() + "', '" + null + "', '" + null + "', '" + PlaytimeTracker.getPlayTime(target).getDisplay(TimeType.LIFETIME) + "', '" + proof + "', '" + TimeUtil.getTime() + "', '" + null + "', '" + null + "', '1'");
-                                            String staffUUID = "CONSOLE";
-                                            if(player != null) {
-                                                staffUUID = player.getUniqueId().toString();
-                                            }
-                                            String [] keys = new String [] {"reported_uuid", "uuid", "opened"};
-                                            String [] values = new String [] {target.getUniqueId().toString(), staffUUID, "1"};
-                                            int id = DB.STAFF_REPORTS.getInt(keys, values, "id");
-                                            MessageHandler.sendMessage(sender, "Your report has been created (ID# " + id + ")! Staff will be notified of it every 10 seconds until it is closed. Thank you for the report!");
-                                            if(reason == ReportReasons.CHEATING || reason == ReportReasons.FAST_BOW) {
-                                                if(reportIDs == null) {
-                                                    reportIDs = new HashMap<String, List<Integer>>();
-                                                }
-                                                List<Integer> ints = reportIDs.get(target.getName());
-                                                if(ints == null) {
-                                                    ints = new ArrayList<Integer>();
-                                                }
-                                                ints.add(id);
-                                                reportIDs.put(target.getName(), ints);
-                                            }
-                                        } catch(IllegalArgumentException e) {
-                                            MessageHandler.sendMessage(sender, "&c\"" + arguments[2] + "\" is an unknown report reason, use one of the following:");
-                                            String reasons = "";
-                                            for(ReportReasons reason : ReportReasons.values()) {
-                                                reasons += "&a" + reason + "&e, ";
-                                            }
-                                            MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
-                                        }
-                                    }
-                                }
-                            } else {
-                                MessageHandler.sendMessage(player, "&f/report <player name> [proof]");
-                            }
-                        } else if(option.equalsIgnoreCase("view")) {
+                        if(option.equalsIgnoreCase("view")) {
                             if(arguments.length == 2 && arguments[1].equalsIgnoreCase("open")) {
                                 if(Ranks.isStaff(sender)) {
                                     if(openReports == null || openReports.isEmpty()) {
@@ -266,7 +170,103 @@ public class ReportHandler implements Listener {
                                 MessageHandler.sendMessage(player, Ranks.TRIAL.getNoPermission());
                             }
                         } else {
-                            if(arguments.length == 2) {
+                        	Plugins plugin = OSTB.getPlugin();
+                            MiniGame game = OSTB.getMiniGame();
+                            if(plugin == Plugins.HUB) {
+                                MessageHandler.sendMessage(player, "&cYou cannot create a report on this server");
+                                return;
+                            } else if(game != null && game.getGameState() != GameStates.STARTING && game.getGameState() != GameStates.STARTED) {
+                                MessageHandler.sendMessage(player, "&cYou cannot create a report before the game starts or is starting");
+                                return;
+                            }
+                            if(arguments.length == 1 || arguments.length == 2) {
+                                String name = arguments[0];
+                                Player target = ProPlugin.getPlayer(name);
+                                if(name.equalsIgnoreCase(sender.getName()) && target != null && !Ranks.OWNER.hasRank(target)) {
+                                    MessageHandler.sendMessage(player, "&cYou cannot report yourself");
+                                } else if(target != null && Ranks.isStaff(target) && !Ranks.OWNER.hasRank(target)) {
+                                    MessageHandler.sendMessage(player, "&cYou cannot report a staff this way, please report staff here:");
+                                    MessageHandler.sendMessage(player, "http://forum.promcgames.com/forums/complaints-about-staff.12/");
+                                } else {
+                                    if(player != null && DB.STAFF_REPORTS.isKeySet(new String [] {"uuid", "opened"}, new String [] {player.getUniqueId().toString(), "1"})) {
+                                        MessageHandler.sendMessage(player, "&cYou already have an open report deployed.");
+                                        return;
+                                    }
+                                    UUID uuid = AccountHandler.getUUID(name);
+                                    if(uuid == null) {
+                                        MessageHandler.sendMessage(sender, "&c" + name + " has never logged in before");
+                                    } else {
+                                        try {
+                                        	String reasonString = arguments.length == 2 ? arguments[2] : "CHEATING";
+                                            ReportReasons reason = ReportReasons.valueOf(reasonString.toUpperCase());
+                                            if(reason == ReportReasons.CHAT_FILTER_DETECTION && sender instanceof Player) {
+                                                MessageHandler.sendMessage(sender, "&cPlayers cannot create a report for this reason");
+                                                return;
+                                            }
+                                            String proof = (arguments.length == 3 ? arguments[2] : "none");
+                                            if(proof.equals("none")) {
+                                                if(reason == ReportReasons.CHAT_VIOLATION) {
+                                                    MessageHandler.sendMessage(sender, "&cYou must attach proof for chat violations");
+                                                    return;
+                                                } else if(target == null) {
+                                                    MessageHandler.sendMessage(sender, "&cYou must attach proof for reports of offline players");
+                                                    return;
+                                                }
+                                            } else {
+                                                if(reason != ReportReasons.CHAT_FILTER_DETECTION && !Pattern.compile("http[s]{0,1}://[a-zA-Z0-9\\./\\?=_%&#-+$@'\"\\|,!*]*").matcher(proof).find()) {
+                                                    MessageHandler.sendMessage(sender, "&cYour proof must be a URL to a FULL SCREEN screen shot");
+                                                    return;
+                                                } else if(proof.contains("gyazo.com")) {
+                                                    MessageHandler.sendMessage(sender, "&cGyazo links cannot be used as proof");
+                                                    return;
+                                                } else if(reason == ReportReasons.CHEATING || reason == ReportReasons.FAST_BOW) {
+                                                    if(!proof.toLowerCase().contains("youtube.com/") && !proof.toLowerCase().contains("youtu.be/")) {
+                                                        MessageHandler.sendMessage(sender, "&cYour proof must be a youtube URL");
+                                                        return;
+                                                    }
+                                                    if(proof.contains("&")) {
+                                                        proof = proof.split("&")[0];
+                                                    }
+                                                }
+                                            }
+                                            String reportingUUID = "CONSOLE";
+                                            if(player != null) {
+                                                reportingUUID = player.getUniqueId().toString();
+                                            }
+                                            DB.STAFF_REPORTS.insert("'" + reportingUUID + "', '" + uuid.toString() + "', '" + null + "', '" + reason.toString() + "', '" + null + "', '" + null + "', '" + PlaytimeTracker.getPlayTime(target).getDisplay(TimeType.LIFETIME) + "', '" + proof + "', '" + TimeUtil.getTime() + "', '" + null + "', '" + null + "', '1'");
+                                            String staffUUID = "CONSOLE";
+                                            if(player != null) {
+                                                staffUUID = player.getUniqueId().toString();
+                                            }
+                                            String [] keys = new String [] {"reported_uuid", "uuid", "opened"};
+                                            String [] values = new String [] {target.getUniqueId().toString(), staffUUID, "1"};
+                                            int id = DB.STAFF_REPORTS.getInt(keys, values, "id");
+                                            MessageHandler.sendMessage(sender, "Your report has been created (ID# " + id + ")! Staff will be notified of it every 10 seconds until it is closed. Thank you for the report!");
+                                            if(reason == ReportReasons.CHEATING || reason == ReportReasons.FAST_BOW) {
+                                                if(reportIDs == null) {
+                                                    reportIDs = new HashMap<String, List<Integer>>();
+                                                }
+                                                List<Integer> ints = reportIDs.get(target.getName());
+                                                if(ints == null) {
+                                                    ints = new ArrayList<Integer>();
+                                                }
+                                                ints.add(id);
+                                                reportIDs.put(target.getName(), ints);
+                                            }
+                                        } catch(IllegalArgumentException e) {
+                                            MessageHandler.sendMessage(sender, "&c\"" + arguments[1] + "\" is an unknown report reason, use one of the following:");
+                                            String reasons = "";
+                                            for(ReportReasons reason : ReportReasons.values()) {
+                                                reasons += "&a" + reason + "&e, ";
+                                            }
+                                            MessageHandler.sendMessage(sender, reasons.substring(0, reasons.length() - 2));
+                                        }
+                                    }
+                                }
+                            } else {
+                                MessageHandler.sendMessage(player, "&f/report <name> [proof]");
+                            }
+                            /*if(arguments.length == 2) {
                                 if(arguments[1].equalsIgnoreCase("players")) {
                                     MessageHandler.sendLine(player);
                                     MessageHandler.sendMessage(player, "Report Commands:");
@@ -289,7 +289,7 @@ public class ReportHandler implements Listener {
                             }
                             MessageHandler.sendMessage(player, "You must specify player or staff commands, examples:");
                             MessageHandler.sendMessage(player, "/report commands players");
-                            MessageHandler.sendMessage(player, "/report commands staff");
+                            MessageHandler.sendMessage(player, "/report commands staff");*/
                         }
                     }
                 });
@@ -444,7 +444,7 @@ public class ReportHandler implements Listener {
             ResultSet resultSet = null;
             DB table = DB.STAFF_REPORTS;
             try {
-                resultSet = table.getConnection().prepareStatement("SELECT * FROM " + table.getName() + " WHERE id = '" + id + "'").executeQuery();
+                resultSet = table.getConnection().prepareStatement("SELECT * FROM " + table.getName() + " WHERE id = '" + id + "' LIMIT 1").executeQuery();
                 while (resultSet.next()) {
                     reportedUUID = UUID.fromString(resultSet.getString("reported_uuid"));
                     reported = AccountHandler.getName(reportedUUID);
@@ -470,7 +470,11 @@ public class ReportHandler implements Listener {
                                 reportIDs.put(reported, ints);
                             }
                         }
-                        playTime = resultSet.getString("play_time");
+                        int days = DB.PLAYERS_LIFETIME_PLAYTIME.getInt("uuid", reportedUUID.toString(), "days");
+                        int hours = DB.PLAYERS_LIFETIME_PLAYTIME.getInt("uuid", reportedUUID.toString(), "hours");
+                        int minutes = DB.PLAYERS_LIFETIME_PLAYTIME.getInt("uuid", reportedUUID.toString(), "minutes");
+                        int seconds = DB.PLAYERS_LIFETIME_PLAYTIME.getInt("uuid", reportedUUID.toString(), "seconds");
+                        playTime = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
                         proof = resultSet.getString("proof");
                     } catch(IllegalArgumentException e) {
 
@@ -489,9 +493,8 @@ public class ReportHandler implements Listener {
                 MessageHandler.sendLine(player, "&e");
                 MessageHandler.sendMessage(player, "&eReport ID #&b" + id + " &eby &b" + reporting + " &efor &b" + reason.toString().replace("_", " "));
                 MessageHandler.sendMessage(player, "&eReported: &2" + reported + " &eplaytime: &b" + playTime);
-                String actualServer = server.split(ChatColor.RED.toString())[1];
-                ChatClickHandler.sendMessageToRunCommand(player, " &c&lCLICK TO JOIN " + actualServer, "Click to teleport to " + actualServer, "/join " + actualServer, "&eCurrent location: &b" + actualServer);
-                if(!proof.equals("none")) {
+                ChatClickHandler.sendMessageToRunCommand(player, " &c&lCLICK TO JOIN " + server, "Click to teleport to " + server, "/join " + server, "&eCurrent location: &b" + server);
+                if(proof != null && !proof.equals("none")) {
                     MessageHandler.sendMessage(player, "&eProof: &b" + proof.replace("_", " "));
                 }
                 if(Ranks.isStaff(player)) {

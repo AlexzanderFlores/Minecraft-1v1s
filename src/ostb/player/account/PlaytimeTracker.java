@@ -72,7 +72,9 @@ public class PlaytimeTracker implements Listener {
 				setSeconds(0, TimeType.WEEKLY);
 			}
 			Player player = Bukkit.getPlayer(uuid);
-			Bukkit.getPluginManager().callEvent(new PlaytimeLoadedEvent(player));
+			if(player != null) {
+				Bukkit.getPluginManager().callEvent(new PlaytimeLoadedEvent(player));
+			}
 		}
 		
 		public void setPlayTime(UUID uuid, DB db, TimeType type) {
