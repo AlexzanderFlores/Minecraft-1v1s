@@ -121,10 +121,8 @@ public enum DB {
 	STAFF_MUTE_PROOF("id INT NOT NULL AUTO_INCREMENT, mute_id INT, proof VARCHAR(100), PRIMARY KEY(id)"),
 	STAFF_BAN("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unbanned VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unban_date VARCHAR(10), unban_time VARCHAR(25), day INT, active INT, PRIMARY KEY(id)"),
 	STAFF_BAN_PROOF("id INT NOT NULL AUTO_INCREMENT, ban_id INT, proof VARCHAR(100), PRIMARY KEY(id)"),
-	STAFF_REPORTS("id INT NOT NULL AUTO_INCREMENT, reporting VARCHAR(40), uuid VARCHAR(40), text VARCHAR(250), time VARCHAR(25), PRIMARY KEY(id)"),
-	STAFF_CLOSED_REPORTS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date_closed VARCHAR(10), amount INT, PRIMARY KEY(id)"),
-	STAFF_TICKETS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), reported_uuid VARCHAR(40), staff_uuid VARCHAR(40), reason VARCHAR(100), reason_closed VARCHAR(30), comments VARCHAR(100), playtime VARCHAR(40), proof VARCHAR(100), time_opened VARCHAR(25), date_closed VARCHAR(10), time_closed VARCHAR(25), opened BOOL, PRIMARY KEY(id)"),
-	STAFF_TICKETS_CLOSED("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date_closed VARCHAR(10), amount INT, PRIMARY KEY(id)"),
+	STAFF_REPORTS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), reported_uuid VARCHAR(40), staff_uuid VARCHAR(40), reason VARCHAR(100), reason_closed VARCHAR(30), comments VARCHAR(100), playtime VARCHAR(40), proof VARCHAR(100), time_opened VARCHAR(25), date_closed VARCHAR(10), time_closed VARCHAR(25), opened BOOL, PRIMARY KEY(id)"),
+	STAFF_REPORTS_CLOSED("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date_closed VARCHAR(10), amount INT, PRIMARY KEY(id)"),
 	STAFF_COMMANDS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), time VARCHAR(25), command VARCHAR(250), PRIMARY KEY(id)");
 	
 	private String table = null;
