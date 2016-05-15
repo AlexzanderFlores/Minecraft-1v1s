@@ -45,8 +45,16 @@ public class TeamScoreboardHandler implements Listener {
 		Ranks pRank = AccountHandler.getRank(player);
 		for(Player online : Bukkit.getOnlinePlayers()) {
 			Ranks oRank = AccountHandler.getRank(online);
-			online.getScoreboard().getTeam(getName(pRank)).addPlayer(player);
-			player.getScoreboard().getTeam(getName(oRank)).addPlayer(online);
+			try {
+				online.getScoreboard().getTeam(getName(pRank)).addPlayer(player);
+			} catch(NullPointerException e) {
+				
+			}
+			try {
+				player.getScoreboard().getTeam(getName(oRank)).addPlayer(online);
+			} catch(NullPointerException e) {
+				
+			}
 		}
 	}
 	

@@ -756,12 +756,12 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		Player player = event.getPlayer();
 		if(event.getResult() == Result.KICK_FULL) {
 			if(AccountHandler.getRank(player) == Ranks.PLAYER) {
-				event.setKickMessage(ChatColor.YELLOW + "Server is full, ranks allow you to join full servers; " + ChatColor.AQUA + "/store");
+				event.setKickMessage(ChatColor.YELLOW + "Server is full, ranks allow you to join full servers; " + ChatColor.AQUA + "/buy");
 			} else {
-				event.setKickMessage(ChatColor.YELLOW + "Server is full, ranks allow you to join full servers; " + ChatColor.AQUA + "/store");
+				event.setKickMessage(ChatColor.YELLOW + "Server is full, ranks allow you to join full servers; " + ChatColor.AQUA + "/buy");
 			}
 		} else if(getBeta() && !Ranks.PREMIUM.hasRank(player)) {
-			event.setKickMessage(ChatColor.YELLOW + "Server is currently in BETA mode, ranks allow you to join beta servers; " + ChatColor.AQUA + "/store");
+			event.setKickMessage(ChatColor.YELLOW + "Server is currently in BETA mode, ranks allow you to join beta servers; " + ChatColor.AQUA + "/buy");
 			event.setResult(Result.KICK_OTHER);
 		}
 	}

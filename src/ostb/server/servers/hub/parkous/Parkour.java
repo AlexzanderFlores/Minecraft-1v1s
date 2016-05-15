@@ -37,8 +37,6 @@ import npc.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
-import ostb.customevents.player.AsyncPlayerJoinEvent;
-import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.player.MessageHandler;
@@ -50,6 +48,7 @@ import ostb.server.servers.hub.Events;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.servers.hub.ParkourNPC;
 import ostb.server.servers.hub.parkous.ParkourStartEvent.ParkourTypes;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.CircleUtil;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EffectUtil;
@@ -195,7 +194,7 @@ public class Parkour implements Listener {
 		}
 	}
 	
-	private void start(Player player) {
+	private void start(final Player player) {
 		if(!players.contains(player.getName())) {
 			Bukkit.getPluginManager().callEvent(new ParkourStartEvent(player, ParkourTypes.COURSE));
 			players.add(player.getName());
@@ -209,30 +208,46 @@ public class Parkour implements Listener {
 			player.getInventory().setItem(8, exitParkour);
 			Events.removeSidebar(player);
 			timers.put(player.getName(), new CountDownUtil());
-			SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aParkour ") {
+			new AsyncDelayedTask(new Runnable() {
 				@Override
-				public void update(Player player) {
-					removeScore(5);
-					removeScore(2);
-					setText(new String [] {
-						" ",
-						"&eCheckpoints",
-						"&b" + (checkpointPasses.containsKey(player.getName()) ? checkpointPasses.get(player.getName()) : 0),
-						"  ",
-						"&eTime",
-						timers.get(player.getName()).getCounterAsString(ChatColor.AQUA),
-						"   "
+				public void run() {
+					int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", player.getUniqueId().toString(), "amount");
+					if(amount > 0) {
+						checkpointPasses.put(player.getName(), amount);
+					} else {
+						MessageHandler.sendMessage(player, "&cYou have no checkpoints, get more with &a/vote");
+					}
+					new DelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aParkour ") {
+								@Override
+								public void update(Player player) {
+									removeScore(5);
+									removeScore(2);
+									setText(new String [] {
+										" ",
+										"&eCheckpoints",
+										"&b" + (checkpointPasses.containsKey(player.getName()) ? checkpointPasses.get(player.getName()) : 0),
+										"  ",
+										"&eTime",
+										timers.get(player.getName()).getCounterAsString(ChatColor.AQUA),
+										"   "
+									});
+								}
+							};
+							scoreboards.put(player.getName(), sidebar);
+							player.setScoreboard(sidebar.getScoreboard());
+							sidebar.update(player);
+						}
 					});
 				}
-			};
-			scoreboards.put(player.getName(), sidebar);
-			player.setScoreboard(sidebar.getScoreboard());
-			sidebar.update(player);
+			});
 		}
 	}
 	
-	private void remove(Player player, boolean teleport) {
-		String name = player.getName();
+	private void remove(final Player player, boolean teleport) {
+		final String name = player.getName();
 		if(players.contains(name)) {
 			players.remove(name);
 			if(teleport) {
@@ -247,6 +262,36 @@ public class Parkour implements Listener {
 				scoreboards.remove(name);
 				Events.giveSidebar(player);
 			}
+			final UUID uuid = player.getUniqueId();
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					if(checkpointPasses.containsKey(name)) {
+						DB.HUB_PARKOUR_CHECKPOINTS.updateInt("amount", checkpointPasses.get(name), "uuid", uuid.toString());
+						checkpointPasses.remove(name);
+					}
+					if(checkpoints.containsKey(name)) {
+						if(Ranks.PREMIUM.hasRank(player)) {
+							Location location = checkpoints.get(name);
+							double x = location.getBlockX() + .5;
+							double y = location.getBlockY() + .5;
+							double z = location.getBlockZ() + .5;
+							double yaw = (double) ((int) location.getYaw());
+							double pitch = (double) ((int) location.getPitch());
+							if(DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.isUUIDSet(uuid)) {
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("x", x, "uuid", uuid.toString());
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("y", y, "uuid", uuid.toString());
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("z", z, "uuid", uuid.toString());
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("yaw", yaw, "uuid", uuid.toString());
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("pitch", pitch, "uuid", uuid.toString());
+							} else {
+								DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.insert("'" + uuid.toString() + "', '" + x + "', '" + y + "', '" + z + "', '" + yaw + "', '" + pitch + "'");
+							}
+						}
+						checkpoints.remove(name);
+					}
+				}
+			});
 		}
 	}
 	
@@ -411,45 +456,6 @@ public class Parkour implements Listener {
 		timers.remove(player);
 		if(!Ranks.PREMIUM.hasRank(player)) {
 			checkpoints.remove(player.getName());
-		}
-	}
-	
-	@EventHandler
-	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", player.getUniqueId().toString(), "amount");
-		if(amount > 0) {
-			checkpointPasses.put(player.getName(), amount);
-		} else {
-			MessageHandler.sendMessage(player, "&cYou have no checkpoints, get more with &a/vote");
-		}
-	}
-	
-	@EventHandler
-	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
-		String name = event.getName();
-		UUID uuid = event.getUUID();
-		if(checkpointPasses.containsKey(name)) {
-			DB.HUB_PARKOUR_CHECKPOINTS.updateInt("amount", checkpointPasses.get(name), "uuid", uuid.toString());
-			checkpointPasses.remove(name);
-		}
-		if(checkpoints.containsKey(name)) {
-			Location location = checkpoints.get(name);
-			double x = location.getBlockX() + .5;
-			double y = location.getBlockY() + .5;
-			double z = location.getBlockZ() + .5;
-			double yaw = (double) ((int) location.getYaw());
-			double pitch = (double) ((int) location.getPitch());
-			if(DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.isUUIDSet(uuid)) {
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("x", x, "uuid", uuid.toString());
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("y", y, "uuid", uuid.toString());
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("z", z, "uuid", uuid.toString());
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("yaw", yaw, "uuid", uuid.toString());
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.updateDouble("pitch", pitch, "uuid", uuid.toString());
-			} else {
-				DB.HUB_PARKOUR_CHECKPOINT_LOCATIONS.insert("'" + uuid.toString() + "', '" + x + "', '" + y + "', '" + z + "', '" + yaw + "', '" + pitch + "'");
-			}
-			checkpoints.remove(name);
 		}
 	}
 }
