@@ -79,6 +79,7 @@ public class SkyWarsShop extends ShopBase {
 		} else {
 			setBackItem(player, inventory);
 			setNextItem(player, inventory);
+			updateCoinsItem(player, inventory);
 		}
 		String type = "";
 		String subType = "";

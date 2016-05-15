@@ -71,6 +71,7 @@ public class SpeedUHCShop extends ShopBase {
 		} else {
 			setBackItem(player, inventory);
 			setNextItem(player, inventory);
+			updateCoinsItem(player, inventory);
 		}
 		String type = "";
 		if(page == 1) {

@@ -99,7 +99,8 @@ public abstract class ShopBase implements Listener {
 	}
 	
 	public void updateCoinsItem(Player player, Inventory inventory) {
-		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
+		int offset = OSTB.getPlugin() == Plugins.HUB ? 4 : 5;
+		inventory.setItem(inventory.getSize() - offset, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
 	}
 	
 	public void openShop(Player player) {
