@@ -28,6 +28,7 @@ public class WorldHandler implements Listener {
 	private static boolean shrink = false;
 	private static File [] files = null;
 	private static int index = 0;
+	private static int oldRadius = 0;
 	
 	public WorldHandler() {
 		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
@@ -54,10 +55,13 @@ public class WorldHandler implements Listener {
 	
 	public static void setBorder() {
 		int r = ((int) radius) / 2;
-		OSTB.getSidebar().removeScore(11);
-		OSTB.getSidebar().setText("     ", 13);
-		OSTB.getSidebar().setText("&eBorder", 12);
-		OSTB.getSidebar().setText("&b" + r + "x" + r, 11);
+		if(oldRadius != r) {
+			oldRadius = r;
+			OSTB.getSidebar().removeScore(11);
+			OSTB.getSidebar().setText("     ", 13);
+			OSTB.getSidebar().setText("&eBorder", 12);
+			OSTB.getSidebar().setText("&b" + r + "x" + r, 11);
+		}
 		try {
 			world.getWorldBorder().setSize(radius);
 		} catch(Exception e) {
@@ -101,8 +105,8 @@ public class WorldHandler implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20 && shrink) {
-			radius -= 2.5;
+		if(ticks == 1 && shrink) {
+			radius -= 0.125;
 			setBorder();
 		}
 	}

@@ -23,7 +23,7 @@ public class AntiCheat implements Listener {
 				if(name == null) {
 					name = AccountHandler.getName(event.getUUID());
 				}
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + name + " cheating");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + name + " " + event.getReason());
 			}
 		});
 	}

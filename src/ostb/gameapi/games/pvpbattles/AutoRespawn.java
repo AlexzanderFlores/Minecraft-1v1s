@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import anticheat.util.AsyncDelayedTask;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.TitleDisplayer;
 import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
 public class AutoRespawn implements Listener {

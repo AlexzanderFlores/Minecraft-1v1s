@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
-import anticheat.util.AsyncDelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
@@ -40,6 +39,7 @@ import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
@@ -104,7 +104,7 @@ public class Events implements Listener {
 			MiniGame game = OSTB.getMiniGame();
 			if(game.getGameState() == GameStates.STARTED) {
 				int counter = game.getCounter() + 1;
-				if(counter <= 0) {
+				if(counter <= 1) {
 					MessageHandler.alert("&cPVP is now &eenabled");
 					game.setAllowEntityDamage(true);
 					game.setAllowEntityDamageByEntities(true);
