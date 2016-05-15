@@ -17,6 +17,9 @@ commands:
   buy:
     usage: /buy
 
+  coins:
+    usage: /coins [name]
+
   elo:
     usage: /elo [name]
 

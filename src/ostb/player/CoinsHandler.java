@@ -16,12 +16,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
+import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.CoinGiveEvent;
 import ostb.customevents.player.CoinUpdateEvent;
+import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -76,6 +78,43 @@ public class CoinsHandler implements Listener {
 					return true;
 				}
 			}.setRequiredRank(Ranks.OWNER);
+			new CommandBase("coins", 0, 1) {
+				@Override
+				public boolean execute(CommandSender sender, String [] arguments) {
+					if(OSTB.getPlugin() == Plugins.HUB) {
+						MessageHandler.sendMessage(sender, "&cYou can only use this command in-game");
+					} else {
+						Player target = null;
+						if(arguments.length == 0) {
+							if(sender instanceof Player) {
+								target = (Player) sender;
+							} else {
+								MessageHandler.sendPlayersOnly(sender);
+								return true;
+							}
+						} else if(arguments.length == 1) {
+							if(Ranks.PREMIUM.hasRank(sender)) {
+								target = ProPlugin.getPlayer(arguments[0]);
+								if(target == null) {
+									MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
+									return true;
+								}
+							} else {
+								MessageHandler.sendMessage(sender, Ranks.PREMIUM.getNoPermission());
+								return true;
+							}
+						}
+						Plugins plugin = OSTB.getPlugin();
+						CoinsHandler coinsHandler = getCoinsHandler(plugin.getData());
+						if(coinsHandler == null) {
+							MessageHandler.sendMessage(sender, "&cError on loading the coins handler for \"" + plugin.getData() + "\"");
+						} else {
+							MessageHandler.sendMessage(sender, AccountHandler.getPrefix(target) + " &xhas &e" + coinsHandler.getCoins(target) + " &xcoins in " + plugin.getDisplay());
+						}
+					}
+					return true;
+				}
+			};
 			EventUtil.register(this);
 		}
 	}
