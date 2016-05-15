@@ -1,26 +1,26 @@
 package ostb.gameapi.games.skywars.kits;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
-import ostb.customevents.TimeEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ItemCreator;
@@ -30,7 +30,6 @@ public class Ninja extends KitBase {
 	private static final int amount = 10;
 	private static boolean enabled = false;
 	private List<String> delayed = null;
-	private List<Item> stars = null;
 	private static final long delay = 5;
 	private Random random = null;
 	
@@ -64,7 +63,6 @@ public class Ninja extends KitBase {
 			player.getInventory().addItem(new ItemCreator(Material.NETHER_STAR).setAmount(amount).setName("&fThrowing Star").getItemStack());
 		}
 		delayed = new ArrayList<String>();
-		stars = new ArrayList<Item>();
 		random = new Random();
 		enabled = true;
 	}
@@ -89,10 +87,8 @@ public class Ninja extends KitBase {
 				}, delay);
 				ItemStack itemStack = player.getItemInHand();
 				if(itemStack != null && itemStack.getType() == Material.NETHER_STAR) {
-					Location location = player.getLocation().add(0, 1.5, 0).add(player.getLocation().getDirection().multiply(1.5d));
-					Item star = player.getWorld().dropItem(location, new ItemStack(Material.NETHER_STAR));
-					star.setVelocity(player.getLocation().getDirection().multiply(2.0d));
-					stars.add(star);
+					Snowball snowball = player.launchProjectile(Snowball.class);
+					snowball.setCustomNameVisible(true);
 					int amount = itemStack.getAmount() - 1;
 					if(amount <= 0) {
 						player.setItemInHand(new ItemStack(Material.AIR));
@@ -105,27 +101,15 @@ public class Ninja extends KitBase {
 	}
 	
 	@EventHandler
-	public void onTime(TimeEvent event) {
-		long ticks = event.getTicks();
-		if(ticks == 1 && enabled) {
-			Iterator<Item> iterator = stars.iterator();
-			while(iterator.hasNext()) {
-				Item item = iterator.next();
-				if(item.isOnGround() || item.getLocation().getY() <= 0) {
-					item.remove();
-					iterator.remove();
-				} else {
-					for(Entity near : item.getNearbyEntities(0.5, 0.5, 0.5)) {
-						if(near instanceof Player) {
-							Player nearPlayer = (Player) near;
-							if(random.nextBoolean()) {
-								nearPlayer.damage(1.0d);
-							} else {
-								nearPlayer.damage(0.0d);
-							}
-							nearPlayer.setVelocity(item.getVelocity().multiply(.50d));
-						}
-					}
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if(enabled && event.getEntity() instanceof Player && event.getDamager() instanceof Projectile) {
+			Projectile projectile = (Projectile) event.getDamager();
+			if(projectile.getShooter() instanceof Player) {
+				Player shooter = (Player) projectile.getShooter();
+				if(has(shooter) && random.nextBoolean()) {
+					event.setDamage(1);
+					Player player = (Player) event.getEntity();
+					MessageHandler.sendMessage(player, "&cYou have been hit with " + AccountHandler.getPrefix(shooter) + "&x's throwing star");
 				}
 			}
 		}
