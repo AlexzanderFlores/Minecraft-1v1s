@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB.Plugins;
 import ostb.gameapi.kit.KitBase;
-import ostb.gameapi.shops.SkyWarsShop;
+import ostb.gameapi.shops.SpeedUHCShop;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.UnicodeUtil;
@@ -30,7 +30,7 @@ public class Miner extends KitBase {
 
 	@Override
 	public String getPermission() {
-		return ChatColor.stripColor(SkyWarsShop.getInstance().getPermission() + getName().toLowerCase());
+		return ChatColor.stripColor(SpeedUHCShop.getInstance().getPermission() + getName().toLowerCase());
 	}
 
 	@Override
