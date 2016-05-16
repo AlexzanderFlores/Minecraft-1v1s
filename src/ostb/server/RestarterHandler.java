@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -102,13 +103,9 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 				}
 			}
 		} else if(ticks == 20 * 5) {
-			if(PerformanceHandler.getMemory() >= 70 && !running && OSTB.getMiniGame() == null) {
+			if(PerformanceHandler.getMemory() >= 70 && !running && OSTB.getMiniGame() == null && OSTB.getPlugin() != Plugins.PREGEN) {
 				setCounter(60);
 				running = true;
-			}
-		} else if(ticks == 20 * 60 * 5) {
-			if(Bukkit.getOnlinePlayers().isEmpty() && OSTB.getMiniGame() != null) {
-				ProPlugin.restartServer();
 			}
 		}
 	}

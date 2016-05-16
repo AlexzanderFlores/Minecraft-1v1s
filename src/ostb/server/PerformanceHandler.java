@@ -186,13 +186,6 @@ public class PerformanceHandler implements Listener {
 			}
 		} else if(ticks == 20) {
 			++uptimeCounter;
-		} else if(ticks == 20 * 10) {
-			for(UUID uuid : constantPing) {
-				Player player = Bukkit.getPlayer(uuid);
-				if(player != null) {
-					player.chat("/ping");
-				}
-			}
 		}
 	}
 }
