@@ -1,4 +1,4 @@
-package ostb.gameapi.games.pvpbattles;
+package ostb.gameapi.games.domination;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,7 +179,7 @@ public class Events implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES.getData());
+				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
 				for(Player player : ProPlugin.getPlayers()) {
 					player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
 					coinsHandler.getCoins(player);
@@ -439,11 +439,7 @@ public class Events implements Listener {
 					}
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				} else if(counter == 4) {
-					if(OSTB.getPlugin() == Plugins.CTF) {
-						MessageHandler.alert(prefix + "Capture the Enemy Flag!");
-					} else if(OSTB.getPlugin() == Plugins.DOM) {
-						MessageHandler.alert(prefix + "Gain control of the Command Posts!");
-					}
+					MessageHandler.alert(prefix + "Gain control of the Command Posts!");
 					MessageHandler.alert("");
 					MessageHandler.alertLine("&e");
 					EffectUtil.playSound(Sound.LEVEL_UP);

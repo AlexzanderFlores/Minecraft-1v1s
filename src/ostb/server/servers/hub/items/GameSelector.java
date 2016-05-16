@@ -235,20 +235,8 @@ public class GameSelector extends HubItemBase {
 	}
 	
 	private void openMenu(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9 * 5, ChatColor.stripColor(getName()));
-		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&bPVP Battles - " + Plugins.CTF.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of Capture the Flag",
-			"",
-			"&eHelp your team capture the enemy's flag!",
-			"&eFirst team to &a3 &ecaptures wins",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.CTF),
-			"&7Team size: &a12 vs 12",
-			""
-		}).getItemStack();
-		items.put(item, Plugins.CTF);
-		inventory.setItem(10, item);
-		item = new ItemCreator(Material.BANNER, 11).setName("&bPVP Battles - " + Plugins.DOM.getDisplay()).setLores(new String [] {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 3, ChatColor.stripColor(getName()));
+		ItemStack item = new ItemCreator(Material.BANNER, 11).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Domination",
 			"",
 			"&eHelp your team capture the command posts!",
@@ -282,28 +270,16 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.SWT);
 		inventory.setItem(16, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHCK.getDisplay()).setLores(new String [] {
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eNatural regeneration is &cOFF",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SUHCK),
-			"&7Kits: &aEnabled",
+			"&7Playing: &a" + getPlayers(Plugins.SUHC),
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SUHCK);
-		inventory.setItem(30, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHCNK.getDisplay()).setAmount(2).setLores(new String [] {
-			"&7Well known game",
-			"",
-			"&eNatural regeneration is &cOFF",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.SUHCNK),
-			"&7Kits: &cDisabled",
-			""
-		}).getItemStack();
-		items.put(item, Plugins.SUHCNK);
-		inventory.setItem(32, item);
+		items.put(item, Plugins.SUHC);
+		inventory.setItem(10, item);
 		ItemUtil.addEnchantGlassPaneIncrement(inventory);
 		player.openInventory(inventory);
 	}

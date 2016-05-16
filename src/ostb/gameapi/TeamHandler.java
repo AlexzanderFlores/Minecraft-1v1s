@@ -28,7 +28,7 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.games.pvpbattles.Ranking;
+import ostb.gameapi.games.domination.Ranking;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;

@@ -1,4 +1,4 @@
-package ostb.gameapi.games.pvpbattles;
+package ostb.gameapi.games.domination;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,8 +44,8 @@ public class AutoRespawn implements Listener {
 			public void run() {
 				for(Player player : ProPlugin.getPlayers()) {
 					UUID uuid = player.getUniqueId();
-					if(DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.isUUIDSet(uuid)) {
-						passes.put(player.getName(), DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.getInt("uuid", uuid.toString(), "amount"));
+					if(DB.PLAYERS_DOMINATION_AUTO_RESPAWN.isUUIDSet(uuid)) {
+						passes.put(player.getName(), DB.PLAYERS_DOMINATION_AUTO_RESPAWN.getInt("uuid", uuid.toString(), "amount"));
 					}
 				}
 			}
@@ -57,7 +57,7 @@ public class AutoRespawn implements Listener {
 		String name = event.getName();
 		if(passes.containsKey(name)) {
 			UUID uuid = event.getUUID();
-			DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.updateInt("amount", passes.get(name), "uuid", uuid.toString());
+			DB.PLAYERS_DOMINATION_AUTO_RESPAWN.updateInt("amount", passes.get(name), "uuid", uuid.toString());
 			passes.remove(name);
 		}
 	}

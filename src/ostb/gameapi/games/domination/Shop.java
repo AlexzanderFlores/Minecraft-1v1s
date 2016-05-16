@@ -1,4 +1,4 @@
-package ostb.gameapi.games.pvpbattles;
+package ostb.gameapi.games.domination;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,7 +75,7 @@ public class Shop implements Listener {
 				inventory.setItem(30, new ItemCreator(Material.EXP_BOTTLE).setName("&bExp Bottle").setLores(new String [] {"", "&7Price: &a3", ""}).getItemStack());
 				inventory.setItem(32, new ItemCreator(Material.WORKBENCH).setName("&bCrafting Table").setLores(new String [] {"", "&7Price: &a10", "&7Click to open", "&7Does &cNOT &7place", ""}).getItemStack());
 				
-				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES.getData()).getItemStack(player));
+				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.DOM.getData()).getItemStack(player));
 				player.openInventory(inventory);
 			}
 		};
@@ -95,13 +95,13 @@ public class Shop implements Listener {
 				return;
 			}
 			int price = Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(1)).split(" ")[1]);
-			CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES.getData());
+			CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
 			if(coinsHandler.getCoins(player) >= price) {
 				coinsHandler.addCoins(player, price * -1);
 				player.getInventory().addItem(item.clone());
 				InventoryView view = player.getOpenInventory();
 				if(view != null) {
-					view.setItem(view.getTopInventory().getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.PVP_BATTLES.getData()).getItemStack(player));
+					view.setItem(view.getTopInventory().getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.DOM.getData()).getItemStack(player));
 				}
 				EffectUtil.playSound(player, Sound.LEVEL_UP);
 			} else {

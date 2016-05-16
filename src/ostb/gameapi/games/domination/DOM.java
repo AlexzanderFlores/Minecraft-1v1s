@@ -1,4 +1,4 @@
-package ostb.gameapi.modes;
+package ostb.gameapi.games.domination;
 
 import java.util.ArrayList;
 import java.util.List;

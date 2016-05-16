@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.shops.SpeedUHCShop;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.util.EffectUtil;
@@ -25,7 +24,6 @@ public class Shop extends HubItemBase {
 		super(new ItemCreator(Material.CHEST).setName("&eShop"), 2);
 		name = ChatColor.stripColor(getName());
 		new SkyWarsShop();
-		new SpeedUHCShop();
 	}
 
 	@Override
@@ -54,8 +52,6 @@ public class Shop extends HubItemBase {
 			EffectUtil.playSound(player, Sound.CHEST_OPEN);
 			if(name.equals("Sky Wars")) {
 				SkyWarsShop.getInstance().openShop(player);
-			} else if(name.equals("Speed UHC")) {
-				SpeedUHCShop.getInstance().openShop(player);
 			}
 			event.setCancelled(true);
 		} else if(title.startsWith("Shop - ")) {
@@ -75,13 +71,7 @@ public class Shop extends HubItemBase {
 			"&7Click to view Shop",
 			""
 		}).getItemStack();
-		inventory.setItem(11, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&bSpeed UHC").setLores(new String [] {
-			"",
-			"&7Click to view Shop",
-			""
-		}).getItemStack();
-		inventory.setItem(15, item);
+		inventory.setItem(13, item);
 		player.openInventory(inventory);
 	}
 }

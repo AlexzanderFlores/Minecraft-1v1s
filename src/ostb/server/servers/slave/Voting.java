@@ -14,7 +14,6 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 
 import ostb.OSTB.Plugins;
 import ostb.gameapi.crates.SkyWarsCrate;
-import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
@@ -37,9 +36,9 @@ public class Voting implements Listener {
 			}
 		};
 		handlers = new ArrayList<CoinsHandler>();
-		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_PVP_BATTLES, Plugins.PVP_BATTLES.getData()));
+		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_DOMINATION, Plugins.DOM.getData()));
 		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW.getData()));
-		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHCK.getData()));
+		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHC.getData()));
 		EventUtil.register(this);
 	}
 	
@@ -114,15 +113,13 @@ public class Voting implements Listener {
 					KeyFragments.give(playerUUID, 1 * multiplier);
 					Bukkit.getLogger().info("voting: giving sky wars key");
 					SkyWarsCrate.giveKey(playerUUID, 1 * multiplier);
-					Bukkit.getLogger().info("voting: giving speed uhc key");
-					SpeedUHCCrate.giveKey(playerUUID, 1 * multiplier);
 					Bukkit.getLogger().info("voting: giving pvp battles auto respawn passes");
 					toAdd = 15 * multiplier;
-					if(DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.isUUIDSet(playerUUID)) {
-						int amount = DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.getInt("uuid", uuid, "amount") + toAdd;
-						DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.updateInt("amount", amount, "uuid", uuid);
+					if(DB.PLAYERS_DOMINATION_AUTO_RESPAWN.isUUIDSet(playerUUID)) {
+						int amount = DB.PLAYERS_DOMINATION_AUTO_RESPAWN.getInt("uuid", uuid, "amount") + toAdd;
+						DB.PLAYERS_DOMINATION_AUTO_RESPAWN.updateInt("amount", amount, "uuid", uuid);
 					} else {
-						DB.PLAYERS_PVP_BATTLES_AUTO_RESPAWN.insert("'" + uuid + "', '" + toAdd + "'");
+						DB.PLAYERS_DOMINATION_AUTO_RESPAWN.insert("'" + uuid + "', '" + toAdd + "'");
 					}
 					Bukkit.getLogger().info("voting: giving speed uhc rescatter passes");
 					toAdd = 1 * multiplier;

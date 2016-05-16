@@ -1,4 +1,4 @@
-package ostb.gameapi.games.pvpbattles;
+package ostb.gameapi.games.domination;
 
 import java.util.HashMap;
 import java.util.Map;

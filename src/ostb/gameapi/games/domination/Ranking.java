@@ -1,4 +1,4 @@
-package ostb.gameapi.games.pvpbattles;
+package ostb.gameapi.games.domination;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public class Ranking implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				DB table = DB.PLAYERS_PVP_BATTLES_ELO;
+				DB table = DB.PLAYERS_DOMINATION_ELO;
 				int size = table.getSize();
 				for(EloRank eloRank : EloRank.values()) {
 					int start = 0;
@@ -126,8 +126,8 @@ public class Ranking implements Listener {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		int elo = 1000;
-		if(DB.PLAYERS_PVP_BATTLES_ELO.isUUIDSet(uuid)) {
-			elo = DB.PLAYERS_PVP_BATTLES_ELO.getInt("uuid", uuid.toString(), "elo");
+		if(DB.PLAYERS_DOMINATION_ELO.isUUIDSet(uuid)) {
+			elo = DB.PLAYERS_DOMINATION_ELO.getInt("uuid", uuid.toString(), "elo");
 		}
 		EloHandler.add(player, elo);
 		EloRank rank = EloRank.BRONZE;
@@ -140,10 +140,10 @@ public class Ranking implements Listener {
 			}
 		}
 		eloRanks.put(uuid, rank);
-		if(DB.PLAYERS_PVP_BATTLES_RANK.isUUIDSet(uuid)) {
-			DB.PLAYERS_PVP_BATTLES_RANK.updateString("rank", rank.toString(), "uuid", uuid.toString());
+		if(DB.PLAYERS_DOMINATION_RANK.isUUIDSet(uuid)) {
+			DB.PLAYERS_DOMINATION_RANK.updateString("rank", rank.toString(), "uuid", uuid.toString());
 		} else {
-			DB.PLAYERS_PVP_BATTLES_RANK.insert("'" + uuid.toString() + "', '" + rank.toString() + "'");
+			DB.PLAYERS_DOMINATION_RANK.insert("'" + uuid.toString() + "', '" + rank.toString() + "'");
 		}
 	}
 	
