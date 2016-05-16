@@ -116,6 +116,9 @@ commands:
   alert:
     usage: /alert <text>
 
+  globalAlert:
+    usage: /globalAlert <text>
+
   aa:
     usage: /aa help
 

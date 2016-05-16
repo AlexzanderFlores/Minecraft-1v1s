@@ -30,6 +30,17 @@ public class CommandDispatcher implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("globalAlert", -1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				String alert = "";
+				for(String arg : arguments) {
+					alert += arg + " ";
+				}
+				sendToAll("say " + alert);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
 		EventUtil.register(this);
 	}
 	

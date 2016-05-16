@@ -40,7 +40,7 @@ public abstract class MiniGame extends ProPlugin {
 	private int killCoins = 0;
 	private int winCoins = 0;
 	private boolean autoJoin = true;
-	private boolean canJoinWhileStarting = true;
+	private boolean canJoinWhileStarting = false;
 	private boolean useSpectatorChatChannel = true;
 	private boolean playersHaveOneLife = true;
 	private boolean restartWithOnePlayerLeft = true;

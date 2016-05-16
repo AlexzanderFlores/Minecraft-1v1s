@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -30,7 +28,6 @@ import ostb.customevents.game.PostGameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SpawnPointHandler;
-import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.skywars.cages.Cage;
 import ostb.gameapi.games.skywars.cages.SmallCage;
 import ostb.gameapi.kit.KitBase;
@@ -124,16 +121,6 @@ public class Events implements Listener {
 				miniGame.setAllowEntityDamage(true);
 			}
 		}, 20 * 5);
-	}
-	
-	@EventHandler
-	public void onEntityDamage(EntityDamageEvent event) {
-		if(event.getEntity() instanceof Player && event.getCause() == DamageCause.VOID) {
-			Player player = (Player) event.getEntity();
-			if(!SpectatorHandler.contains(player)) {
-				event.setCancelled(false);
-			}
-		}
 	}
 	
 	@EventHandler

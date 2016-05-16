@@ -847,7 +847,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		if(!getAllowEntityDamage()) {
 			event.setCancelled(true);
 		}
-		if(event.getCause() == DamageCause.VOID && event.isCancelled()) {
+		if(event.getCause() == DamageCause.VOID) {
 			Entity entity = event.getEntity();
 			if(entity.getVehicle() != null) {
 				entity = entity.getVehicle();
@@ -856,21 +856,16 @@ public class ProPlugin extends CountDownUtil implements Listener {
 				entity.eject();
 			}
 			entity.teleport(event.getEntity().getWorld().getSpawnLocation());
-			event.setCancelled(true);
+			if(entity instanceof LivingEntity) {
+				LivingEntity livingEntity = (LivingEntity) entity;
+				event.setDamage(livingEntity.getHealth());
+			}
 		}
 		if(!getAllowArmorBreaking() && event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			for(ItemStack armor : player.getInventory().getArmorContents()) {
 				armor.setDurability((short) -1);
 			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onHighEntityDamage(EntityDamageEvent event) {
-		if(!event.isCancelled() && event.getCause() == DamageCause.VOID && event.getEntity() instanceof LivingEntity) {
-			LivingEntity livingEntity = (LivingEntity) event.getEntity();
-			event.setDamage(livingEntity.getHealth());
 		}
 	}
 	
