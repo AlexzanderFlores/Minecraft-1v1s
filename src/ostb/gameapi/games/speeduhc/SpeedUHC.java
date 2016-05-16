@@ -2,7 +2,9 @@ package ostb.gameapi.games.speeduhc;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
+import ostb.gameapi.GoldenHeadUtil;
 import ostb.gameapi.MiniGame;
+import ostb.gameapi.SkullPikeUtil;
 import ostb.gameapi.scenarios.scenarios.AppleRates;
 import ostb.gameapi.scenarios.scenarios.CutClean;
 import ostb.gameapi.scenarios.scenarios.OreMultipliers;
@@ -25,6 +27,8 @@ public class SpeedUHC extends MiniGame {
 		new AppleRates(50);
 		new Events();
 		new WorldHandler();
+		new SkullPikeUtil();
+		new GoldenHeadUtil();
 		new BelowNameHealthScoreboardUtil();
 		if(OSTB.getPlugin() == Plugins.SUHCK) {
 			new SpeedUHCShop();
