@@ -1055,21 +1055,23 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		event.setCancelled(true);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onServerRestart(ServerRestartEvent event) {
-		for(World world : Bukkit.getWorlds()) {
-			String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/";
-			Bukkit.unloadWorld(world, false);
-			try {
-				FileHandler.delete(new File(path + "playerdata"));
-				FileHandler.delete(new File(path + "stats"));
-			} catch(Exception e) {
-				
+		if(!event.isCancelled()) {
+			for(World world : Bukkit.getWorlds()) {
+				String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/";
+				Bukkit.unloadWorld(world, false);
+				try {
+					FileHandler.delete(new File(path + "playerdata"));
+					FileHandler.delete(new File(path + "stats"));
+				} catch(Exception e) {
+					
+				}
 			}
-		}
-		if(importedWorlds != null && OSTB.getPlugin() != Plugins.BUILDING) {
-			for(String world : importedWorlds) {
-				FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world));
+			if(importedWorlds != null && OSTB.getPlugin() != Plugins.BUILDING) {
+				for(String world : importedWorlds) {
+					FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world));
+				}
 			}
 		}
 	}
