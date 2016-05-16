@@ -1,9 +1,7 @@
 package ostb.gameapi.games.speeduhc;
 
-import java.io.File;
-import java.util.Random;
-
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,26 +10,27 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
+
 import ostb.OSTB;
-import ostb.ProPlugin;
+import ostb.customevents.ServerLoggerEvent;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.server.DB;
+import ostb.server.ServerLogger;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
-import ostb.server.util.FileHandler;
-import ostb.server.util.ZipUtil;
 
 public class WorldHandler implements Listener {
 	private static World world = null;
 	private static double radius = 1500;
 	private static boolean shrink = false;
-	private static File [] files = null;
 	private static int index = 0;
 	private static int oldRadius = 0;
+	private static boolean pregenerated = false;
 	
 	public WorldHandler() {
-		files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
+		/*files = new File(Bukkit.getWorldContainer().getPath() + "/../pregen/worlds").listFiles();
 		if(files.length == 0) {
 			ProPlugin.restartServer();
 		} else {
@@ -44,9 +43,18 @@ public class WorldHandler implements Listener {
 			ZipUtil.unZipIt(zip.getPath(), Bukkit.getWorldContainer().getPath() + "/");
 			world = Bukkit.createWorld(new WorldCreator("world"));
 			FileHandler.delete(zip);
-			OSTB.getMiniGame().setMap(world);
-			EventUtil.register(this);
-		}
+		}*/
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill cancel");
+		world = Bukkit.createWorld(new WorldCreator("world"));
+		world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
+		world.setTime(0);
+		world.setGameRuleValue("naturalRegeneration", "false");
+		world.setDifficulty(Difficulty.HARD);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set 1500 1500 0 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 100");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
+		OSTB.getMiniGame().setMap(world);
+		EventUtil.register(this);
 	}
 	
 	public static void shrink() {
@@ -108,6 +116,19 @@ public class WorldHandler implements Listener {
 		if(ticks == 1 && shrink) {
 			radius -= 0.125;
 			setBorder();
+		}
+	}
+	
+	@EventHandler
+	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
+		pregenerated = true;
+		ServerLogger.updateStatus(false);
+	}
+	
+	@EventHandler
+	public void onServerLogger(ServerLoggerEvent event) {
+		if(!pregenerated) {
+			event.setCancelled(true);
 		}
 	}
 }

@@ -1,10 +1,12 @@
 package ostb.server;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.ServerLoggerEvent;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.gameapi.MiniGame;
@@ -31,7 +33,7 @@ public class ServerLogger implements Listener {
 		return false;
 	}
 	
-	private void updateStatus(boolean delete) {
+	public static void updateStatus(boolean delete) {
 		String game = OSTB.getPlugin().toString();
 		String number = OSTB.getServerName().replaceAll("[^\\d.]", "");
 		String [] keys = {"game_name", "server_number"};
@@ -39,37 +41,41 @@ public class ServerLogger implements Listener {
 		if(delete) {
 			DB.NETWORK_SERVER_STATUS.delete(keys, values);
 		} else {
-			int current = ProPlugin.getPlayers().size() + (SpectatorHandler.isEnabled() ? SpectatorHandler.getNumberOf() : 0);
-			GameStates gameState = null;
-			MiniGame miniGame = OSTB.getMiniGame();
-			if(miniGame != null) {
-				gameState = miniGame.getGameState();
-			}
-			int serverMax = OSTB.getMaxPlayers();
-			if(current != players || gameState != state || serverMax != max) {
-				players = current;
-				max = serverMax;
-				state = gameState;
-				int priority = 2;
+			ServerLoggerEvent event = new ServerLoggerEvent();
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				int current = ProPlugin.getPlayers().size() + (SpectatorHandler.isEnabled() ? SpectatorHandler.getNumberOf() : 0);
+				GameStates gameState = null;
+				MiniGame miniGame = OSTB.getMiniGame();
 				if(miniGame != null) {
-					if(ProPlugin.isServerFull()) {
-						if(miniGame.getJoiningPreGame()) {
-							priority = 1;
-						} else {
+					gameState = miniGame.getGameState();
+				}
+				int serverMax = OSTB.getMaxPlayers();
+				if(current != players || gameState != state || serverMax != max) {
+					players = current;
+					max = serverMax;
+					state = gameState;
+					int priority = 2;
+					if(miniGame != null) {
+						if(ProPlugin.isServerFull()) {
+							if(miniGame.getJoiningPreGame()) {
+								priority = 1;
+							} else {
+								priority = 3;
+							}
+						} else if(!miniGame.getJoiningPreGame()) {
 							priority = 3;
 						}
-					} else if(!miniGame.getJoiningPreGame()) {
-						priority = 3;
 					}
-				}
-				String lore = gameState == null ? "null" : gameState.toString();
-				if(DB.NETWORK_SERVER_STATUS.isKeySet(keys, values)) {
-					DB.NETWORK_SERVER_STATUS.updateInt("listed_priority", priority, keys, values);
-					DB.NETWORK_SERVER_STATUS.updateString("lore", lore, keys, values);
-					DB.NETWORK_SERVER_STATUS.updateInt("players", players, keys, values);
-					DB.NETWORK_SERVER_STATUS.updateInt("max_players", OSTB.getMaxPlayers(), keys, values);
-				} else {
-					DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + OSTB.getMaxPlayers() + "'");
+					String lore = gameState == null ? "null" : gameState.toString();
+					if(DB.NETWORK_SERVER_STATUS.isKeySet(keys, values)) {
+						DB.NETWORK_SERVER_STATUS.updateInt("listed_priority", priority, keys, values);
+						DB.NETWORK_SERVER_STATUS.updateString("lore", lore, keys, values);
+						DB.NETWORK_SERVER_STATUS.updateInt("players", players, keys, values);
+						DB.NETWORK_SERVER_STATUS.updateInt("max_players", OSTB.getMaxPlayers(), keys, values);
+					} else {
+						DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + OSTB.getMaxPlayers() + "'");
+					}
 				}
 			}
 		}

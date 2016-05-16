@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
@@ -100,13 +101,18 @@ public abstract class MiniGame extends ProPlugin {
 		new PerformanceLogger();
 		new PostGameStartEvent(true);
 		new PostGameStartingEvent(true);
-		new ServerLogger();
 		new LeaveItem();
 		new MapRating();
 		new VotingHandler();
 		new EndingLobby();
 		new CoinBoosters();
 		teamHandler = new TeamHandler();
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				new ServerLogger();
+			}
+		});
 		setGameState(GameStates.WAITING);
 		new CommandBase("startGame", 0, 1) {
 			@Override
