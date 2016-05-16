@@ -147,7 +147,7 @@ public class PlayerTracker implements Listener {
 				location = OSTB.getServerName();
 			}
 			DB.STAFF_ONLINE.insert("'" + player.getUniqueId().toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + location + "'");
-		} else if(AccountHandler.getRank(player) != Ranks.YOUTUBER){
+		} else {
 			queue.add(player.getName());
 		}
 	}
