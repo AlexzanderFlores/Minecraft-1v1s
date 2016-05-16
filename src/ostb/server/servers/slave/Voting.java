@@ -18,6 +18,7 @@ import ostb.gameapi.crates.SpeedUHCCrate;
 import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
+import ostb.server.CommandDispatcher;
 import ostb.server.DB;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.KeyFragments;
@@ -140,7 +141,7 @@ public class Voting implements Listener {
 						DB.HUB_PARKOUR_CHECKPOINTS.insert("'" + uuid + "', '" + toAdd + "'");
 					}
 					Bukkit.getLogger().info("voting: giving exp");
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubAlert &e" + name + " has voted for advantages. Run command &a/vote");
+					CommandDispatcher.sendToAll("say &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}
 		});

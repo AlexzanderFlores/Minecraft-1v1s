@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -46,7 +47,7 @@ public class Events implements Listener {
 		EventUtil.register(this);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onGameStarting(GameStartingEvent event) {
 		World world = OSTB.getMiniGame().getMap();
 		new MapEffectHandler(world);
@@ -56,18 +57,19 @@ public class Events implements Listener {
 		List<Player> players = ProPlugin.getPlayers();
 		int counter = 0;
 		int numberOfSpawns = spawns.size();
+		for(Team team : TeamHandler.getTeams()) {
+			if(!teamSpawns.containsKey(team)) {
+				teamSpawns.put(team, spawns.get(counter++));
+			}
+		}
 		for(Player player : players) {
 			if(counter >= numberOfSpawns) {
 				counter = 0;
 			}
 			Location location = spawns.get(counter++);
 			Team team = TeamHandler.getTeam(player);
-			if(team != null) {
-				if(teamSpawns.containsKey(team)) {
-					location = teamSpawns.get(team);
-				} else {
-					teamSpawns.put(team, location);
-				}
+			if(team != null && teamSpawns.containsKey(team)) {
+				location = teamSpawns.get(team);
 			}
 			player.teleport(location);
 			if(team == null || !spawnedCages.contains(team)) {
