@@ -57,9 +57,12 @@ public class Events implements Listener {
 		List<Player> players = ProPlugin.getPlayers();
 		int counter = 0;
 		int numberOfSpawns = spawns.size();
-		for(Team team : TeamHandler.getTeams()) {
-			if(!teamSpawns.containsKey(team)) {
-				teamSpawns.put(team, spawns.get(counter++));
+		List<Team> teams = TeamHandler.getTeams();
+		if(teams != null) {
+			for(Team team : teams) {
+				if(!teamSpawns.containsKey(team)) {
+					teamSpawns.put(team, spawns.get(counter++));
+				}
 			}
 		}
 		for(Player player : players) {

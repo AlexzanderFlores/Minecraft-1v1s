@@ -487,7 +487,7 @@ public class StatsHandler implements Listener {
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		Player player = event.getPlayer();
 		if(!SpectatorHandler.contains(player) && combatTagged != null && combatTagged.containsKey(player.getName())) {
-			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
 				return;
 			}
 			Player attacker = ProPlugin.getPlayer(combatTagged.get(player.getName()));
