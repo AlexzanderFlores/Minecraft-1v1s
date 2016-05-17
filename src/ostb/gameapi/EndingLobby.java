@@ -82,13 +82,13 @@ public class EndingLobby implements Listener {
 			}
 		}
 		if(firstPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, 1, 10, 307), "First Place", loadImage(firstPlace, 0));
+			new ImageMap(ImageMap.getItemFrame(world, 1, 10, 307), "First Place", loadImage(firstPlace, 0), 3, 4);
 		}
 		if(secondPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, 4, 9, 308), "Second Place", loadImage(secondPlace, 1));
+			new ImageMap(ImageMap.getItemFrame(world, 4, 9, 308), "Second Place", loadImage(secondPlace, 1), 3, 4);
 		}
 		if(thirdPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, -2, 8, 308), "Third Place", loadImage(thirdPlace, 2));
+			new ImageMap(ImageMap.getItemFrame(world, -2, 8, 308), "Third Place", loadImage(thirdPlace, 2), 3, 4);
 		}
 	}
 	
