@@ -60,7 +60,7 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("pvpBattles", -1, true) {
+		new CommandBase("dom", -1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
@@ -151,19 +151,19 @@ public class Building extends ProPlugin {
 								MessageHandler.sendMessage(player, "&cError on saving config file");
 							}
 						} catch(NumberFormatException e) {
-							MessageHandler.sendMessage(player, "&f/pvpBattles setCP [index]");
+							MessageHandler.sendMessage(player, "&f/dom setCP [index]");
 						}
 						return true;
 					}
 				}
-				MessageHandler.sendMessage(player, "&f/pvpBattles setEnchant <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setAnvil <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setSpawn <red | blue> [index]");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setShop <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setArmory <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setFlag <red | blue>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setCP <index>");
-				MessageHandler.sendMessage(player, "&f/pvpBattles setRespawnLoc");
+				MessageHandler.sendMessage(player, "&f/dom setEnchant <red | blue>");
+				MessageHandler.sendMessage(player, "&f/dom setAnvil <red | blue>");
+				MessageHandler.sendMessage(player, "&f/dom setSpawn <red | blue> [index]");
+				MessageHandler.sendMessage(player, "&f/dom setShop <red | blue>");
+				MessageHandler.sendMessage(player, "&f/dom setArmory <red | blue>");
+				MessageHandler.sendMessage(player, "&f/dom setFlag <red | blue>");
+				MessageHandler.sendMessage(player, "&f/dom setCP <index>");
+				MessageHandler.sendMessage(player, "&f/dom setRespawnLoc");
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
@@ -222,7 +222,7 @@ public class Building extends ProPlugin {
 	}
 	
 	private ConfigurationUtil getConfig(Player player, String name) {
-		return new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + player.getWorld().getName() + "/pvpbattles/" + name + ".yml");
+		return new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + player.getWorld().getName() + "/domination/" + name + ".yml");
 	}
 	
 	private Block getRegionBlock(Player player) {

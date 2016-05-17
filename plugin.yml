@@ -212,8 +212,8 @@ commands:
   copyArmorStands:
     usage: /copyArmorStands [copy <radius>] [paste]
 
-  pvpBattles:
-    usage: /pvpBattles <addional arguments>
+  dom:
+    usage: /dom <addional arguments>
 
 # Worker commands
   purchase:
