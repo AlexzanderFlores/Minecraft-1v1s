@@ -13,10 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.MouseClickEvent.ClickType;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.MessageHandler;
@@ -76,7 +78,7 @@ public class Ninja extends KitBase {
 	public void onMouseClick(MouseClickEvent event) {
 		if(enabled && event.getClickType() == ClickType.RIGHT_CLICK) {
 			Player player = event.getPlayer();
-			if(!SpectatorHandler.contains(player) && !delayed.contains(player.getName())) {
+			if(!SpectatorHandler.contains(player) && OSTB.getMiniGame().getGameState() == GameStates.STARTED && !delayed.contains(player.getName())) {
 				final String name = player.getName();
 				delayed.add(name);
 				new DelayedTask(new Runnable() {

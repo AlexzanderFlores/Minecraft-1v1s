@@ -182,7 +182,6 @@ public abstract class MiniGame extends ProPlugin {
 		setPlayersHaveOneLife(true);
 		setRestartWithOnePlayerLeft(true);
 		setUpdateTitleSidebar(true);
-		map = null;
 		setCounter(0);
 	}
 	

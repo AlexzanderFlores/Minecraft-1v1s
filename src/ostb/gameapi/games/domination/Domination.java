@@ -37,6 +37,7 @@ public class Domination extends MiniGame {
 		new Events();
 		new BelowNameHealthScoreboardUtil();
 		new AutoRespawn();
+		new TipGiver();
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {

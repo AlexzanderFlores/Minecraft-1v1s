@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GiveMapRatingItemEvent;
@@ -61,9 +62,15 @@ public class MapRating implements Listener {
 	
 	@EventHandler
 	public void onGameEnding(GameEndingEvent event) {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			give(player);
-		}
+		 new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					give(player);
+					SpectatorHandler.giveUtilItems(player);
+				}
+			}
+		}, 20);
 	}
 	
 	@EventHandler

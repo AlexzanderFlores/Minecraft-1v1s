@@ -142,6 +142,15 @@ public class SpectatorHandler implements Listener {
 		return enabled;
 	}
 	
+	public static void giveUtilItems(Player player) {
+		if(OSTB.getMiniGame().getAutoJoin()) {
+			player.getInventory().setItem(7, exit);
+			player.getInventory().setItem(8, nextGame);
+		} else {
+			player.getInventory().setItem(8, exit);
+		}
+	}
+	
 	public static void add(Player player) {
 		if(!contains(player)) {
 			PlayerSpectatorEvent playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.STARTING);
@@ -155,12 +164,7 @@ public class SpectatorHandler implements Listener {
 				if(OSTB.getMiniGame() == null) {
 					player.getInventory().setItem(8, exit);
 				} else {
-					if(OSTB.getMiniGame().getAutoJoin()) {
-						player.getInventory().setItem(7, exit);
-						player.getInventory().setItem(8, nextGame);
-					} else {
-						player.getInventory().setItem(8, exit);
-					}
+					giveUtilItems(player);
 				}
 				player.getInventory().setHeldItemSlot(0);
 				for(Player online : Bukkit.getOnlinePlayers()) {
@@ -314,7 +318,7 @@ public class SpectatorHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onMouseClick(MouseClickEvent event) {
 		Player player = event.getPlayer();
-		if(contains(player)) {
+		if(contains(player) || (OSTB.getMiniGame() != null && OSTB.getMiniGame().getGameState() == GameStates.ENDING)) {
 			ItemStack item = player.getItemInHand();
 			if(item != null) {
 				if(item.getType() == Material.WATCH) {
