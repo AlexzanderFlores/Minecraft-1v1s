@@ -9,14 +9,16 @@ public class MapEffectHandler {
     private static List<MapEffectsBase> effects = null;
 
     public MapEffectHandler(World world) {
-        for(MapEffectsBase effect : effects) {
-        	if(effect.getName() != null && effect.getName().equals(world.getName())) {
-            	effect.execute(world);
-                break;
+        if(effects != null) {
+        	for(MapEffectsBase effect : effects) {
+            	if(effect.getName() != null && effect.getName().equals(world.getName())) {
+                	effect.execute(world);
+                    break;
+                }
             }
+            effects.clear();
+            effects = null;
         }
-        effects.clear();
-        effects = null;
     }
 
     public static void addEffect(MapEffectsBase effect) {
