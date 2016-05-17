@@ -86,7 +86,7 @@ public class WorldHandler implements Listener {
 		world.getWorldBorder().setCenter(0, 0);
 		world.getWorldBorder().setDamageAmount(1.0d);
 		world.getWorldBorder().setWarningDistance(25);
-		world.getWorldBorder().setWarningTime(20);
+		world.getWorldBorder().setWarningTime(20 * 10);
 		setBorder();
 		new AsyncDelayedTask(new Runnable() {
 			@Override
@@ -106,7 +106,7 @@ public class WorldHandler implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 1 && shrink) {
-			radius -= 0.125;
+			radius -= 0.0625;
 			setBorder();
 		}
 	}
