@@ -13,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
+import ostb.customevents.game.GameEndingEvent;
+import ostb.customevents.game.GiveMapRatingItemEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
@@ -42,10 +44,25 @@ public class MapRating implements Listener {
 		EventUtil.register(this);
 	}
 	
+	private void give(Player player) {
+		GiveMapRatingItemEvent giveEvent = new GiveMapRatingItemEvent(player);
+		Bukkit.getPluginManager().callEvent(giveEvent);
+		if(!giveEvent.isCancelled()) {
+			player.getInventory().setItem(slot, ratingItem);
+		}
+	}
+	
 	@EventHandler
 	public void onPlayerSpectate(PlayerSpectatorEvent event) {
 		if(event.getState() == SpectatorState.ADDED) {
-			event.getPlayer().getInventory().setItem(slot, ratingItem);
+			give(event.getPlayer());
+		}
+	}
+	
+	@EventHandler
+	public void onGameEnding(GameEndingEvent event) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			give(player);
 		}
 	}
 	

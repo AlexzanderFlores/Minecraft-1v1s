@@ -31,6 +31,7 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
+import ostb.customevents.game.GiveMapRatingItemEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
@@ -294,5 +295,10 @@ public class Events implements Listener {
 		if(type == Material.SAPLING || type == Material.SPIDER_EYE || type == Material.SULPHUR) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onGiveRatingItem(GiveMapRatingItemEvent event) {
+		event.setCancelled(true);
 	}
 }
