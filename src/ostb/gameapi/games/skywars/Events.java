@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
@@ -158,6 +159,15 @@ public class Events implements Listener {
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getItem().getType() == Material.INK_SACK) {
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		Player player = event.getPlayer();
+		Player killer = player.getKiller();
+		if(killer != null) {
+			event.setRespawnLocation(killer.getLocation());
 		}
 	}
 }
