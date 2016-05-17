@@ -234,7 +234,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameKill(GameKillEvent event) {
 		new LevelGiver(event.getPlayer());
-		EloHandler.calculateWin(event.getPlayer(), event.getKilled(), false);
+		EloHandler.calculateWin(event.getPlayer(), event.getKilled(), 1);
 	}
 	
 	@EventHandler

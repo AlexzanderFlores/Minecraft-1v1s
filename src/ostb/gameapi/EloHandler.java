@@ -45,7 +45,7 @@ public class EloHandler implements Listener {
 		EventUtil.register(this);
 	}
 	
-	public static void calculateWin(Player winner, Player loser, boolean display) {
+	public static void calculateWin(Player winner, Player loser, int display) {
 		int elo1 = getElo(loser);
 		int elo2 = getElo(winner);
 		int K = 32;
@@ -58,9 +58,9 @@ public class EloHandler implements Listener {
 		//int draw = (int) Math.round(K * (0.5 - percentage));
 		int winnerResult = add(winner, amount);
 		int loserResult = add(loser, -amount);
-		if(display) {
-			String newWinner = AccountHandler.getPrefix(winner) + " &6" + winnerResult + " &a(+" + amount + ")";
-			String newLoser = AccountHandler.getPrefix(loser) + " &6" + loserResult + " &c(" + amount * -1 + ")";
+		if(display > 0) { // 0 = don't display, 1 = display change, 2 = display change + new value
+			String newWinner = AccountHandler.getPrefix(winner) + (display == 2 ? " &6" + winnerResult : "") + " &a(+" + amount + ")";
+			String newLoser = AccountHandler.getPrefix(loser) + (display == 2 ? " &6" + loserResult : "") + " &c(" + amount * -1 + ")";
 			for(Player player : new Player [] {winner, loser}) {
 				MessageHandler.sendLine(player);
 				MessageHandler.sendMessage(player, newWinner);
