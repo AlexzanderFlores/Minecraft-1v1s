@@ -150,10 +150,18 @@ public class CoinsHandler implements Listener {
 	}
 	
 	public void addCoins(Player player, int amount) {
+		addCoins(player, amount, null);
+	}
+	
+	public void addCoins(Player player, int amount, String message) {
 		CoinGiveEvent event = new CoinGiveEvent(player, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		amount = event.getAmount();
-		MessageHandler.sendMessage(player, (amount >= 0 ? "&6+" : "&c") + amount + " Coins");
+		String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coins";
+		if(message != null) {
+			msg += " " + message;
+		}
+		MessageHandler.sendMessage(player, msg);
 		if(coins.containsKey(player.getName())) {
 			amount += coins.get(player.getName());
 		}

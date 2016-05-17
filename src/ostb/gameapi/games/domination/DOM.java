@@ -83,9 +83,9 @@ public class DOM implements Listener {
 							containsBlue = true;
 						}
 						if(containsRed && !containsBlue && progress == 4) {
-							coinsHandler.addCoins(player, 10);
+							coinsHandler.addCoins(player, 10, "&xCommand Post Capture");
 						} else if(containsBlue && !containsRed && progress == -4) {
-							coinsHandler.addCoins(player, 10);
+							coinsHandler.addCoins(player, 10, "&xCommand Post Capture");
 						}
 					}
 				}

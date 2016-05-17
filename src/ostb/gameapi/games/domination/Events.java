@@ -47,6 +47,7 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
+import ostb.customevents.player.PlayerAssistEvent;
 import ostb.gameapi.EloHandler;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
@@ -72,10 +73,11 @@ public class Events implements Listener {
 	private Map<ArmorStand, TNTPrimed> tntCountDowns = null;
 	private Map<String, Integer> respawningCounters = null;
 	private List<String> respawning = null;
+	private List<Block> anvils = null;
 	private Location redSpawn = null;
 	private Location blueSpawn = null;
 	private Location respawnLocation = null;
-	private List<Block> anvils = null;
+	private CoinsHandler coinsHandler = null;
 	
 	public Events() {
 		tntCountDowns = new HashMap<ArmorStand, TNTPrimed>();
@@ -179,14 +181,13 @@ public class Events implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
+				coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
 				for(Player player : ProPlugin.getPlayers()) {
 					player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
 					coinsHandler.getCoins(player);
 					if(coinsHandler.isNewPlayer(player)) {
 						int amount = 100;
-						coinsHandler.addCoins(player, amount);
-						MessageHandler.sendMessage(player, "Giving you &6" + amount + " Coins &xto help you get started");
+						coinsHandler.addCoins(player, amount, "&xTo help you get started");
 					}
 				}
 			}
@@ -480,5 +481,11 @@ public class Events implements Listener {
 				}
 			});
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerAssist(PlayerAssistEvent event) {
+		Player player = event.getAttacker();
+		coinsHandler.addCoins(player, 5, "&x(Assist)");
 	}
 }

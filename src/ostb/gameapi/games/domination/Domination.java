@@ -6,6 +6,7 @@ import org.bukkit.scoreboard.Team;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
+import ostb.gameapi.AssistTracker;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TeamHandler;
@@ -38,6 +39,7 @@ public class Domination extends MiniGame {
 		new BelowNameHealthScoreboardUtil();
 		new AutoRespawn();
 		new TipGiver();
+		new AssistTracker();
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
