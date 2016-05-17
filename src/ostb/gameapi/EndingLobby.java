@@ -81,9 +81,15 @@ public class EndingLobby implements Listener {
 				player.teleport(spawn.clone().add(x, 0, z));
 			}
 		}
-		new ImageMap(ImageMap.getItemFrame(world, 1, 10, 307), "First Place", loadImage(firstPlace, 0));
-		new ImageMap(ImageMap.getItemFrame(world, 4, 9, 308), "Second Place", loadImage(secondPlace, 1));
-		new ImageMap(ImageMap.getItemFrame(world, -2, 8, 308), "Third Place", loadImage(thirdPlace, 2));
+		if(firstPlace != null) {
+			new ImageMap(ImageMap.getItemFrame(world, 1, 10, 307), "First Place", loadImage(firstPlace, 0));
+		}
+		if(secondPlace != null) {
+			new ImageMap(ImageMap.getItemFrame(world, 4, 9, 308), "Second Place", loadImage(secondPlace, 1));
+		}
+		if(thirdPlace != null) {
+			new ImageMap(ImageMap.getItemFrame(world, -2, 8, 308), "Third Place", loadImage(thirdPlace, 2));
+		}
 	}
 	
 	@EventHandler
