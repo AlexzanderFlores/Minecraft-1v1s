@@ -869,6 +869,18 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onHighEntityDamage(EntityDamageEvent event) {
+		if(!event.isCancelled() && event.getCause() == DamageCause.VOID && event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			Player killer = player.getKiller();
+			if(killer == null || !killer.isOnline() || (SpectatorHandler.isEnabled() && SpectatorHandler.contains(killer))) {
+				player.getInventory().clear();
+				player.getInventory().setArmorContents(new ItemStack [] {});
+			}
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getEntity() instanceof ItemFrame) {

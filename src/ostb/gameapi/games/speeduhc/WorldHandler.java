@@ -105,7 +105,7 @@ public class WorldHandler implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 1 && shrink) {
+		if(ticks == 1 && shrink && radius > 200) {
 			radius -= 0.0625;
 			setBorder();
 		}
