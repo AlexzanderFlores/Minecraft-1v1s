@@ -67,8 +67,11 @@ public class DOM implements Listener {
 			boolean containsRed = false;
 			boolean containsBlue = false;
 			MiniGame miniGame = OSTB.getMiniGame();
+			if(coinsHandler == null) {
+				coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
+			}
 			for(Player player : ProPlugin.getPlayers()) {
-				if(SpectatorHandler.isEnabled() && !SpectatorHandler.contains(player)) {
+				if(!SpectatorHandler.contains(player)) {
 					double x = player.getLocation().getX();
 					double z = player.getLocation().getZ();
 					if(Math.sqrt((x - this.x) * (x - this.x) + (z - this.z) * (z - this.z)) <= 10) {
@@ -148,7 +151,7 @@ public class DOM implements Listener {
 	private Team blueTeam = null;
 	private int redScore = 0;
 	private int blueScore = 0;
-	private CoinsHandler coinsHandler = null;
+	private static CoinsHandler coinsHandler = null;
 	
 	public DOM(int scoreLimit) {
 		commandPosts = new ArrayList<CommandPost>();
@@ -159,7 +162,6 @@ public class DOM implements Listener {
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
 		blueTeam.setPrefix(ChatColor.AQUA + "[Blue] ");
 		blueTeam.setAllowFriendlyFire(false);
-		coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
 		EventUtil.register(this);
 	}
 	
