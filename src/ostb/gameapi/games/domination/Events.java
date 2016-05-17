@@ -113,14 +113,14 @@ public class Events implements Listener {
 		World world = OSTB.getMiniGame().getMap();
 		world.setGameRuleValue("keepInventory", "true");
 		new MapEffectHandler(world);
-		ConfigurationUtil config = new SpawnPointHandler(world, "pvpbattles/respawnloc").getConfig();
+		ConfigurationUtil config = new SpawnPointHandler(world, "domination/respawnloc").getConfig();
 		double x = config.getConfig().getDouble("x");
 		double y = config.getConfig().getDouble("y");
 		double z = config.getConfig().getDouble("z");
 		float yaw = (float) config.getConfig().getDouble("yaw");
 		float pitch = (float) config.getConfig().getDouble("pitch");
 		respawnLocation = new Location(world, x, y, z, yaw, pitch);
-		config = new SpawnPointHandler(world, "pvpbattles/spawn").getConfig();
+		config = new SpawnPointHandler(world, "domination/spawn").getConfig();
 		x = config.getConfig().getDouble("red.x");
 		y = config.getConfig().getDouble("red.y");
 		z = config.getConfig().getDouble("red.z");
@@ -416,7 +416,7 @@ public class Events implements Listener {
 					MessageHandler.alert(prefix + "Use the Enchanting Table & Anvil at your spawn");
 					MessageHandler.alert("");
 					World world = OSTB.getMiniGame().getMap();
-					String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/";
+					String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/domination/";
 					ConfigurationUtil anvilUtil = new ConfigurationUtil(path + "anvil.yml");
 					ConfigurationUtil enchantUtil = new ConfigurationUtil(path + "enchant.yml");
 					Random random = new Random();

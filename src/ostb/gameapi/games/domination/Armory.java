@@ -31,7 +31,7 @@ public class Armory implements Listener {
 	private Map<Material, Integer> armorCosts = null;
 	
 	public Armory(World world, Location redSpawn, Location blueSpawn) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/armory.yml");
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/domination/armory.yml");
 		double x = config.getConfig().getDouble("red.x");
 		double y = config.getConfig().getDouble("red.y");
 		double z = config.getConfig().getDouble("red.z");

@@ -35,7 +35,7 @@ public class Shop implements Listener {
 	private String name = null;
 	
 	public Shop(World world, Location redSpawn, Location blueSpawn) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/shop.yml");
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/domination/shop.yml");
 		double x = config.getConfig().getDouble("red.x");
 		double y = config.getConfig().getDouble("red.y");
 		double z = config.getConfig().getDouble("red.z");

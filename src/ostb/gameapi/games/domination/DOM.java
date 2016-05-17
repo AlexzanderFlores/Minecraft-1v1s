@@ -235,7 +235,7 @@ public class DOM implements Listener {
 			GameStates gameState = miniGame.getGameState();
 			if(gameState == GameStates.STARTING && miniGame.getCounter() == 4) {
 				World world = miniGame.getMap();
-				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/pvpbattles/command_posts.yml");
+				ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/domination/command_posts.yml");
 				if(config.getFile().exists()) {
 					for(String key : config.getConfig().getKeys(false)) {
 						int x = config.getConfig().getInt(key + ".x");
