@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import npc.util.EventUtil;
 import ostb.OSTB;
+import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -25,6 +27,7 @@ import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.ImageMap;
 import ostb.server.util.StringUtil;
 
@@ -117,6 +120,32 @@ public class Ranking implements Listener {
 				MessageHandler.sendMessage(player, "Your exact Elo value is &e" + EloHandler.getElo(player));
 			} else {
 				MessageHandler.sendMessage(player, "&cTo view your exact Elo value you must have " + Ranks.PREMIUM.getPrefix());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onGameEnding(GameEndingEvent event) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			int elo = 0;
+			EloRank [] ranks = EloRank.values();
+			for(int a = ranks.length - 1; a >= 0; --a) {
+				EloRank eloRank = ranks[a];
+				if(elo >= eloRank.getRequired()) {
+					int currentRank = eloRanks.get(player.getUniqueId()).ordinal();
+					int newRank = eloRank.ordinal();
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
+					MessageHandler.sendMessage(player, "");
+					if(newRank > currentRank) {
+						MessageHandler.sendMessage(player, "&aYou have ranked up! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+					} else if(newRank < currentRank) {
+						MessageHandler.sendMessage(player, "&cYou have ranked down! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+					} else {
+						MessageHandler.sendMessage(player, "&cYour rank did not change! Rank is still " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+					}
+					MessageHandler.sendMessage(player, "");
+					break;
+				}
 			}
 		}
 	}

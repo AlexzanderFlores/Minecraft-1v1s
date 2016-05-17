@@ -16,8 +16,8 @@ import org.bukkit.scoreboard.Team;
 
 import npc.util.EventUtil;
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.gameapi.MiniGame;
