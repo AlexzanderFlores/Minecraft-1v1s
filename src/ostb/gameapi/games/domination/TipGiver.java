@@ -30,7 +30,7 @@ public class TipGiver implements Listener {
 			if(index >= tips.size()) {
 				index = 0;
 			}
-			MessageHandler.alert("&bTIP: &x" + tips.get(index++));
+			MessageHandler.alert("&eTIP: &x" + tips.get(index++));
 		}
 	}
 }

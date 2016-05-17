@@ -17,11 +17,13 @@ import org.bukkit.scoreboard.Team;
 import npc.util.EventUtil;
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
@@ -76,6 +78,11 @@ public class DOM implements Listener {
 							containsRed = true;
 						} else if(team == blueTeam) {
 							containsBlue = true;
+						}
+						if(containsRed && !containsBlue && progress == 4) {
+							coinsHandler.addCoins(player, 10);
+						} else if(containsBlue && !containsRed && progress == -4) {
+							coinsHandler.addCoins(player, 10);
 						}
 					}
 				}
@@ -132,15 +139,6 @@ public class DOM implements Listener {
 			} else if(progress == -5) {
 				addScore(blueTeam);
 			}
-			/*String particle = "";
-			if(wool.getData() == DyeColor.WHITE.getData()) {
-				particle = "fireworksSpark";
-			} else if(wool.getData() == DyeColor.RED.getData()) {
-				particle = "dripLava";
-			} else if(wool.getData() == DyeColor.BLUE.getData()) {
-				particle = "dripWater";
-			}
-			ParticleTypes.valueOf(particle).displaySpiral(new Location(wool.getWorld(), x, y, z), 10, 5);*/
 		}
 	}
 	
@@ -150,6 +148,7 @@ public class DOM implements Listener {
 	private Team blueTeam = null;
 	private int redScore = 0;
 	private int blueScore = 0;
+	private CoinsHandler coinsHandler = null;
 	
 	public DOM(int scoreLimit) {
 		commandPosts = new ArrayList<CommandPost>();
@@ -160,6 +159,7 @@ public class DOM implements Listener {
 		blueTeam = OSTB.getMiniGame().getTeamHandler().addTeam("blue");
 		blueTeam.setPrefix(ChatColor.AQUA + "[Blue] ");
 		blueTeam.setAllowFriendlyFire(false);
+		coinsHandler = CoinsHandler.getCoinsHandler(Plugins.DOM.getData());
 		EventUtil.register(this);
 	}
 	
