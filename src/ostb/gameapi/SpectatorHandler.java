@@ -129,7 +129,10 @@ public class SpectatorHandler implements Listener {
 							}
 						}
 						if(!nearBy && player.getGameMode() == GameMode.SPECTATOR) {
-							player.setGameMode(GameMode.CREATIVE);
+							Location location = player.getLocation();
+							if(location.getBlock().getType() == Material.AIR && location.add(0, 1, 0).getBlock().getType() == Material.AIR) {
+								player.setGameMode(GameMode.CREATIVE);
+							}
 						}
 					}
 				}
