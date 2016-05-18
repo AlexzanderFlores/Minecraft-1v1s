@@ -22,6 +22,7 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.games.domination.Domination;
+import ostb.gameapi.games.kitpvp.KitPVP;
 import ostb.gameapi.games.skywars.SkyWars;
 import ostb.gameapi.games.speeduhc.SpeedUHC;
 import ostb.gameapi.kit.DefaultKit;
@@ -60,14 +61,11 @@ import ostb.staff.Punishment;
 public class OSTB extends JavaPlugin implements PluginMessageListener {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
-		//PVP_BATTLES("PVPBattles", "pvp_battles", "PVP Battles"),
-		//CTF("CTF", "pvp_battles", "Capture the Flag"),
 		DOM("DOM", "domination", "Domination"),
 		SW("SW", "sky_wars", "Solo Sky Wars"),
 		SWT("SWT", "sky_wars", "Team Sky Wars"),
 		SUHC("SUHC", "speed_uhc", "Speed UHC"),
-		//SUHCK("SUHCK", "speed_uhc", "Speed UHC Kits"),
-		//SUHCNK("SUHCNK", "speed_uhc", "Speed UHC No Kits"),
+		KIT_PVP("KitPVP", "kit_pvp", "Kit PVP"),
 		PREGEN("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
 		WORKER("Worker", "worker"),
@@ -148,6 +146,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 				proPlugin = new SkyWars();
 			} else if(plugin == Plugins.SUHC) {
 				proPlugin = new SpeedUHC();
+			} else if(plugin == Plugins.KIT_PVP) {
+				proPlugin = new KitPVP();
 			} else if(plugin == Plugins.PREGEN) {
 				proPlugin = new Pregenerator();
 			} else if(plugin == Plugins.BUILDING) {
