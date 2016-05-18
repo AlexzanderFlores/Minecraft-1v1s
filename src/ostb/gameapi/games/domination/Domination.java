@@ -28,7 +28,6 @@ public class Domination extends MiniGame {
 		setRequiredPlayers(8);
 		setFlintAndSteelUses(4);
 		getTeamHandler().toggleTeamItem();
-		new DOM(1000);
 		new CoinsHandler(DB.PLAYERS_COINS_DOMINATION, Plugins.DOM.getData());
 		CoinsHandler.setKillCoins(20);
 		CoinsHandler.setWinCoins(75);
@@ -84,5 +83,6 @@ public class Domination extends MiniGame {
 			}
 		});
 		new Divided_Kingdom();
+		new DOM(1000);
 	}
 }
