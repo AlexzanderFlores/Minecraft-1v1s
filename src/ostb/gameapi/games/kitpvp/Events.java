@@ -30,6 +30,7 @@ public class Events implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20) {
+			paused = false;
 			for(KitTeam kitTeam : KitTeam.values()) {
 				if(kitTeam.getSize() == 0) {
 					paused = true;
