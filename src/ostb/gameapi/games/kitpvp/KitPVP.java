@@ -10,6 +10,7 @@ import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.StatsHandler;
+import ostb.gameapi.TemporaryFireUtil;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
@@ -69,6 +70,7 @@ public class KitPVP extends ProPlugin {
 		teamHandler = new TeamHandler();
 		new SpawnHandler();
 		new Events();
+		new TemporaryFireUtil(20 * 3);
 	}
 	
 	@Override
