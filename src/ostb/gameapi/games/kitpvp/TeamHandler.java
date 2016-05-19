@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -176,26 +175,13 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20) {
+		if(ticks == 20 && SpectatorHandler.getNumberOf() > 0) {
 			for(Player player : SpectatorHandler.getPlayers()) {
 				InventoryView view = player.getOpenInventory();
 				if(view == null || !view.getTitle().equals(invName)) {
 					openTeamSelection(player);
 				}
 			}
-		}
-	}
-	
-	//@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getPlayer() instanceof Player) {
-			Player player = (Player) event.getPlayer();
-			for(Team team : getTeams()) {
-				if(team.hasPlayer(player)) {
-					return;
-				}
-			}
-			openTeamSelection(player);
 		}
 	}
 	

@@ -67,7 +67,11 @@ public class Voting implements Listener {
 								DB.PLAYERS_LIFETIME_VOTES.updateInt("highest_streak", streak, "uuid", uuid);
 							}
 						} else {
-							streak = 1;
+							if(day == currentDay) {
+								streak = DB.PLAYERS_LIFETIME_VOTES.getInt("uuid", uuid, "streak");
+							} else {
+								streak = 1;
+							}
 						}
 						multiplier = streak <= 5 ? 1 : streak <= 10 ? 2 : streak <= 15 ? 3 : streak <= 20 ? 4 : streak <= 25 ? 5 : 6;
 						DB.PLAYERS_LIFETIME_VOTES.updateInt("amount", amount, "uuid", uuid);
