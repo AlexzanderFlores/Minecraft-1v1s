@@ -12,16 +12,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
+import anticheat.events.TimeEvent;
 import net.minecraft.server.v1_8_R3.EnumColor;
 import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -29,10 +32,6 @@ import ostb.server.util.ItemCreator;
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
 	private Map<Team, Integer> scores = null;
-	private Team redTeam = null;
-	private Team blueTeam = null;
-	private Team yellowTeam = null;
-	private Team greenTeam = null;
 	private String invName = null;
 	
 	public enum KitTeam {
@@ -99,23 +98,40 @@ public class TeamHandler implements Listener {
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(invName)) {
 			Player player = event.getPlayer();
+			for(KitTeam kitTeam : KitTeam.values()) {
+				kitTeam.team.removePlayer(player);
+			}
 			int slot = event.getSlot();
 			if(slot == 10) {
-				redTeam.addPlayer(player);
+				KitTeam.RED.team.addPlayer(player);
 			} else if(slot == 12) {
-				blueTeam.addPlayer(player);
+				KitTeam.BLUE.team.addPlayer(player);
 			} else if(slot == 14) {
-				yellowTeam.addPlayer(player);
+				KitTeam.YELLOW.team.addPlayer(player);
 			} else if(slot == 16) {
-				greenTeam.addPlayer(player);
+				KitTeam.GREEN.team.addPlayer(player);
 			}
 			SpectatorHandler.remove(player);
 			event.setCancelled(true);
 			player.closeInventory();
+			Bukkit.getPluginManager().callEvent(new TeamSelectEvent(player));
 		}
 	}
 	
 	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(Player player : SpectatorHandler.getPlayers()) {
+				InventoryView view = player.getOpenInventory();
+				if(view == null || !view.getTitle().equals(invName)) {
+					openTeamSelection(player);
+				}
+			}
+		}
+	}
+	
+	//@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
 		if(event.getPlayer() instanceof Player) {
 			Player player = (Player) event.getPlayer();
@@ -129,7 +145,7 @@ public class TeamHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if(Ranks.PREMIUM.hasRank(player)) {
 			SpectatorHandler.add(player);

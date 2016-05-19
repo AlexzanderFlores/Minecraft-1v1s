@@ -45,7 +45,6 @@ public abstract class MiniGame extends ProPlugin {
 	private boolean useSpectatorChatChannel = true;
 	private boolean playersHaveOneLife = true;
 	private boolean restartWithOnePlayerLeft = true;
-	private boolean updateTitleSidebar = true;
 	private GameMode spectatingMode = GameMode.CREATIVE;
 	private World lobby = null;
 	private World map = null;
@@ -181,20 +180,11 @@ public abstract class MiniGame extends ProPlugin {
 		setUseSpectatorChatChannel(true);
 		setPlayersHaveOneLife(true);
 		setRestartWithOnePlayerLeft(true);
-		setUpdateTitleSidebar(true);
 		setCounter(0);
 	}
 	
 	public int getVotingCounter() {
 		return this.votingCounter;
-	}
-	
-	public boolean getUpdateTitleSidebar() {
-		return updateTitleSidebar;
-	}
-	
-	public void setUpdateTitleSidebar(boolean updateTitleSidebar) {
-		this.updateTitleSidebar = updateTitleSidebar;
 	}
 	
 	public void setVotingCounter(int votingCounter) {

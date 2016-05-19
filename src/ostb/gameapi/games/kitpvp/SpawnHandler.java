@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
+import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 
@@ -55,8 +56,12 @@ public class SpawnHandler implements Listener {
 	}
 	
 	@EventHandler
+	public void onTeamSelect(TeamSelectEvent event) {
+		spawn(event.getPlayer());
+	}
+	
+	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-		spawn(player);
+		spawn(event.getPlayer());
 	}
 }

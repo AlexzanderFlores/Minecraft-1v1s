@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -55,7 +54,7 @@ public class PerformanceLogger implements Listener {
 	
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
-		map = ProPlugin.getPlayers().get(0).getWorld().getName();
+		map = OSTB.getMiniGame().getMap().getName();
 	}
 	
 	@EventHandler
