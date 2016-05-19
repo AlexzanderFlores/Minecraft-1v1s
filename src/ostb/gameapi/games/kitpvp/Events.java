@@ -1,5 +1,6 @@
 package ostb.gameapi.games.kitpvp;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,7 +15,8 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onPlayerSpectator(PlayerSpectatorEvent event) {
-		if(event.getState() == SpectatorState.ADDED) {
+		Player player = event.getPlayer();
+		if(KitPVP.getKitPVPTeamHandler().getTeam(player) != null && event.getState() == SpectatorState.ADDED) {
 			event.setCancelled(true);
 		}
 	}

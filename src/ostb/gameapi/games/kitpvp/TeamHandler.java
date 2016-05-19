@@ -51,17 +51,17 @@ public class TeamHandler implements Listener {
 			this.woolColor = woolColor;
 		}
 		
-		public boolean isOnTeam(Player player) {
-			return team.hasPlayer(player);
-		}
-		
-		private String getPrefix() {
+		private String getName() {
 			String prefix = team.getPrefix();
 			return prefix.substring(0, prefix.length() - 1);
 		}
 		
+		private String [] getLores() {
+			return new String [] {"", "&7Players: &e" + team.getSize(), ""};
+		}
+		
 		public ItemStack getIcon() {
-			return new ItemCreator(Material.WOOL, woolColor.getColorIndex()).setName(getPrefix()).setLores(new String [] {"", "&7Players: &e" + team.getSize(), ""}).getItemStack();
+			return new ItemCreator(Material.WOOL, woolColor.getColorIndex()).setName(getName()).setLores(getLores()).getItemStack();
 		}
 	}
 	
@@ -76,6 +76,15 @@ public class TeamHandler implements Listener {
 	
 	public List<Team> getTeams() {
 		return new ArrayList<Team>(scores.keySet());
+	}
+	
+	public Team getTeam(Player player) {
+		for(Team team : getTeams()) {
+			if(team.hasPlayer(player)) {
+				return team;
+			}
+		}
+		return null;
 	}
 	
 	private void openTeamSelection(Player player) {

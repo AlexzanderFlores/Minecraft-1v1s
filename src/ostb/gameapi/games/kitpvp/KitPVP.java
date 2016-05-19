@@ -15,7 +15,7 @@ public class KitPVP extends MiniGame {
 		super("KitPVP");
 		setPlayersHaveOneLife(false);
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
-		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KIT_PVP.getData());
+		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(2);
 		CoinsHandler.setWinCoins(25);
 		teamHandler = new TeamHandler();
