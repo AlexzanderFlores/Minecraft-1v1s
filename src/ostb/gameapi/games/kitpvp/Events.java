@@ -10,6 +10,7 @@ import ostb.customevents.game.CounterDecrementEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
@@ -38,7 +39,9 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerSpectator(PlayerSpectatorEvent event) {
 		Player player = event.getPlayer();
-		if(KitPVP.getKitPVPTeamHandler().getTeam(player) != null && event.getState() == SpectatorState.ADDED) {
+		if(!Ranks.PREMIUM.hasRank(player)) {
+			event.setCancelled(true);
+		} else if(KitPVP.getKitPVPTeamHandler().getTeam(player) != null && event.getState() == SpectatorState.ADDED) {
 			event.setCancelled(true);
 		}
 	}

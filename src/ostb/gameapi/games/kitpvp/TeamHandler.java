@@ -199,6 +199,7 @@ public class TeamHandler implements Listener {
 				}
 			}
 			bestTeam.add(player);
+			Bukkit.getPluginManager().callEvent(new TeamSelectEvent(player));
 		}
 	}
 	
