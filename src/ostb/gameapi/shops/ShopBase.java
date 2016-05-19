@@ -114,14 +114,14 @@ public abstract class ShopBase implements Listener {
 	protected void setBackItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page > 1) {
-			inventory.setItem(0, new ItemCreator(Material.ARROW).setName("&bPage #" + (page - 1)).getItemStack());
+			inventory.setItem(inventory.getSize() - 8, new ItemCreator(Material.ARROW).setName("&bPage #" + (page - 1)).getItemStack());
 		}
 	}
 	
 	protected void setNextItem(Player player, Inventory inventory) {
 		int page = getPage(player);
 		if(page < maxPages) {
-			inventory.setItem(8, new ItemCreator(Material.ARROW).setName("&bPage #" + (page + 1)).getItemStack());
+			inventory.setItem(inventory.getSize() - 2, new ItemCreator(Material.ARROW).setName("&bPage #" + (page + 1)).getItemStack());
 		}
 	}
 	

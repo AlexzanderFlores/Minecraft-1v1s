@@ -19,9 +19,13 @@ import com.sk89q.worldedit.regions.Region;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.OSTB.Plugins;
+import ostb.gameapi.games.kitpvp.Shop;
+import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
+import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
@@ -37,6 +41,7 @@ public class Building extends ProPlugin {
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
 		new ArmorStandHelper();
+		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -127,17 +132,6 @@ public class Building extends ProPlugin {
 							MessageHandler.sendMessage(player, "&cError on saving config file");
 						}
 						return true;
-					} else if(action.equalsIgnoreCase("setFlag")) {
-						ConfigurationUtil config = getConfig(player, "flag");
-						config.getConfig().set(team + ".x", x + .5);
-						config.getConfig().set(team + ".y", y);
-						config.getConfig().set(team + ".z", z + .5);
-						if(config.save()) {
-							MessageHandler.sendMessage(player, "Set the " + team + " team flag");
-						} else {
-							MessageHandler.sendMessage(player, "&cError on saving config file");
-						}
-						return true;
 					} else if(action.equalsIgnoreCase("setCP")) {
 						try {
 							int index = Integer.valueOf(team);
@@ -161,7 +155,6 @@ public class Building extends ProPlugin {
 				MessageHandler.sendMessage(player, "&f/dom setSpawn <red | blue> [index]");
 				MessageHandler.sendMessage(player, "&f/dom setShop <red | blue>");
 				MessageHandler.sendMessage(player, "&f/dom setArmory <red | blue>");
-				MessageHandler.sendMessage(player, "&f/dom setFlag <red | blue>");
 				MessageHandler.sendMessage(player, "&f/dom setCP <index>");
 				MessageHandler.sendMessage(player, "&f/dom setRespawnLoc");
 				return true;
@@ -204,8 +197,9 @@ public class Building extends ProPlugin {
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				if(arguments.length == 0) {
-					Block block = getRegionBlock(player);
-					MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
+					new Shop(player.getLocation(), null, null, null, null);
+					//Block block = getRegionBlock(player);
+					//MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
 				} else if(arguments.length == 2) {
 					player.getInventory().addItem(new ItemCreator(Material.valueOf(arguments[0]), Byte.valueOf(arguments[1])).setGlow(true).getItemStack());
 				}

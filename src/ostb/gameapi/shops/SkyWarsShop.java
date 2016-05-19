@@ -135,10 +135,12 @@ public class SkyWarsShop extends ShopBase {
 			Player player = event.getPlayer();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.ARROW) {
-				if(event.getSlot() == 0) {
+				InventoryView inv = player.getOpenInventory();
+				int size = inv.getTopInventory().getSize();
+				if(event.getSlot() == size - 8) {
 					openShop(player, getPage(player) - 1);
 					return;
-				} else if(event.getSlot() == 8) {
+				} else if(event.getSlot() == size - 2) {
 					openShop(player, getPage(player) + 1);
 					return;
 				}
