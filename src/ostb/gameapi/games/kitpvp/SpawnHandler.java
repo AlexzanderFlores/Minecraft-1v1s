@@ -15,7 +15,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.Team;
 
-import ostb.OSTB;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
 import ostb.server.util.ConfigurationUtil;
@@ -30,7 +29,7 @@ public class SpawnHandler implements Listener {
 	
 	public SpawnHandler() {
 		spawns = new HashMap<Team, Location>();
-		World world = OSTB.getMiniGame().getMap();
+		World world = Bukkit.getWorlds().get(0);
 		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/spawns.yml");
 		teamHandler = KitPVP.getKitPVPTeamHandler();
 		for(Team team : teamHandler.getTeams()) {

@@ -15,6 +15,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
+import anticheat.events.PlayerLeaveEvent;
 import anticheat.events.TimeEvent;
 import net.minecraft.server.v1_8_R3.EnumColor;
 import ostb.OSTB;
@@ -24,7 +25,6 @@ import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -81,7 +81,6 @@ public class TeamHandler implements Listener {
 			for(KitTeam kitTeam : values()) {
 				kitTeam.team.removePlayer(player);
 			}
-			sendMessage(AccountHandler.getPrefix(player) + " &xhas joined your team");
 			team.addPlayer(player);
 			String name = color + player.getName();
 			if(name.length() > 16) {
@@ -89,6 +88,10 @@ public class TeamHandler implements Listener {
 			}
 			player.setPlayerListName(name);
 			MessageHandler.sendMessage(player, "You have joined the " + getName() + " &xteam");
+		}
+		
+		public void remove(Player player) {
+			team.removePlayer(player);
 		}
 		
 		public void sendMessage(String message) {
@@ -212,6 +215,13 @@ public class TeamHandler implements Listener {
 					kitTeam.incrementScore();
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		for(KitTeam kitTeam : KitTeam.values()) {
+			kitTeam.remove(event.getPlayer());
 		}
 	}
 }

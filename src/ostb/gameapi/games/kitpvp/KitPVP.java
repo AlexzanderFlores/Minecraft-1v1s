@@ -7,7 +7,8 @@ import org.bukkit.ChatColor;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
-import ostb.gameapi.MiniGame;
+import ostb.ProPlugin;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.StatsHandler;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.player.CoinsHandler;
@@ -16,22 +17,19 @@ import ostb.server.DB;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
-public class KitPVP extends MiniGame {
+public class KitPVP extends ProPlugin {
 	private static TeamHandler teamHandler = null;
 	private String oldScore = "";
 	private String oldCount = "";
 	
 	public KitPVP() {
 		super("KitPVP");
-		setPlayersHaveOneLife(false);
-		setMap(Bukkit.getWorlds().get(0));
-		setGameState(GameStates.STARTED);
 		setCounter(60 * 60);
 		setAllowEntityDamage(true);
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
 		setAllowBowShooting(true);
-		setEnd(false);
+		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(2);

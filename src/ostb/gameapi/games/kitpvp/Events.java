@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
-import ostb.customevents.game.CounterDecrementEvent;
+import anticheat.events.TimeEvent;
+import ostb.OSTB;
 import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
@@ -25,15 +27,26 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onCounterDecrement(CounterDecrementEvent event) {
-		for(KitTeam kitTeam : KitTeam.values()) {
-			if(kitTeam.getSize() == 0) {
-				paused = true;
-				event.setCancelled(true);
-				return;
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			for(KitTeam kitTeam : KitTeam.values()) {
+				if(kitTeam.getSize() == 0) {
+					paused = true;
+					break;
+				}
 			}
+			if(!paused) {
+				OSTB.getProPlugin().decrementCounter();
+			}
+			OSTB.getSidebar().update();
 		}
-		paused = false;
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		player.setScoreboard(OSTB.getScoreboard());
 	}
 	
 	@EventHandler

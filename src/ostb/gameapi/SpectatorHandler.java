@@ -160,7 +160,6 @@ public class SpectatorHandler implements Listener {
 			Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
 			if(!playerSpectateStartEvent.isCancelled()) {
 				spectators.add(player.getName());
-				GameMode gameMode = OSTB.getMiniGame().getSpectatingMode();
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
 				player.getInventory().setItem(0, teleporter);
@@ -176,7 +175,7 @@ public class SpectatorHandler implements Listener {
 						player.hidePlayer(online);
 					}
 				}
-				player.setGameMode(gameMode);
+				player.setGameMode(GameMode.CREATIVE);
 				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
 				player.setAllowFlight(true);
 				player.setFlying(true);
