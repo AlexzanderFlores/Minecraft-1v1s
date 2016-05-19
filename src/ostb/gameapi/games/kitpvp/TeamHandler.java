@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
 import net.minecraft.server.v1_8_R3.EnumColor;
@@ -28,7 +28,6 @@ import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
-	private List<Team> teams = null;
 	private Map<Team, Integer> scores = null;
 	private Team redTeam = null;
 	private Team blueTeam = null;
@@ -36,39 +35,54 @@ public class TeamHandler implements Listener {
 	private Team greenTeam = null;
 	private String invName = null;
 	
-	public TeamHandler() {
-		teams = new ArrayList<Team>();
-		scores = new HashMap<Team, Integer>();
-		Scoreboard scoreboard = OSTB.getScoreboard();
-		redTeam = scoreboard.registerNewTeam("red");
-		redTeam.setPrefix(ChatColor.RED + "[Red] ");
-		teams.add(redTeam);
-		blueTeam = scoreboard.registerNewTeam("blue");
-		blueTeam.setPrefix(ChatColor.AQUA + "[Blue] ");
-		teams.add(blueTeam);
-		yellowTeam = scoreboard.registerNewTeam("yellow");
-		yellowTeam.setPrefix(ChatColor.YELLOW + "[Yellow] ");
-		teams.add(yellowTeam);
-		greenTeam = scoreboard.registerNewTeam("green");
-		greenTeam.setPrefix(ChatColor.GREEN + "[Green] ");
-		teams.add(greenTeam);
-		for(Team team : teams) {
+	public enum KitTeam {
+		RED("Red", ChatColor.RED, EnumColor.RED),
+		BLUE("Blue", ChatColor.AQUA, EnumColor.LIGHT_BLUE),
+		YELLOW("Yellow", ChatColor.YELLOW, EnumColor.YELLOW),
+		GREEN("Green", ChatColor.GREEN, EnumColor.LIME);
+		
+		private Team team = null;
+		private EnumColor woolColor = null;
+		
+		private KitTeam(String prefix, ChatColor color, EnumColor woolColor) {
+			team = OSTB.getScoreboard().registerNewTeam(prefix);
+			team.setPrefix(color + "[" + prefix + "] ");
 			team.setAllowFriendlyFire(false);
+			this.woolColor = woolColor;
+		}
+		
+		public boolean isOnTeam(Player player) {
+			return team.hasPlayer(player);
+		}
+		
+		private String getPrefix() {
+			String prefix = team.getPrefix();
+			return prefix.substring(0, prefix.length() - 1);
+		}
+		
+		public ItemStack getIcon() {
+			return new ItemCreator(Material.WOOL, woolColor.getColorIndex()).setName(getPrefix()).setLores(new String [] {"", "&7Players: &e" + team.getSize(), ""}).getItemStack();
+		}
+	}
+	
+	public TeamHandler() {
+		scores = new HashMap<Team, Integer>();
+		for(KitTeam team : KitTeam.values()) {
+			scores.put(team.team, 0);
 		}
 		invName = "Team Selection";
 		EventUtil.register(this);
 	}
 	
 	public List<Team> getTeams() {
-		return teams;
+		return new ArrayList<Team>(scores.keySet());
 	}
 	
 	private void openTeamSelection(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 3, invName);
-		inventory.setItem(10, new ItemCreator(Material.WOOL, EnumColor.RED.getColorIndex()).setName(redTeam.getPrefix()).setLores(new String [] {"", "&7Players: &e" + redTeam.getSize(), ""}).getItemStack());
-		inventory.setItem(12, new ItemCreator(Material.WOOL, EnumColor.LIGHT_BLUE.getColorIndex()).setName(blueTeam.getPrefix()).setLores(new String [] {"", "&7Players: &e" + blueTeam.getSize(), ""}).getItemStack());
-		inventory.setItem(14, new ItemCreator(Material.WOOL, EnumColor.YELLOW.getColorIndex()).setName(yellowTeam.getPrefix()).setLores(new String [] {"", "&7Players: &e" + yellowTeam.getSize(), ""}).getItemStack());
-		inventory.setItem(16, new ItemCreator(Material.WOOL, EnumColor.LIME.getColorIndex()).setName(greenTeam.getPrefix()).setLores(new String [] {"", "&7Players: &e" + greenTeam.getSize(), ""}).getItemStack());
+		for(int a = 0, slot = 10; a < KitTeam.values().length; ++a, slot += 2) {
+			inventory.setItem(slot, KitTeam.values()[a].getIcon());
+		}
 		player.openInventory(inventory);
 	}
 	
@@ -96,7 +110,7 @@ public class TeamHandler implements Listener {
 	public void onInventoryClose(InventoryCloseEvent event) {
 		if(event.getPlayer() instanceof Player) {
 			Player player = (Player) event.getPlayer();
-			for(Team team : teams) {
+			for(Team team : getTeams()) {
 				if(team.hasPlayer(player)) {
 					return;
 				}
@@ -118,7 +132,7 @@ public class TeamHandler implements Listener {
 	public void onGameDeath(GameDeathEvent event) {
 		Player killer = event.getKiller();
 		if(killer != null) {
-			for(Team team : teams) {
+			for(Team team : getTeams()) {
 				if(team.hasPlayer(killer)) {
 					int score = 0;
 					if(scores.containsKey(team)) {

@@ -235,8 +235,8 @@ public class SpectatorHandler implements Listener {
 		if(miniGame == null) {
 			return false;
 		} else {
-			GameStates gameState = (GameStates) miniGame.getGameState();
-			return (gameState == GameStates.STARTING && !miniGame.getCanJoinWhileStarting()) || gameState == GameStates.STARTED || gameState == GameStates.ENDING;
+			GameStates gameState = miniGame.getGameState();
+			return (gameState == GameStates.STARTING && !miniGame.getCanJoinWhileStarting()) || gameState == GameStates.STARTED;
 		}
 	}
 	
@@ -260,18 +260,6 @@ public class SpectatorHandler implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(contains(event.getPlayer())) {
 			event.setCancelled(true);
-		} else if(!event.isCancelled()) {
-			int x = event.getBlock().getX();
-			int y = event.getBlock().getY();
-			int z = event.getBlock().getZ();
-			for(Player spectator : getPlayers()) {
-				Location location = spectator.getLocation();
-				if(x == location.getBlockX() && y == location.getBlockY() && z == location.getBlockZ()) {
-					spectator.teleport(spectator.getLocation().add(0, 30, 0));
-					MessageHandler.sendMessage(spectator, "&cYou have been teleported due to you getting in the way of a player placing a block");
-					break;
-				}
-			}
 		}
 	}
 	
@@ -346,7 +334,7 @@ public class SpectatorHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if(event.getWhoClicked() instanceof Player) {
-			final Player player = (Player) event.getWhoClicked();
+			Player player = (Player) event.getWhoClicked();
 			if(contains(player)) {
 				ItemStack item = event.getCurrentItem();
 				if(item != null && item.getItemMeta() != null) {
@@ -383,14 +371,14 @@ public class SpectatorHandler implements Listener {
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		if(contains(player)) {
-			if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getUseSpectatorChatChannel()) {
+			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getUseSpectatorChatChannel()) {
 				for(Player online : Bukkit.getOnlinePlayers()) {
 					if(!Ranks.isStaff(player)) {
 						event.getRecipients().remove(online);
 					}
 				}
 			}
-			event.setFormat(ChatColor.GRAY + "[Spectator] " + AccountHandler.getPrefix(player, false) + ": " + event.getMessage());
+			event.setFormat(ChatColor.GRAY + "[Spec] " + AccountHandler.getPrefix(player, false) + ": " + event.getMessage());
 		}
 	}
 	
@@ -439,15 +427,16 @@ public class SpectatorHandler implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerRespawn(final PlayerRespawnEvent event) {
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getPlayersHaveOneLife()) {
 			ProPlugin.resetPlayer(event.getPlayer());
 			add(event.getPlayer());
 			Player killer = event.getPlayer().getKiller();
-			if(killer != null) {
+			if(killer == null) {
+				event.setRespawnLocation(OSTB.getMiniGame().getLobby().getSpawnLocation());
+			} else {
 				event.setRespawnLocation(killer.getLocation());
 			}
-			event.setRespawnLocation(OSTB.getMiniGame().getLobby().getSpawnLocation());
 		}
 	}
 	

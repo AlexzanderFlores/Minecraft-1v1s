@@ -57,7 +57,7 @@ public class Armory implements Listener {
 					return;
 				}
 				int repairCost = getRepairCost(player);
-				Inventory inventory = Bukkit.createInventory(player, 9 * (repairCost == -1 ? 3 : 5), name);
+				Inventory inventory = Bukkit.createInventory(player, 9 * 5, name);
 				inventory.setItem(10, new ItemCreator(Material.LEATHER_CHESTPLATE).setName("&bLeather Armor").setLores(new String [] {
 					"",
 					"&7Cost: &e" + armorCosts.get(Material.LEATHER_CHESTPLATE) + " Level",
@@ -78,8 +78,7 @@ public class Armory implements Listener {
 					"&7Cost: &e" + armorCosts.get(Material.IRON_CHESTPLATE) + " Levels",
 					""
 				}).getItemStack());
-				if(repairCost > -1) {
-					inventory.setItem(31, new ItemCreator(Material.ANVIL).setName("&bRepair Armor").setLores(new String [] {
+				inventory.setItem(31, new ItemCreator(Material.ANVIL).setName("&bRepair Armor").setLores(new String [] {
 						"",
 						"&7Cost: &e" + repairCost + " Levels",
 						"",
@@ -87,7 +86,6 @@ public class Armory implements Listener {
 						"&7have equip currently",
 						""
 					}).getItemStack());
-				}
 				player.openInventory(inventory);
 			}
 		};
