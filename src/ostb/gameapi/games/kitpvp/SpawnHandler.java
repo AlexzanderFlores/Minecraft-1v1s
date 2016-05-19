@@ -8,13 +8,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
+import ostb.player.MessageHandler;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
 
@@ -62,6 +65,28 @@ public class SpawnHandler implements Listener {
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		spawn(event.getPlayer());
+		event.setRespawnLocation(spawn(event.getPlayer()));
+		event.getPlayer().setNoDamageTicks(20 * 10);
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			if(player.getNoDamageTicks() > 0) {
+				Player damager = null;
+				if(event.getDamager() instanceof Player) {
+					damager = (Player) event.getDamager();
+				} else if(event.getDamager() instanceof Projectile) {
+					Projectile projectile = (Projectile) event.getDamager();
+					if(projectile.getShooter() instanceof Player) {
+						damager = (Player) projectile.getShooter();
+					}
+				}
+				if(damager != null) {
+					MessageHandler.sendMessage(damager, "&cThat player is under spawn protection for &e" + (player.getNoDamageTicks() / 20) + "s");
+				}
+			}
+		}
 	}
 }

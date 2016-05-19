@@ -16,6 +16,7 @@ import org.bukkit.event.Event;
 
 import anticheat.util.DelayedTask;
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -90,11 +91,14 @@ public abstract class MiniGame extends ProPlugin {
 				entity.remove();
 			}
 		}
-		ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
-		armorStand.setGravity(false);
-		armorStand.setVisible(false);
-		armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
-		armorStand.setCustomNameVisible(true);
+		//TODO: Add a better system for checking this
+		if(OSTB.getPlugin() != Plugins.KITPVP) {
+			ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
+			armorStand.setGravity(false);
+			armorStand.setVisible(false);
+			armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
+			armorStand.setCustomNameVisible(true);
+		}
 		new MiniGameEvents();
 		new SpectatorHandler();
 		new PerformanceLogger();

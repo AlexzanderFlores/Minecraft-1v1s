@@ -1,13 +1,12 @@
 package ostb.gameapi.games.kitpvp;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,13 +24,14 @@ import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
-	private Map<Team, Integer> scores = null;
 	private String invName = null;
 	
 	public enum KitTeam {
@@ -41,13 +41,20 @@ public class TeamHandler implements Listener {
 		GREEN("Green", ChatColor.GREEN, EnumColor.LIME);
 		
 		private Team team = null;
+		private ChatColor color = null;
 		private EnumColor woolColor = null;
+		private int score = 0;
 		
 		private KitTeam(String prefix, ChatColor color, EnumColor woolColor) {
 			team = OSTB.getScoreboard().registerNewTeam(prefix);
 			team.setPrefix(color + "[" + prefix + "] ");
 			team.setAllowFriendlyFire(false);
+			this.color = color;
 			this.woolColor = woolColor;
+		}
+		
+		public boolean isOnTeam(Player player) {
+			return team.hasPlayer(player);
 		}
 		
 		private String getName() {
@@ -62,19 +69,70 @@ public class TeamHandler implements Listener {
 		public ItemStack getIcon() {
 			return new ItemCreator(Material.WOOL, woolColor.getColorIndex()).setName(getName()).setLores(getLores()).getItemStack();
 		}
+		
+		public int getSize() {
+			return team.getSize();
+		}
+		
+		public String getSizeString() {
+			return color + "" + getSize();
+		}
+		
+		public void add(Player player) {
+			for(KitTeam kitTeam : values()) {
+				kitTeam.team.removePlayer(player);
+			}
+			sendMessage(AccountHandler.getPrefix(player) + " &xhas joined your team");
+			team.addPlayer(player);
+			String name = color + player.getName();
+			if(name.length() > 16) {
+				name = name.substring(0, 16);
+			}
+			player.setPlayerListName(name);
+			MessageHandler.sendMessage(player, "You have joined the " + getName() + " &xteam");
+		}
+		
+		public void sendMessage(String message) {
+			for(OfflinePlayer offlinePlayer : team.getPlayers()) {
+				if(offlinePlayer.isOnline() && offlinePlayer instanceof Player) {
+					Player player = (Player) offlinePlayer;
+					MessageHandler.sendMessage(player, message);
+				}
+			}
+		}
+		
+		public void incrementScore() {
+			++score;
+		}
+		
+		public void removeScore(int toRemove) {
+			score -= toRemove;
+		}
+		
+		public void clearScore() {
+			score = 0;
+		}
+		
+		public int getScore() {
+			return score;
+		}
+		
+		public String getScoreString() {
+			return color + "" + getScore();
+		}
 	}
 	
 	public TeamHandler() {
-		scores = new HashMap<Team, Integer>();
-		for(KitTeam team : KitTeam.values()) {
-			scores.put(team.team, 0);
-		}
 		invName = "Team Selection";
 		EventUtil.register(this);
 	}
 	
 	public List<Team> getTeams() {
-		return new ArrayList<Team>(scores.keySet());
+		List<Team> teams = new ArrayList<Team>();
+		for(KitTeam kitTeam : KitTeam.values()) {
+			teams.add(kitTeam.team);
+		}
+		return teams;
 	}
 	
 	public Team getTeam(Player player) {
@@ -98,18 +156,15 @@ public class TeamHandler implements Listener {
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(invName)) {
 			Player player = event.getPlayer();
-			for(KitTeam kitTeam : KitTeam.values()) {
-				kitTeam.team.removePlayer(player);
-			}
 			int slot = event.getSlot();
 			if(slot == 10) {
-				KitTeam.RED.team.addPlayer(player);
+				KitTeam.RED.add(player);
 			} else if(slot == 12) {
-				KitTeam.BLUE.team.addPlayer(player);
+				KitTeam.BLUE.add(player);
 			} else if(slot == 14) {
-				KitTeam.YELLOW.team.addPlayer(player);
+				KitTeam.YELLOW.add(player);
 			} else if(slot == 16) {
-				KitTeam.GREEN.team.addPlayer(player);
+				KitTeam.GREEN.add(player);
 			}
 			SpectatorHandler.remove(player);
 			event.setCancelled(true);
@@ -157,16 +212,11 @@ public class TeamHandler implements Listener {
 	public void onGameDeath(GameDeathEvent event) {
 		Player killer = event.getKiller();
 		if(killer != null) {
-			for(Team team : getTeams()) {
-				if(team.hasPlayer(killer)) {
-					int score = 0;
-					if(scores.containsKey(team)) {
-						score = scores.get(team);
-					}
-					scores.put(team, ++score);
+			for(KitTeam kitTeam : KitTeam.values()) {
+				if(kitTeam.isOnTeam(killer)) {
+					kitTeam.incrementScore();
 				}
 			}
-			//TODO: Update the scoreboard
 		}
 	}
 }

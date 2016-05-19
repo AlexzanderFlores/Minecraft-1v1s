@@ -3,12 +3,17 @@ package ostb.gameapi.games.kitpvp;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.StatsHandler;
+import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.player.CoinsHandler;
+import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
 public class KitPVP extends MiniGame {
@@ -19,6 +24,7 @@ public class KitPVP extends MiniGame {
 		setPlayersHaveOneLife(false);
 		setMap(Bukkit.getWorlds().get(0));
 		setGameState(GameStates.STARTED);
+		setCounter(60 * 60);
 		setAllowEntityDamage(true);
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
@@ -27,6 +33,30 @@ public class KitPVP extends MiniGame {
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(2);
 		CoinsHandler.setWinCoins(25);
+		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
+			@Override
+			public void update() {
+				removeScore(11);
+				removeScore(8);
+				removeScore(5);
+				setText(new String [] {
+					" ",
+					"&eScores",
+					KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString() + " &7/ " + KitTeam.YELLOW.getScoreString() + " &7/ " + KitTeam.GREEN.getScoreString(),
+					"  ",
+					"&ePlaying",
+					KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " &7/ " + KitTeam.YELLOW.getSizeString() + " &7/ " + KitTeam.GREEN.getSizeString() + " ",
+					"   ",
+					"&eScores Reset In",
+					CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
+					"    ",
+					"&aOutsideTheBlock.org",
+					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"     "
+				});
+				super.update();
+			}
+		});
 		teamHandler = new TeamHandler();
 		new SpawnHandler();
 		new Events();

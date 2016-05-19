@@ -18,11 +18,13 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -487,5 +489,26 @@ public class Events implements Listener {
 	public void onPlayerAssist(PlayerAssistEvent event) {
 		Player player = event.getAttacker();
 		coinsHandler.addCoins(player, 5, "&x(Assist)");
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			if(player.getNoDamageTicks() > 0) {
+				Player damager = null;
+				if(event.getDamager() instanceof Player) {
+					damager = (Player) event.getDamager();
+				} else if(event.getDamager() instanceof Projectile) {
+					Projectile projectile = (Projectile) event.getDamager();
+					if(projectile.getShooter() instanceof Player) {
+						damager = (Player) projectile.getShooter();
+					}
+				}
+				if(damager != null) {
+					MessageHandler.sendMessage(damager, "&cThat player is under spawn protection for &e" + (player.getNoDamageTicks() / 20) + "s");
+				}
+			}
+		}
 	}
 }
