@@ -18,6 +18,8 @@ import ostb.server.util.FileHandler;
 
 public class KitPVP extends MiniGame {
 	private static TeamHandler teamHandler = null;
+	private String oldScore = "";
+	private String oldCount = "";
 	
 	public KitPVP() {
 		super("KitPVP");
@@ -29,6 +31,7 @@ public class KitPVP extends MiniGame {
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
 		setAllowBowShooting(true);
+		setEnd(false);
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(2);
@@ -36,19 +39,27 @@ public class KitPVP extends MiniGame {
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
-				removeScore(11);
-				removeScore(8);
+				String score = Events.getPaused() ? "&7Paused" : KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString() + " &7/ " + KitTeam.YELLOW.getScoreString() + " &7/ " + KitTeam.GREEN.getScoreString();
+				if(!oldScore.equals(score)) {
+					oldScore = score;
+					removeScore(11);
+				}
+				String count = KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " &7/ " + KitTeam.YELLOW.getSizeString() + " &7/ " + KitTeam.GREEN.getSizeString() + " ";
+				if(!oldCount.equals(count)) {
+					oldCount = count;
+					removeScore(8);
+				}
 				removeScore(5);
 				setText(new String [] {
 					" ",
 					"&eScores",
-					KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString() + " &7/ " + KitTeam.YELLOW.getScoreString() + " &7/ " + KitTeam.GREEN.getScoreString(),
+					score,
 					"  ",
 					"&ePlaying",
-					KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " &7/ " + KitTeam.YELLOW.getSizeString() + " &7/ " + KitTeam.GREEN.getSizeString() + " ",
+					count,
 					"   ",
 					"&eScores Reset In",
-					CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
+					CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA) + (Events.getPaused() ? " &7(Paused)" : ""),
 					"    ",
 					"&aOutsideTheBlock.org",
 					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),

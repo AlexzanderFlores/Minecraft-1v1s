@@ -3,9 +3,18 @@ package ostb.customevents.game;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class GameVotingEvent extends Event {
+public class CounterDecrementEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
- 
+    private boolean cancelled = false;
+    
+    public boolean isCancelled() {
+    	return this.cancelled;
+    }
+    
+    public void setCancelled(boolean cancelled) {
+    	this.cancelled = cancelled;
+    }
+    
     @Override
     public HandlerList getHandlers() {
         return handlers;

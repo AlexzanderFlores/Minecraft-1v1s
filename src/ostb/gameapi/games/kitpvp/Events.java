@@ -6,13 +6,33 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
+import ostb.customevents.game.CounterDecrementEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
+import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
+	private static boolean paused = false;
+	
 	public Events() {
 		EventUtil.register(this);
+	}
+	
+	public static boolean getPaused() {
+		return paused;
+	}
+	
+	@EventHandler
+	public void onCounterDecrement(CounterDecrementEvent event) {
+		for(KitTeam kitTeam : KitTeam.values()) {
+			if(kitTeam.getSize() == 0) {
+				paused = true;
+				event.setCancelled(true);
+				return;
+			}
+		}
+		paused = false;
 	}
 	
 	@EventHandler

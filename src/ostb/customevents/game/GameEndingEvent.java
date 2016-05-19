@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 
 public class GameEndingEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
- 
+    
     @Override
     public HandlerList getHandlers() {
         return handlers;

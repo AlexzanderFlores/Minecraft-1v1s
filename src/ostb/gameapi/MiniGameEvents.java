@@ -23,6 +23,7 @@ import npc.NPCRegistrationHandler.NPCs;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.customevents.game.CounterDecrementEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -110,7 +111,11 @@ public class MiniGameEvents implements Listener {
 			}
 			OSTB.getSidebar().update();
 			if(getMiniGame().getCounter() > 0) {
-				getMiniGame().decrementCounter();
+				CounterDecrementEvent counterDecrementEvent = new CounterDecrementEvent();
+				Bukkit.getPluginManager().callEvent(counterDecrementEvent);
+				if(!counterDecrementEvent.isCancelled()) {
+					getMiniGame().decrementCounter();
+				}
 			}
 		} else if(ticks == 20 * 60 * 5 && Bukkit.getOnlinePlayers().isEmpty()) {
 			ProPlugin.restartServer();

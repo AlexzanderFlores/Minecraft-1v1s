@@ -73,7 +73,7 @@ public class SpawnHandler implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			if(player.getNoDamageTicks() > 0) {
+			if((player.getNoDamageTicks() / 20) > 0) {
 				Player damager = null;
 				if(event.getDamager() instanceof Player) {
 					damager = (Player) event.getDamager();

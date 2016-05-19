@@ -46,6 +46,7 @@ public abstract class MiniGame extends ProPlugin {
 	private boolean useSpectatorChatChannel = true;
 	private boolean playersHaveOneLife = true;
 	private boolean restartWithOnePlayerLeft = true;
+	private boolean end = true;
 	private GameMode spectatingMode = GameMode.CREATIVE;
 	private World lobby = null;
 	private World map = null;
@@ -184,6 +185,7 @@ public abstract class MiniGame extends ProPlugin {
 		setUseSpectatorChatChannel(true);
 		setPlayersHaveOneLife(true);
 		setRestartWithOnePlayerLeft(true);
+		setEnd(true);
 		setCounter(0);
 	}
 	
@@ -286,6 +288,14 @@ public abstract class MiniGame extends ProPlugin {
 		this.restartWithOnePlayerLeft = restartWithOnePlayerLeft;
 	}
 	
+	public boolean getEnd() {
+		return this.end;
+	}
+	
+	public void setEnd(boolean end) {
+		this.end = end;
+	}
+	
 	public GameMode getSpectatingMode() {
 		return spectatingMode;
 	}
@@ -315,6 +325,9 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public void setGameState(GameStates gameState) {
+		if(gameState == GameStates.ENDING && !getEnd()) {
+			return;
+		}
 		this.gameState = gameState;
 		getGameState().enable();
 	}

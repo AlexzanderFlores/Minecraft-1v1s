@@ -175,7 +175,7 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20 && SpectatorHandler.getNumberOf() > 0) {
+		if(ticks == 20) {
 			for(Player player : SpectatorHandler.getPlayers()) {
 				InventoryView view = player.getOpenInventory();
 				if(view == null || !view.getTitle().equals(invName)) {
@@ -191,13 +191,21 @@ public class TeamHandler implements Listener {
 		if(Ranks.PREMIUM.hasRank(player)) {
 			SpectatorHandler.add(player);
 			openTeamSelection(player);
+		} else {
+			KitTeam bestTeam = null;
+			for(KitTeam kitTeam : KitTeam.values()) {
+				if(bestTeam == null || kitTeam.getSize() <= bestTeam.getSize()) {
+					bestTeam = kitTeam;
+				}
+			}
+			bestTeam.add(player);
 		}
 	}
 	
 	@EventHandler
 	public void onGameDeath(GameDeathEvent event) {
 		Player killer = event.getKiller();
-		if(killer != null) {
+		if(killer != null && !Events.getPaused()) {
 			for(KitTeam kitTeam : KitTeam.values()) {
 				if(kitTeam.isOnTeam(killer)) {
 					kitTeam.incrementScore();

@@ -9,19 +9,18 @@ import org.bukkit.event.Listener;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
-
 public class PostGameStartingEvent extends Event implements Listener {
-    private static final HandlerList handlers = new HandlerList();
- 
-    public PostGameStartingEvent(boolean registerEvents) {
+	private static final HandlerList handlers = new HandlerList();
+	
+	public PostGameStartingEvent(boolean registerEvents) {
     	EventUtil.register(this);
     }
-    
-    public PostGameStartingEvent() {
-    	
-    }
-    
-    @Override
+	
+	public PostGameStartingEvent() {
+		
+	}
+	
+	@Override
     public HandlerList getHandlers() {
         return handlers;
     }
