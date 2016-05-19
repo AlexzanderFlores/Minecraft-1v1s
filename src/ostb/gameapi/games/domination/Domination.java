@@ -10,6 +10,7 @@ import ostb.gameapi.AssistTracker;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TeamHandler;
+import ostb.gameapi.TemporaryFireUtil;
 import ostb.gameapi.games.domination.mapeffects.Divided_Kingdom;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
@@ -38,6 +39,7 @@ public class Domination extends MiniGame {
 		new BelowNameHealthScoreboardUtil();
 		new AutoRespawn();
 		new TipGiver();
+		new TemporaryFireUtil(20 * 3);
 		new AssistTracker();
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override

@@ -303,15 +303,6 @@ public class Events implements Listener {
 				setUpTNT(player, tnt);
 			}
 			event.setCancelled(true);
-		} else if(event.getBlock().getType() == Material.FIRE) {
-			final Block block = event.getBlock();
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					block.setType(Material.AIR);
-				}
-			}, 20 * 3);
-			event.setCancelled(false);
 		}
 	}
 	
