@@ -16,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import npc.NPCEntity;
 import ostb.OSTB.Plugins;
@@ -26,7 +28,9 @@ import ostb.player.TitleDisplayer;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ItemCreator;
 
+@SuppressWarnings("deprecation")
 public class Shop implements Listener {
 	private static boolean registered = false;
 	private String name = null;
@@ -40,7 +44,7 @@ public class Shop implements Listener {
 			new Shop(new Location(world, x, y, z), redSpawn, blueSpawn, yellowSpawn, greenSpawn);
 		}
 	}
-	
+	// http://puu.sh/oYE7u/0a1937a3ed.png
 	public Shop(Location location, Location redSpawn, Location blueSpawn, Location yellowSpawn, Location greenSpawn) {
 		name = "Shop";
 		Location target = location.getWorld().getSpawnLocation();
@@ -65,6 +69,9 @@ public class Shop implements Listener {
 					return;
 				}
 				Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
+				
+				inventory.setItem(10, new ItemCreator(Material.ARROW).setAmount(8).setName("&bArrow x8").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
+				inventory.setItem(11, new ItemCreator(new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1)).setName("&bHealth Potion").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
 				
 				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
 				player.openInventory(inventory);
