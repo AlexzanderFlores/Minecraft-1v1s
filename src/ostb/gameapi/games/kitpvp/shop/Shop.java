@@ -103,7 +103,7 @@ public class Shop implements Listener {
 				inventory.setItem(34, new ItemCreator(Material.GOLDEN_APPLE).setName("&bGolden Apple").setLores(new String [] {"", "&7Price: &a1", ""}).getItemStack());
 				
 				// Enchant table
-				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Price is per item", "&7Get a random enchantment", "&7On an item of your choice", ""}).getItemStack());
+				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Price is per item", "&7Get a random enchantment", "&7on an item of your choice", ""}).getItemStack());
 				inventory.setItem(42, new ItemCreator(Material.ANVIL).setName("&bRepair an Item").setLores(new String [] {"", "&7Price: &a" + RepairAnItem.getPrice(), "&7Price is per item", ""}).getItemStack());
 				inventory.setItem(43, new ItemCreator(Material.ENDER_CHEST).setName("&bSave your Items").setLores(new String [] {"", "&7Save your items", ""}).getItemStack());
 				
@@ -127,9 +127,8 @@ public class Shop implements Listener {
 				return;
 			}
 			if(item.getType() == Material.ENCHANTMENT_TABLE) {
-				// http://puu.sh/p590k/7cd3721dac.png
 				event.setCancelled(true);
-				new InventoryViewer("Enchant an Item", player);
+				new EnchantAnItem(player);
 				return;
 			}
 			if(item.getType() == Material.ANVIL) {

@@ -10,11 +10,11 @@ import ostb.gameapi.games.kitpvp.events.InventoryViewClickEvent;
 import ostb.player.MessageHandler;
 import ostb.server.util.EffectUtil;
 
-public class RepairAnItem extends InventoryViewer {
-	private static final int price = 25;
+public class EnchantAnItem extends InventoryViewer {
+	private static final int price = 20;
 	
-	public RepairAnItem(Player player) {
-		super("Repair an Item", player);
+	public EnchantAnItem(Player player) {
+		super("Enchant an Item", player);
 	}
 	
 	public static int getPrice() {
@@ -27,15 +27,15 @@ public class RepairAnItem extends InventoryViewer {
 		if(coinsHandler.getCoins(player) >= price) {
 			coinsHandler.addCoins(player, price * -1);
 			ItemStack item = player.getInventory().getItem(event.getSlot());
-			if(item.getDurability() < 0) {
-				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
-			} else {
-				item.setDurability((short) -1);
+			if(item.getEnchantments() == null || item.getEnchantments().isEmpty()) {
+				
 				InventoryView view = player.getOpenInventory();
 				if(view != null && view.getTitle().equals(name)) {
 					item = view.getItem(event.getViewSlot());
-					item.setDurability((short) -1);
+					
 				}
+			} else {
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			}
 		} else {
 			MessageHandler.sendMessage(player, "&cYou do not have enough coins, get more with &a/vote");
