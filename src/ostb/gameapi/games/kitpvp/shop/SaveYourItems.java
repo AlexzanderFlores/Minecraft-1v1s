@@ -97,6 +97,7 @@ public class SaveYourItems extends InventoryViewer {
 			final Player player = (Player) event.getPlayer();
 			new AsyncDelayedTask(new Runnable() {
 				@Override
+				@SuppressWarnings("unused")
 				public void run() {
 					int chest = Integer.valueOf(inventory.getTitle().split("Chest #")[1]);
 					DB db = DB.valueOf("KITPVP_CHEST_" + chest);
