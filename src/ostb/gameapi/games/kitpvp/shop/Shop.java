@@ -13,7 +13,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -45,7 +44,7 @@ public class Shop implements Listener {
 			new Shop(new Location(world, x, y, z), redSpawn, blueSpawn, yellowSpawn, greenSpawn);
 		}
 	}
-	// http://puu.sh/oYE7u/0a1937a3ed.png
+	
 	public Shop(Location location, Location redSpawn, Location blueSpawn, Location yellowSpawn, Location greenSpawn) {
 		name = "Shop";
 		Location target = location.getWorld().getSpawnLocation();
@@ -104,8 +103,8 @@ public class Shop implements Listener {
 				inventory.setItem(34, new ItemCreator(Material.GOLDEN_APPLE).setName("&bGolden Apple").setLores(new String [] {"", "&7Price: &a1", ""}).getItemStack());
 				
 				// Enchant table
-				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Get a random enchantment", "&7On an item of your choice", ""}).getItemStack());
-				inventory.setItem(42, new ItemCreator(Material.ANVIL).setName("&bRepair an Item").setLores(new String [] {"", "&7Price: &a25", ""}).getItemStack());
+				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Price is per item", "&7Get a random enchantment", "&7On an item of your choice", ""}).getItemStack());
+				inventory.setItem(42, new ItemCreator(Material.ANVIL).setName("&bRepair an Item").setLores(new String [] {"", "&7Price: &a" + RepairAnItem.getPrice(), "&7Price is per item", ""}).getItemStack());
 				inventory.setItem(43, new ItemCreator(Material.ENDER_CHEST).setName("&bSave your Items").setLores(new String [] {"", "&7Save your items", ""}).getItemStack());
 				
 				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
@@ -116,11 +115,6 @@ public class Shop implements Listener {
 			registered = true;
 			EventUtil.register(this);
 		}
-	}
-	
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
-		Bukkit.getLogger().info(""+event.getSlot());
 	}
 	
 	@EventHandler
@@ -139,9 +133,8 @@ public class Shop implements Listener {
 				return;
 			}
 			if(item.getType() == Material.ANVIL) {
-				// http://puu.sh/p590k/7cd3721dac.png
 				event.setCancelled(true);
-				new InventoryViewer("Repair an Item", player);
+				new RepairAnItem(player);
 				return;
 			}
 			if(item.getType() == Material.ENDER_CHEST) {

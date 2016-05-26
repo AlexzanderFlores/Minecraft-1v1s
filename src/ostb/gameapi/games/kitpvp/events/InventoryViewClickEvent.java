@@ -4,14 +4,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class InventoryViewClick extends Event {
+public class InventoryViewClickEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;
     private int slot = 0;
+    private int viewSlot = 0;
     
-    public InventoryViewClick(Player player, int slot) {
+    public InventoryViewClickEvent(Player player, int slot, int viewSlot) {
     	this.player = player;
     	this.slot = slot;
+    	this.viewSlot = viewSlot;
     }
     
     public Player getPlayer() {
@@ -20,6 +22,10 @@ public class InventoryViewClick extends Event {
     
     public int getSlot() {
     	return this.slot;
+    }
+    
+    public int getViewSlot() {
+    	return this.viewSlot;
     }
  
     @Override
