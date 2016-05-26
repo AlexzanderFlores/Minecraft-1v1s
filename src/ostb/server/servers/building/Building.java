@@ -20,7 +20,7 @@ import com.sk89q.worldedit.regions.Region;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
-import ostb.gameapi.games.kitpvp.Shop;
+import ostb.gameapi.games.kitpvp.shop.Shop;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;

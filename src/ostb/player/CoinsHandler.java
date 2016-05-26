@@ -157,7 +157,7 @@ public class CoinsHandler implements Listener {
 		CoinGiveEvent event = new CoinGiveEvent(player, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		amount = event.getAmount();
-		String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coins";
+		String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coin" + (amount == 1 ? "" : "s");
 		if(message != null) {
 			msg += " " + message;
 		}
