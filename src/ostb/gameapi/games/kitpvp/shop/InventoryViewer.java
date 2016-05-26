@@ -31,6 +31,10 @@ public class InventoryViewer implements Listener {
 	protected CoinsHandler coinsHandler = null;
 	
 	public InventoryViewer(String name, Player player) {
+		this(name, player, true);
+	}
+	
+	public InventoryViewer(String name, Player player, boolean openInv) {
 		// Init
 		if(viewers == null) {
 			viewers = new HashMap<String, InventoryViewer>();
@@ -39,35 +43,37 @@ public class InventoryViewer implements Listener {
 			viewers.get(player.getName()).remove();
 		}
 		viewers.put(player.getName(), this);
-		slots = new HashMap<Integer, Integer>();
 		this.name = name;
 		playerName = player.getName();
 		coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
-		ItemStack dye = new ItemCreator(Material.INK_SACK, 8).setName(" ").getItemStack();//new ItemStack(Material.INK_SACK, 1, (byte) 8);
-		Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
-		// Place armor
-		int [] slots = new int [] {7, 5, 3, 1};
-		for(int a = 0; a < slots.length; ++a) {
-			ItemStack armor = player.getInventory().getArmorContents()[a];
-			if(armor == null || armor.getType() == Material.AIR) {
-				armor = dye;
-			} else {
-				this.slots.put(slots[a], 36 + a);
+		if(openInv) {
+			slots = new HashMap<Integer, Integer>();
+			ItemStack dye = new ItemCreator(Material.INK_SACK, 8).setName(" ").getItemStack();//new ItemStack(Material.INK_SACK, 1, (byte) 8);
+			Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
+			// Place armor
+			int [] slots = new int [] {7, 5, 3, 1};
+			for(int a = 0; a < slots.length; ++a) {
+				ItemStack armor = player.getInventory().getArmorContents()[a];
+				if(armor == null || armor.getType() == Material.AIR) {
+					armor = dye;
+				} else {
+					this.slots.put(slots[a], 36 + a);
+				}
+				inventory.setItem(slots[a], armor);
 			}
-			inventory.setItem(slots[a], armor);
-		}
-		// Place the rest of the inventory
-		for(int a = 0; a < 9 * 4; ++a) {
-			ItemStack item = player.getInventory().getItem(a);
-			if(item == null || item.getType() == Material.AIR) {
-				item = dye;
-			} else {
-				this.slots.put(a + 18, a);
+			// Place the rest of the inventory
+			for(int a = 0; a < 9 * 4; ++a) {
+				ItemStack item = player.getInventory().getItem(a);
+				if(item == null || item.getType() == Material.AIR) {
+					item = dye;
+				} else {
+					this.slots.put(a + 18, a);
+				}
+				inventory.setItem(a + 18, item);
 			}
-			inventory.setItem(a + 18, item);
+			// Open inventory and register events
+			player.openInventory(inventory);
 		}
-		// Open inventory and register events
-		player.openInventory(inventory);
 		EventUtil.register(this);
 	}
 	
@@ -83,7 +89,7 @@ public class InventoryViewer implements Listener {
 	
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
-		if(event.getTitle().equals(name)) {
+		if(slots != null && event.getTitle().equals(name)) {
 			Player player = event.getPlayer();
 			int slot = event.getSlot();
 			if(slots.containsKey(slot)) {

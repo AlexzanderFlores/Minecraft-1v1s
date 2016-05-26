@@ -137,8 +137,8 @@ public class Shop implements Listener {
 				return;
 			}
 			if(item.getType() == Material.ENDER_CHEST) {
-				// http://puu.sh/p58tz/59aa56f606.png
 				event.setCancelled(true);
+				new SaveYourItems(player);
 				return;
 			}
 			int price = Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(1)).split(" ")[1]);

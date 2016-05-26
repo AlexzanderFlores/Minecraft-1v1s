@@ -36,6 +36,7 @@ public class RepairAnItem extends InventoryViewer {
 					item = view.getItem(event.getViewSlot());
 					item.setDurability((short) -1);
 				}
+				EffectUtil.playSound(player, Sound.ANVIL_USE);
 			}
 		} else {
 			MessageHandler.sendMessage(player, "&cYou do not have enough coins, get more with &a/vote");
