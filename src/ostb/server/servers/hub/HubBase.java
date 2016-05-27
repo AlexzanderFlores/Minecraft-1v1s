@@ -60,7 +60,6 @@ public class HubBase extends ProPlugin {
 		new Notifications();
 		new HubSelector();
 		new ServerLogger();
-		new Tutorial();
 		new DailyRewards();
 		new ParkourNPC();
 		new Parkour();

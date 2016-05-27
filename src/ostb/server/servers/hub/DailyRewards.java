@@ -35,7 +35,7 @@ public class DailyRewards implements Listener {
 		name = "Daily Rewards";
 		rewardsName = "Rewards";
 		streakName = "Streaks";
-		Villager villager = (Villager) new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), 1686.5, 5, -1295.5)) {
+		Villager villager = (Villager) new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), 1684.5, 5, -1295.5)) {
 			@Override
 			public void onInteract(Player player) {
 				open(player);
