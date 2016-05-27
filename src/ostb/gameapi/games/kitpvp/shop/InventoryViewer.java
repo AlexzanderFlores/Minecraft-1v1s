@@ -40,7 +40,7 @@ public class InventoryViewer implements Listener {
 			viewers = new HashMap<String, InventoryViewer>();
 		}
 		if(viewers.containsKey(player.getName())) {
-			viewers.get(player.getName()).remove();
+			//viewers.get(player.getName()).remove();
 		}
 		viewers.put(player.getName(), this);
 		this.name = name;

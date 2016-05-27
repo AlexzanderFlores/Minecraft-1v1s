@@ -215,6 +215,9 @@ commands:
   dom:
     usage: /dom <addional arguments>
 
+  kitpvp:
+    usage: /kitpvp <additional arguments>
+
 # Worker commands
   purchase:
     usage: /purchase <name> <package name>

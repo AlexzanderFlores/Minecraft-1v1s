@@ -9,9 +9,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import anticheat.events.TimeEvent;
 import ostb.OSTB;
+import ostb.OSTB.Plugins;
 import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
+import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
@@ -48,6 +51,15 @@ public class Events implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		player.setScoreboard(OSTB.getScoreboard());
+	}
+	
+	@EventHandler
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
+		if(coinsHandler != null && coinsHandler.isNewPlayer(player)) {
+			coinsHandler.addCoins(player, 25, "&xTo help you get started");
+		}
 	}
 	
 	@EventHandler

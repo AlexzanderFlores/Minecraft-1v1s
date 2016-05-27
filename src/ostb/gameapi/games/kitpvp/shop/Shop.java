@@ -1,8 +1,5 @@
 package ostb.gameapi.games.kitpvp.shop;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,30 +33,23 @@ public class Shop implements Listener {
 	private String name = null;
 	
 	public Shop(World world, Location redSpawn, Location blueSpawn) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/shop.yml");
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/" + Plugins.KITPVP.getData() + "/shop.yml");
 		for(String key : config.getConfig().getKeys(false)) {
 			double x = config.getConfig().getDouble(key + ".x");
 			double y = config.getConfig().getDouble(key + ".y");
 			double z = config.getConfig().getDouble(key + ".z");
-			new Shop(new Location(world, x, y, z), redSpawn, blueSpawn);
+			Location target = world.getSpawnLocation();
+			if(target.distance(redSpawn) < target.distance(blueSpawn)) {
+				target = redSpawn;
+			} else {
+				target = blueSpawn;
+			}
+			new Shop(new Location(world, x, y, z), target);
 		}
 	}
 	
-	public Shop(Location location, Location redSpawn, Location blueSpawn) {
+	public Shop(Location location, Location target) {
 		name = "Shop";
-		Location target = location.getWorld().getSpawnLocation();
-		if(redSpawn != null && blueSpawn != null) {
-			Map<Location, Double> distances = new HashMap<Location, Double>();
-			distances.put(redSpawn, location.distance(redSpawn));
-			distances.put(blueSpawn, location.distance(blueSpawn));
-			for(Location spawn : distances.keySet()) {
-				if(distances.get(spawn) < location.distance(target)) {
-					target = spawn;
-				}
-			}
-			distances.clear();
-			distances = null;
-		}
 		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
 			@Override
 			public void onInteract(Player player) {

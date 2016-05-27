@@ -18,9 +18,8 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
 
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
-import ostb.gameapi.games.kitpvp.shop.Shop;
+import ostb.ProPlugin;
 import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -65,6 +64,62 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("kitpvp", -1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				Location location = player.getLocation();
+				int x = location.getBlockX();
+				int y = location.getBlockY();
+				int z = location.getBlockZ();
+				float yaw = location.getYaw();
+				float pitch = location.getPitch();
+				if(arguments.length == 1) {
+					String action = arguments[0];
+					if(action.equalsIgnoreCase("setShop")) {
+						String target = action.toLowerCase().replace("set", "");
+						ConfigurationUtil config = getConfig(player, target, Plugins.KITPVP);
+						int index = config.getConfig().getKeys(false).size();
+						config.getConfig().set(index + ".x", x + .5);
+						config.getConfig().set(index + ".y", y + 1);
+						config.getConfig().set(index + ".z", z + .5);
+						config.getConfig().set(index + ".yaw", yaw);
+						config.getConfig().set(index + ".pitch", pitch);
+						if(config.save()) {
+							MessageHandler.sendMessage(player, "Set " + target);
+						} else {
+							MessageHandler.sendMessage(player, "&cError on saving config file");
+						}
+						return true;
+					}
+				} else if(arguments.length == 2) {
+					String action = arguments[0];
+					if(action.equalsIgnoreCase("setSpawns")) {
+						String team = arguments[1].toLowerCase();
+						if(!team.equals("red") && !team.equals("blue")) {
+							MessageHandler.sendMessage(player, "&cUnknown team \"&e" + team + "&c\". Use \"&ered&c\" or \"&eblue&c\"");
+							return true;
+						}
+						String target = action.toLowerCase().replace("set", "");
+						ConfigurationUtil config = getConfig(player, target, Plugins.KITPVP);
+						config.getConfig().set(team + ".x", x + .5);
+						config.getConfig().set(team + ".y", y + 1);
+						config.getConfig().set(team + ".z", z + .5);
+						config.getConfig().set(team + ".yaw", yaw);
+						config.getConfig().set(team + ".pitch", pitch);
+						if(config.save()) {
+							MessageHandler.sendMessage(player, "Set " + target);
+						} else {
+							MessageHandler.sendMessage(player, "&cError on saving config file");
+						}
+						return true;
+					}
+				}
+				MessageHandler.sendMessage(player, "&f/kitpvp setShop");
+				MessageHandler.sendMessage(player, "&f/kitpvp setSpawns <red | blue>");
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
 		new CommandBase("dom", -1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -79,7 +134,7 @@ public class Building extends ProPlugin {
 					String action = arguments[0];
 					if(action.equalsIgnoreCase("setRespawnLoc")) {
 						String target = action.toLowerCase().replace("set", "");
-						ConfigurationUtil config = getConfig(player, target);
+						ConfigurationUtil config = getConfig(player, target, Plugins.DOM);
 						config.getConfig().set("x", x + .5);
 						config.getConfig().set("y", y + 1);
 						config.getConfig().set("z", z + .5);
@@ -107,7 +162,7 @@ public class Building extends ProPlugin {
 								block.setType(Material.AIR);
 								MessageHandler.sendMessage(player, "&7Note: Setting block to air, plugin will place block in game");
 							}
-							ConfigurationUtil config = getConfig(player, target);
+							ConfigurationUtil config = getConfig(player, target, Plugins.DOM);
 							config.getConfig().set(team + ".x", block.getX());
 							config.getConfig().set(team + ".y", block.getY());
 							config.getConfig().set(team + ".z", block.getZ());
@@ -120,7 +175,7 @@ public class Building extends ProPlugin {
 						return true;
 					} else if(action.equalsIgnoreCase("setShop") || action.equalsIgnoreCase("setArmory") || action.equalsIgnoreCase("setSpawn")) {
 						String target = action.toLowerCase().replace("set", "");
-						ConfigurationUtil config = getConfig(player, target);
+						ConfigurationUtil config = getConfig(player, target, Plugins.DOM);
 						config.getConfig().set(team + ".x", x + .5);
 						config.getConfig().set(team + ".y", y + 1);
 						config.getConfig().set(team + ".z", z + .5);
@@ -135,7 +190,7 @@ public class Building extends ProPlugin {
 					} else if(action.equalsIgnoreCase("setCP")) {
 						try {
 							int index = Integer.valueOf(team);
-							ConfigurationUtil config = getConfig(player, "command_posts");
+							ConfigurationUtil config = getConfig(player, "command_posts", Plugins.DOM);
 							config.getConfig().set(team + ".x", x + .5);
 							config.getConfig().set(team + ".y", y);
 							config.getConfig().set(team + ".z", z + .5);
@@ -197,9 +252,8 @@ public class Building extends ProPlugin {
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				if(arguments.length == 0) {
-					new Shop(player.getLocation(), null, null);
-					//Block block = getRegionBlock(player);
-					//MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
+					Block block = getRegionBlock(player);
+					MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
 				} else if(arguments.length == 2) {
 					player.getInventory().addItem(new ItemCreator(Material.valueOf(arguments[0]), Byte.valueOf(arguments[1])).setGlow(true).getItemStack());
 				}
@@ -215,8 +269,8 @@ public class Building extends ProPlugin {
 		super.disable();
 	}
 	
-	private ConfigurationUtil getConfig(Player player, String name) {
-		return new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + player.getWorld().getName() + "/domination/" + name + ".yml");
+	private ConfigurationUtil getConfig(Player player, String name, Plugins plugin) {
+		return new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + player.getWorld().getName() + "/" + plugin.getData() + "/" + name + ".yml");
 	}
 	
 	private Block getRegionBlock(Player player) {

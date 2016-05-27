@@ -15,7 +15,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.Team;
 
+import ostb.OSTB.Plugins;
+import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
+import ostb.gameapi.games.kitpvp.shop.Shop;
 import ostb.player.MessageHandler;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
@@ -30,16 +33,17 @@ public class SpawnHandler implements Listener {
 	public SpawnHandler() {
 		spawns = new HashMap<Team, Location>();
 		World world = Bukkit.getWorlds().get(0);
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/spawns.yml");
+		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/" + Plugins.KITPVP.getData() + "/spawns.yml");
 		teamHandler = KitPVP.getKitPVPTeamHandler();
 		for(Team team : teamHandler.getTeams()) {
-			double x = config.getConfig().getDouble(team.getName() + ".x");
-			double y = config.getConfig().getDouble(team.getName() + ".y");
-			double z = config.getConfig().getDouble(team.getName() + ".z");
-			float yaw = (float) config.getConfig().getDouble(team.getName() + ".yaw");
-			float pitch = (float) config.getConfig().getDouble(team.getName() + ".pitch");
+			double x = config.getConfig().getDouble(team.getName().toLowerCase() + ".x");
+			double y = config.getConfig().getDouble(team.getName().toLowerCase() + ".y");
+			double z = config.getConfig().getDouble(team.getName().toLowerCase() + ".z");
+			float yaw = (float) config.getConfig().getDouble(team.getName().toLowerCase() + ".yaw");
+			float pitch = (float) config.getConfig().getDouble(team.getName().toLowerCase() + ".pitch");
 			spawns.put(team, new Location(world, x, y, z, yaw, pitch));
 		}
+		new Shop(world, spawns.get(KitTeam.RED.getTeam()), spawns.get(KitTeam.RED.getTeam()));
 		random = new Random();
 		EventUtil.register(this);
 	}

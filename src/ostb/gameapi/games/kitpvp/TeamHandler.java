@@ -63,6 +63,10 @@ public class TeamHandler implements Listener {
 			return new String [] {"", "&7Players: &e" + team.getSize(), ""};
 		}
 		
+		public Team getTeam() {
+			return team;
+		}
+		
 		public ItemStack getIcon() {
 			return new ItemCreator(Material.WOOL, woolColor.getColorIndex()).setName(getName()).setLores(getLores()).getItemStack();
 		}
