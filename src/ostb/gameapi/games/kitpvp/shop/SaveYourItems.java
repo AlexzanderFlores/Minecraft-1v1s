@@ -52,7 +52,7 @@ public class SaveYourItems extends InventoryViewer {
 						return;
 					}
 				}
-				DB db = DB.valueOf("KITPVP_CHEST_" + chest);
+				DB db = DB.valueOf("PLAYERS_KITPVP_CHEST_" + chest);
 				Inventory inventory = Bukkit.createInventory(player, 9 * 3, "Chest #" + chest);
 				player.openInventory(inventory);
 				ResultSet resultSet = null;
@@ -100,7 +100,7 @@ public class SaveYourItems extends InventoryViewer {
 				@SuppressWarnings("unused")
 				public void run() {
 					int chest = Integer.valueOf(inventory.getTitle().split("Chest #")[1]);
-					DB db = DB.valueOf("KITPVP_CHEST_" + chest);
+					DB db = DB.valueOf("PLAYERS_KITPVP_CHEST_" + chest);
 					for(ItemStack item : inventory.getContents()) {
 						
 					}

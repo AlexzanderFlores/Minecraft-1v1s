@@ -157,15 +157,17 @@ public class CoinsHandler implements Listener {
 		CoinGiveEvent event = new CoinGiveEvent(player, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		amount = event.getAmount();
-		String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coin" + (amount == 1 ? "" : "s");
-		if(message != null) {
-			msg += " " + message;
+		if(amount > 0) {
+			String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coin" + (amount == 1 ? "" : "s");
+			if(message != null) {
+				msg += " " + message;
+			}
+			MessageHandler.sendMessage(player, msg);
+			if(coins.containsKey(player.getName())) {
+				amount += coins.get(player.getName());
+			}
+			coins.put(player.getName(), amount);
 		}
-		MessageHandler.sendMessage(player, msg);
-		if(coins.containsKey(player.getName())) {
-			amount += coins.get(player.getName());
-		}
-		coins.put(player.getName(), amount);
 		Bukkit.getPluginManager().callEvent(new CoinUpdateEvent(player));
 	}
 	

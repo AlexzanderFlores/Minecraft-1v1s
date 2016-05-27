@@ -40,7 +40,7 @@ public class InventoryViewer implements Listener {
 			viewers = new HashMap<String, InventoryViewer>();
 		}
 		if(viewers.containsKey(player.getName())) {
-			//viewers.get(player.getName()).remove();
+			viewers.get(player.getName()).remove();
 		}
 		viewers.put(player.getName(), this);
 		this.name = name;
@@ -80,8 +80,10 @@ public class InventoryViewer implements Listener {
 	protected void remove() {
 		HandlerList.unregisterAll(this);
 		viewers.remove(playerName);
-		slots.clear();
-		slots = null;
+		if(slots != null) {
+			slots.clear();
+			slots = null;
+		}
 		name = null;
 		playerName = null;
 		coinsHandler = null;

@@ -30,6 +30,7 @@ public class KitPVP extends ProPlugin {
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
 		setAllowBowShooting(true);
+		setAllowInventoryClicking(true);
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
