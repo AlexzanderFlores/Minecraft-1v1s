@@ -197,7 +197,7 @@ public class Building extends ProPlugin {
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
 				if(arguments.length == 0) {
-					new Shop(player.getLocation(), null, null, null, null);
+					new Shop(player.getLocation(), null, null);
 					//Block block = getRegionBlock(player);
 					//MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
 				} else if(arguments.length == 2) {

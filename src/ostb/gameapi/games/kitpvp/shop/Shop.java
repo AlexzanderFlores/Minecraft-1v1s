@@ -35,25 +35,23 @@ public class Shop implements Listener {
 	private static boolean registered = false;
 	private String name = null;
 	
-	public Shop(World world, Location redSpawn, Location blueSpawn, Location yellowSpawn, Location greenSpawn) {
+	public Shop(World world, Location redSpawn, Location blueSpawn) {
 		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/shop.yml");
 		for(String key : config.getConfig().getKeys(false)) {
 			double x = config.getConfig().getDouble(key + ".x");
 			double y = config.getConfig().getDouble(key + ".y");
 			double z = config.getConfig().getDouble(key + ".z");
-			new Shop(new Location(world, x, y, z), redSpawn, blueSpawn, yellowSpawn, greenSpawn);
+			new Shop(new Location(world, x, y, z), redSpawn, blueSpawn);
 		}
 	}
 	
-	public Shop(Location location, Location redSpawn, Location blueSpawn, Location yellowSpawn, Location greenSpawn) {
+	public Shop(Location location, Location redSpawn, Location blueSpawn) {
 		name = "Shop";
 		Location target = location.getWorld().getSpawnLocation();
-		if(redSpawn != null && blueSpawn != null && yellowSpawn != null && greenSpawn != null) {
+		if(redSpawn != null && blueSpawn != null) {
 			Map<Location, Double> distances = new HashMap<Location, Double>();
 			distances.put(redSpawn, location.distance(redSpawn));
 			distances.put(blueSpawn, location.distance(blueSpawn));
-			distances.put(yellowSpawn, location.distance(yellowSpawn));
-			distances.put(greenSpawn, location.distance(greenSpawn));
 			for(Location spawn : distances.keySet()) {
 				if(distances.get(spawn) < location.distance(target)) {
 					target = spawn;

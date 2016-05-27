@@ -35,9 +35,7 @@ public class TeamHandler implements Listener {
 	
 	public enum KitTeam {
 		RED("Red", ChatColor.RED, EnumColor.RED),
-		BLUE("Blue", ChatColor.AQUA, EnumColor.LIGHT_BLUE),
-		YELLOW("Yellow", ChatColor.YELLOW, EnumColor.YELLOW),
-		GREEN("Green", ChatColor.GREEN, EnumColor.LIME);
+		BLUE("Blue", ChatColor.AQUA, EnumColor.LIGHT_BLUE);
 		
 		private Team team = null;
 		private ChatColor color = null;
@@ -148,7 +146,7 @@ public class TeamHandler implements Listener {
 	
 	private void openTeamSelection(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 3, invName);
-		for(int a = 0, slot = 10; a < KitTeam.values().length; ++a, slot += 2) {
+		for(int a = 0, slot = 11; a < KitTeam.values().length; ++a, slot += 4) {
 			inventory.setItem(slot, KitTeam.values()[a].getIcon());
 		}
 		player.openInventory(inventory);
@@ -159,14 +157,10 @@ public class TeamHandler implements Listener {
 		if(event.getTitle().equals(invName)) {
 			Player player = event.getPlayer();
 			int slot = event.getSlot();
-			if(slot == 10) {
+			if(slot == 11) {
 				KitTeam.RED.add(player);
-			} else if(slot == 12) {
+			} else if(slot == 15) {
 				KitTeam.BLUE.add(player);
-			} else if(slot == 14) {
-				KitTeam.YELLOW.add(player);
-			} else if(slot == 16) {
-				KitTeam.GREEN.add(player);
 			}
 			SpectatorHandler.remove(player);
 			event.setCancelled(true);

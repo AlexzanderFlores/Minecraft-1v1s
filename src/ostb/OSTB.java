@@ -22,8 +22,8 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.games.domination.Domination;
-import ostb.gameapi.games.duels.Duels;
 import ostb.gameapi.games.kitpvp.KitPVP;
+import ostb.gameapi.games.onevsones.OnevsOnes;
 import ostb.gameapi.games.skywars.SkyWars;
 import ostb.gameapi.games.speeduhc.SpeedUHC;
 import ostb.gameapi.kit.DefaultKit;
@@ -67,7 +67,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		SWT("SWT", "sky_wars", "Team Sky Wars"),
 		SUHC("SUHC", "speed_uhc", "Speed UHC"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
-		DUELS("Duels", "duels", "Duels"),
+		ONE_VS_ONE("1v1s", "1v1", "1v1s"),
 		PREGEN("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
 		WORKER("Worker", "worker"),
@@ -151,8 +151,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 				proPlugin = new SpeedUHC();
 			} else if(plugin == Plugins.KITPVP) {
 				proPlugin = new KitPVP();
-			} else if(plugin == Plugins.DUELS) {
-				proPlugin = new Duels();
+			} else if(plugin == Plugins.ONE_VS_ONE) {
+				proPlugin = new OnevsOnes();
 			} else if(plugin == Plugins.PREGEN) {
 				proPlugin = new Pregenerator();
 			} else if(plugin == Plugins.BUILDING) {

@@ -38,12 +38,12 @@ public class KitPVP extends ProPlugin {
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
-				String score = Events.getPaused() ? "&7Paused" : KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString() + " &7/ " + KitTeam.YELLOW.getScoreString() + " &7/ " + KitTeam.GREEN.getScoreString();
+				String score = Events.getPaused() ? "&7Paused" : KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString();
 				if(!oldScore.equals(score)) {
 					oldScore = score;
 					removeScore(11);
 				}
-				String count = KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " &7/ " + KitTeam.YELLOW.getSizeString() + " &7/ " + KitTeam.GREEN.getSizeString() + " ";
+				String count = KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " ";
 				if(!oldCount.equals(count)) {
 					oldCount = count;
 					removeScore(8);
