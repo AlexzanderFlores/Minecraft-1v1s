@@ -28,7 +28,6 @@ public class EnchantAnItem extends InventoryViewer {
 			coinsHandler.addCoins(player, price * -1);
 			ItemStack item = player.getInventory().getItem(event.getSlot());
 			if(item.getEnchantments() == null || item.getEnchantments().isEmpty()) {
-				
 				InventoryView view = player.getOpenInventory();
 				if(view != null && view.getTitle().equals(name)) {
 					item = view.getItem(event.getViewSlot());

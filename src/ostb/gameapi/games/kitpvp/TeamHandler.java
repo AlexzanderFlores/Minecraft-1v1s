@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -187,10 +188,17 @@ public class TeamHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if(Ranks.PREMIUM.hasRank(player)) {
 			SpectatorHandler.add(player);
+		}
+	}
+	
+	@EventHandler
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if(Ranks.PREMIUM.hasRank(player)) {
 			openTeamSelection(player);
 		} else {
 			KitTeam bestTeam = null;

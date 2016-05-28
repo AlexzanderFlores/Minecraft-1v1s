@@ -31,10 +31,12 @@ public class KitPVP extends ProPlugin {
 		setAllowPlayerInteraction(true);
 		setAllowBowShooting(true);
 		setAllowInventoryClicking(true);
+		setFlintAndSteelUses(2);
+		new TemporaryFireUtil(20 * 3);
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
-		CoinsHandler.setKillCoins(2);
+		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(25);
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
@@ -72,6 +74,7 @@ public class KitPVP extends ProPlugin {
 		new SpawnHandler();
 		new Events();
 		new TemporaryFireUtil(20 * 3);
+		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
 	}
 	
 	@Override

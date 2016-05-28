@@ -22,14 +22,36 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
 
+@SuppressWarnings("deprecation")
 public class SaveYourItems extends InventoryViewer {
-	public SaveYourItems(Player player) {
+	public SaveYourItems(final Player player) {
 		super("Save Your Items", player, false);
-		Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-		inventory.setItem(11, new ItemCreator(Material.ENDER_CHEST).setName("&bEnder Chest #1").setLores(new String [] {"", "&7Price: &a50", ""}).getItemStack());
-		inventory.setItem(13, new ItemCreator(Material.ENDER_CHEST).setAmount(2).setName("&bEnder Chest #2").setLores(new String [] {"", "&7Price: &a100", "&7Requires " + Ranks.PREMIUM.getPrefix(), ""}).getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.ENDER_CHEST).setAmount(3).setName("&bEnder Chest #3").setLores(new String [] {"", "&7Price: &a150", "&7Requires " + Ranks.PREMIUM_PLUS.getPrefix(), ""}).getItemStack());
+		final Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
 		player.openInventory(inventory);
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				String [] keys = new String [] {"uuid", "id_owned"};
+				String [] values = new String [] {player.getUniqueId().toString(), "1"};
+				if(DB.PLAYERS_KITPVP_CHESTS.isKeySet(keys, values)) {
+					inventory.setItem(11, new ItemCreator(Material.ENDER_CHEST).setName("&bEnder Chest #1").setLores(new String [] {"", "&7Price: &a50", ""}).getItemStack());
+				} else {
+					inventory.setItem(11, new ItemCreator(Material.INK_SACK, 8).setName("&bEnder Chest #1").setLores(new String [] {"", "&7Price: &a50", ""}).getItemStack());
+				}
+				values[1] = "2";
+				if(DB.PLAYERS_KITPVP_CHESTS.isKeySet(keys, values)) {
+					inventory.setItem(13, new ItemCreator(Material.ENDER_CHEST).setAmount(2).setName("&bEnder Chest #2").setLores(new String [] {"", "&7Price: &a100", "&7Requires " + Ranks.PREMIUM.getPrefix(), ""}).getItemStack());
+				} else {
+					inventory.setItem(13, new ItemCreator(Material.INK_SACK, 8).setAmount(2).setName("&bEnder Chest #2").setLores(new String [] {"", "&7Price: &a100", "&7Requires " + Ranks.PREMIUM.getPrefix(), ""}).getItemStack());
+				}
+				values[1] = "3";
+				if(DB.PLAYERS_KITPVP_CHESTS.isKeySet(keys, values)) {
+					inventory.setItem(15, new ItemCreator(Material.ENDER_CHEST).setAmount(3).setName("&bEnder Chest #3").setLores(new String [] {"", "&7Price: &a150", "&7Requires " + Ranks.PREMIUM_PLUS.getPrefix(), ""}).getItemStack());
+				} else {
+					inventory.setItem(15, new ItemCreator(Material.INK_SACK, 8).setAmount(3).setName("&bEnder Chest #3").setLores(new String [] {"", "&7Price: &a150", "&7Requires " + Ranks.PREMIUM_PLUS.getPrefix(), ""}).getItemStack());
+				}
+			}
+		});
 	}
 	
 	private void open(final Player player, final int chest) {
@@ -97,12 +119,26 @@ public class SaveYourItems extends InventoryViewer {
 			final Player player = (Player) event.getPlayer();
 			new AsyncDelayedTask(new Runnable() {
 				@Override
-				@SuppressWarnings("unused")
 				public void run() {
+					UUID uuid = player.getUniqueId();
 					int chest = Integer.valueOf(inventory.getTitle().split("Chest #")[1]);
 					DB db = DB.valueOf("PLAYERS_KITPVP_CHEST_" + chest);
-					for(ItemStack item : inventory.getContents()) {
-						
+					db.delete("uuid", uuid.toString());
+					for(int a = 0; a < inventory.getSize(); ++a) {
+						ItemStack item = inventory.getItem(a);
+						if(item != null && item.getType() != Material.AIR) {
+							String material = item.getType().toString();
+							int data = item.getData().getData();
+							String enchant = "none";
+							if(item.getEnchantments() != null && item.getEnchantments().size() > 0) {
+								for(Enchantment enchantment : item.getEnchantments().keySet()) {
+									enchant = enchantment.toString() + ":" + item.getEnchantments().get(enchantment);
+									break;
+								}
+							}
+							int durability = item.getDurability();
+							db.insert("'" + uuid.toString() + "', '" + material + "', '" + data + "', '" + enchant + "', '" + durability + "', '" + a + "'");
+						}
 					}
 					MessageHandler.sendMessage(player, "&e" + inventory.getName() + " &xhas been saved");
 				}

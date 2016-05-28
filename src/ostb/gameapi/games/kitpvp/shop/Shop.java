@@ -95,7 +95,8 @@ public class Shop implements Listener {
 				inventory.setItem(42, new ItemCreator(Material.ANVIL).setName("&bRepair an Item").setLores(new String [] {"", "&7Price: &a" + RepairAnItem.getPrice(), "&7Price is per item", ""}).getItemStack());
 				inventory.setItem(43, new ItemCreator(Material.ENDER_CHEST).setName("&bSave your Items").setLores(new String [] {"", "&7Save your items", ""}).getItemStack());
 				
-				inventory.setItem(inventory.getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
+				inventory.setItem(inventory.getSize() - 6, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
+				inventory.setItem(inventory.getSize() - 4, new ItemCreator(Material.BARRIER).setName("&cTrash").getItemStack());
 				player.openInventory(inventory);
 			}
 		};
@@ -129,14 +130,23 @@ public class Shop implements Listener {
 				new SaveYourItems(player);
 				return;
 			}
+			if(item.getType() == Material.BARRIER) {
+				event.setCancelled(true);
+				player.openInventory(Bukkit.createInventory(player, 9 * 6, "Trash"));
+				return;
+			}
 			int price = Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(1)).split(" ")[1]);
 			CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
 			if(coinsHandler.getCoins(player) >= price) {
 				coinsHandler.addCoins(player, price * -1);
-				player.getInventory().addItem(item.clone());
+				item = new ItemStack(item.getType(), item.getAmount(), (byte) item.getData().getData());
+				if(item.getType() == Material.POTION) {
+					item = new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1);
+				}
+				player.getInventory().addItem(item);
 				InventoryView view = player.getOpenInventory();
 				if(view != null) {
-					view.setItem(view.getTopInventory().getSize() - 5, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
+					view.setItem(view.getTopInventory().getSize() - 6, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
 				}
 				EffectUtil.playSound(player, Sound.LEVEL_UP);
 			} else {
