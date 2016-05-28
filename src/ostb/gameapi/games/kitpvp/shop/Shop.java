@@ -91,7 +91,7 @@ public class Shop implements Listener {
 				inventory.setItem(34, new ItemCreator(Material.GOLDEN_APPLE).setName("&bGolden Apple").setLores(new String [] {"", "&7Price: &a1", ""}).getItemStack());
 				
 				// Enchant table
-				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Price is per item", "&7Get a random enchantment", "&7on an item of your choice", ""}).getItemStack());
+				inventory.setItem(41, new ItemCreator(Material.ENCHANTMENT_TABLE).setName("&bEnchant an Item").setLores(new String [] {"", "&7Price: &a20", "&7Costs &a1 Level", "&7Price is per item", "&7Get a random enchantment", "&7on an item of your choice", ""}).getItemStack());
 				inventory.setItem(42, new ItemCreator(Material.ANVIL).setName("&bRepair an Item").setLores(new String [] {"", "&7Price: &a" + RepairAnItem.getPrice(), "&7Price is per item", ""}).getItemStack());
 				inventory.setItem(43, new ItemCreator(Material.ENDER_CHEST).setName("&bSave your Items").setLores(new String [] {"", "&7Save your items", ""}).getItemStack());
 				
