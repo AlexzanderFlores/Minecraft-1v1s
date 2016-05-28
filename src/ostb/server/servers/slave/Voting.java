@@ -104,6 +104,7 @@ public class Voting implements Listener {
 					}
 					Beacon.giveKey(playerUUID, 1 * multiplier, "voting");
 					for(CoinsHandler handler : handlers) {
+						Bukkit.getLogger().info("Giving 20 coins for " + handler.getPluginData());
 						handler.addCoins(playerUUID, 20 * multiplier);
 					}
 					Bukkit.getLogger().info("voting: giving 3 sky wars loot passes");

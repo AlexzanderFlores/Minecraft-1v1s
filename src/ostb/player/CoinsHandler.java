@@ -40,9 +40,11 @@ public class CoinsHandler implements Listener {
 	private Map<String, Integer> coins = null;
 	private List<String> newPlayer = null;
 	//private boolean boosterEnabled = false;
+	private String pluginData = null;
 	
 	public CoinsHandler(DB table, String pluginData) {
 		if(!handlers.containsKey(pluginData)) {
+			this.pluginData = pluginData;
 			this.table = table;
 			//this.plugin = plugin;
 			coins = new HashMap<String, Integer>();
@@ -137,6 +139,10 @@ public class CoinsHandler implements Listener {
 	
 	public static void setKillCoins(int killCoins) {
 		CoinsHandler.killCoins = killCoins;
+	}
+	
+	public String getPluginData() {
+		return pluginData;
 	}
 	
 	public int getCoins(Player player) {

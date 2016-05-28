@@ -1,14 +1,20 @@
 package ostb.gameapi.games.kitpvp;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import anticheat.events.PlayerLeaveEvent;
 import anticheat.events.TimeEvent;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
@@ -16,13 +22,18 @@ import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.CoinsHandler;
 import ostb.player.LevelGiver;
+import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 
+@SuppressWarnings("deprecation")
 public class Events implements Listener {
 	private static boolean paused = false;
 	
@@ -114,5 +125,50 @@ public class Events implements Listener {
 	@EventHandler
 	public void onGameKill(GameKillEvent event) {
 		new LevelGiver(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		if(player.getKiller() != null) {
+			Player killer = player.getKiller();
+			MessageHandler.sendMessage(player, event.getDeathMessage());
+			MessageHandler.sendMessage(killer, event.getDeathMessage());
+		}
+		event.setDeathMessage(null);
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		final Player player = event.getPlayer();
+		if(!SpectatorHandler.contains(player)) {
+			final Inventory inventory = player.getInventory();
+			if(event.getPlayer() instanceof Player && inventory.getTitle().startsWith("Chest #")) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						UUID uuid = player.getUniqueId();
+						DB db = DB.PLAYERS_KITPVP_LOG_OFF_CHEST;
+						db.delete("uuid", uuid.toString());
+						for(int a = 0; a < inventory.getSize(); ++a) {
+							ItemStack item = inventory.getItem(a);
+							if(item != null && item.getType() != Material.AIR) {
+								String material = item.getType().toString();
+								int data = item.getData().getData();
+								String enchant = "none";
+								if(item.getEnchantments() != null && item.getEnchantments().size() > 0) {
+									for(Enchantment enchantment : item.getEnchantments().keySet()) {
+										enchant = enchantment.toString() + ":" + item.getEnchantments().get(enchantment);
+										break;
+									}
+								}
+								int durability = item.getDurability();
+								db.insert("'" + uuid.toString() + "', '" + material + "', '" + data + "', '" + enchant + "', '" + durability + "', '" + a + "'");
+							}
+						}
+					}
+				});
+			}
+		}
 	}
 }

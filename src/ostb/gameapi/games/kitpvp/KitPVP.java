@@ -13,6 +13,7 @@ import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TemporaryFireUtil;
 import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.player.CoinsHandler;
+import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
@@ -75,6 +76,7 @@ public class KitPVP extends ProPlugin {
 		new SpawnHandler();
 		new Events();
 		new TemporaryFireUtil(20 * 5);
+		new BelowNameHealthScoreboardUtil();
 		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
 	}
 	
