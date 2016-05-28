@@ -235,7 +235,7 @@ public class GameSelector extends HubItemBase {
 	}
 	
 	private void openMenu(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 9 * 3, ChatColor.stripColor(getName()));
+		Inventory inventory = Bukkit.createInventory(player, 9 * 4, ChatColor.stripColor(getName()));
 		ItemStack item = new ItemCreator(Material.BANNER, 11).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Domination",
 			"",
@@ -247,7 +247,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item, Plugins.DOM);
-		inventory.setItem(12, item);
+		inventory.setItem(11, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SW.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
@@ -258,7 +258,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item, Plugins.SW);
-		inventory.setItem(14, item);
+		inventory.setItem(13, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SWT.getDisplay()).setAmount(2).setLores(new String [] {
 			"&7Well known game",
 			"",
@@ -269,7 +269,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item, Plugins.SWT);
-		inventory.setItem(16, item);
+		inventory.setItem(15, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
@@ -279,7 +279,16 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item, Plugins.SUHC);
-		inventory.setItem(10, item);
+		inventory.setItem(21, item);
+		item = new ItemCreator(Material.STONE_SWORD).setName("&b" + Plugins.KITPVP.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of Kit PVP",
+			"",
+			"&eBattle &cRED &evs &bBLUE &ein Kit PVP",
+			"",
+			"&7Playing: &a" + getPlayers(Plugins.KITPVP),
+		}).getItemStack();
+		items.put(item, Plugins.KITPVP);
+		inventory.setItem(23, item);
 		ItemUtil.addEnchantGlassPaneIncrement(inventory);
 		player.openInventory(inventory);
 	}
