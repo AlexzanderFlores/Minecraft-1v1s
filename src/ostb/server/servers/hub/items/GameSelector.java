@@ -118,7 +118,7 @@ public class GameSelector extends HubItemBase {
 	}
 	
 	public static void open(Player player, Plugins plugin) {
-		Inventory inventory = Bukkit.createInventory(player, (plugin == Plugins.HUB ? ItemUtil.getInventorySize(ProPlugin.getNumberOfHubs()) : 9 * 3), plugin.getDisplay());
+		Inventory inventory = Bukkit.createInventory(player, 9 * 6, plugin.getDisplay());
 		if(plugin != Plugins.HUB) {
 			inventory.setItem(inventory.getSize() - 7, new ItemCreator(Material.EYE_OF_ENDER).setName("&bAuto Join").setLores(new String [] {
 				"",
@@ -144,8 +144,8 @@ public class GameSelector extends HubItemBase {
 					List<String> lores = new ArrayList<String>();
 					List<Integer> playerCounts = new ArrayList<Integer>();
 					List<Integer> maxPlayers = new ArrayList<Integer>();
-					int limit = plugin == Plugins.HUB ? 9 * 6 : 9;
-					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY server_number,listed_priority LIMIT " + limit).executeQuery();
+					int limit = 9 * 4;
+					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY listed_priority, players DESC, server_number LIMIT " + limit).executeQuery();
 					int playing = 0;
 					while(resultSet.next()) {
 						priorities.add(resultSet.getInt("listed_priority"));
