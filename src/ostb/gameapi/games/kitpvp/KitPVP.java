@@ -15,6 +15,7 @@ import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
+import ostb.server.ServerLogger;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
@@ -32,7 +33,7 @@ public class KitPVP extends ProPlugin {
 		setAllowBowShooting(true);
 		setAllowInventoryClicking(true);
 		setFlintAndSteelUses(2);
-		new TemporaryFireUtil(20 * 3);
+		new ServerLogger();
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
@@ -73,7 +74,7 @@ public class KitPVP extends ProPlugin {
 		teamHandler = new TeamHandler();
 		new SpawnHandler();
 		new Events();
-		new TemporaryFireUtil(20 * 3);
+		new TemporaryFireUtil(20 * 5);
 		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
 	}
 	

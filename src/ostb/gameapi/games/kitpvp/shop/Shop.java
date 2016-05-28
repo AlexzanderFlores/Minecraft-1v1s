@@ -86,7 +86,7 @@ public class Shop implements Listener {
 				inventory.setItem(24, new ItemCreator(Material.ARROW).setName("&bArrow x4").setAmount(4).setLores(new String [] {"", "&7Price: &a2", ""}).getItemStack());
 				inventory.setItem(25, new ItemCreator(Material.FISHING_ROD).setName("&bFishing Rod").setLores(new String [] {"", "&7Price: &a2", ""}).getItemStack());
 				
-				inventory.setItem(32, new ItemCreator(Material.FLINT_AND_STEEL).setName("&bFlint and Steel").setLores(new String [] {"", "&7Price: &a1", "&7Uses: &a2", "&7Fire Lasts: &a3s", ""}).getItemStack());
+				inventory.setItem(32, new ItemCreator(Material.FLINT_AND_STEEL).setName("&bFlint and Steel").setLores(new String [] {"", "&7Price: &a1", "&7Uses: &a2", "&7Fire Lasts: &a5s", ""}).getItemStack());
 				inventory.setItem(33, new ItemCreator(new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1)).setName("&bHealth Potion").setLores(new String [] {"", "&7Price: &a2", ""}).getItemStack());
 				inventory.setItem(34, new ItemCreator(Material.GOLDEN_APPLE).setName("&bGolden Apple").setLores(new String [] {"", "&7Price: &a1", ""}).getItemStack());
 				
