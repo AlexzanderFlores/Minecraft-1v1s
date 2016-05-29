@@ -1,5 +1,7 @@
 package ostb.gameapi.games.kitpvp.shop;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -109,52 +111,50 @@ public class Shop implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		if(event.getTitle().equals(name)) {
+			event.setCancelled(true);
 			Player player = event.getPlayer();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.GOLD_INGOT) {
-				event.setCancelled(true);
 				return;
 			}
 			if(item.getType() == Material.ENCHANTMENT_TABLE) {
-				event.setCancelled(true);
 				new EnchantAnItem(player);
 				return;
 			}
 			if(item.getType() == Material.ANVIL) {
-				event.setCancelled(true);
 				new RepairAnItem(player);
 				return;
 			}
 			if(item.getType() == Material.ENDER_CHEST) {
-				event.setCancelled(true);
 				new SaveYourItems(player);
 				return;
 			}
 			if(item.getType() == Material.BARRIER) {
-				event.setCancelled(true);
 				player.openInventory(Bukkit.createInventory(player, 9 * 6, "Trash"));
 				return;
 			}
-			int price = Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(1)).split(" ")[1]);
-			CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
-			if(coinsHandler.getCoins(player) >= price) {
-				coinsHandler.addCoins(player, price * -1);
-				item = new ItemStack(item.getType(), item.getAmount(), (byte) item.getData().getData());
-				if(item.getType() == Material.POTION) {
-					item = new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1);
+			List<String> lores = item.getItemMeta().getLore();
+			if(lores.size() >= 2) {
+				int price = Integer.valueOf(ChatColor.stripColor(lores.get(1)).split(" ")[1]);
+				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
+				if(coinsHandler.getCoins(player) >= price) {
+					coinsHandler.addCoins(player, price * -1);
+					item = new ItemStack(item.getType(), item.getAmount(), (byte) item.getData().getData());
+					if(item.getType() == Material.POTION) {
+						item = new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1);
+					}
+					player.getInventory().addItem(item);
+					InventoryView view = player.getOpenInventory();
+					if(view != null) {
+						view.setItem(view.getTopInventory().getSize() - 6, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
+					}
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
+				} else {
+					player.closeInventory();
+					new TitleDisplayer(player, "&cNot enough coins", "&eFor " + item.getItemMeta().getDisplayName()).display();
+					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				}
-				player.getInventory().addItem(item);
-				InventoryView view = player.getOpenInventory();
-				if(view != null) {
-					view.setItem(view.getTopInventory().getSize() - 6, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
-				}
-				EffectUtil.playSound(player, Sound.LEVEL_UP);
-			} else {
-				player.closeInventory();
-				new TitleDisplayer(player, "&cNot enough coins", "&eFor " + item.getItemMeta().getDisplayName()).display();
-				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 			}
-			event.setCancelled(true);
 		}
 	}
 }

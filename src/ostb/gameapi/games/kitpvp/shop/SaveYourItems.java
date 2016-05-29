@@ -114,6 +114,7 @@ public class SaveYourItems extends InventoryViewer {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
+		remove();
 		final Inventory inventory = event.getInventory();
 		if(event.getPlayer() instanceof Player && inventory.getTitle().startsWith("Chest #")) {
 			final Player player = (Player) event.getPlayer();

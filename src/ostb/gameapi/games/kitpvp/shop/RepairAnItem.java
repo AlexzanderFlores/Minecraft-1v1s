@@ -11,7 +11,7 @@ import ostb.player.MessageHandler;
 import ostb.server.util.EffectUtil;
 
 public class RepairAnItem extends InventoryViewer {
-	private static final int price = 25;
+	private static final int price = 3;
 	
 	public RepairAnItem(Player player) {
 		super("Repair an Item", player);

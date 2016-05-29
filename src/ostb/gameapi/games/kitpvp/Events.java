@@ -47,8 +47,32 @@ public class Events implements Listener {
 					break;
 				}
 			}
-			if(!paused) {
+			if(!paused && OSTB.getProPlugin().getCounter() >= 0) {
 				OSTB.getProPlugin().decrementCounter();
+				if(OSTB.getProPlugin().getCounter() == 0) {
+					KitTeam winner = null;
+					for(KitTeam kitTeam : KitTeam.values()) {
+						if(winner == null) {
+							winner = kitTeam;
+						} else if(kitTeam.getScore() == winner.getScore()) {
+							winner = null;
+						} else if(kitTeam.getScore() > winner.getScore()) {
+							winner = kitTeam;
+						}
+					}
+					MessageHandler.alertLine();
+					MessageHandler.alert("");
+					MessageHandler.alert("&lRound Over:");
+					MessageHandler.alert("&c&lRed: &x&l" + KitTeam.RED.getScore());
+					MessageHandler.alert("&b&lBlue: &x&l" + KitTeam.BLUE.getScore());
+					MessageHandler.alert("");
+					MessageHandler.alert("&lWinner: " + winner.getTeam().getPrefix());
+					MessageHandler.alert("");
+					MessageHandler.alertLine();
+					for(KitTeam kitTeam : KitTeam.values()) {
+						kitTeam.clearScore();
+					}
+				}
 			}
 			OSTB.getSidebar().update();
 		}
