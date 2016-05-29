@@ -23,7 +23,9 @@ import net.minecraft.server.v1_8_R3.EnumColor;
 import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
+import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
@@ -211,6 +213,15 @@ public class TeamHandler implements Listener {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerSpectator(PlayerSpectatorEvent event) {
+		Player player = event.getPlayer();
+		if(KitPVP.getKitPVPTeamHandler().getTeam(player) == null && event.getState() == SpectatorState.END) {
+			openTeamSelection(player);
+			event.setCancelled(true);
 		}
 	}
 	
