@@ -197,7 +197,7 @@ public class ReportHandler implements Listener {
                                         MessageHandler.sendMessage(sender, "&c" + name + " has never logged in before");
                                     } else {
                                         try {
-                                        	String reasonString = arguments.length == 2 ? arguments[2] : "CHEATING";
+                                        	String reasonString = arguments.length == 2 ? arguments[1] : "CHEATING";
                                             ReportReasons reason = ReportReasons.valueOf(reasonString.toUpperCase());
                                             if(reason == ReportReasons.CHAT_FILTER_DETECTION && sender instanceof Player) {
                                                 MessageHandler.sendMessage(sender, "&cPlayers cannot create a report for this reason");
