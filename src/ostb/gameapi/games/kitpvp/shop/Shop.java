@@ -77,9 +77,9 @@ public class Shop implements Listener {
 				inventory.setItem(39, new ItemCreator(Material.IRON_BOOTS).setName("&bIron Boots").setLores(new String [] {"", "&7Price: &a10", ""}).getItemStack());
 				
 				// Swords
-				inventory.setItem(14, new ItemCreator(Material.STONE_SWORD).setName("&bStone Sword").setLores(new String [] {"", "&7Price: &a0", ""}).getItemStack());
-				inventory.setItem(15, new ItemCreator(Material.IRON_SWORD).setName("&bIron Sword").setLores(new String [] {"", "&7Price: &a5", ""}).getItemStack());
-				inventory.setItem(16, new ItemCreator(Material.DIAMOND_SWORD).setName("&bDiamond Sword").setLores(new String [] {"", "&7Price: &a10", ""}).getItemStack());
+				inventory.setItem(14, new ItemCreator(Material.STONE_SWORD).setName("&bStone Sword").setLores(new String [] {"", "&7Price: &a0"}).getItemStack());
+				inventory.setItem(15, new ItemCreator(Material.IRON_SWORD).setName("&bIron Sword").setLores(new String [] {"", "&7Price: &a5"}).getItemStack());
+				inventory.setItem(16, new ItemCreator(Material.DIAMOND_SWORD).setName("&bDiamond Sword").setLores(new String [] {"", "&7Price: &a10"}).getItemStack());
 				
 				// Secondaries
 				inventory.setItem(23, new ItemCreator(Material.BOW).setName("&bBow").setLores(new String [] {"", "&7Price: &a6", ""}).getItemStack());

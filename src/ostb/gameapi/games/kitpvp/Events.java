@@ -1,5 +1,9 @@
 package ostb.gameapi.games.kitpvp;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -100,26 +104,67 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onTeamSelect(TeamSelectEvent event) {
-		Player player = event.getPlayer();
-		ItemStack helmet = player.getInventory().getHelmet();
-		if(helmet == null || helmet.getType() == Material.AIR) {
-			player.getInventory().setHelmet(new ItemStack(Material.GOLD_HELMET));
-		}
-		ItemStack chestplate = player.getInventory().getChestplate();
-		if(chestplate == null || chestplate.getType() == Material.AIR) {
-			player.getInventory().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
-		}
-		ItemStack leggings = player.getInventory().getLeggings();
-		if(leggings == null || leggings.getType() == Material.AIR) {
-			player.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
-		}
-		ItemStack boots = player.getInventory().getBoots();
-		if(boots == null || boots.getType() == Material.AIR) {
-			player.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
-		}
-		if(!player.getInventory().contains(Material.STONE_SWORD) && !player.getInventory().contains(Material.IRON_SWORD) && !player.getInventory().contains(Material.DIAMOND_SWORD)) {
-			player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-		}
+		final Player player = event.getPlayer();
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				UUID uuid = player.getUniqueId();
+				DB db = DB.PLAYERS_KITPVP_LOG_OFF_CHEST;
+				if(db.isUUIDSet(uuid)) {
+					ResultSet resultSet = null;
+					try {
+						resultSet = db.getConnection().prepareStatement("SELECT material,data,enchant,durability,slot FROM " + db.getName() + " WHERE uuid = '" + uuid.toString() + "'").executeQuery();
+						while(resultSet.next()) {
+							Material material = Material.valueOf(resultSet.getString("material"));
+							int data = resultSet.getInt("data");
+							String enchant = resultSet.getString("enchant");
+							int durability = resultSet.getInt("durability");
+							int slot = resultSet.getInt("slot");
+							ItemStack item = new ItemStack(material, 1, (byte) data);
+							item.setDurability((short) durability);
+							if(!enchant.equals("none")) {
+								String [] split = enchant.split(":");
+								Enchantment ench = null;
+								for(Enchantment enchantment : Enchantment.values()) {
+									if(enchantment.toString().equals(enchant)) {
+										ench = enchantment;
+										break;
+									}
+								}
+								if(ench != null) {
+									item.addUnsafeEnchantment(ench, Integer.valueOf(split[1]));
+								}
+							}
+							player.getInventory().setItem(slot, item);
+						}
+					} catch(SQLException e) {
+						e.printStackTrace();
+					} finally {
+						DB.close(resultSet);
+					}
+				} else {
+					ItemStack helmet = player.getInventory().getHelmet();
+					if(helmet == null || helmet.getType() == Material.AIR) {
+						player.getInventory().setHelmet(new ItemStack(Material.GOLD_HELMET));
+					}
+					ItemStack chestplate = player.getInventory().getChestplate();
+					if(chestplate == null || chestplate.getType() == Material.AIR) {
+						player.getInventory().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
+					}
+					ItemStack leggings = player.getInventory().getLeggings();
+					if(leggings == null || leggings.getType() == Material.AIR) {
+						player.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
+					}
+					ItemStack boots = player.getInventory().getBoots();
+					if(boots == null || boots.getType() == Material.AIR) {
+						player.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
+					}
+					if(!player.getInventory().contains(Material.STONE_SWORD) && !player.getInventory().contains(Material.IRON_SWORD) && !player.getInventory().contains(Material.DIAMOND_SWORD)) {
+						player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
+					}
+				}
+			}
+		});
 	}
 	
 	@EventHandler
@@ -142,7 +187,11 @@ public class Events implements Listener {
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		final Player player = event.getPlayer();
 		if(!SpectatorHandler.contains(player)) {
-			final Inventory inventory = player.getInventory();
+			Inventory inventory = player.getInventory();
+			final Map<Integer, ItemStack> contents = new HashMap<Integer, ItemStack>();
+			for(int a = 0; a < inventory.getSize(); ++a) {
+				contents.put(a, inventory.getItem(a));
+			}
 			if(event.getPlayer() instanceof Player && inventory.getTitle().startsWith("Chest #")) {
 				new AsyncDelayedTask(new Runnable() {
 					@Override
@@ -150,8 +199,8 @@ public class Events implements Listener {
 						UUID uuid = player.getUniqueId();
 						DB db = DB.PLAYERS_KITPVP_LOG_OFF_CHEST;
 						db.delete("uuid", uuid.toString());
-						for(int a = 0; a < inventory.getSize(); ++a) {
-							ItemStack item = inventory.getItem(a);
+						for(int a : contents.keySet()) {
+							ItemStack item = contents.get(a);
 							if(item != null && item.getType() != Material.AIR) {
 								String material = item.getType().toString();
 								int data = item.getData().getData();

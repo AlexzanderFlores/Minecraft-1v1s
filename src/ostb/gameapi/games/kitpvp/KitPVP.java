@@ -27,7 +27,7 @@ public class KitPVP extends ProPlugin {
 	
 	public KitPVP() {
 		super("KitPVP");
-		setCounter(60 * 60);
+		setCounter(60 * 10);
 		setAllowEntityDamage(true);
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
@@ -38,8 +38,8 @@ public class KitPVP extends ProPlugin {
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
-		CoinsHandler.setKillCoins(5);
-		CoinsHandler.setWinCoins(25);
+		CoinsHandler.setKillCoins(10);
+		CoinsHandler.setWinCoins(50);
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
