@@ -53,7 +53,7 @@ public class EnchantAnItem extends InventoryViewer {
 						enchantments.add(Enchantment.PROTECTION_ENVIRONMENTAL);
 						enchantments.add(Enchantment.PROTECTION_PROJECTILE);
 					}
-					player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(enchantments.size() - 1), 1);
+					player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(enchantments.size()), 1);
 					enchantments.clear();
 					enchantments = null;
 					player.setLevel(player.getLevel() - 1);

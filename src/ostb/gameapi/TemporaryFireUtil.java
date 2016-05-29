@@ -20,7 +20,7 @@ public class TemporaryFireUtil implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		if(!event.isCancelled() && event.getBlock().getType() == Material.FIRE) {
+		if(event.getBlock().getType() == Material.FIRE) {
 			final Block block = event.getBlock();
 			new DelayedTask(new Runnable() {
 				@Override
