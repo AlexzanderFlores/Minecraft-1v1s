@@ -189,7 +189,7 @@ public class Events implements Listener {
 					coinsHandler.getCoins(player);
 					if(coinsHandler.isNewPlayer(player)) {
 						int amount = 100;
-						coinsHandler.addCoins(player, amount, "&xTo help you get started");
+						coinsHandler.addCoins(player, amount, "&7(To help you get started)");
 					}
 				}
 			}
@@ -393,22 +393,18 @@ public class Events implements Listener {
 					}
 				} else if(counter == 16) {
 					MessageHandler.alertLine("&e");
-					MessageHandler.alert("");
 					MessageHandler.alert(prefix + "Use the Shop & Armory NPCs for items");
-					MessageHandler.alert("");
 					new Shop(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
 					new Armory(OSTB.getMiniGame().getMap(), redSpawn, blueSpawn);
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				} else if(counter == 12) {
 					MessageHandler.alert(prefix + "Get levels by killing the enemy players");
-					MessageHandler.alert("");
 					for(Player player : ProPlugin.getPlayers()) {
 						new LevelGiver(player, true);
 					}
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				} else if(counter == 8) {
 					MessageHandler.alert(prefix + "Use the Enchanting Table & Anvil at your spawn");
-					MessageHandler.alert("");
 					World world = OSTB.getMiniGame().getMap();
 					String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/domination/";
 					ConfigurationUtil anvilUtil = new ConfigurationUtil(path + "anvil.yml");
@@ -434,7 +430,6 @@ public class Events implements Listener {
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				} else if(counter == 4) {
 					MessageHandler.alert(prefix + "Gain control of the Command Posts!");
-					MessageHandler.alert("");
 					MessageHandler.alertLine("&e");
 					EffectUtil.playSound(Sound.LEVEL_UP);
 				}
@@ -479,7 +474,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerAssist(PlayerAssistEvent event) {
 		Player player = event.getAttacker();
-		coinsHandler.addCoins(player, 5, "&x(Assist)");
+		coinsHandler.addCoins(player, 5, "&7(Assist)");
 	}
 	
 	@EventHandler

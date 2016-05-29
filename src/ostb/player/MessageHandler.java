@@ -8,8 +8,8 @@ import ostb.server.util.StringUtil;
 
 public class MessageHandler {
 	public static void sendMessage(CommandSender sender, String message) {
-		message = message.replace("&x", "&b");
-		sender.sendMessage(StringUtil.color("&b" + message));
+		message = message.replace("&x", "&e");
+		sender.sendMessage(StringUtil.color("&e" + message));
 	}
 	
 	public static void sendLine(CommandSender sender) {

@@ -74,7 +74,7 @@ public class Events implements Listener {
 					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
 					for(Player player : ProPlugin.getPlayers()) {
 						if(winner.isOnTeam(player)) {
-							coinsHandler.addCoins(player, CoinsHandler.getWinCoins(), "&xfor winning");
+							coinsHandler.addCoins(player, CoinsHandler.getWinCoins(), "&7(Win)");
 						}
 					}
 					for(KitTeam kitTeam : KitTeam.values()) {
@@ -100,7 +100,7 @@ public class Events implements Listener {
 		if(coinsHandler != null) {
 			coinsHandler.getCoins(player);
 			if(coinsHandler.isNewPlayer(player)) {
-				coinsHandler.addCoins(player, 25, "&xTo help you get started");
+				coinsHandler.addCoins(player, 25, "&7(To help you get started)");
 			}
 		}
 	}

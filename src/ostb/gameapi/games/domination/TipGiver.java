@@ -18,8 +18,8 @@ public class TipGiver implements Listener {
 	
 	public TipGiver() {
 		tips = new ArrayList<String>();
-		tips.add("Get exp bottles in the shop to use to &eEnchant &xand &eGet Armor");
-		tips.add("Get more coins daily with &e/vote");
+		tips.add("Get exp bottles in the shop to use to &bEnchant &eand &bGet Armor");
+		tips.add("Get more coins daily with &b/vote");
 		EventUtil.register(this);
 	}
 	
@@ -30,7 +30,7 @@ public class TipGiver implements Listener {
 			if(index >= tips.size()) {
 				index = 0;
 			}
-			MessageHandler.alert("&eTIP: &x" + tips.get(index++));
+			MessageHandler.alert("&a&lTIP: &e" + tips.get(index++));
 		}
 	}
 }

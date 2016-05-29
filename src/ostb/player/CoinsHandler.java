@@ -111,7 +111,7 @@ public class CoinsHandler implements Listener {
 						if(coinsHandler == null) {
 							MessageHandler.sendMessage(sender, "&cError on loading the coins handler for \"" + plugin.getData() + "\"");
 						} else {
-							MessageHandler.sendMessage(sender, AccountHandler.getPrefix(target) + " &xhas &e" + coinsHandler.getCoins(target) + " &xcoins in " + plugin.getDisplay());
+							MessageHandler.sendMessage(sender, AccountHandler.getPrefix(target) + " &ehas &b" + coinsHandler.getCoins(target) + " &ecoins in " + plugin.getDisplay());
 						}
 					}
 					return true;
@@ -166,7 +166,7 @@ public class CoinsHandler implements Listener {
 		CoinGiveEvent event = new CoinGiveEvent(player, amount);
 		Bukkit.getPluginManager().callEvent(event);
 		amount = event.getAmount();
-		String msg = (amount >= 0 ? "&6+" : "&c") + amount + " Coin" + (amount == 1 ? "" : "s");
+		String msg = (amount >= 0 ? "&b+" : "&c") + amount + " Coin" + (amount == 1 ? "" : "s");
 		if(message != null) {
 			msg += " " + message;
 		}

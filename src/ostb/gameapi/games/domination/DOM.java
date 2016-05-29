@@ -83,9 +83,9 @@ public class DOM implements Listener {
 							containsBlue = true;
 						}
 						if(containsRed && !containsBlue && progress == 4) {
-							coinsHandler.addCoins(player, 10, "&xCommand Post Capture");
+							coinsHandler.addCoins(player, 10, "&7(Command Post Capture)");
 						} else if(containsBlue && !containsRed && progress == -4) {
-							coinsHandler.addCoins(player, 10, "&xCommand Post Capture");
+							coinsHandler.addCoins(player, 10, "&7(Command Post Capture)");
 						}
 					}
 				}
@@ -216,11 +216,11 @@ public class DOM implements Listener {
 			oldBlueCaptured = blueCaptured;
 			OSTB.getSidebar().removeScore(11);
 		}
-		OSTB.getSidebar().setText("&eScores", 16);
+		OSTB.getSidebar().setText("&e&lScores", 16);
 		OSTB.getSidebar().setText("&c" + redScore + "&7 - &b" + blueScore, 15);
 		OSTB.getSidebar().setText("&7Score Limit: " + scoreLimit, 14);
 		OSTB.getSidebar().setText("      ", 13);
-		OSTB.getSidebar().setText("&ePosts Captured", 12);
+		OSTB.getSidebar().setText("&e&lPosts Captured", 12);
 		OSTB.getSidebar().setText("&c" + redCaptured + "&7 - &b" + blueCaptured + " ", 11);
 	}
 	

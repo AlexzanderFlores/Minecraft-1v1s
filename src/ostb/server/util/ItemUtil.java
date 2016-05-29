@@ -55,7 +55,7 @@ public class ItemUtil {
 		for(int a = 0; a < inventory.getSize(); ++a) {
 			ItemStack itemStack = inventory.getItem(a);
 			if(itemStack == null || itemStack.getType() == Material.AIR) {
-				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data++).setGlow(true).getItemStack();
+				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data++).setName(" ").setGlow(true).getItemStack();
 				if(data > 15) {
 					data = 0;
 				}
@@ -68,7 +68,7 @@ public class ItemUtil {
 		for(int a = 0; a < inventory.getSize(); ++a) {
 			ItemStack itemStack = inventory.getItem(a);
 			if(itemStack == null || itemStack.getType() == Material.AIR) {
-				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).getItemStack();
+				itemStack = new ItemCreator(Material.STAINED_GLASS_PANE, data).setName(" ").setGlow(true).getItemStack();
 				inventory.setItem(a, itemStack);
 			}
 		}

@@ -71,14 +71,14 @@ public class Domination extends MiniGame {
 				}
 				setText(new String [] {
 					" ",
-					"&eTeam Sizes",
+					"&e&lTeam Sizes",
 					"&c" + redSize + "&7 - &b" + blueSize,
 					"  ",
-					"&e" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
-					"&aOutsideTheBlock.org",
-					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&a&lOutsideTheBlock.org",
+					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"    ",
 				});
 				super.update();

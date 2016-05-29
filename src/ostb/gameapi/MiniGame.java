@@ -352,14 +352,14 @@ public abstract class MiniGame extends ProPlugin {
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
 					" ",
-					"&ePlaying",
+					"&e&lPlaying",
 					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
 					"  ",
-					"&e" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
-					"&aOutsideTheBlock.org",
-					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&a&lOutsideTheBlock.org",
+					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"    "
 				});
 				super.update();
