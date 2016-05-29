@@ -68,7 +68,7 @@ public class Events implements Listener {
 					MessageHandler.alert("&cRed: " + KitTeam.RED.getScore());
 					MessageHandler.alert("&bBlue: " + KitTeam.BLUE.getScore());
 					MessageHandler.alert("");
-					MessageHandler.alert("Winner: " + winner.getTeam().getPrefix());
+					MessageHandler.alert(winner == null ? "The game was a tie!" : "Winner: " + winner.getTeam().getPrefix());
 					MessageHandler.alert("Scores reset for next round");
 					MessageHandler.alert("");
 					MessageHandler.alertLine();

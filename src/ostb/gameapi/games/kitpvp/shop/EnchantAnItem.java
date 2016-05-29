@@ -2,6 +2,7 @@ package ostb.gameapi.games.kitpvp.shop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -53,7 +54,7 @@ public class EnchantAnItem extends InventoryViewer {
 						enchantments.add(Enchantment.PROTECTION_ENVIRONMENTAL);
 						enchantments.add(Enchantment.PROTECTION_PROJECTILE);
 					}
-					player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(enchantments.size()), 1);
+					player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(new Random().nextInt(enchantments.size())), 1);
 					enchantments.clear();
 					enchantments = null;
 					player.setLevel(player.getLevel() - 1);
