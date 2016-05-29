@@ -66,8 +66,8 @@ public class InventoryViewer implements Listener {
 		if(slots != null && event.getTitle().equals(name)) {
 			Player player = event.getPlayer();
 			int slot = event.getSlot();
-			if(slots.containsKey(slot)) {
-				Bukkit.getPluginManager().callEvent(new InventoryViewClickEvent(player, slots.get(player.getName()).get(slot), slot));
+			if(slots.get(player.getName()).containsKey(slot)) {
+				Bukkit.getPluginManager().callEvent(new InventoryViewClickEvent(player, event.getTitle(), slots.get(player.getName()).get(slot), slot));
 			} else {
 				ItemStack item = event.getItem();
 				if(item.getType() == Material.INK_SACK) {

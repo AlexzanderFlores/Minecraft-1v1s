@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,7 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -61,7 +63,7 @@ public class TeamHandler implements Listener {
 		}
 		
 		private String [] getLores() {
-			return new String [] {"", "&7Players: &e" + team.getSize(), ""};
+			return new String [] {"", "&7Players: &e" + team.getSize(), "", "&7Requires " + Ranks.PREMIUM.getPrefix(), ""};
 		}
 		
 		public Team getTeam() {
@@ -154,7 +156,19 @@ public class TeamHandler implements Listener {
 		for(int a = 0, slot = 11; a < KitTeam.values().length; ++a, slot += 4) {
 			inventory.setItem(slot, KitTeam.values()[a].getIcon());
 		}
+		inventory.setItem(13, new ItemCreator(Material.WOOL, 0).setName("&eAuto Assign").getItemStack());
 		player.openInventory(inventory);
+	}
+	
+	private void autoAssign(Player player) {
+		KitTeam bestTeam = null;
+		for(KitTeam kitTeam : KitTeam.values()) {
+			if(bestTeam == null || kitTeam.getSize() <= bestTeam.getSize()) {
+				bestTeam = kitTeam;
+			}
+		}
+		bestTeam.add(player);
+		Bukkit.getPluginManager().callEvent(new TeamSelectEvent(player));
 	}
 	
 	@EventHandler
@@ -162,10 +176,19 @@ public class TeamHandler implements Listener {
 		if(event.getTitle().equals(invName)) {
 			Player player = event.getPlayer();
 			int slot = event.getSlot();
-			if(slot == 11) {
-				KitTeam.RED.add(player);
-			} else if(slot == 15) {
-				KitTeam.BLUE.add(player);
+			if(slot == 13) {
+				autoAssign(player);
+			} else if(Ranks.PREMIUM.hasRank(player)) {
+				if(slot == 11) {
+					KitTeam.RED.add(player);
+				} else if(slot == 15) {
+					KitTeam.BLUE.add(player);
+				}
+			} else {
+				MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+				event.setCancelled(true);
+				return;
 			}
 			SpectatorHandler.remove(player);
 			event.setCancelled(true);
@@ -190,9 +213,7 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if(Ranks.PREMIUM.hasRank(player)) {
-			SpectatorHandler.add(player);
-		}
+		SpectatorHandler.add(player);
 	}
 	
 	@EventHandler
@@ -201,14 +222,7 @@ public class TeamHandler implements Listener {
 		if(Ranks.PREMIUM.hasRank(player)) {
 			openTeamSelection(player);
 		} else {
-			KitTeam bestTeam = null;
-			for(KitTeam kitTeam : KitTeam.values()) {
-				if(bestTeam == null || kitTeam.getSize() <= bestTeam.getSize()) {
-					bestTeam = kitTeam;
-				}
-			}
-			bestTeam.add(player);
-			Bukkit.getPluginManager().callEvent(new TeamSelectEvent(player));
+			autoAssign(player);
 		}
 	}
 	

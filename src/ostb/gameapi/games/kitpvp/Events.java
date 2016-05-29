@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import anticheat.events.TimeEvent;
 import ostb.OSTB;
-import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.ProPlugin;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
@@ -75,7 +75,7 @@ public class Events implements Listener {
 					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
 					for(Player player : ProPlugin.getPlayers()) {
 						if(winner.isOnTeam(player)) {
-							coinsHandler.addCoins(player, OSTB.getMiniGame().getWinCoins(), "&xfor winning");
+							coinsHandler.addCoins(player, CoinsHandler.getWinCoins(), "&xfor winning");
 						}
 					}
 					for(KitTeam kitTeam : KitTeam.values()) {
