@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import anticheat.events.TimeEvent;
 import ostb.OSTB;
+import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
@@ -62,16 +63,25 @@ public class Events implements Listener {
 					}
 					MessageHandler.alertLine();
 					MessageHandler.alert("");
-					MessageHandler.alert("&lRound Over:");
-					MessageHandler.alert("&c&lRed: &x&l" + KitTeam.RED.getScore());
-					MessageHandler.alert("&b&lBlue: &x&l" + KitTeam.BLUE.getScore());
+					MessageHandler.alert("&lRound over:");
 					MessageHandler.alert("");
-					MessageHandler.alert("&lWinner: " + winner.getTeam().getPrefix());
+					MessageHandler.alert("&cRed: " + KitTeam.RED.getScore());
+					MessageHandler.alert("&bBlue: " + KitTeam.BLUE.getScore());
+					MessageHandler.alert("");
+					MessageHandler.alert("Winner: " + winner.getTeam().getPrefix());
+					MessageHandler.alert("Scores reset for next round");
 					MessageHandler.alert("");
 					MessageHandler.alertLine();
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
+					for(Player player : ProPlugin.getPlayers()) {
+						if(winner.isOnTeam(player)) {
+							coinsHandler.addCoins(player, OSTB.getMiniGame().getWinCoins(), "&xfor winning");
+						}
+					}
 					for(KitTeam kitTeam : KitTeam.values()) {
 						kitTeam.clearScore();
 					}
+					OSTB.getProPlugin().setCounter(60 * 10);
 				}
 			}
 			OSTB.getSidebar().update();

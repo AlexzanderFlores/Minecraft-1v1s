@@ -1,5 +1,6 @@
 package ostb.gameapi.games.kitpvp.shop;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +25,9 @@ import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.CoinsHandler;
+import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
@@ -33,8 +37,13 @@ import ostb.server.util.ItemCreator;
 public class Shop implements Listener {
 	private static boolean registered = false;
 	private String name = null;
+	private EnchantAnItem enchantAnItem = null;
+	private RepairAnItem repairAnItem = null;
+	private SaveYourItems saveYourItems = null;
+	private List<String> recentlyDamaged = null;
 	
 	public Shop(World world, Location redSpawn, Location blueSpawn) {
+		recentlyDamaged = new ArrayList<String>();
 		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/" + Plugins.KITPVP.getData() + "/shop.yml");
 		for(String key : config.getConfig().getKeys(false)) {
 			double x = config.getConfig().getDouble(key + ".x");
@@ -58,6 +67,11 @@ public class Shop implements Listener {
 				if(SpectatorHandler.contains(player)) {
 					return;
 				}
+				if(recentlyDamaged.contains(player.getName()) && !player.isSneaking()) {
+					MessageHandler.sendMessage(player, "&cDue to being recently in combat you must &eSneak Click &cto open the &eShop");
+					return;
+				}
+				
 				Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
 				
 				// Gold Armor
@@ -118,22 +132,31 @@ public class Shop implements Listener {
 				return;
 			}
 			if(item.getType() == Material.ENCHANTMENT_TABLE) {
-				new EnchantAnItem(player);
+				if(enchantAnItem == null) {
+					enchantAnItem = new EnchantAnItem();
+				}
+				enchantAnItem.open(player);
 				return;
 			}
 			if(item.getType() == Material.ANVIL) {
-				new RepairAnItem(player);
+				if(repairAnItem == null) {
+					repairAnItem = new RepairAnItem();
+				}
+				repairAnItem.open(player);
 				return;
 			}
 			if(item.getType() == Material.ENDER_CHEST) {
-				new SaveYourItems(player);
+				if(saveYourItems == null) {
+					saveYourItems = new SaveYourItems();
+				}
+				saveYourItems.open(player);
 				return;
 			}
 			if(item.getType() == Material.BARRIER) {
 				player.openInventory(Bukkit.createInventory(player, 9 * 6, "Trash"));
 				return;
 			}
-			List<String> lores = item.getItemMeta().getLore();
+			List<String> lores = new ArrayList<String>(item.getItemMeta().getLore());
 			if(lores.size() >= 2) {
 				int price = Integer.valueOf(ChatColor.stripColor(lores.get(1)).split(" ")[1]);
 				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
@@ -155,6 +178,23 @@ public class Shop implements Listener {
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				}
 			}
+			lores.clear();
+			lores = null;
+		}
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			final String name = player.getName();
+			recentlyDamaged.add(name);
+			new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					recentlyDamaged.remove(name);
+				}
+			}, 20 * 5);
 		}
 	}
 }

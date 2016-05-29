@@ -17,8 +17,8 @@ import ostb.server.util.EffectUtil;
 public class EnchantAnItem extends InventoryViewer {
 	private static final int price = 20;
 	
-	public EnchantAnItem(Player player) {
-		super("Enchant an Item", player);
+	public EnchantAnItem() {
+		super("Enchant an Item");
 	}
 	
 	public static int getPrice() {

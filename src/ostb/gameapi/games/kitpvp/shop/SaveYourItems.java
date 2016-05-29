@@ -24,8 +24,12 @@ import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class SaveYourItems extends InventoryViewer {
-	public SaveYourItems(final Player player) {
-		super("Save Your Items", player, false);
+	public SaveYourItems() {
+		super("Save Your Items");
+	}
+	
+	@Override
+	public void open(final Player player) {
 		final Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
 		player.openInventory(inventory);
 		new AsyncDelayedTask(new Runnable() {
@@ -54,7 +58,7 @@ public class SaveYourItems extends InventoryViewer {
 		});
 	}
 	
-	private void open(final Player player, final int chest) {
+	private void openChest(final Player player, final int chest) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -114,7 +118,6 @@ public class SaveYourItems extends InventoryViewer {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		remove();
 		final Inventory inventory = event.getInventory();
 		if(event.getPlayer() instanceof Player && inventory.getTitle().startsWith("Chest #")) {
 			final Player player = (Player) event.getPlayer();
@@ -153,17 +156,17 @@ public class SaveYourItems extends InventoryViewer {
 			Player player = event.getPlayer();
 			int slot = event.getSlot();
 			if(slot == 11) {
-				open(player, 1);
+				openChest(player, 1);
 			} else if(slot == 12) {
 				if(Ranks.PREMIUM.hasRank(player)) {
-					open(player, 2);
+					openChest(player, 2);
 				} else {
 					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				}
 			} else if(slot == 13) {
 				if(Ranks.PREMIUM_PLUS.hasRank(player)) {
-					open(player, 3);
+					openChest(player, 3);
 				} else {
 					MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
