@@ -56,17 +56,17 @@ public class KitPVP extends ProPlugin {
 				removeScore(5);
 				setText(new String [] {
 					" ",
-					"&eScores",
+					"&e&lScores",
 					score,
 					"  ",
-					"&ePlaying",
+					"&e&lPlaying",
 					count,
 					"   ",
-					"&eScores Reset In",
+					"&e&lScores Reset In",
 					CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA) + (Events.getPaused() ? " &7(Paused)" : ""),
 					"    ",
-					"&aOutsideTheBlock.org",
-					"&eServer &b" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&a&lOutsideTheBlock.org",
+					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
 					"     "
 				});
 				super.update();

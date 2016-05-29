@@ -23,6 +23,7 @@ import net.minecraft.server.v1_8_R3.EnumColor;
 import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
@@ -203,9 +204,11 @@ public class TeamHandler implements Listener {
 		long ticks = event.getTicks();
 		if(ticks == 20) {
 			for(Player player : SpectatorHandler.getPlayers()) {
-				InventoryView view = player.getOpenInventory();
-				if(view == null || !view.getTitle().equals(invName)) {
-					openTeamSelection(player);
+				if(!Ranks.isStaff(player)) {
+					InventoryView view = player.getOpenInventory();
+					if(view == null || !view.getTitle().equals(invName)) {
+						openTeamSelection(player);
+					}
 				}
 			}
 		}
@@ -215,6 +218,14 @@ public class TeamHandler implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		SpectatorHandler.add(player);
+	}
+	
+	@EventHandler
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if(Ranks.isStaff(player)) {
+			openTeamSelection(player);
+		}
 	}
 	
 	@EventHandler

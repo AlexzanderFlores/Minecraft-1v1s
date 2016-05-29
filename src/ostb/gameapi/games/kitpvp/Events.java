@@ -14,6 +14,7 @@ import anticheat.events.TimeEvent;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
+import ostb.customevents.ServerRestartAlertEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
@@ -158,5 +159,10 @@ public class Events implements Listener {
 			MessageHandler.sendMessage(killer, event.getDeathMessage());
 		}
 		event.setDeathMessage(null);
+	}
+	
+	@EventHandler
+	public void onServerRestartAlert(ServerRestartAlertEvent event) {
+		MessageHandler.alert("&a&lTIP: &eSave your inventory in the &bShop's &c\"&bSave Your Items&c\" &eoption");
 	}
 }

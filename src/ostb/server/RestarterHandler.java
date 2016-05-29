@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.OSTB.Plugins;
+import ostb.customevents.ServerRestartAlertEvent;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -98,6 +99,7 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 				} else {
 					if(canDisplay()) {
 						MessageHandler.alert("&bServer restarting: " + getCounterAsString());
+						Bukkit.getPluginManager().callEvent(new ServerRestartAlertEvent());
 					}
 					decrementCounter();
 				}
