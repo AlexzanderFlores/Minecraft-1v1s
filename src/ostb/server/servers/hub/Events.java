@@ -57,7 +57,7 @@ public class Events implements Listener {
 	}
 	
 	public static void giveSidebar(Player player) {
-		SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &aOutsideTheBlock.org ") {
+		SidebarScoreboardUtil sidebar = new SidebarScoreboardUtil(" &6&lOutsideTheBlock.org ") {
 			@Override
 			public void update(Player player) {
 				if(oldPlayers != players) {
@@ -71,16 +71,16 @@ public class Events implements Listener {
 				}
 				setText(new String [] {
 					" ",
-					"&eFollow us!",
+					"&e&lFollow us!",
 					"&b@OSTBNetwork",
 					"  ",
-					"&ePlayers",
+					"&e&lPlayers",
 					"&b" + players,
 					"   ",
-					"&eRank",
+					"&e&lRank",
 					rankString,
 					"    ",
-					"&eHub #" + HubBase.getHubNumber(),
+					"&e&lServer &b&lHUB" + HubBase.getHubNumber(),
 					"     ",
 				});
 				super.update(player);

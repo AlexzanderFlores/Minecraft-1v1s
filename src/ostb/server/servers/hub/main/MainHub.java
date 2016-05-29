@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.EntityGuardian;
 import npc.NPCEntity;
 import ostb.OSTB;
 import ostb.player.LevelHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.servers.hub.HubBase;
 import ostb.server.servers.hub.TrailTest;
@@ -66,7 +67,7 @@ public class MainHub extends HubBase {
 				}
 				return true;
 			}
-		};
+		}.setRequiredRank(Ranks.OWNER);
 	}
 	
 	public static int getHubNumber() {
