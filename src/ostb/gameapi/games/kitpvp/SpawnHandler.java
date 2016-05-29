@@ -68,7 +68,10 @@ public class SpawnHandler implements Listener {
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		event.setRespawnLocation(spawn(event.getPlayer()));
+		Location spawn = spawn(event.getPlayer());
+		if(spawn != null) {
+			event.setRespawnLocation(spawn);
+		}
 		event.getPlayer().setNoDamageTicks(20 * 10);
 	}
 	

@@ -23,7 +23,6 @@ import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.CoinsHandler;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
@@ -109,9 +108,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerSpectator(PlayerSpectatorEvent event) {
 		Player player = event.getPlayer();
-		if(!Ranks.PREMIUM.hasRank(player)) {
-			event.setCancelled(true);
-		} else if(KitPVP.getKitPVPTeamHandler().getTeam(player) != null && event.getState() == SpectatorState.ADDED) {
+		if(KitPVP.getKitPVPTeamHandler().getTeam(player) != null && event.getState() == SpectatorState.ADDED) {
 			event.setCancelled(true);
 		}
 	}

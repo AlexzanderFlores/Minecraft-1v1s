@@ -23,7 +23,6 @@ import net.minecraft.server.v1_8_R3.EnumColor;
 import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.MessageHandler;
@@ -161,6 +160,7 @@ public class TeamHandler implements Listener {
 	}
 	
 	private void autoAssign(Player player) {
+		SpectatorHandler.remove(player);
 		KitTeam bestTeam = null;
 		for(KitTeam kitTeam : KitTeam.values()) {
 			if(bestTeam == null || kitTeam.getSize() <= bestTeam.getSize()) {
@@ -168,6 +168,7 @@ public class TeamHandler implements Listener {
 			}
 		}
 		bestTeam.add(player);
+		player.closeInventory();
 		Bukkit.getPluginManager().callEvent(new TeamSelectEvent(player));
 	}
 	
@@ -214,16 +215,6 @@ public class TeamHandler implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		SpectatorHandler.add(player);
-	}
-	
-	@EventHandler
-	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		if(Ranks.PREMIUM.hasRank(player)) {
-			openTeamSelection(player);
-		} else {
-			autoAssign(player);
-		}
 	}
 	
 	@EventHandler
