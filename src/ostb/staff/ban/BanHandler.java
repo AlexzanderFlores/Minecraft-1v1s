@@ -1,5 +1,7 @@
 package ostb.staff.ban;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ import ostb.ProPlugin;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -120,9 +123,31 @@ public class BanHandler extends Punishment implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.STAFF);
+		new CommandBase("banData", 1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				new AsyncDelayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        UUID uuid = AccountHandler.getUUID(arguments[0]);
+                        if(uuid == null) {
+                            MessageHandler.sendMessage(sender, "&c" + arguments[0] + " has never logged in before");
+                        } else {
+                            String [] keys = new String [] {"uuid", "active"};
+                            String [] values = new String [] {uuid.toString(), "1"};
+                            if(DB.STAFF_BAN.isKeySet(keys, values)) {
+                                Player player = (Player) sender;
+                                display(uuid, player);
+                            } else {
+                                MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not banned");
+                            }
+                        }
+                    }
+                });
+				return true;
+			}
+		}.enableDelay(1);
 	}
-	
-	//uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unbanned VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unban_date VARCHAR(10), unban_time VARCHAR(25), day INT, active INT
 	
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
@@ -136,71 +161,54 @@ public class BanHandler extends Punishment implements Listener {
 		return DB.STAFF_BAN.isKeySet(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"});
 	}
 	
-	/*private static void display(final UUID uuid, final Player viewer) {
+	private static void display(final UUID uuid, final Player viewer) {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				ResultSet resultSet = null;
-				PreparedStatement statement = null;
 				try {
 					DB table = DB.STAFF_BAN;
-					statement = table.getConnection().prepareStatement("SELECT id, reason, time, staff_uuid, attached_uuid, day FROM " + table.getName() + " WHERE uuid = '" + uuid.toString() + "' AND active = 1");
-					resultSet = statement.executeQuery();
+					resultSet = table.getConnection().prepareStatement("SELECT id,reason,time,staff_uuid,attached_uuid, day FROM " + table.getName() + " WHERE uuid = '" + uuid.toString() + "' AND active = 1").executeQuery();
 					if(!resultSet.wasNull()) {
 						MessageHandler.sendLine(viewer);
-						MessageHandler.sendMessage(viewer, "&a&lThis account has been &c&lBANNED!");
 						while(resultSet.next()) {
 							String id = resultSet.getString("id");
 							String reason = resultSet.getString("reason").replace("_", " ");
-							if(reason != null && !reason.equals("null")) {
-								MessageHandler.sendMessage(viewer, "Why? &e" + reason);
-							}
+							String time = resultSet.getString("time");
+							MessageHandler.sendMessage(viewer, "This account has been &cBANNED &xfor " + (reason.equals("null") ? "&cN/A" : "&b" + reason) + " &xon &b" + time);
 							int counter = 0;
 							for(String proof : DB.STAFF_BAN_PROOF.getAllStrings("proof", "ban_id", id)) {
-								MessageHandler.sendMessage(viewer, "Proof #" + (++counter) + " &e" + proof);
+								MessageHandler.sendMessage(viewer, "Proof #" + (++counter) + " &b" + proof);
 							}
-							String time = resultSet.getString("time");
-							if(time != null && !time.equals("null")) {
-								MessageHandler.sendMessage(viewer, "When? &e" + time);
-							}
-							String attached_uuid = resultSet.getString("attached_uuid");
-							if(attached_uuid.equalsIgnoreCase("null")) {
-								ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick to explain", "Click to explain", "/banTypes", "&aType of ban? &eDIRECT");
-							} else {
-								ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick to explain", "Click to explain", "/banTypes", "&aType of ban? &eASSOCIATION");
-								MessageHandler.sendMessage(viewer, "Associated with? &e" + AccountHandler.getName(UUID.fromString(attached_uuid)));
-							}
-							ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick to explain", "Click to explain", "/appealInfo", "&aSome ban types are only temporary bans");
-							ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick here", "Click to appeal", "/appeal", "&aTo appeal your ban");
+							ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick here", "Click to appeal", "/appeal", "&eTo appeal your ban");
 							String staff = resultSet.getString("staff_uuid");
 							if(staff.equals("CONSOLE") || reason.equals("XRAY")) {
-								int day = resultSet.getInt("day") - Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-								if(day <= 0) {
-									ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick here", "Click to appeal", "/appeal", "&aThis player &eMAY &aappeal at this time");
+								int loggedDay = resultSet.getInt("day");
+								int day = loggedDay - Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+								Bukkit.getLogger().info(loggedDay + " vs " + Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
+								if(day > 30) {
+									ChatClickHandler.sendMessageToRunCommand(viewer, " &bClick here", "Click to appeal", "/appeal", "&eThis player &bMAY &eappeal at this time");
 								} else {
-									MessageHandler.sendMessage(viewer, "This player &cMAY NOT &aappeal at this time");
-									MessageHandler.sendMessage(viewer, "They must wait &e" + day + " &amore day" + (day == 1 ? "" : "s"));
+									MessageHandler.sendMessage(viewer, "This player &cMAY NOT &xappeal at this time");
+									MessageHandler.sendMessage(viewer, "They must wait &b" + (30 - day) + " &xmore day" + (day == 1 ? "" : "s"));
 								}
 							}
 							if(!staff.equals("CONSOLE")) {
 								staff = AccountHandler.getName(UUID.fromString(staff));
 							}
-							if(Ranks.SENIOR_STAFF.hasRank(viewer)) {
-								MessageHandler.sendMessage(viewer, "&c&lThis is ONLY shown to Sr. Mods and above");
-								MessageHandler.sendMessage(viewer, "Who banned? &e" + staff);
+							if(Ranks.STAFF.hasRank(viewer)) {
+								MessageHandler.sendMessage(viewer, "&c&lThis is ONLY shown to Staff and above");
+								MessageHandler.sendMessage(viewer, "Banned by &b" + staff);
 							}
-						}
-						if(viewer.getUniqueId() == uuid) {
-							MessageHandler.sendMessage(viewer, "Is this an unfair punishment? Appeal here: &bhttps://promcgames.com/forum/view_forum/?fid=12");
 						}
 						MessageHandler.sendLine(viewer);
 					}
 				} catch(SQLException e) {
 					e.printStackTrace();
 				} finally {
-					DB.close(statement, resultSet);
+					DB.close(resultSet);
 				}
 			}
 		});
-	}*/
+	}
 }

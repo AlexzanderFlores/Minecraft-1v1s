@@ -165,6 +165,9 @@ commands:
   ban:
     usage: /ban <name> <reason> <proof>
 
+  banData:
+    usage: /banData <name>
+
   mute:
     usage: /mute <name> <reason> <proof>
 
