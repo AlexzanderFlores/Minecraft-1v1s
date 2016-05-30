@@ -25,7 +25,7 @@ public class KillLogger implements Listener {
                     " ",
                     "&cNo Deaths",
                     "  ",
-                    "&5Elite UHC"
+                    "&5" + HostedEvent.getEventName()
             });
         } else {
             OSTB.getSidebar().setText(new String[]{
@@ -61,7 +61,7 @@ public class KillLogger implements Listener {
             if(HostedEvent.isEvent()) {
                 OSTB.getSidebar().setText(new String[]{
                         " ",
-                        "&5Elite UHC"
+                        "&5" + HostedEvent.getEventName()
                 });
             }
         }

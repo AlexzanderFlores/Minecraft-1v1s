@@ -18,7 +18,6 @@ import ostb.gameapi.games.uhc.anticheat.AntiIPVP;
 import ostb.gameapi.games.uhc.anticheat.CommandSpy;
 import ostb.gameapi.games.uhc.anticheat.DiamondTracker;
 import ostb.gameapi.games.uhc.anticheat.StripMineDetection;
-import ostb.gameapi.games.uhc.anticheat.WaterBucketLogging;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -33,12 +32,10 @@ import ostb.server.util.FileHandler;
 import ostb.server.util.StringUtil;
 
 public class UHC extends MiniGame {
-    public static String ultraGoldenApple = null;
-    public static String account = null;
+    private static final String account = "OSTBUHC";
 
     public UHC() {
         super("UHC");
-        account = "ProMcHostedUHC";
         OSTB.setSidebar(new SidebarScoreboardUtil(" &aUHC "));
         setRequiredPlayers(60);
         setVotingCounter(-1);
@@ -62,13 +59,14 @@ public class UHC extends MiniGame {
         new StripMineDetection();
         new BelowNameHealthScoreboardUtil();
         new QuestionAnswerer();
-        new WaterBucketLogging();
         new CommandSpy();
         new HostedEvent();
+        new GoldenHeadUtil();
+        new SkullPikeUtil();
         if(HostedEvent.isEvent()) {
             OSTB.getSidebar().setText(new String[]{
                     " ",
-                    "&5EliteUHC"
+                    "&5" + HostedEvent.getEventName()
             }, -1);
         } else {
             OSTB.getSidebar().setText(new String[]{
@@ -317,8 +315,6 @@ public class UHC extends MiniGame {
                 };
             }
         });
-        new GoldenHeadUtil();
-        new SkullPikeUtil();
     }
 
     @Override
@@ -331,6 +327,10 @@ public class UHC extends MiniGame {
             FileHandler.delete(new File(container + "/lobby"));
             FileHandler.copyFolder(newWorld, new File(container + "/lobby"));
         }
+    }
+    
+    public static String getAcount() {
+    	return account;
     }
 
     private void heal(Player player) {

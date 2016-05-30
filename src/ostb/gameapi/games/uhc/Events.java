@@ -207,7 +207,7 @@ public class Events implements Listener {
                     WorldHandler.getWorld().setGameRuleValue("doDaylightCycle", "false");
                     WorldHandler.getWorld().setTime(6000);
                     if(HostedEvent.isEvent()) {
-                        OSTB.getSidebar().update("&5Elite UHC");
+                        OSTB.getSidebar().update("&5" + HostedEvent.getEventName());
                     } else {
                         new SurfaceHandler();
                         OSTB.getSidebar().setName("&aGo to 0, 0!");

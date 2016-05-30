@@ -33,6 +33,7 @@ public class HostedEvent implements Listener {
     private static HostedEvent instance = null;
     private static boolean isEvent = false;
     private static List<String> died = null;
+    private static final String eventName = "Elite UHC";
 
     public HostedEvent() {
         instance = this;
@@ -56,6 +57,10 @@ public class HostedEvent implements Listener {
             }
         };
         //enable(Bukkit.getConsoleSender());
+    }
+    
+    public static String getEventName() {
+    	return eventName;
     }
 
     public static boolean isEvent() {
@@ -122,7 +127,7 @@ public class HostedEvent implements Listener {
                     MessageHandler.sendMessage(player, "");
                     MessageHandler.sendMessage(player, "");
                     MessageHandler.sendMessage(player, "");
-                    MessageHandler.sendMessage(player, "                    &aThank you for playing &5Elite UHC");
+                    MessageHandler.sendMessage(player, "                    &aThank you for playing &5" + getEventName());
                     MessageHandler.sendMessage(player, "                     &aHosted by &bplay.OSTB.com");
                     MessageHandler.sendMessage(player, "");
                     MessageHandler.sendMessage(player, "");

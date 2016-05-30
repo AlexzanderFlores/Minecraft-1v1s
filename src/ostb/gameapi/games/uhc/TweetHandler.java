@@ -126,7 +126,7 @@ public class TweetHandler implements Listener {
                                     MessageHandler.sendMessage(player, "");
                                     MessageHandler.sendLine(player);
                                     MessageHandler.alert("");
-                                    MessageHandler.alert("Tweet Sent! &ehttps://twitter.com/" + UHC.account + "/status/" + id);
+                                    MessageHandler.alert("Tweet Sent! &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id);
                                     MessageHandler.alert("");
                                 }
                                 new CommandBase("uhcOver", true) {
@@ -195,7 +195,7 @@ public class TweetHandler implements Listener {
     public static String getURL() {
         try {
             if(id != -1) {
-                return " &ehttps://twitter.com/" + UHC.account + "/status/" + id;
+                return " &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id;
             }
         } catch(Exception e) {
 
