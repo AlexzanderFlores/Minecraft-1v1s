@@ -3,7 +3,6 @@ package ostb.gameapi.games.uhc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -116,7 +115,7 @@ public class HostedEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         final String name = event.getPlayer().getName();
-        event.setRespawnLocation(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
+        event.setRespawnLocation(OSTB.getMiniGame().getLobby().getSpawnLocation());
         new DelayedTask(new Runnable() {
             @Override
             public void run() {
@@ -134,7 +133,7 @@ public class HostedEvent implements Listener {
                     MessageHandler.sendLine(player, "&e");
                     SpectatorHandler.remove(player);
                     player.closeInventory();
-                    player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
+                    player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
                 }
             }
         }, 20 * 1);

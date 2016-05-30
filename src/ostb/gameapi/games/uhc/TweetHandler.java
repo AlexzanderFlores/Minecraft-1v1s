@@ -28,7 +28,7 @@ import ostb.server.util.ItemUtil;
 
 public class TweetHandler implements Listener {
     private static ItemStack item = null;
-    private static int opensIn = -1;
+    private static int opensIn = 10;
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
     private static String tweet = null;
@@ -38,51 +38,13 @@ public class TweetHandler implements Listener {
         if(item == null) {
             tweet = "";
             item = new ItemCreator(Material.NAME_TAG).setName("&aLaunch Tweet").getItemStack();
-            new CommandBase("opensIn", 1) {
-                @Override
-                public boolean execute(CommandSender sender, String[] arguments) {
-                    try {
-                        opensIn = Integer.valueOf(arguments[0]);
-                        if(opensIn < 5 || opensIn > 10) {
-                            MessageHandler.sendMessage(sender, "&cYour game must open in 5 - 10 minutes");
-                            opensIn = -1;
-                        } else {
-                            MessageHandler.sendMessage(sender, "This game will open in &c" + opensIn);
-                            MessageHandler.sendMessage(sender, "To continue click the \"&cLaunch Tweet&a\" item again");
-                        }
-                    } catch(NumberFormatException e) {
-                        return false;
-                    }
-                    return true;
-                }
-            };
             new CommandBase("tweet", true) {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
-                    Player player = (Player) sender;
-                    if(Ranks.OWNER.hasRank(player)) {
-                        if(HostedEvent.isEvent()) {
-                            MessageHandler.alert("Game will open in &c" + opensIn + " &aminutes");
-                            countDown = new CountDownUtil(60 * opensIn);
-                        } else if(hasTweeted) {
-                            MessageHandler.sendMessage(player, "&cThis game has already been tweeted");
-                        } else {
-                            String message = getTeamSize() + " " + getScenarios() + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
-                            id = Tweeter.tweet(message, "uhc.jpg");
-                            if(id == -1) {
-                                MessageHandler.sendMessage(player, "&cFailed to send Tweet! Possible duplicate tweet");
-                            } else {
-                                hasTweeted = true;
-                                MessageHandler.alert("Tweet sent! Game will open in &c" + opensIn + " &aminutes");
-                                countDown = new CountDownUtil(60 * opensIn);
-                            }
-                        }
-                    } else {
-                        MessageHandler.sendUnknownCommand(player);
-                    }
+                	tweet(sender);
                     return true;
                 }
-            };
+            }.setRequiredRank(Ranks.OWNER);
             new CommandBase("endTweet", 2, -1, true) {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
@@ -164,6 +126,25 @@ public class TweetHandler implements Listener {
         }
     }
 
+    public static void tweet(CommandSender sender) {
+    	if(HostedEvent.isEvent()) {
+            MessageHandler.alert("Game will open in &c" + opensIn + " &xminutes");
+            countDown = new CountDownUtil(60 * opensIn);
+        } else if(hasTweeted) {
+            MessageHandler.sendMessage(sender, "&cThis game has already been tweeted");
+        } else {
+            String message = getTeamSize() + " " + getScenarios() + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
+            id = Tweeter.tweet(message, "uhc.jpg");
+            if(id == -1) {
+                MessageHandler.sendMessage(sender, "&cFailed to send Tweet! Possible duplicate tweet");
+            } else {
+                hasTweeted = true;
+                MessageHandler.alert("Tweet sent! Game will open in &c" + opensIn + " &xminutes");
+                countDown = new CountDownUtil(60 * opensIn);
+            }
+        }
+    }
+
     public static String getTeamSize() {
         int maxTeamSize = TeamHandler.getMaxTeamSize();
         return maxTeamSize == 1 ? "FFA" : "FFA - To" + maxTeamSize;
@@ -182,7 +163,7 @@ public class TweetHandler implements Listener {
     }
 
     private static String getIP() {
-        return "IP: play.OSTB.com";
+        return "IP: OutsideTheBlock.org";
     }
 
     private static String getCommand() {

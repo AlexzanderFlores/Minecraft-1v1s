@@ -38,6 +38,7 @@ public enum DB {
 	PLAYERS_KITPVP_CHEST_1("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), material VARCHAR(25), data INT, enchant VARCHAR(100), durability INT, slot INT, PRIMARY KEY(id)"),
 	PLAYERS_KITPVP_CHEST_2("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), material VARCHAR(25), data INT, enchant VARCHAR(100), durability INT, slot INT, PRIMARY KEY(id)"),
 	PLAYERS_KITPVP_CHEST_3("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), material VARCHAR(25), data INT, enchant VARCHAR(100), durability INT, slot INT, PRIMARY KEY(id)"),
+	PLAYERS_UHC_TIMES("id INT NOT NULL AUTO_INCREMENT, day INT, hour INT, started BOOL, PRIMARY KEY(id)"),
 	// Play time
 	PLAYERS_LIFETIME_PLAYTIME("uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, PRIMARY KEY(uuid)"),
 	PLAYERS_MONTHLY_PLAYTIME("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), days INT, hours INT, minutes INT, seconds INT, month INT,  PRIMARY KEY(id)"),

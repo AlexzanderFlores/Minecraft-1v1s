@@ -269,16 +269,15 @@ public class Events implements Listener {
         new ScatterHandler();
         OSTB.getMiniGame().setResetPlayerUponJoining(false);
         OSTB.getMiniGame().setCounter(60 * 60);
-        new KillLogger();
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         GameStates state = OSTB.getMiniGame().getGameState();
-        if(state == GameStates.WAITING || state == GameStates.VOTING) {
-            player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
-        }
+        /*if(state == GameStates.WAITING || state == GameStates.VOTING) {
+        	player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
+        }*/
         if(Ranks.OWNER.hasRank(player) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
             player.getInventory().addItem(forceStartItem);
         }

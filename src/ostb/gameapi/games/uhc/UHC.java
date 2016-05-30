@@ -70,6 +70,7 @@ public class UHC extends MiniGame {
         new HostedEvent();
         new GoldenHeadUtil();
         new SkullPikeUtil();
+        new TimeHandler();
         //UHC:
         ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/../twitter.yml");
         String consumerKey = config.getConfig().getString("uhc.consumerkey");
