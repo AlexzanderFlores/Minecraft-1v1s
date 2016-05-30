@@ -50,7 +50,7 @@ public class ScatterHandler implements Listener {
         random = new Random();
         EventUtil.register(instance);
         int size = (int) WorldHandler.getWorld().getWorldBorder().getSize();
-        String command = "spreadPlayers 0 0 100 " + (size / 2 + (size / 3) - 250) + " false ";
+        String command = "spreadPlayers 0 0 100 " + size / 2 + " false ";
         for(Player player : ProPlugin.getPlayers()) {
             command += player.getName() + " ";
             ++toScatter;
@@ -69,7 +69,7 @@ public class ScatterHandler implements Listener {
                         SpectatorHandler.remove(target);
                         target.teleport(WorldHandler.getWorld().getSpawnLocation());
                         int size = (int) WorldHandler.getWorld().getWorldBorder().getSize();
-                        String command = "spreadPlayers 0 0 100 " + (size / 2 + (size / 3) - 250) + " false " + target.getName();
+                        String command = "spreadPlayers 0 0 100 " + size / 2 + " false " + target.getName();
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                     }
                 } else {

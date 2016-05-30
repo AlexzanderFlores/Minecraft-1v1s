@@ -1,6 +1,7 @@
 package ostb.gameapi;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -75,6 +76,10 @@ public class GracePeriod extends CountDownUtil implements Listener {
 	
 	public static String getGraceCounterString() {
 		return instance.getCounterAsString();
+	}
+	
+	public static String getGraceCounterString(ChatColor color) {
+		return instance.getCounterAsString(color);
 	}
 	
 	public static int getGraceCounter() {

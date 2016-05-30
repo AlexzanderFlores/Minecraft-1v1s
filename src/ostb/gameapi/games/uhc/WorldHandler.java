@@ -41,6 +41,7 @@ public class WorldHandler implements Listener {
     private static World nether = null;
     private static World end = null;
     private static boolean preGenerated = false;
+    private static int radius = 1500;
 
     public WorldHandler() {
         name = "World Options";
@@ -72,6 +73,11 @@ public class WorldHandler implements Listener {
         world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
         world.setGameRuleValue("naturalRegeneration", "false");
         world.setDifficulty(Difficulty.HARD);
+        world.getWorldBorder().setCenter(0, 0);
+		world.getWorldBorder().setDamageAmount(1.0d);
+		world.getWorldBorder().setWarningDistance(25);
+		world.getWorldBorder().setWarningTime(20 * 10);
+		setBorder();
         OSTB.getMiniGame().setMap(world);
         MessageHandler.alert("Generating World... Complete!");
         //BorderHandler.setOverworldBorder();
@@ -143,6 +149,14 @@ public class WorldHandler implements Listener {
 
     public static World getEnd() {
         return end;
+    }
+    
+    private static void setBorder() {
+    	try {
+    		world.getWorldBorder().setSize(radius);
+    	} catch(Exception e) {
+    		
+    	}
     }
 
     @EventHandler

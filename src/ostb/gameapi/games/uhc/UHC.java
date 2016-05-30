@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.GoldenHeadUtil;
+import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SkullPikeUtil;
 import ostb.gameapi.SpectatorHandler;
@@ -37,6 +38,7 @@ import ostb.server.util.StringUtil;
 public class UHC extends MiniGame {
     private static final String account = "OSTBUHC";
     private static String oldScenarios = "";
+    private static int oldRadius = -1;
 
     public UHC() {
         super("UHC");
@@ -287,39 +289,49 @@ public class UHC extends MiniGame {
         OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
+				int r = ((int) getMap().getWorldBorder().getSize()) / 2;
+				if(oldRadius != r) {
+					oldRadius = r;
+					OSTB.getSidebar().removeScore(14);
+				}
 				int teamSize = TeamHandler.getMaxTeamSize();
 				String scenarios = "To" + teamSize + " " +  ScenarioManager.getText();
 				if(!scenarios.equals(oldScenarios)) {
 					oldScenarios = scenarios;
-					removeScore(12);
+					removeScore(11);
 				}
 				if(ServerLogger.updatePlayerCount()) {
-					removeScore(8);
-					removeScore(5);
+					removeScore(7);
+					removeScore(4);
 				}
 				if(getGameState() != GameStates.WAITING) {
-					removeScore(5);
+					removeScore(4);
 				}
 				if(getGameState() != getOldGameState()) {
 					setOldGameState(getGameState());
-					removeScore(6);
+					removeScore(5);
 				}
 				int size = ProPlugin.getPlayers().size();
+				String countDown = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA);
+				if(GracePeriod.isRunning()) {
+					countDown += " " + GracePeriod.getGraceCounterString(ChatColor.GRAY) + " Grace";
+				}
 				setText(new String [] {
-					" ",
+					"&e&lBorder Radius",
+					"&b" + r + "x" + r,
+					"  ",
 					"&e&lScenario",
 					"&b" + scenarios,
 					"&7More Info: /sInfo",
-					"  ",
+					"   ",
 					"&e&lPlaying",
 					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
-					"   ",
-					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
-					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"    ",
+					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					countDown,
+					"     ",
 					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
-					"     "
+					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", "")
 				});
 				super.update();
 			}

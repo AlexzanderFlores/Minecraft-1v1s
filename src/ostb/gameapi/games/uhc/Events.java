@@ -163,11 +163,8 @@ public class Events implements Listener {
                     runOneSecond = false;
                     WorldHandler.getWorld().setGameRuleValue("doDaylightCycle", "false");
                     WorldHandler.getWorld().setTime(6000);
-                    if(HostedEvent.isEvent()) {
-                        OSTB.getSidebar().update("&5" + HostedEvent.getEventName());
-                    } else {
-                        new SurfaceHandler();
-                        OSTB.getSidebar().setName("&aGo to 0, 0!");
+                    if(!HostedEvent.isEvent()) {
+                    	new SurfaceHandler();
                     }
                     setMoveToCenter(true);
                     for(Player player : ProPlugin.getPlayers()) {
@@ -183,14 +180,9 @@ public class Events implements Listener {
                         }
                     }
                 } else {
-                    if(GracePeriod.isRunning()) {
-                        OSTB.getSidebar().update("&bGrace For " + GracePeriod.getGraceCounterString());
-                    } else {
-                        OSTB.getSidebar().update("&aIn Game " + miniGame.getCounterAsString());
-                        if(!HostedEvent.isEvent()) {
-                            if(counter <= 5 || (counter < 60 && counter % 10 == 0)) {
-                                MessageHandler.alert("Meetup in &e" + miniGame.getCounterAsString());
-                            }
+                	if(!HostedEvent.isEvent()) {
+                        if(counter <= 5 || (counter < 60 && counter % 10 == 0)) {
+                            MessageHandler.alert("Meetup in &e" + miniGame.getCounterAsString());
                         }
                     }
                     if(!HostedEvent.isEvent() && (++alertCounter == 10 || alertCounter == 60)) {
@@ -277,7 +269,6 @@ public class Events implements Listener {
         new ScatterHandler();
         OSTB.getMiniGame().setResetPlayerUponJoining(false);
         OSTB.getMiniGame().setCounter(60 * 60);
-        OSTB.getSidebar().removeScoresBelow(TeamHandler.getMaxTeamSize() + 1);
         new KillLogger();
     }
 
