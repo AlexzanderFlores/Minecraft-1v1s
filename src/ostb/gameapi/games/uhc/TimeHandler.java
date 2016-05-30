@@ -23,11 +23,21 @@ public class TimeHandler implements Listener {
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
-					//day INT, hour INT, started BOOL
+					//day INT, hour INT, started BOOL, options INT
+					//1234456789
+					//1 = team size
+					//2 = bool for rush
+					//3 = bool for nether
+					//44 = apple rates, 00 = 100%
+					//5 = bool for horses
+					//6 = bool for horse healing
+					//7 = bool for pearl damage
+					//8 = bool for absorption
+					//9 = bool for end
 					Calendar calendar = Calendar.getInstance();
 					int day = calendar.get(Calendar.DAY_OF_YEAR);
 					DB db = DB.PLAYERS_UHC_TIMES;
-					if(db.isKeySet("day", "" + day)/* && calendar.get(Calendar.MINUTE) == 0*/) {
+					if(db.isKeySet("day", "" + day)) {
 						String [] keys = new String [] {"day", "hour", "started"};
 						String [] values = new String [] {day + "", + calendar.get(Calendar.HOUR_OF_DAY) + "", "0"};
 						if(db.isKeySet(keys, values)) {
@@ -36,7 +46,9 @@ public class TimeHandler implements Listener {
 						}
 					} else {
 						for(int a = 0, hour = 12; a < 5; ++a, hour += 2) {
-							db.insert("'" + day + "', '" + hour + "', '0'");
+							int teamSize = TeamHandler.getMaxTeamSize();
+							String scenarios = "To" + teamSize + " " +  ScenarioManager.getText();
+							db.insert("'" + day + "', '" + hour + "', '0', '1000111110', '" + scenarios + "'");
 						}
 					}
 				}

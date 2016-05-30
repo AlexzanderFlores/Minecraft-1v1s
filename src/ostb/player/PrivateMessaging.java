@@ -57,7 +57,7 @@ public class PrivateMessaging implements Listener {
 										message += arguments[a] + " ";
 									}
 									MessageHandler.sendMessage(player, "&3Me -> " + target.getName() + ": &f" + message);
-									MessageHandler.sendMessage(target, "&3" + player.getName() + " > Me: &f" + message);
+									MessageHandler.sendMessage(target, "&3" + player.getName() + " -> Me: &f" + message);
 									lastMessaged.put(player.getName(), target.getName());
 									lastMessaged.put(target.getName(), player.getName());
 								}
