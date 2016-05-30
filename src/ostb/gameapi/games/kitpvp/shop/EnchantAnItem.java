@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -17,9 +18,11 @@ import ostb.server.util.EffectUtil;
 
 public class EnchantAnItem extends InventoryViewer {
 	private static final int price = 20;
+	private Random random = null;
 	
 	public EnchantAnItem() {
 		super("Enchant an Item");
+		random = new Random();
 	}
 	
 	public static int getPrice() {
@@ -54,12 +57,18 @@ public class EnchantAnItem extends InventoryViewer {
 						enchantments.add(Enchantment.PROTECTION_ENVIRONMENTAL);
 						enchantments.add(Enchantment.PROTECTION_PROJECTILE);
 					}
-					player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(new Random().nextInt(enchantments.size())), 1);
-					enchantments.clear();
-					enchantments = null;
-					player.setLevel(player.getLevel() - 1);
-					coinsHandler.addCoins(player, price * -1);
-					EffectUtil.playSound(player, Sound.LEVEL_UP);
+					if(enchantments.isEmpty()) {
+						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+					} else {
+						int index = random.nextInt(enchantments.size());
+						Bukkit.getLogger().info(type + " " + enchantments.size() + " " + index);
+						player.getInventory().getItem(event.getSlot()).addEnchantment(enchantments.get(index), 1);
+						enchantments.clear();
+						enchantments = null;
+						player.setLevel(player.getLevel() - 1);
+						coinsHandler.addCoins(player, price * -1);
+						EffectUtil.playSound(player, Sound.LEVEL_UP);
+					}
 				} else {
 					MessageHandler.sendMessage(player, "&cYou do not have any levels");
 				}
