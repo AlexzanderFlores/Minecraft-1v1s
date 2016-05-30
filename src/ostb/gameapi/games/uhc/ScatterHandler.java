@@ -81,52 +81,48 @@ public class ScatterHandler implements Listener {
         new CommandBase("forceStart") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if(sender instanceof Player) {
-                    Player player = (Player) sender;
-                    Player main = HostHandler.getMainHost();
-                    if(main == null || main.getUniqueId() != player.getUniqueId()) {
-                        MessageHandler.sendMessage(player, "&cYou must be the main UHC host to use this command");
-                        return true;
-                    }
-                }
-                String msg = "";
-                int counter = 0;
-                for(String name : locations.keySet()) {
-                    msg += name + ", ";
-                    ++counter;
-                }
-                if(msg.equals("")) {
-                    msg = "&cNone, ";
-                }
-                MessageHandler.sendMessage(sender, "Players in the locations list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
-                msg = "";
-                counter = 0;
-                for(String name : scattered) {
-                    msg += name + ", ";
-                    ++counter;
-                }
-                if(msg.equals("")) {
-                    msg = "&cNone, ";
-                }
-                MessageHandler.sendMessage(sender, "Players in the scattered list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
-                HandlerList.unregisterAll(instance);
-                if(teams != null) {
-                    teams.clear();
-                    teams = null;
-                }
-                if(locations != null) {
-                    locations.clear();
-                    locations = null;
-                }
-                scatter = false;
-                if(scattered != null) {
-                    scattered.clear();
-                    scattered = null;
-                }
-                Events.start();
+                forceStart(sender);
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.OWNER);
+    }
+    
+    private void forceStart(CommandSender sender) {
+    	String msg = "";
+        int counter = 0;
+        for(String name : locations.keySet()) {
+            msg += name + ", ";
+            ++counter;
+        }
+        if(msg.equals("")) {
+            msg = "&cNone, ";
+        }
+        MessageHandler.sendMessage(sender, "Players in the locations list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
+        msg = "";
+        counter = 0;
+        for(String name : scattered) {
+            msg += name + ", ";
+            ++counter;
+        }
+        if(msg.equals("")) {
+            msg = "&cNone, ";
+        }
+        MessageHandler.sendMessage(sender, "Players in the scattered list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
+        HandlerList.unregisterAll(instance);
+        if(teams != null) {
+            teams.clear();
+            teams = null;
+        }
+        if(locations != null) {
+            locations.clear();
+            locations = null;
+        }
+        scatter = false;
+        if(scattered != null) {
+            scattered.clear();
+            scattered = null;
+        }
+        Events.start();
     }
 
     public static boolean isSaved(LivingEntity livingEntity) {
@@ -172,7 +168,7 @@ public class ScatterHandler implements Listener {
                             scattered.add(player.getName());
                         }
                         if(scattered.size() >= players.size()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "forceStart");
+                            forceStart(Bukkit.getConsoleSender());
                         }
                         break;
                     }

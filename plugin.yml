@@ -294,3 +294,9 @@ commands:
             
   getOutOfBounds:
     usage: /getOutOfBounds
+
+  lateScatter:
+    usage: /lateScatter
+
+  forceStart:
+    usage: /forceStart

@@ -38,7 +38,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -94,13 +93,9 @@ public class Events implements Listener {
                         player.removePotionEffect(effect.getType());
                     }
                     if(Ranks.OWNER.hasRank(player)) {
-                        String perm = "worldborder.*";
-                        PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
-                        permission.setPermission(perm, true);
+                    	player.setOp(true);
                         player.chat("/wb clear all");
-                        permission.unsetPermission(perm);
-                        permission.remove();
-                        permission = null;
+                        player.setOp(false);
                         if(HostHandler.getMainHost() != null && HostHandler.getMainHost().getName().equals(player.getName())) {
                             SpectatorHandler.add(player);
                         }

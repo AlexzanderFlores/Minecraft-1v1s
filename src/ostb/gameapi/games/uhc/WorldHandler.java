@@ -72,6 +72,7 @@ public class WorldHandler implements Listener {
         world.setSpawnLocation(0, getGround(new Location(world, 0, 0, 0)).getBlockY(), 0);
         world.setGameRuleValue("naturalRegeneration", "false");
         world.setDifficulty(Difficulty.HARD);
+        OSTB.getMiniGame().setMap(world);
         MessageHandler.alert("Generating World... Complete!");
         //BorderHandler.setOverworldBorder();
     }
