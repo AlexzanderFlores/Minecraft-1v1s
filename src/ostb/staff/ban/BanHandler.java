@@ -96,9 +96,11 @@ public class BanHandler extends Punishment implements Listener {
 									if(player != null) {
 										player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
 									}
-									DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 									keys = new String [] {"uuid", "active"};
 									values = new String [] {uuidString, "1"};
+									if(!DB.STAFF_BAN.isKeySet(keys, values)) {
+										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+									}
 									id = DB.STAFF_BAN.getInt(keys, values, "id");
 									DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
 									++counter;
