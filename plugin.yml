@@ -221,3 +221,10 @@ commands:
 # Worker commands
   purchase:
     usage: /purchase <name> <package name>
+
+# UHC commands
+  heal:
+    usage: /heal [name | all]
+
+  invSee:
+    usage: /invSee <name>

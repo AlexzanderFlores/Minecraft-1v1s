@@ -17,7 +17,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class Tweeter {
-	//TODO: Make an enum with keys in this one file
 	private static String consumerKey = null;
 	private static String consumerSecret = null;
 	private static String accessToken = null;
@@ -27,7 +26,7 @@ public class Tweeter {
 	private static Twitter twitter = null;
 	private static Status status = null;
 	
-	public Tweeter(String key, String cSecret, String token, String aSecret, int a) {
+	public Tweeter(String key, String cSecret, String token, String aSecret) {
 		consumerKey = key;
 		consumerSecret = cSecret;
 		accessToken = token;

@@ -23,6 +23,7 @@ public class CutClean extends Scenario {
 	private static CutClean instance = null;
 	
 	public CutClean() {
+		super("Cut Clean", Material.IRON_INGOT);
 		instance = this;
 		enable(true);
 	}

@@ -1,5 +1,8 @@
 package ostb.gameapi.games.speeduhc;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import ostb.gameapi.GoldenHeadUtil;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.SkullPikeUtil;
@@ -15,8 +18,7 @@ public class SpeedUHC extends MiniGame {
 		setRequiredPlayers(4);
 		setStartingCounter(10);
 		BiomeSwap.setUpUHC();
-		new OreMultipliers();
-		OreMultipliers.setMultiplier(2);
+		new OreMultipliers("Double Ores", 2, new ItemStack(Material.IRON_INGOT, 2));
 		new CutClean();
 		new AppleRates(50);
 		new Events();
