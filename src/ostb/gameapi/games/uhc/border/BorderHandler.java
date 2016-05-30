@@ -16,7 +16,6 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.gameapi.games.uhc.Events;
-import ostb.gameapi.games.uhc.HostHandler;
 import ostb.gameapi.games.uhc.HostedEvent;
 import ostb.gameapi.games.uhc.WorldHandler;
 import ostb.player.MessageHandler;
@@ -107,7 +106,7 @@ public class BorderHandler implements Listener {
             public boolean execute(CommandSender sender, String[] arguments) {
                 if(arguments.length == 0 && sender instanceof Player) {
                     Player player = (Player) sender;
-                    if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
+                    if(!Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
@@ -119,7 +118,7 @@ public class BorderHandler implements Listener {
                 } else {
                     if(sender instanceof Player) {
                         Player player = (Player) sender;
-                        if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.isStaff(sender)) {
+                        if(!Ranks.isStaff(player)) {
                             MessageHandler.sendUnknownCommand(sender);
                             return true;
                         }
@@ -134,7 +133,7 @@ public class BorderHandler implements Listener {
             public boolean execute(CommandSender sender, String[] arguments) {
                 if(arguments.length == 0 && sender instanceof Player) {
                     Player player = (Player) sender;
-                    if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
+                    if(!Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }

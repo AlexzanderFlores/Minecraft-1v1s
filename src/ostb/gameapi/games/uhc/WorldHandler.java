@@ -26,6 +26,7 @@ import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.BiomeSwap;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
@@ -161,7 +162,7 @@ public class WorldHandler implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if(WhitelistHandler.isWhitelisted() && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
             Player player = event.getPlayer();
-            if(HostHandler.isHost(player.getUniqueId())) {
+            if(Ranks.OWNER.hasRank(player)) {
                 player.getInventory().setItem(1, item);
                 player.getInventory().setItem(2, pregenItem);
             }

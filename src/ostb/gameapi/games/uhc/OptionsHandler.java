@@ -26,6 +26,7 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.scenarios.scenarios.CutClean;
 import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -56,7 +57,7 @@ public class OptionsHandler implements Listener {
                 if(arguments.length == 0) {
                     MessageHandler.sendMessage(player, "Apple Rates: &c" + getAppleRates() + "&a%");
                 } else if(arguments.length == 1) {
-                    if(HostHandler.isHost(player.getUniqueId())) {
+                    if(Ranks.OWNER.hasRank(player)) {
                         try {
                             appleRates = Integer.valueOf(arguments[0]);
                             if(appleRates <= 0 || appleRates > 100) {

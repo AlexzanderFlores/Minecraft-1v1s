@@ -26,8 +26,11 @@ import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
+import ostb.server.ServerLogger;
 import ostb.server.Tweeter;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.ConfigurationUtil;
+import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.StringUtil;
 
@@ -37,7 +40,7 @@ public class UHC extends MiniGame {
     public UHC() {
         super("UHC");
         OSTB.setSidebar(new SidebarScoreboardUtil(" &aUHC "));
-        setRequiredPlayers(60);
+        setRequiredPlayers(30);
         setVotingCounter(-1);
         setStartingCounter(60 * 3 + 30);
         setEndingCounter(20);
@@ -46,6 +49,7 @@ public class UHC extends MiniGame {
         setResetPlayerUponJoining(true);
         setRestartWithOnePlayerLeft(false);
         setDoDaylightCycle(true);
+        setUseCoinBoosters(false);
         new Events();
         new HostHandler();
         new WhitelistHandler();
@@ -63,33 +67,16 @@ public class UHC extends MiniGame {
         new HostedEvent();
         new GoldenHeadUtil();
         new SkullPikeUtil();
-        if(HostedEvent.isEvent()) {
-            OSTB.getSidebar().setText(new String[]{
-                    " ",
-                    "&5" + HostedEvent.getEventName()
-            }, -1);
-        } else {
-            OSTB.getSidebar().setText(new String[]{
-                    " ",
-                    "&6Info:",
-                    "&b/info",
-                    "  ",
-                    "&6Rules:",
-                    "&b/rules"
-            }, -1);
-        }
         //UHC:
-        new Tweeter("Ze778QTP0SuPDXoGPaIqqGekB", "KfOVLJBl2r14HliWG2t52fSXMPx2lRhDJEQ749pSqS2VbDxDVT", "719686159102816257-ANGTIPu15z9MCyxoynHnHrm3IFdQwZ3", "YiN7VgjPYjfuulKdJwcqRnBNDT5TrJ7sSd2zrK5K65axA");
+        ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/../twitter.yml");
+        String consumerKey = config.getConfig().getString("uhc.consumerkey");
+    	String consumerSecret = config.getConfig().getString("uhc.consumersecret");
+    	String accessToken = config.getConfig().getString("uhc.accesstoken");
+    	String accessSecret = config.getConfig().getString("uhc.accesssecret");
+        new Tweeter(consumerKey, consumerSecret, accessToken, accessSecret);
         new CommandBase("heal", 0, 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if(sender instanceof Player) {
-                    Player player = (Player) sender;
-                    if(!HostHandler.isHost(player.getUniqueId())) {
-                        MessageHandler.sendUnknownCommand(sender);
-                        return true;
-                    }
-                }
                 String target = null;
                 if(arguments.length == 0) {
                     if(sender instanceof Player) {
@@ -119,17 +106,10 @@ public class UHC extends MiniGame {
                 HealthHandler.updateHealth();
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.OWNER);
         new CommandBase("feed", 0, 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if(sender instanceof Player) {
-                    Player player = (Player) sender;
-                    if(!HostHandler.isHost(player.getUniqueId())) {
-                        MessageHandler.sendUnknownCommand(sender);
-                        return true;
-                    }
-                }
                 String target = null;
                 if(arguments.length == 0) {
                     if(sender instanceof Player) {
@@ -158,28 +138,24 @@ public class UHC extends MiniGame {
                 }
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.OWNER);
         new CommandBase("invSee", 1, true) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if(HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player)) {
-                    if(SpectatorHandler.contains(player)) {
-                        Player target = ProPlugin.getPlayer(arguments[0]);
-                        if(target == null) {
-                            MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
-                        } else {
-                            player.openInventory(target.getInventory());
-                        }
+                if(SpectatorHandler.contains(player)) {
+                    Player target = ProPlugin.getPlayer(arguments[0]);
+                    if(target == null) {
+                        MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                     } else {
-                        MessageHandler.sendMessage(player, "&cYou must be a spectator to run this command");
+                        player.openInventory(target.getInventory());
                     }
                 } else {
-                    MessageHandler.sendUnknownCommand(sender);
+                    MessageHandler.sendMessage(player, "&cYou must be a spectator to run this command");
                 }
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.TRIAL);
         new CommandBase("info") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
@@ -228,46 +204,38 @@ public class UHC extends MiniGame {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if(HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
-                    Player target = ProPlugin.getPlayer(arguments[0]);
-                    if(target == null) {
-                        MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
-                    } else {
-                        String reason = "";
-                        for(int a = 1; a < arguments.length; ++a) {
-                            reason += arguments[a] + " ";
-                        }
-                        MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas kicked: " + reason);
-                        target.kickPlayer(ChatColor.RED + reason);
-                    }
+                Player target = ProPlugin.getPlayer(arguments[0]);
+                if(target == null) {
+                    MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                 } else {
-                    MessageHandler.sendUnknownCommand(player);
+                    String reason = "";
+                    for(int a = 1; a < arguments.length; ++a) {
+                        reason += arguments[a] + " ";
+                    }
+                    MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas kicked: " + reason);
+                    target.kickPlayer(ChatColor.RED + reason);
                 }
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.TRIAL);
         new CommandBase("uhcKill", 2, -1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if(HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
-                    Player target = ProPlugin.getPlayer(arguments[0]);
-                    if(target == null) {
-                        MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
-                    } else {
-                        String reason = "";
-                        for(int a = 1; a < arguments.length; ++a) {
-                            reason += arguments[a] + " ";
-                        }
-                        MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas killed: " + reason);
-                        target.setHealth(0.0d);
-                    }
+                Player target = ProPlugin.getPlayer(arguments[0]);
+                if(target == null) {
+                    MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                 } else {
-                    MessageHandler.sendUnknownCommand(player);
+                    String reason = "";
+                    for(int a = 1; a < arguments.length; ++a) {
+                        reason += arguments[a] + " ";
+                    }
+                    MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas killed: " + reason);
+                    target.setHealth(0.0d);
                 }
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.TRIAL);
         new DelayedTask(new Runnable() {
             @Override
             public void run() {
@@ -296,14 +264,14 @@ public class UHC extends MiniGame {
                     @Override
                     public boolean execute(CommandSender sender, String[] arguments) {
                         Player player = (Player) sender;
-                        if(Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
+                        if(Ranks.OWNER.hasRank(player)) {
                             String name = AccountHandler.getPrefix(sender);
                             String message = "";
                             for(String argument : arguments) {
                                 message += argument + " ";
                             }
                             for(Player online : Bukkit.getOnlinePlayers()) {
-                                if(Ranks.isStaff(online) || HostHandler.isHost(online.getUniqueId())) {
+                                if(Ranks.isStaff(online)) {
                                     MessageHandler.sendMessage(online, "&bStaff: " + name + ": " + StringUtil.color(message.substring(0, message.length() - 1)));
                                 }
                             }
@@ -315,6 +283,40 @@ public class UHC extends MiniGame {
                 };
             }
         });
+        OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
+			@Override
+			public void update() {
+				if(ServerLogger.updatePlayerCount()) {
+					removeScore(8);
+					removeScore(5);
+				}
+				if(getGameState() != GameStates.WAITING) {
+					removeScore(5);
+				}
+				if(getGameState() != getOldGameState()) {
+					setOldGameState(getGameState());
+					removeScore(6);
+				}
+				int size = ProPlugin.getPlayers().size();
+				int teamSize = TeamHandler.getMaxTeamSize();
+				setText(new String [] {
+					" ",
+					"&e&lScenario",
+					"&b" + (teamSize == 1 ? "Solo " : "To " + teamSize) +  ScenarioManager.getText(),
+					"  ",
+					"&e&lPlaying",
+					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
+					"   ",
+					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
+					"    ",
+					"&a&lOutsideTheBlock.org",
+					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"     "
+				});
+				super.update();
+			}
+		});
     }
 
     @Override

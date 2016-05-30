@@ -32,6 +32,7 @@ import ostb.gameapi.scenarios.scenarios.TripleOres;
 import ostb.gameapi.scenarios.scenarios.TrueLove;
 import ostb.gameapi.scenarios.scenarios.Vanilla;
 import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -78,38 +79,43 @@ public class ScenarioManager implements Listener {
         }
         return scenarios2;
     }
+    
+    public static String getText() {
+    	String text = "";
+    	for(Scenario scenario : getActiveScenarios()) {
+    		text += scenario.getName() + " ";
+    	}
+    	return text;
+    }
 
     public static boolean open(Player player) {
-        if(HostHandler.isHost(player.getUniqueId())) {
-            if(HostHandler.getMainHost() == null) {
-                MessageHandler.sendMessage(player, "&cA main host has not been set yet! &f/host");
-            } else {
-                if(WorldHandler.isPreGenerated()) {
-                    ItemStack reset = new ItemCreator(Material.EYE_OF_ENDER).setName("&aReset Scenarios").getItemStack();
-                    ItemStack enabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.LIME.getData()).setName("&aENABLED").addLore("&fClick the icon above to toggle").getItemStack();
-                    ItemStack disabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.RED.getData()).setName("&cDISABLED").addLore("&fClick the icon above to toggle").getItemStack();
-                    Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
-                    for(int a : scenarios.keySet()) {
-                        Scenario scenario = scenarios.get(a);
-                        inventory.setItem(a, scenario.getItem());
-                        if(scenario.isEnabled()) {
-                            inventory.setItem(a + 9, enabled);
-                        } else {
-                            inventory.setItem(a + 9, disabled);
-                        }
+    	if(Ranks.OWNER.hasRank(player)) {
+    		if(WorldHandler.isPreGenerated()) {
+    			ItemStack reset = new ItemCreator(Material.EYE_OF_ENDER).setName("&aReset Scenarios").getItemStack();
+                ItemStack enabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.LIME.getData()).setName("&aENABLED").addLore("&fClick the icon above to toggle").getItemStack();
+                ItemStack disabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.RED.getData()).setName("&cDISABLED").addLore("&fClick the icon above to toggle").getItemStack();
+                Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
+                for(int a : scenarios.keySet()) {
+                    Scenario scenario = scenarios.get(a);
+                    inventory.setItem(a, scenario.getItem());
+                    if(scenario.isEnabled()) {
+                        inventory.setItem(a + 9, enabled);
+                    } else {
+                        inventory.setItem(a + 9, disabled);
                     }
-                    for(int a : new int[]{0, 8, 45}) {
-                        inventory.setItem(a, reset);
-                    }
-                    inventory.setItem(inventory.getSize() - 1, new ItemCreator(Material.ARROW).setName("&eMove to Team Selection").getItemStack());
-                    player.openInventory(inventory);
-                } else {
-                    MessageHandler.sendMessage(player, "&cCannot open the Scenario Manager: &eWorld is not pregenerated!");
                 }
-            }
-            return true;
+                for(int a : new int[]{0, 8, 45}) {
+                    inventory.setItem(a, reset);
+                }
+                inventory.setItem(inventory.getSize() - 1, new ItemCreator(Material.ARROW).setName("&eMove to Team Selection").getItemStack());
+                player.openInventory(inventory);
+    		} else {
+    			MessageHandler.sendMessage(player, "&cCannot open the Scenario Manager: &eWorld is not pregenerated!");
+    		}
+    		return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private List<Scenario> getScenarios() {
@@ -130,7 +136,7 @@ public class ScenarioManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if(WhitelistHandler.isWhitelisted() && HostHandler.isHost(player.getUniqueId()) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+        if(WhitelistHandler.isWhitelisted() && Ranks.OWNER.hasRank(player) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
             player.getInventory().setItem(0, item);
         }
     }

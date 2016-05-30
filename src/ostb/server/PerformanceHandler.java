@@ -62,7 +62,7 @@ public class PerformanceHandler implements Listener {
 				MessageHandler.sendMessage(sender, "&eFor more server performance info run /networkPerformance");
 				return true;
 			}
-		}.setRequiredRank(Ranks.OWNER);
+		};
 		new CommandBase("ping", 0, 1) {
 			@Override
 			public boolean execute(CommandSender sender, String[] arguments) {

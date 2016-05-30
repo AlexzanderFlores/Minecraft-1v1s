@@ -27,6 +27,7 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
 import ostb.server.util.StringUtil;
@@ -59,7 +60,7 @@ public class ScatterHandler implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if(HostHandler.isHost(player.getUniqueId())) {
+                if(Ranks.OWNER.hasRank(player)) {
                     Player target = ProPlugin.getPlayer(arguments[0]);
                     if(target == null) {
                         MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");

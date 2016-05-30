@@ -16,6 +16,7 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.AlertHandler;
 import ostb.server.CommandBase;
 import ostb.server.Tweeter;
@@ -59,7 +60,7 @@ public class TweetHandler implements Listener {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
                     Player player = (Player) sender;
-                    if(HostHandler.isHost(player.getUniqueId())) {
+                    if(Ranks.OWNER.hasRank(player)) {
                         if(HostedEvent.isEvent()) {
                             MessageHandler.alert("Game will open in &c" + opensIn + " &aminutes");
                             countDown = new CountDownUtil(60 * opensIn);
@@ -86,7 +87,7 @@ public class TweetHandler implements Listener {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
                     Player player = (Player) sender;
-                    if(!HostedEvent.isEvent() && HostHandler.isHost(player.getUniqueId())) {
+                    if(!HostedEvent.isEvent() && Ranks.OWNER.hasRank(player)) {
                         String url = arguments[0];
                         if(FileHandler.isImage(url)) {
                             String message = "Congrats to ";
@@ -133,7 +134,7 @@ public class TweetHandler implements Listener {
                                     @Override
                                     public boolean execute(CommandSender sender, String[] arguments) {
                                         Player player = (Player) sender;
-                                        if(HostHandler.isHost(player.getUniqueId())) {
+                                        if(Ranks.OWNER.hasRank(player)) {
                                             ProPlugin.restartServer();
                                         } else {
                                             MessageHandler.sendUnknownCommand(player);
@@ -154,7 +155,7 @@ public class TweetHandler implements Listener {
             EventUtil.register(this);
         }
         for(Player player : ProPlugin.getPlayers()) {
-            if(HostHandler.isHost(player.getUniqueId())) {
+            if(Ranks.OWNER.hasRank(player)) {
                 if(!player.getInventory().contains(item)) {
                     player.getInventory().addItem(item);
                 }

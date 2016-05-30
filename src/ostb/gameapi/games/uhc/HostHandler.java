@@ -1,20 +1,14 @@
 package ostb.gameapi.games.uhc;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
@@ -39,15 +33,11 @@ import ostb.staff.mute.MuteHandler;
 
 @SuppressWarnings("deprecation")
 public class HostHandler implements Listener {
-    private static List<UUID> hosts = null;
-    private static List<String> prefixes = null;
     private static UUID mainHost = null;
     private static ItemStack center = null;
     private static String name = null;
 
     public HostHandler() {
-        hosts = new ArrayList<UUID>();
-        prefixes = new ArrayList<String>();
         center = new ItemCreator(Material.COMPASS).setName("&aTeleport to &e0, 0").getItemStack();
         name = "World Selection";
         new CommandBase("host", 0, 4) {
@@ -55,7 +45,7 @@ public class HostHandler implements Listener {
             public boolean execute(CommandSender sender, String[] arguments) {
                 if(arguments.length == 0 && sender instanceof Player) {
                     Player player = (Player) sender;
-                    if(isHost(player.getUniqueId())) {
+                    if(Ranks.OWNER.hasRank(player)) {
                         mainHost = player.getUniqueId();
                         MessageHandler.sendMessage(player, "You've set yourself as the main host for this game");
                         return true;
@@ -63,7 +53,7 @@ public class HostHandler implements Listener {
                 }
                 if(arguments.length == 0 || (arguments.length == 1 && arguments[0].equalsIgnoreCase("help"))) {
                     sendHelpMenu(sender);
-                } else if(arguments.length == 1 && arguments[0].equalsIgnoreCase("list")) {
+                } /*else if(arguments.length == 1 && arguments[0].equalsIgnoreCase("list")) {
                     if(hosts == null || hosts.isEmpty()) {
                         MessageHandler.sendMessage(sender, "&cThere are currently no hosts");
                     } else {
@@ -74,7 +64,7 @@ public class HostHandler implements Listener {
                         message = message.substring(0, message.length() - 2);
                         MessageHandler.sendMessage(sender, "Current Hosts: (&e" + hosts.size() + "&a) " + message);
                     }
-                } else if(arguments.length >= 1 && arguments[0].equalsIgnoreCase("team")) {
+                } */else if(arguments.length >= 1 && arguments[0].equalsIgnoreCase("team")) {
                     if(arguments.length == 3 && arguments[1].equalsIgnoreCase("list")) {
                         String name = arguments[2];
                         Team team = TeamHandler.getTeam(name);
@@ -144,7 +134,7 @@ public class HostHandler implements Listener {
                     }
                     if(!QuestionAnswerer.askQuestion(player, msg)) {
                         for(Player online : Bukkit.getOnlinePlayers()) {
-                            if(Ranks.OWNER.hasRank(online) || HostHandler.isHost(online.getUniqueId())) {
+                            if(Ranks.OWNER.hasRank(online)) {
                                 MessageHandler.sendMessage(online, "");
                                 MessageHandler.sendMessage(online, "&cHelpop: &f" + AccountHandler.getPrefix(player) + "&f: " + msg);
                                 MessageHandler.sendMessage(online, "");
@@ -161,7 +151,7 @@ public class HostHandler implements Listener {
             public boolean execute(CommandSender sender, String[] arguments) {
                 if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if(!isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
+                    if(!Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
@@ -204,10 +194,6 @@ public class HostHandler implements Listener {
         return Bukkit.getPlayer(mainHost);
     }
 
-    public static boolean isHost(UUID uuid) {
-        return hosts != null && hosts.contains(uuid);
-    }
-
     private void sendHelpMenu(CommandSender sender) {
         MessageHandler.sendLine(sender);
         MessageHandler.sendMessage(sender, "Host Commands:");
@@ -220,29 +206,10 @@ public class HostHandler implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if(Ranks.isStaff(event.getPlayer()) || isHost(event.getPlayer().getUniqueId())) {
-            String name = AccountHandler.getPrefix(event.getPlayer());
-            for(Player player : Bukkit.getOnlinePlayers()) {
-                if(Ranks.isStaff(player) || isHost(player.getUniqueId())) {
-                    MessageHandler.sendMessage(player, "&bStaff: " + name + " has joined this server");
-                }
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if(!event.isCancelled() && event.getPlayer().getUniqueId() == mainHost) {
-            event.setFormat(ChatColor.DARK_RED + "[Host] " + event.getFormat());
-        }
-    }
-
-    @EventHandler
     public void onPlayerSpectator(PlayerSpectatorEvent event) {
         if(!event.isCancelled() && event.getState() == SpectatorState.ADDED) {
             Player player = event.getPlayer();
-            if(isHost(player.getUniqueId()) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+            if(Ranks.OWNER.hasRank(player) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
                 final String name = player.getName();
                 new AsyncDelayedTask(new Runnable() {
                     @Override

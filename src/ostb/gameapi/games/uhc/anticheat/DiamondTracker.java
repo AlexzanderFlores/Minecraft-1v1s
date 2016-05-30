@@ -14,9 +14,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.games.uhc.HostHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
@@ -48,7 +48,7 @@ public class DiamondTracker implements Listener {
                     }
                 }, 20 * 5);
                 for(Player online : Bukkit.getOnlinePlayers()) {
-                    if(HostHandler.isHost(online.getUniqueId())) {
+                    if(Ranks.OWNER.hasRank(online)) {
                         MessageHandler.sendMessage(online, AccountHandler.getPrefix(player) + " &cHAS MINED &e&l" + times + " &cDIAMONDS WITHIN THE LAST 5 MINUTES");
                     }
                 }

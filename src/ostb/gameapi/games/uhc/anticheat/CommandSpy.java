@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import ostb.ProPlugin;
-import ostb.gameapi.games.uhc.HostHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -25,7 +24,7 @@ public class CommandSpy implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if(Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
+                if(Ranks.OWNER.hasRank(player)) {
                     if(enabled.contains(player.getName())) {
                         enabled.remove(player.getName());
                         MessageHandler.sendMessage(player, "Command Spy is now &cOFF");

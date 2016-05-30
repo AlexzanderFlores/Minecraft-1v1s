@@ -39,7 +39,7 @@ import ostb.server.util.StringUtil;
 public class TeamHandler implements Listener {
     private static String name = null;
     private static String colorChar = null;
-    private static String text = null;
+    //private static String text = null;
     private static int maxSize = 1;
     private static Map<String, String> invites = null;
     private static Map<String, Team> teams = null;
@@ -50,7 +50,7 @@ public class TeamHandler implements Listener {
     public TeamHandler() {
         name = "Team Size Selection";
         colorChar = ChatColor.WHITE.toString().substring(0, 1);
-        text = "&6Team Size:";
+        //text = "&6Team Size:";
         invites = new HashMap<String, String>();
         delayedRequests = new ArrayList<String>();
         teams = new HashMap<String, Team>();
@@ -342,7 +342,6 @@ public class TeamHandler implements Listener {
                 return true;
             }
         };
-        update();
         EventUtil.register(this);
     }
 
@@ -420,12 +419,6 @@ public class TeamHandler implements Listener {
 
     public static void setMaxTeamSize(int size) {
         maxSize = size;
-        update();
-    }
-
-    private static void update() {
-        OSTB.getSidebar().removeText(text);
-        OSTB.getSidebar().setText(text, maxSize);
     }
 
     private static void updateColors() {
@@ -473,7 +466,6 @@ public class TeamHandler implements Listener {
                 } else {
                     maxSize = item.getAmount();
                     open(player);
-                    update();
                 }
             }
             event.setCancelled(true);

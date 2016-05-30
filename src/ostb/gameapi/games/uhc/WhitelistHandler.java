@@ -44,7 +44,7 @@ public class WhitelistHandler implements Listener {
             public boolean execute(CommandSender sender, String[] arguments) {
                 if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if(!Ranks.OWNER.hasRank(player) && !HostHandler.isHost(player.getUniqueId())) {
+                    if(!Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
@@ -92,7 +92,7 @@ public class WhitelistHandler implements Listener {
                     manualWhitelisted.add(event.getPlayer().getUniqueId());
                 }
             }
-            if(whitelisted.contains(uuid) || Ranks.isStaff(event.getPlayer()) || HostHandler.isHost(uuid)) {
+            if(whitelisted.contains(uuid) || Ranks.isStaff(event.getPlayer())) {
                 event.setResult(Result.ALLOWED);
             } else {
                 event.setResult(Result.KICK_OTHER);

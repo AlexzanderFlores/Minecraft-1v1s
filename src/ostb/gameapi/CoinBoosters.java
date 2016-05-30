@@ -36,7 +36,7 @@ public class CoinBoosters implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		if(OSTB.getMiniGame().getJoiningPreGame()) {
+		if(OSTB.getMiniGame().getUseCoinBoosters() && OSTB.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
 			UUID uuid = player.getUniqueId();
 			String [] keys = new String [] {"uuid", "game_name"};

@@ -1,9 +1,5 @@
 package ostb.gameapi.games.uhc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -37,8 +33,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -63,8 +57,6 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.player.MessageHandler;
-import ostb.player.Particles.ParticleTypes;
-import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.AlertHandler;
 import ostb.server.tasks.DelayedTask;
@@ -81,8 +73,6 @@ public class Events implements Listener {
     private static boolean moveToCenter = false;
     private static boolean postStart = false;
     private static boolean canBreakBlocks = false;
-    private static List<Block> glass = null;
-    private static Map<Block, String> blocks = null;
     private static int alertCounter = 0;
     private ItemStack forceStartItem = null;
     private Random random = null;
@@ -91,45 +81,20 @@ public class Events implements Listener {
     public Events() {
         forceStartItem = new ItemCreator(Material.NAME_TAG).setName("&aForce Start Game").getItemStack();
         random = new Random();
-        blocks = new HashMap<Block, String>();
         EventUtil.register(this);
-    }
-
-    private static int countBlocks(Player player) {
-        int counter = 0;
-        for(String name : blocks.values()) {
-            if(name.equals(player.getName())) {
-                ++counter;
-            }
-        }
-        return counter;
     }
 
     public static void start() {
         WorldHandler.getWorld().setTime(0);
-        for(Block block : glass) {
-            block.setType(Material.AIR);
-            block.setData((byte) 0);
-        }
-        glass.clear();
-        glass = null;
         new DelayedTask(new Runnable() {
             @Override
             public void run() {
-                String winner = null;
-                int bestScore = 0;
                 MessageHandler.alertLine();
                 for(Player player : ProPlugin.getPlayers()) {
                     for(PotionEffect effect : player.getActivePotionEffects()) {
                         player.removePotionEffect(effect.getType());
                     }
-                    int score = countBlocks(player);
-                    MessageHandler.sendMessage(player, "Glass Coloring Score: &e" + score);
-                    if(score > bestScore) {
-                        winner = AccountHandler.getPrefix(player);
-                        bestScore = score;
-                    }
-                    if(HostHandler.isHost(player.getUniqueId())) {
+                    if(Ranks.OWNER.hasRank(player)) {
                         String perm = "worldborder.*";
                         PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
                         permission.setPermission(perm, true);
@@ -142,9 +107,7 @@ public class Events implements Listener {
                         }
                     }
                 }
-                MessageHandler.alert("&eMost glass colored: " + winner == null ? "none" : winner + " &ewith &c" + bestScore);
                 MessageHandler.alertLine();
-                blocks.clear();
                 for(Entity entity : WorldHandler.getWorld().getEntities()) {
                     if(entity instanceof Pig || entity instanceof Sheep) {
                         LivingEntity livingEntity = (LivingEntity) entity;
@@ -260,13 +223,6 @@ public class Events implements Listener {
                     moveToBox = false;
                 }
             }
-        } else if(ticks == 20 * 30) {
-            if(glass != null) {
-                for(Block block : glass) {
-                    block.setType(Material.STAINED_GLASS);
-                    block.setData((byte) 0);
-                }
-            }
         } else if(ticks == 20 * 60) {
             GameStates state = OSTB.getMiniGame().getGameState();
             if((state == GameStates.WAITING || (state == GameStates.STARTING && OSTB.getMiniGame().getCounter() > 30)) && !WhitelistHandler.isWhitelisted()) {
@@ -277,7 +233,6 @@ public class Events implements Listener {
 
     @EventHandler
     public void onGameStarting(GameStartingEvent event) {
-        glass = new ArrayList<Block>();
         World world = WorldHandler.getWorld();
         world.setTime(0);
         for(Entity entity : world.getEntities()) {
@@ -295,11 +250,9 @@ public class Events implements Listener {
                     boolean inRadius = block.getLocation().toVector().isInSphere(center.toVector(), radius);
                     if((y == 200 || y == 206) && inRadius) {
                         block.setType(Material.STAINED_GLASS);
-                        glass.add(block);
                     } else if(y > 200 && !inRadius) {
                         try {
                             block.setType(Material.STAINED_GLASS);
-                            glass.add(block);
                         } catch(Exception e) {
                             Bukkit.getLogger().info(ChatColor.RED + e.getMessage());
                         }
@@ -332,7 +285,7 @@ public class Events implements Listener {
         if(state == GameStates.WAITING || state == GameStates.VOTING) {
             player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
         }
-        if(HostHandler.isHost(player.getUniqueId()) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
+        if(Ranks.OWNER.hasRank(player) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
             player.getInventory().addItem(forceStartItem);
         }
     }
@@ -342,7 +295,7 @@ public class Events implements Listener {
         for(Player player : ProPlugin.getPlayers()) {
             player.closeInventory();
             player.getInventory().clear();
-            if(HostHandler.isHost(player.getUniqueId())) {
+            if(Ranks.OWNER.hasRank(player)) {
                 player.getInventory().addItem(forceStartItem);
             }
         }
@@ -370,26 +323,6 @@ public class Events implements Listener {
                 OSTB.getMiniGame().setGameState(GameStates.STARTING);
             }
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if(OSTB.getMiniGame().getGameState() == GameStates.STARTING && event.getClickedBlock() != null) {
-            Player player = event.getPlayer();
-            Block block = event.getClickedBlock();
-            byte data = 0;
-            Random random = new Random();
-            do {
-                data = (byte) random.nextInt(15);
-            } while(data == block.getData());
-            block.setData(data);
-            if(random.nextBoolean()) {
-                EffectUtil.playSound(player, Sound.NOTE_PIANO);
-            } else {
-                EffectUtil.playSound(player, Sound.NOTE_PLING);
-            }
-            blocks.put(block, player.getName());
         }
     }
 
@@ -433,14 +366,6 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if(event.getItem().getType() == Material.GOLDEN_APPLE) {
-            Player player = event.getPlayer();
-            ParticleTypes.FLAME.displaySpiral(player.getLocation());
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockFromTo(BlockFromToEvent event) {
         if(!event.getBlock().getWorld().getName().equals("lobby")) {
@@ -449,23 +374,10 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
-        ItemStack item = event.getItem();
-        if(item != null && item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null) {
-            if(item.getItemMeta().getDisplayName().equals(ChatColor.LIGHT_PURPLE + "Ultra Golden Apple (" + ChatColor.GOLD + "+4 Hearts" + ChatColor.LIGHT_PURPLE + ")")) {
-                Player player = event.getPlayer();
-                double newHealth = event.getPlayer().getHealth() + 4.0d;
-                player.setHealth(newHealth > player.getMaxHealth() ? player.getMaxHealth() : newHealth);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0));
-            }
-        }
-    }
-
-    @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if(event.getRightClicked() instanceof Player) {
             Player player = event.getPlayer();
-            if(SpectatorHandler.contains(player) && (HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player))) {
+            if(SpectatorHandler.contains(player) && Ranks.isStaff(player)) {
                 Player target = (Player) event.getRightClicked();
                 player.chat("/invSee " + target.getName());
             }

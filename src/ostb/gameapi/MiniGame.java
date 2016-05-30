@@ -45,6 +45,7 @@ public abstract class MiniGame extends ProPlugin {
 	private boolean useSpectatorChatChannel = true;
 	private boolean playersHaveOneLife = true;
 	private boolean restartWithOnePlayerLeft = true;
+	private boolean useCoinBoosters = true;
 	private boolean end = true;
 	private World lobby = null;
 	private World map = null;
@@ -183,6 +184,7 @@ public abstract class MiniGame extends ProPlugin {
 		setUseSpectatorChatChannel(true);
 		setPlayersHaveOneLife(true);
 		setRestartWithOnePlayerLeft(true);
+		setUseCoinBoosters(true);
 		setEnd(true);
 		setCounter(0);
 	}
@@ -284,6 +286,14 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public void setRestartWithOnePlayerLeft(boolean restartWithOnePlayerLeft) {
 		this.restartWithOnePlayerLeft = restartWithOnePlayerLeft;
+	}
+	
+	public boolean getUseCoinBoosters() {
+		return this.useCoinBoosters;
+	}
+	
+	public void setUseCoinBoosters(boolean useCoinBoosters) {
+		this.useCoinBoosters = useCoinBoosters;
 	}
 	
 	public boolean getEnd() {

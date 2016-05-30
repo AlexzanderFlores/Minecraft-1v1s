@@ -14,9 +14,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.util.Vector;
 
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.games.uhc.HostHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
@@ -63,7 +63,7 @@ public class StripMineDetection implements Listener {
                                     }
                                 }, 20 * 10);
                                 for(Player online : Bukkit.getOnlinePlayers()) {
-                                    if(HostHandler.isHost(online.getUniqueId())) {
+                                    if(Ranks.OWNER.hasRank(online)) {
                                         MessageHandler.sendMessage(online, AccountHandler.getPrefix(player) + " &cIS POSSIBLY STRIP MINING");
                                     }
                                 }
