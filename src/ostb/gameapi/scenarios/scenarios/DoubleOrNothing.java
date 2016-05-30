@@ -16,7 +16,7 @@ public class DoubleOrNothing extends Scenario {
     private static DoubleOrNothing instance = null;
 
     public DoubleOrNothing() {
-        super("Double or Nothing", new ItemStack(Material.DIAMOND, 2));
+        super("Double or Nothing", "DoN", new ItemStack(Material.DIAMOND, 2));
         instance = this;
         setInfo("Whenever you mine an ore you either get 0x or 2x the amount of drops.");
     }

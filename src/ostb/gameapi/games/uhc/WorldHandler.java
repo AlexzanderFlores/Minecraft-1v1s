@@ -17,14 +17,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.PermissionAttachment;
 
 import ostb.OSTB;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.BiomeSwap;
@@ -50,9 +48,9 @@ public class WorldHandler implements Listener {
         item = new ItemCreator(Material.GRASS).setName("&a" + name).getItemStack();
         pregenItem = new ItemCreator(Material.GRASS).setName("&a" + pregenName).getItemStack();
         BiomeSwap.setUpUHC();
-        if(!BorderHandler.isEnabled()) {
+        /*if(!BorderHandler.isEnabled()) {
             new BorderHandler();
-        }
+        }*/
         generateWorld();
         EventUtil.register(this);
     }
@@ -63,7 +61,7 @@ public class WorldHandler implements Listener {
             MessageHandler.alert("Deleting old World...");
             for(Player player : Bukkit.getOnlinePlayers()) {
                 if(player.getWorld().getName().equals(world.getName())) {
-                    player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
+                    player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
                 }
             }
             Bukkit.unloadWorld(world, false);
@@ -75,7 +73,7 @@ public class WorldHandler implements Listener {
         world.setGameRuleValue("naturalRegeneration", "false");
         world.setDifficulty(Difficulty.HARD);
         MessageHandler.alert("Generating World... Complete!");
-        BorderHandler.setOverworldBorder();
+        //BorderHandler.setOverworldBorder();
     }
 
     public static void generateNether() {
@@ -84,7 +82,7 @@ public class WorldHandler implements Listener {
             MessageHandler.alert("Deleting old Nether...");
             for(Player player : Bukkit.getOnlinePlayers()) {
                 if(player.getWorld().getName().equals(nether.getName())) {
-                    player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
+                    player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
                 }
             }
             Bukkit.unloadWorld(nether, false);
@@ -97,8 +95,8 @@ public class WorldHandler implements Listener {
         nether.setGameRuleValue("naturalRegeneration", "false");
         nether.setDifficulty(Difficulty.HARD);
         MessageHandler.alert("Generating Nether... Complete!");
-        BorderHandler.setNetherBorder();
-        BorderHandler.getNetherBorder().pregenSettings();
+        //BorderHandler.setNetherBorder();
+        //BorderHandler.getNetherBorder().pregenSettings();
     }
 
     public static void generateEnd() {
@@ -107,7 +105,7 @@ public class WorldHandler implements Listener {
             MessageHandler.alert("Deleting old End...");
             for(Player player : Bukkit.getOnlinePlayers()) {
                 if(player.getWorld().getName().equals(end.getName())) {
-                    player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
+                    player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
                 }
             }
             Bukkit.unloadWorld(end, false);
@@ -148,11 +146,11 @@ public class WorldHandler implements Listener {
 
     @EventHandler
     public void onGameStart(GameStartEvent event) {
-        BorderHandler.registerEvents();
+        /*BorderHandler.registerEvents();
         BorderHandler.getOverworldBorder().pregenSettings();
         if(BorderHandler.getNetherBorder() != null) {
             BorderHandler.getNetherBorder().pregenSettings();
-        }
+        }*/
         if(OptionsHandler.getEnd() || OptionsHandler.getNether()) {
             new PortalHandler();
         }
@@ -221,6 +219,9 @@ public class WorldHandler implements Listener {
                             if(type == Material.LOG || type == Material.LOG_2 || type == Material.LEAVES || type == Material.LEAVES_2) {
                                 block.setType(Material.AIR);
                                 block.setData((byte) 0);
+                                if(block.getRelative(0, -1, 0).getType() == Material.DIRT) {
+                                	block.getRelative(0, -1, 0).setType(Material.GRASS);
+                                }
                             }
                         }
                     }
@@ -260,24 +261,20 @@ public class WorldHandler implements Listener {
             event.setCancelled(true);
         } else if(event.getTitle().equals(pregenName)) {
             Player player = event.getPlayer();
-            String perm = "worldborder.*";
-            PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
-            permission.setPermission(perm, true);
+            player.setOp(true);
             Material type = event.getItem().getType();
             if(type == Material.BEDROCK) {
                 player.chat("/wb fill cancel");
             }
             if(type == Material.GRASS) {
-                int border = BorderHandler.getOverworldBorder().getRadius();
+                int border = 100;//BorderHandler.getOverworldBorder().getRadius();
                 player.chat("/wb " + getWorld().getName() + " set " + border + " " + border + " 0 0");
                 player.chat("/wb " + getWorld().getName() + " fill 60");
                 player.chat("/wb fill confirm");
-                BorderHandler.getOverworldBorder().pregenSettings();
-                BorderHandler.registerCommands();
+                //BorderHandler.getOverworldBorder().pregenSettings();
+                //BorderHandler.registerCommands();
             }
-            permission.unsetPermission(perm);
-            permission.remove();
-            permission = null;
+            player.setOp(false);
             preGenerated = true;
             player.closeInventory();
             event.setCancelled(true);

@@ -16,7 +16,7 @@ public class Barebones extends Scenario {
     private static Barebones instance = null;
 
     public Barebones() {
-        super("Barebones", Material.BONE);
+        super("Barebones", "BB", Material.BONE);
         instance = this;
         setInfo("Emeralds, Diamonds & Gold all become Iron. A player dying will drop 1 Diamond, 1 Golden Apple, 32 Arrows & 2 String. You cannot craft an Enchantment Table, Anvil or Golden Apple.");
     }

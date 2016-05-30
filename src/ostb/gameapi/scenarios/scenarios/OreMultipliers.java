@@ -13,23 +13,23 @@ public class OreMultipliers extends Scenario {
     private static OreMultipliers instance = null;
     private static int multiplier = 0;
     
-    public OreMultipliers(String name, int multiplier, Material material) {
-        this(name, multiplier, new ItemStack(material));
+    public OreMultipliers(String name, String shortName, int multiplier, Material material) {
+        this(name, shortName, multiplier, new ItemStack(material));
     }
 
-    public OreMultipliers(String name, int multiplier, ItemStack item) {
-        super(name, item);
+    public OreMultipliers(String name, String shortName, int multiplier, ItemStack item) {
+        super(name, shortName, item);
         instance = this;
         setMultiplier(multiplier);
     }
 
-    public static OreMultipliers getInstance(String name, int multiplier, Material material) {
-        return getInstance(name, multiplier, new ItemStack(material));
+    public static OreMultipliers getInstance(String name, String shortName, int multiplier, Material material) {
+        return getInstance(name, shortName, multiplier, new ItemStack(material));
     }
 
-    public static OreMultipliers getInstance(String name, int multiplier, ItemStack item) {
+    public static OreMultipliers getInstance(String name, String shortName, int multiplier, ItemStack item) {
         if (instance == null) {
-            new OreMultipliers(name, multiplier, item);
+            new OreMultipliers(name, shortName, multiplier, item);
         }
         return instance;
     }

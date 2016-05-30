@@ -22,7 +22,6 @@ import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.customevents.player.PrivateMessageEvent;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -102,8 +101,8 @@ public class HostedEvent implements Listener {
 
     @EventHandler
     public void onGracePeriodEnd(GracePeriodEndEvent event) {
-        new BorderHandler();
-        Events.setMoveToCenter(true);
+        //TODO: Make the border shrink
+    	Events.setMoveToCenter(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

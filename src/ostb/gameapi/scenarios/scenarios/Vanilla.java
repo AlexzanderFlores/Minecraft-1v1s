@@ -8,7 +8,7 @@ public class Vanilla extends Scenario {
     private static Vanilla instance = null;
 
     public Vanilla() {
-        super("Vanilla", Material.DIAMOND_PICKAXE);
+        super("Vanilla", "Vanilla", Material.DIAMOND_PICKAXE);
         instance = this;
         setInfo("Default Minecraft setting, no extra changes");
     }

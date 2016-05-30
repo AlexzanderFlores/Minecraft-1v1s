@@ -11,21 +11,27 @@ import ostb.server.util.ItemCreator;
 
 public abstract class Scenario implements Listener {
     private String name = null;
+    private String shortName = null;
     private ItemStack item = null;
     private boolean enabled = false;
     private String info = null;
 
-    public Scenario(String name, Material material) {
-        this(name, new ItemStack(material));
+    public Scenario(String name, String shortName, Material material) {
+        this(name, shortName, new ItemStack(material));
     }
 
-    public Scenario(String name, ItemStack item) {
+    public Scenario(String name, String shortName, ItemStack item) {
         this.name = name;
+        this.shortName = shortName;
         this.item = new ItemCreator(item).setName("&b" + name).getItemStack();
     }
 
     public String getName() {
         return this.name;
+    }
+    
+    public String getShortName() {
+    	return this.shortName;
     }
 
     public ItemStack getItem() {

@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.gameapi.games.uhc.WorldHandler;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.server.util.EventUtil;
 
 public class XrayDetection implements Listener {
@@ -19,7 +18,7 @@ public class XrayDetection implements Listener {
 
     public XrayDetection() {
         final World world = WorldHandler.getWorld();
-        final int radius = BorderHandler.getOverworldBorder().getRadius();
+        final int radius = (int) WorldHandler.getWorld().getWorldBorder().getSize();
         x = -radius;
         z = -radius;
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(OSTB.getInstance(), new Runnable() {

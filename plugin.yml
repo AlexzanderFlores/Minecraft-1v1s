@@ -285,3 +285,12 @@ commands:
         
   rules:
     usage: /rules
+
+  setBorder:
+    usage: /setBorder
+        
+  compass:
+    usage: /compass
+            
+  getOutOfBounds:
+    usage: /getOutOfBounds

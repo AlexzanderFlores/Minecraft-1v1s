@@ -54,7 +54,6 @@ import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -177,7 +176,16 @@ public class Events implements Listener {
                     }
                     setMoveToCenter(true);
                     for(Player player : ProPlugin.getPlayers()) {
-                        BorderHandler.giveCompass(player);
+                    	if(!player.getInventory().contains(Material.COMPASS)) {
+                            MessageHandler.sendLine(player);
+                            MessageHandler.sendMessage(player, "&6&lGiving out compasses that point to &c&l0&7&l, &c&l0");
+                            player.getInventory().addItem(new ItemStack(Material.COMPASS));
+                            if(!player.getInventory().contains(Material.COMPASS)) {
+                                MessageHandler.sendMessage(player, "&c&lYour inventory was full! Check the ground near you!");
+                                player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.COMPASS));
+                            }
+                            MessageHandler.sendLine(player);
+                        }
                     }
                 } else {
                     if(GracePeriod.isRunning()) {

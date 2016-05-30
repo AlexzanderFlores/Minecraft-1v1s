@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.server.util.EventUtil;
 
 public class PortalHandler implements Listener {
@@ -78,11 +77,13 @@ public class PortalHandler implements Listener {
 
     public static Location findValidPortalLocation(Location search, TravelAgent agent, boolean teleportingToOverworld) {
         Location portalLocation = null;
-        int radius = teleportingToOverworld ? BorderHandler.getOverworldBorder().getRadius() : BorderHandler.getNetherBorder().getRadius();
+        int worldRadius = (int) WorldHandler.getWorld().getWorldBorder().getSize();
+        int netherRadius = (int) WorldHandler.getNether().getWorldBorder().getSize();
+        int radius = teleportingToOverworld ? worldRadius : netherRadius;
         boolean con = true;
         while(con) {
             portalLocation = agent.findOrCreate(search);
-            if(portalLocation == search || BorderHandler.getDistance(portalLocation) > radius || portalLocation.getBlock().getType() != Material.PORTAL) {
+            if(portalLocation == search || worldRadius > radius || portalLocation.getBlock().getType() != Material.PORTAL) {
                 search = getNextSearchLocation(search);
             } else {
                 con = false;
@@ -93,7 +94,7 @@ public class PortalHandler implements Listener {
 
     public static Location getNextSearchLocation(Location originalSearch) {
         Location newSearch = originalSearch;
-        double distance = BorderHandler.getDistance(originalSearch) - 10;
+        double distance = new Location(originalSearch.getWorld(), 0, 0, 0).distance(originalSearch) - 10;
         double angle = getAngleFromCenter(originalSearch.getX(), originalSearch.getZ());
         angle = getReferenceAngle(angle);
         angle = Math.toRadians(angle);

@@ -36,6 +36,7 @@ import ostb.server.util.StringUtil;
 
 public class UHC extends MiniGame {
     private static final String account = "OSTBUHC";
+    private static String oldScenarios = "";
 
     public UHC() {
         super("UHC");
@@ -286,6 +287,12 @@ public class UHC extends MiniGame {
         OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
+				int teamSize = TeamHandler.getMaxTeamSize();
+				String scenarios = "To" + teamSize + " " +  ScenarioManager.getText();
+				if(!scenarios.equals(oldScenarios)) {
+					oldScenarios = scenarios;
+					removeScore(12);
+				}
 				if(ServerLogger.updatePlayerCount()) {
 					removeScore(8);
 					removeScore(5);
@@ -298,11 +305,11 @@ public class UHC extends MiniGame {
 					removeScore(6);
 				}
 				int size = ProPlugin.getPlayers().size();
-				int teamSize = TeamHandler.getMaxTeamSize();
 				setText(new String [] {
 					" ",
 					"&e&lScenario",
-					"&b" + (teamSize == 1 ? "Solo " : "To " + teamSize) +  ScenarioManager.getText(),
+					"&b" + scenarios,
+					"&7More Info: /sInfo",
 					"  ",
 					"&e&lPlaying",
 					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),

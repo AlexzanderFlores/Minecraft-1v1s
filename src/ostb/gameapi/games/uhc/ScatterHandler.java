@@ -24,7 +24,6 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.games.uhc.border.BorderHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -50,7 +49,8 @@ public class ScatterHandler implements Listener {
         savedEntities = new ArrayList<LivingEntity>();
         random = new Random();
         EventUtil.register(instance);
-        String command = "spreadPlayers 0 0 100 " + (BorderHandler.getOverworldBorder().getRadius() / 2 + (BorderHandler.getOverworldBorder().getRadius() / 3) - 250) + " false ";
+        int size = (int) WorldHandler.getWorld().getWorldBorder().getSize();
+        String command = "spreadPlayers 0 0 100 " + (size / 2 + (size / 3) - 250) + " false ";
         for(Player player : ProPlugin.getPlayers()) {
             command += player.getName() + " ";
             ++toScatter;
@@ -68,7 +68,8 @@ public class ScatterHandler implements Listener {
                         target.setNoDamageTicks(20 * 10);
                         SpectatorHandler.remove(target);
                         target.teleport(WorldHandler.getWorld().getSpawnLocation());
-                        String command = "spreadPlayers 0 0 100 " + (BorderHandler.getOverworldBorder().getRadius() / 2 + (BorderHandler.getOverworldBorder().getRadius() / 3) - 250) + " false " + target.getName();
+                        int size = (int) WorldHandler.getWorld().getWorldBorder().getSize();
+                        String command = "spreadPlayers 0 0 100 " + (size / 2 + (size / 3) - 250) + " false " + target.getName();
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                     }
                 } else {

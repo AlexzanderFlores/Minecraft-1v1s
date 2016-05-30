@@ -83,7 +83,7 @@ public class ScenarioManager implements Listener {
     public static String getText() {
     	String text = "";
     	for(Scenario scenario : getActiveScenarios()) {
-    		text += scenario.getName() + " ";
+    		text += scenario.getShortName() + " ";
     	}
     	return text;
     }

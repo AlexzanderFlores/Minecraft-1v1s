@@ -29,7 +29,7 @@ public class BestPVE extends Scenario {
     private static int counter = -1;
 
     public BestPVE() {
-        super("BestPVE", Material.GOLDEN_APPLE);
+        super("BestPVE", "BPVE", Material.GOLDEN_APPLE);
         instance = this;
         setInfo("At the start of the game all players are added to a list. Every " + minutes + " minutes after the game starts all players on that list gain 1 max heart and get healed 1 heart. If you take damage from any source you are removed from this list. The only way to be added back to this list is to kill another player.");
         bestPVE = new ArrayList<UUID>();
