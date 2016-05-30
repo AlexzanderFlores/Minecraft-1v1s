@@ -27,7 +27,7 @@ public class PortalHandler implements Listener {
         world = WorldHandler.getWorld();
         nether = WorldHandler.getNether();
         end = WorldHandler.getEnd();
-        if (OptionsHandler.getEnd()) {
+        if(OptionsHandler.getEnd()) {
             end.spawnEntity(new Location(end, 0, 125, 0), EntityType.ENDER_DRAGON);
         }
         EventUtil.register(this);
@@ -41,18 +41,18 @@ public class PortalHandler implements Listener {
         agent.setSearchRadius(50);
         Environment fromEnv = fromLocation.getWorld().getEnvironment();
         Environment toEnv = toWorld.getEnvironment();
-        if (fromEnv == Environment.NETHER) {
+        if(fromEnv == Environment.NETHER) {
             search = new Location(toWorld, fromLocation.getX() * 8, fromLocation.getY(), fromLocation.getZ() * 8);
             location = findValidPortalLocation(search, agent, true);
-        } else if (fromEnv == Environment.NORMAL && toEnv == Environment.NETHER) {
+        } else if(fromEnv == Environment.NORMAL && toEnv == Environment.NETHER) {
             search = new Location(toWorld, fromLocation.getX() / 8D, fromLocation.getY(), fromLocation.getZ() / 8D);
             location = findValidPortalLocation(search, agent, false);
-        } else if (fromEnv == Environment.NORMAL && toEnv == Environment.THE_END) {
+        } else if(fromEnv == Environment.NORMAL && toEnv == Environment.THE_END) {
             // create platform underneath player
             int y = 48;
-            for (int a = 0; a <= 2; a++) {
-                for (int x = 98; x <= 102; x++) {
-                    for (int z = -2; z <= 2; z++) {
+            for(int a = 0; a <= 2; a++) {
+                for(int x = 98; x <= 102; x++) {
+                    for(int z = -2; z <= 2; z++) {
                         toWorld.getBlockAt(x, y, z).setType(y == 48 ? Material.OBSIDIAN : Material.AIR);
                     }
                 }
@@ -60,12 +60,12 @@ public class PortalHandler implements Listener {
             }
             // player will always be teleported to these coordinates when going to the end
             location = new Location(toWorld, 100, 49, 0);
-        } else if (fromEnv == Environment.THE_END) {
+        } else if(fromEnv == Environment.THE_END) {
             location = toWorld.getSpawnLocation();
             location.setY(255);
             boolean con = true;
-            while (con) {
-                if (!location.getBlock().getType().isSolid()) {
+            while(con) {
+                if(!location.getBlock().getType().isSolid()) {
                     location.add(0, -1, 0);
                 } else {
                     location.add(0, 2, 0);
@@ -80,9 +80,9 @@ public class PortalHandler implements Listener {
         Location portalLocation = null;
         int radius = teleportingToOverworld ? BorderHandler.getOverworldBorder().getRadius() : BorderHandler.getNetherBorder().getRadius();
         boolean con = true;
-        while (con) {
+        while(con) {
             portalLocation = agent.findOrCreate(search);
-            if (portalLocation == search || BorderHandler.getDistance(portalLocation) > radius || portalLocation.getBlock().getType() != Material.PORTAL) {
+            if(portalLocation == search || BorderHandler.getDistance(portalLocation) > radius || portalLocation.getBlock().getType() != Material.PORTAL) {
                 search = getNextSearchLocation(search);
             } else {
                 con = false;
@@ -105,17 +105,17 @@ public class PortalHandler implements Listener {
     }
 
     public static double getReferenceAngle(double angle) {
-        while (angle < 0) {
+        while(angle < 0) {
             angle += 360;
         }
-        while (angle > 360) {
+        while(angle > 360) {
             angle -= 360;
         }
-        if (angle > 90 && angle <= 180) {
+        if(angle > 90 && angle <= 180) {
             angle = 180 - angle;
-        } else if (angle > 180 && angle <= 270) {
+        } else if(angle > 180 && angle <= 270) {
             angle = angle - 180;
-        } else if (angle > 270 && angle <= 360) {
+        } else if(angle > 270 && angle <= 360) {
             angle = 360 - angle;
         }
         return angle;
@@ -123,7 +123,7 @@ public class PortalHandler implements Listener {
 
     public static double getAngleFromCenter(double x, double z) {
         double angle = Math.toDegrees(Math.atan2(z, x));
-        if (angle < 0) {
+        if(angle < 0) {
             angle += 360;
         }
         return angle;
@@ -137,7 +137,7 @@ public class PortalHandler implements Listener {
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
         Player player = event.getPlayer();
-        if (SpectatorHandler.contains(player)) {
+        if(SpectatorHandler.contains(player)) {
             event.setCancelled(true);
         } else {
             TravelAgent agent = event.getPortalTravelAgent();
@@ -145,18 +145,18 @@ public class PortalHandler implements Listener {
             String fromWorldName = fromLocation.getWorld().getName();
             World toWorld = null;
             TeleportCause tpCause = event.getCause();
-            if (fromWorldName.equalsIgnoreCase(nether.getName())) {
+            if(fromWorldName.equalsIgnoreCase(nether.getName())) {
                 toWorld = world;
-            } else if (fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.NETHER_PORTAL) {
+            } else if(fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.NETHER_PORTAL) {
                 toWorld = nether;
-            } else if (fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.END_PORTAL && OptionsHandler.getEnd()) {
+            } else if(fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.END_PORTAL && OptionsHandler.getEnd()) {
                 toWorld = end;
-            } else if (fromWorldName.equalsIgnoreCase(end.getName())) {
+            } else if(fromWorldName.equalsIgnoreCase(end.getName())) {
                 toWorld = world;
             }
-            if (toWorld != null) {
+            if(toWorld != null) {
                 Location toLocation = getPortalLocation(agent, fromLocation, toWorld);
-                if (toLocation != null) {
+                if(toLocation != null) {
                     event.setTo(toLocation);
                 }
             }

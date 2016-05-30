@@ -65,7 +65,7 @@ public class UHC extends MiniGame {
         new WaterBucketLogging();
         new CommandSpy();
         new HostedEvent();
-        if (HostedEvent.isEvent()) {
+        if(HostedEvent.isEvent()) {
             OSTB.getSidebar().setText(new String[]{
                     " ",
                     "&5EliteUHC"
@@ -85,33 +85,33 @@ public class UHC extends MiniGame {
         new CommandBase("heal", 0, 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!HostHandler.isHost(player.getUniqueId())) {
+                    if(!HostHandler.isHost(player.getUniqueId())) {
                         MessageHandler.sendUnknownCommand(sender);
                         return true;
                     }
                 }
                 String target = null;
-                if (arguments.length == 0) {
-                    if (sender instanceof Player) {
+                if(arguments.length == 0) {
+                    if(sender instanceof Player) {
                         Player player = (Player) sender;
                         target = player.getName();
                     } else {
                         MessageHandler.sendPlayersOnly(sender);
                         return true;
                     }
-                } else if (arguments.length == 1) {
+                } else if(arguments.length == 1) {
                     target = arguments[0];
                 }
-                if (target.equalsIgnoreCase("all")) {
-                    for (Player player : ProPlugin.getPlayers()) {
+                if(target.equalsIgnoreCase("all")) {
+                    for(Player player : ProPlugin.getPlayers()) {
                         heal(player);
                     }
                     MessageHandler.sendMessage(sender, "You've healed all players");
                 } else {
                     Player player = ProPlugin.getPlayer(target);
-                    if (player == null) {
+                    if(player == null) {
                         MessageHandler.sendMessage(player, "&c" + target + " is not online");
                     } else {
                         heal(player);
@@ -125,33 +125,33 @@ public class UHC extends MiniGame {
         new CommandBase("feed", 0, 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!HostHandler.isHost(player.getUniqueId())) {
+                    if(!HostHandler.isHost(player.getUniqueId())) {
                         MessageHandler.sendUnknownCommand(sender);
                         return true;
                     }
                 }
                 String target = null;
-                if (arguments.length == 0) {
-                    if (sender instanceof Player) {
+                if(arguments.length == 0) {
+                    if(sender instanceof Player) {
                         Player player = (Player) sender;
                         target = player.getName();
                     } else {
                         MessageHandler.sendPlayersOnly(sender);
                         return true;
                     }
-                } else if (arguments.length == 1) {
+                } else if(arguments.length == 1) {
                     target = arguments[0];
                 }
-                if (target.equalsIgnoreCase("all")) {
-                    for (Player player : ProPlugin.getPlayers()) {
+                if(target.equalsIgnoreCase("all")) {
+                    for(Player player : ProPlugin.getPlayers()) {
                         feed(player);
                     }
                     MessageHandler.sendMessage(sender, "You've fed all players");
                 } else {
                     Player player = ProPlugin.getPlayer(target);
-                    if (player == null) {
+                    if(player == null) {
                         MessageHandler.sendMessage(player, "&c" + target + " is not online");
                     } else {
                         feed(player);
@@ -165,10 +165,10 @@ public class UHC extends MiniGame {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player)) {
-                    if (SpectatorHandler.contains(player)) {
+                if(HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player)) {
+                    if(SpectatorHandler.contains(player)) {
                         Player target = ProPlugin.getPlayer(arguments[0]);
-                        if (target == null) {
+                        if(target == null) {
                             MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                         } else {
                             player.openInventory(target.getInventory());
@@ -186,13 +186,13 @@ public class UHC extends MiniGame {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 String scenarios = "";
-                for (Scenario scenario : ScenarioManager.getActiveScenarios()) {
+                for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
                     scenarios += scenario.getName() + ", ";
                 }
                 scenarios = scenarios.substring(0, scenarios.length() - 2);
                 MessageHandler.sendLine(sender);
                 MessageHandler.sendMessage(sender, "Scenario: &b" + scenarios);
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
                     ChatClickHandler.sendMessageToRunCommand(player, "&c&lCLICK FOR SCENARIO INFO", "Click for info", "/sinfo");
                 }
@@ -213,10 +213,10 @@ public class UHC extends MiniGame {
         new CommandBase("sinfo") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                for (Scenario scenario : ScenarioManager.getActiveScenarios()) {
+                for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
                     MessageHandler.sendMessage(sender, "");
                     String info = scenario.getInfo();
-                    if (info == null) {
+                    if(info == null) {
                         MessageHandler.sendMessage(sender, "&cNo info to display at this time for " + scenario.getName());
                     } else {
                         MessageHandler.sendMessage(sender, "&b&l" + scenario.getName() + " &e" + info);
@@ -230,13 +230,13 @@ public class UHC extends MiniGame {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
+                if(HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
                     Player target = ProPlugin.getPlayer(arguments[0]);
-                    if (target == null) {
+                    if(target == null) {
                         MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                     } else {
                         String reason = "";
-                        for (int a = 1; a < arguments.length; ++a) {
+                        for(int a = 1; a < arguments.length; ++a) {
                             reason += arguments[a] + " ";
                         }
                         MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas kicked: " + reason);
@@ -252,13 +252,13 @@ public class UHC extends MiniGame {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
+                if(HostHandler.isHost(player.getUniqueId()) || Ranks.OWNER.hasRank(player)) {
                     Player target = ProPlugin.getPlayer(arguments[0]);
-                    if (target == null) {
+                    if(target == null) {
                         MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
                     } else {
                         String reason = "";
-                        for (int a = 1; a < arguments.length; ++a) {
+                        for(int a = 1; a < arguments.length; ++a) {
                             reason += arguments[a] + " ";
                         }
                         MessageHandler.alert(AccountHandler.getPrefix(target) + " &cwas killed: " + reason);
@@ -298,14 +298,14 @@ public class UHC extends MiniGame {
                     @Override
                     public boolean execute(CommandSender sender, String[] arguments) {
                         Player player = (Player) sender;
-                        if (Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
+                        if(Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
                             String name = AccountHandler.getPrefix(sender);
                             String message = "";
-                            for (String argument : arguments) {
+                            for(String argument : arguments) {
                                 message += argument + " ";
                             }
-                            for (Player online : Bukkit.getOnlinePlayers()) {
-                                if (Ranks.isStaff(online) || HostHandler.isHost(online.getUniqueId())) {
+                            for(Player online : Bukkit.getOnlinePlayers()) {
+                                if(Ranks.isStaff(online) || HostHandler.isHost(online.getUniqueId())) {
                                     MessageHandler.sendMessage(online, "&bStaff: " + name + ": " + StringUtil.color(message.substring(0, message.length() - 1)));
                                 }
                             }
@@ -327,7 +327,7 @@ public class UHC extends MiniGame {
         String container = Bukkit.getWorldContainer().getPath();
         Bukkit.unloadWorld(getLobby(), false);
         File newWorld = new File(container + "/../resources/maps/uhc");
-        if (newWorld.exists() && newWorld.isDirectory()) {
+        if(newWorld.exists() && newWorld.isDirectory()) {
             FileHandler.delete(new File(container + "/lobby"));
             FileHandler.copyFolder(newWorld, new File(container + "/lobby"));
         }
@@ -336,7 +336,7 @@ public class UHC extends MiniGame {
     private void heal(Player player) {
         player.setHealth(player.getMaxHealth());
         feed(player);
-        for (PotionEffect effect : player.getActivePotionEffects()) {
+        for(PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
     }

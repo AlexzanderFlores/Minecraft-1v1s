@@ -34,26 +34,26 @@ public class StripMineDetection implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!event.isCancelled()) {
+        if(!event.isCancelled()) {
             Block block = event.getBlock();
             Vector vector = block.getLocation().toVector();
             Player player = event.getPlayer();
-            if (vector.getBlockY() <= 25) {
-                if (levelMined.containsKey(player.getName())) {
+            if(vector.getBlockY() <= 25) {
+                if(levelMined.containsKey(player.getName())) {
                     Vector previous = levelMined.get(player.getName());
                     int x = vector.getBlockX();
                     int prevX = previous.getBlockX();
                     int z = vector.getBlockZ();
                     int prevZ = previous.getBlockZ();
-                    if ((x == prevX && z != prevZ) || (z == prevZ && x != prevX)) {
+                    if((x == prevX && z != prevZ) || (z == prevZ && x != prevX)) {
                         int prevY = previous.getBlockY();
                         int y = vector.getBlockY();
-                        if (y == prevY || y == prevY - 1 || y == prevY + 1) {
+                        if(y == prevY || y == prevY - 1 || y == prevY + 1) {
                             int counter = 0;
-                            if (counters.containsKey(player.getName())) {
+                            if(counters.containsKey(player.getName())) {
                                 counter = counters.get(player.getName());
                             }
-                            if (++counter >= 10 && !delayed.contains(player.getName())) {
+                            if(++counter >= 10 && !delayed.contains(player.getName())) {
                                 final String name = player.getName();
                                 delayed.add(name);
                                 new DelayedTask(new Runnable() {
@@ -62,8 +62,8 @@ public class StripMineDetection implements Listener {
                                         delayed.remove(name);
                                     }
                                 }, 20 * 10);
-                                for (Player online : Bukkit.getOnlinePlayers()) {
-                                    if (HostHandler.isHost(online.getUniqueId())) {
+                                for(Player online : Bukkit.getOnlinePlayers()) {
+                                    if(HostHandler.isHost(online.getUniqueId())) {
                                         MessageHandler.sendMessage(online, AccountHandler.getPrefix(player) + " &cIS POSSIBLY STRIP MINING");
                                     }
                                 }

@@ -29,7 +29,7 @@ public class AntiIPVP implements Listener {
     private static List<String> noFireDamage = null;
 
     public AntiIPVP() {
-        if (!HostedEvent.isEvent()) {
+        if(!HostedEvent.isEvent()) {
             blockedFire = new ArrayList<Location>();
             noFireDamage = new ArrayList<String>();
             EventUtil.register(this);
@@ -37,8 +37,8 @@ public class AntiIPVP implements Listener {
     }
 
     private static boolean isInBlockedFire(World world, int x, int y, int z) {
-        for (Location location : blockedFire) {
-            if (location.getWorld().getName().equalsIgnoreCase(world.getName()) && location.getBlockX() == x && location.getBlockY() == y && location.getBlockZ() == z) {
+        for(Location location : blockedFire) {
+            if(location.getWorld().getName().equalsIgnoreCase(world.getName()) && location.getBlockX() == x && location.getBlockY() == y && location.getBlockZ() == z) {
                 return true;
             }
         }
@@ -48,25 +48,25 @@ public class AntiIPVP implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         ItemStack item = event.getPlayer().getItemInHand();
-        if (item != null && item.getType() == Material.FLINT_AND_STEEL && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() != Material.OBSIDIAN) {
+        if(item != null && item.getType() == Material.FLINT_AND_STEEL && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() != Material.OBSIDIAN) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockPlace(final BlockPlaceEvent event) {
-        if (event.getBlock().getType() == Material.FIRE) {
-            if (event.getBlockAgainst().getType() == Material.OBSIDIAN) {
+        if(event.getBlock().getType() == Material.FIRE) {
+            if(event.getBlockAgainst().getType() == Material.OBSIDIAN) {
                 Location location = event.getBlock().getLocation();
                 new DelayedTask(new Runnable() {
                     @Override
                     public void run() {
-                        if (event.getBlock().getType() == Material.FIRE) {
+                        if(event.getBlock().getType() == Material.FIRE) {
                             event.getBlock().setType(Material.AIR);
                         }
                     }
-                }, 2L);
-                if (!isInBlockedFire(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+                }, 2);
+                if(!isInBlockedFire(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
                     final Location blockLocation = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
                     blockedFire.add(blockLocation);
                     new DelayedTask(new Runnable() {
@@ -74,7 +74,7 @@ public class AntiIPVP implements Listener {
                         public void run() {
                             blockedFire.remove(blockLocation);
                         }
-                    }, 10L);
+                    }, 10);
                 }
             } else {
                 event.setCancelled(true);
@@ -84,12 +84,12 @@ public class AntiIPVP implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
+        if(event.getEntity() instanceof Player) {
             DamageCause damageCause = event.getCause();
             final Player player = (Player) event.getEntity();
-            if ((damageCause == DamageCause.FIRE || damageCause == DamageCause.FIRE_TICK) && !noFireDamage.contains(player.getName())) {
+            if((damageCause == DamageCause.FIRE || damageCause == DamageCause.FIRE_TICK) && !noFireDamage.contains(player.getName())) {
                 Location location = player.getLocation();
-                if (isInBlockedFire(player.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+                if(isInBlockedFire(player.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
                     event.setCancelled(true);
                     noFireDamage.add(player.getName());
                     new DelayedTask(new Runnable() {
@@ -99,9 +99,9 @@ public class AntiIPVP implements Listener {
                         }
                     }, 20);
                 }
-            } else if ((damageCause == DamageCause.FIRE || damageCause == DamageCause.FIRE_TICK) && noFireDamage.contains(player.getName())) {
+            } else if((damageCause == DamageCause.FIRE || damageCause == DamageCause.FIRE_TICK) && noFireDamage.contains(player.getName())) {
                 event.setCancelled(true);
-                if (player.getFireTicks() > 0) {
+                if(player.getFireTicks() > 0) {
                     player.setFireTicks(0);
                 }
             }
@@ -110,7 +110,7 @@ public class AntiIPVP implements Listener {
 
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (event.getBucket() == Material.LAVA_BUCKET) {
+        if(event.getBucket() == Material.LAVA_BUCKET) {
             event.setCancelled(true);
         }
     }

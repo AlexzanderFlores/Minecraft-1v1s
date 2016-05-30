@@ -49,7 +49,7 @@ public class WorldHandler implements Listener {
         item = new ItemCreator(Material.GRASS).setName("&a" + name).getItemStack();
         pregenItem = new ItemCreator(Material.GRASS).setName("&a" + pregenName).getItemStack();
         BiomeSwap.setUpUHC();
-        if (!BorderHandler.isEnabled()) {
+        if(!BorderHandler.isEnabled()) {
             new BorderHandler();
         }
         generateWorld();
@@ -58,10 +58,10 @@ public class WorldHandler implements Listener {
 
     public static void generateWorld() {
         MessageHandler.alert("Generating World...");
-        if (world != null) {
+        if(world != null) {
             MessageHandler.alert("Deleting old World...");
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getWorld().getName().equals(world.getName())) {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(player.getWorld().getName().equals(world.getName())) {
                     player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
                 }
             }
@@ -79,10 +79,10 @@ public class WorldHandler implements Listener {
 
     public static void generateNether() {
         MessageHandler.alert("Generating Nether...");
-        if (nether != null) {
+        if(nether != null) {
             MessageHandler.alert("Deleting old Nether...");
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getWorld().getName().equals(nether.getName())) {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(player.getWorld().getName().equals(nether.getName())) {
                     player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
                 }
             }
@@ -102,10 +102,10 @@ public class WorldHandler implements Listener {
 
     public static void generateEnd() {
         MessageHandler.alert("Generating End...");
-        if (end != null) {
+        if(end != null) {
             MessageHandler.alert("Deleting old End...");
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getWorld().getName().equals(end.getName())) {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(player.getWorld().getName().equals(end.getName())) {
                     player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
                 }
             }
@@ -127,7 +127,7 @@ public class WorldHandler implements Listener {
 
     public static Location getGround(Location location) {
         location.setY(250);
-        while (location.getBlock().getType() == Material.AIR) {
+        while(location.getBlock().getType() == Material.AIR) {
             location.setY(location.getBlockY() - 1);
         }
         return location.add(0, 1, 0);
@@ -149,19 +149,19 @@ public class WorldHandler implements Listener {
     public void onGameStart(GameStartEvent event) {
         BorderHandler.registerEvents();
         BorderHandler.getOverworldBorder().pregenSettings();
-        if (BorderHandler.getNetherBorder() != null) {
+        if(BorderHandler.getNetherBorder() != null) {
             BorderHandler.getNetherBorder().pregenSettings();
         }
-        if (OptionsHandler.getEnd() || OptionsHandler.getNether()) {
+        if(OptionsHandler.getEnd() || OptionsHandler.getNether()) {
             new PortalHandler();
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (WhitelistHandler.isWhitelisted() && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+        if(WhitelistHandler.isWhitelisted() && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
             Player player = event.getPlayer();
-            if (HostHandler.isHost(player.getUniqueId())) {
+            if(HostHandler.isHost(player.getUniqueId())) {
                 player.getInventory().setItem(1, item);
                 player.getInventory().setItem(2, pregenItem);
             }
@@ -171,7 +171,7 @@ public class WorldHandler implements Listener {
     @EventHandler
     public void onMouseClick(MouseClickEvent event) {
         Player player = event.getPlayer();
-        if (ItemUtil.isItem(player.getItemInHand(), item)) {
+        if(ItemUtil.isItem(player.getItemInHand(), item)) {
             Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
             inventory.setItem(9, new ItemCreator(Material.GRASS).setName("&aTeleport to &eLobby").getItemStack());
             inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&aTeleport to &eWorld").getItemStack());
@@ -183,7 +183,7 @@ public class WorldHandler implements Listener {
             inventory.setItem(41, new ItemCreator(Material.ENDER_STONE).setName("&aRemake &fEnd").getItemStack());
             player.openInventory(inventory);
             event.setCancelled(true);
-        } else if (ItemUtil.isItem(player.getItemInHand(), pregenItem)) {
+        } else if(ItemUtil.isItem(player.getItemInHand(), pregenItem)) {
             Inventory inventory = Bukkit.createInventory(player, 9 * 3, pregenName);
             inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&aPregen &eWorld").getItemStack());
             inventory.setItem(15, new ItemCreator(Material.BEDROCK).setName("&cCancel Pregen").getItemStack());
@@ -194,30 +194,30 @@ public class WorldHandler implements Listener {
 
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
-        if (event.getTitle().equals(name)) {
+        if(event.getTitle().equals(name)) {
             Player player = event.getPlayer();
             String name = ChatColor.stripColor(event.getItemTitle());
             player.closeInventory();
-            if (name.contains("Teleport to Lobby")) {
+            if(name.contains("Teleport to Lobby")) {
                 player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
                 player.setAllowFlight(true);
                 player.setFlying(true);
-            } else if (name.contains("Teleport to World")) {
+            } else if(name.contains("Teleport to World")) {
                 player.teleport(getWorld().getSpawnLocation());
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 player.getWorld().setTime(0);
-            } else if (name.contains("Remove trees near 0, 0")) {
+            } else if(name.contains("Remove trees near 0, 0")) {
                 MessageHandler.alert("Removing trees...");
                 World world = getWorld();
                 Location location = world.getSpawnLocation();
                 int max = 100;
-                for (int x = -location.getBlockX() - max; x <= location.getBlockX() + max; ++x) {
-                    for (int y = 55; y <= 150; ++y) {
-                        for (int z = -location.getBlockZ() - max; z <= location.getBlockZ() + max; ++z) {
+                for(int x = -location.getBlockX() - max; x <= location.getBlockX() + max; ++x) {
+                    for(int y = 55; y <= 150; ++y) {
+                        for(int z = -location.getBlockZ() - max; z <= location.getBlockZ() + max; ++z) {
                             Block block = world.getBlockAt(x, y, z);
                             Material type = block.getType();
-                            if (type == Material.LOG || type == Material.LOG_2 || type == Material.LEAVES || type == Material.LEAVES_2) {
+                            if(type == Material.LOG || type == Material.LOG_2 || type == Material.LEAVES || type == Material.LEAVES_2) {
                                 block.setType(Material.AIR);
                                 block.setData((byte) 0);
                             }
@@ -225,48 +225,48 @@ public class WorldHandler implements Listener {
                     }
                 }
                 MessageHandler.alert("Removed trees!");
-            } else if (name.contains("Teleport to Nether")) {
-                if (getNether() == null) {
+            } else if(name.contains("Teleport to Nether")) {
+                if(getNether() == null) {
                     MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
                 } else {
                     player.teleport(getNether().getSpawnLocation());
                     player.setAllowFlight(true);
                     player.setFlying(true);
                 }
-            } else if (name.contains("Teleport to End")) {
-                if (getEnd() == null) {
+            } else if(name.contains("Teleport to End")) {
+                if(getEnd() == null) {
                     MessageHandler.sendMessage(player, "&cThe end world is not available currently");
                 } else {
                     player.teleport(getEnd().getSpawnLocation());
                     player.setAllowFlight(true);
                     player.setFlying(true);
                 }
-            } else if (name.contains("Remake World")) {
+            } else if(name.contains("Remake World")) {
                 generateWorld();
-            } else if (name.contains("Remake Nether")) {
-                if (getNether() == null) {
+            } else if(name.contains("Remake Nether")) {
+                if(getNether() == null) {
                     MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
                 } else {
                     generateNether();
                 }
-            } else if (name.contains("Remake End")) {
-                if (getEnd() == null) {
+            } else if(name.contains("Remake End")) {
+                if(getEnd() == null) {
                     MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
                 } else {
                     generateEnd();
                 }
             }
             event.setCancelled(true);
-        } else if (event.getTitle().equals(pregenName)) {
+        } else if(event.getTitle().equals(pregenName)) {
             Player player = event.getPlayer();
             String perm = "worldborder.*";
             PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
             permission.setPermission(perm, true);
             Material type = event.getItem().getType();
-            if (type == Material.BEDROCK) {
+            if(type == Material.BEDROCK) {
                 player.chat("/wb fill cancel");
             }
-            if (type == Material.GRASS) {
+            if(type == Material.GRASS) {
                 int border = BorderHandler.getOverworldBorder().getRadius();
                 player.chat("/wb " + getWorld().getName() + " set " + border + " " + border + " 0 0");
                 player.chat("/wb " + getWorld().getName() + " fill 60");

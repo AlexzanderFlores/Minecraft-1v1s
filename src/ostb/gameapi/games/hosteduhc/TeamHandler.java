@@ -56,11 +56,11 @@ public class TeamHandler implements Listener {
         teams = new HashMap<String, Team>();
         possibleColors = new ArrayList<String>();
         teamChat = new ArrayList<String>();
-        String[] baseColors = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
-        String[] extraColors = new String[]{null, "n", "o", "m", "l"};
-        for (String baseColor : baseColors) {
-            for (String extraColor : extraColors) {
-                if (extraColor == null) {
+        String [] baseColors = new String [] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+        String [] extraColors = new String [] {null, "n", "o", "m", "l"};
+        for(String baseColor : baseColors) {
+            for(String extraColor : extraColors) {
+                if(extraColor == null) {
                     possibleColors.add(colorChar + baseColor);
                 } else {
                     possibleColors.add(colorChar + baseColor + colorChar + extraColor);
@@ -70,7 +70,7 @@ public class TeamHandler implements Listener {
         new DelayedTask(new Runnable() {
             @Override
             public void run() {
-                if (HostedEvent.isEvent()) {
+                if(HostedEvent.isEvent()) {
                     addTeam("HeavenDavid", "_sorrynotaco_", "&2");
                     addTeam("JuanJuegaJuegos", "VinnyWC", "&3");
                     addTeam("TheLapizlazuli", "Aircry", "&4");
@@ -87,9 +87,9 @@ public class TeamHandler implements Listener {
         }, 20 * 2);
         new CommandBase("team", 0, 3, true) {
             @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
+            public boolean execute(CommandSender sender, String [] arguments) {
                 Player player = (Player) sender;
-                if (arguments.length == 0 || (arguments.length == 1 && arguments[0].equalsIgnoreCase("help"))) {
+                if(arguments.length == 0 || (arguments.length == 1 && arguments[0].equalsIgnoreCase("help"))) {
                     MessageHandler.sendMessage(player, "/team &eDisplays team commands");
                     MessageHandler.sendMessage(player, "/team help &eDisplays team commands");
                     MessageHandler.sendMessage(player, "/team <name> &eInvite or accept someone to your team");
@@ -100,61 +100,61 @@ public class TeamHandler implements Listener {
                     MessageHandler.sendMessage(player, "/team list &eList all players in your team");
                     MessageHandler.sendMessage(player, "/teamChat &eToggle team chat on/off");
                     MessageHandler.sendMessage(player, "/teamChat <message> &eSend a message in team chat");
-                } else if (arguments.length >= 1) {
-                    if (getMaxTeamSize() > 1) {
-                        if (arguments[0].equalsIgnoreCase("list")) {
-                            if (teams.containsKey(player.getName())) {
+                } else if(arguments.length >= 1) {
+                    if(getMaxTeamSize() > 1) {
+                        if(arguments[0].equalsIgnoreCase("list")) {
+                            if(teams.containsKey(player.getName())) {
                                 MessageHandler.sendMessage(player, "Your team members:");
-                                for (OfflinePlayer member : teams.get(player.getName()).getPlayers()) {
+                                for(OfflinePlayer member : teams.get(player.getName()).getPlayers()) {
                                     MessageHandler.sendMessage(player, member.getName());
                                 }
                             } else {
                                 MessageHandler.sendMessage(player, "&cYou are not in a team");
                             }
-                        } else if (OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+                        } else if(OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
                             MessageHandler.sendMessage(player, "&cYou cannot use this command after the game has started");
                         } else {
-                            if (arguments[0].equalsIgnoreCase("leave")) {
-                                if (teams.containsKey(player.getName())) {
+                            if(arguments[0].equalsIgnoreCase("leave")) {
+                                if(teams.containsKey(player.getName())) {
                                     teamChat(player, "has left the team");
                                     teams.get(player.getName()).removePlayer(player);
-                                    if (teams.get(player.getName()).getPlayers().isEmpty()) {
+                                    if(teams.get(player.getName()).getPlayers().isEmpty()) {
                                         teams.get(player.getName()).unregister();
                                     }
                                     teams.remove(player.getName());
                                 } else {
                                     MessageHandler.sendMessage(player, "&cYou are not in a team");
                                 }
-                            } else if (arguments[0].equalsIgnoreCase("kick")) {
+                            } else if(arguments[0].equalsIgnoreCase("kick")) {
                                 Player target = ProPlugin.getPlayer(arguments[1]);
-                                if (target == null) {
+                                if(target == null) {
                                     MessageHandler.sendMessage(player, "&c" + arguments[1] + " is not online");
-                                } else if (teams.containsKey(player.getName()) && teams.containsKey(target.getName()) && teams.get(player.getName()) == teams.get(target.getName())) {
+                                } else if(teams.containsKey(player.getName()) && teams.containsKey(target.getName()) && teams.get(player.getName()) == teams.get(target.getName())) {
                                     teamChat(player, "was kicked from the team");
                                     teams.get(player.getName()).removePlayer(target);
-                                    if (teams.get(target.getName()).getPlayers().isEmpty()) {
+                                    if(teams.get(target.getName()).getPlayers().isEmpty()) {
                                         teams.get(target.getName()).unregister();
                                     }
                                     teams.remove(target.getName());
                                 } else {
                                     MessageHandler.sendMessage(player, "&cYou are not in a team");
                                 }
-                            } else if (arguments[0].equalsIgnoreCase("color")) {
+                            } else if(arguments[0].equalsIgnoreCase("color")) {
                                 Team team = teams.get(player.getName());
-                                if (team == null) {
+                                if(team == null) {
                                     MessageHandler.sendMessage(player, "&cYou do not have a team");
                                     return true;
                                 }
-                                if (Ranks.PREMIUM.hasRank(player)) {
-                                    if (arguments.length == 2) {
+                                if(Ranks.PREMIUM.hasRank(player)) {
+                                    if(arguments.length == 2) {
                                         String color = arguments[1].toLowerCase();
                                         char character = ChatColor.WHITE.toString().charAt(0);
-                                        if (possibleColors.contains(color.replace("&", String.valueOf(character)))) {
-                                            if (color.length() == 2 && color.charAt(0) == '&') {
+                                        if(possibleColors.contains(color.replace("&", String.valueOf(character)))) {
+                                            if(color.length() == 2 && color.charAt(0) == '&') {
                                                 char colorChar = color.charAt(1);
-                                                if (isHexChar(colorChar)) {
+                                                if(isHexChar(colorChar)) {
                                                     String prefix = team.getPrefix();
-                                                    if (prefix != null && !prefix.equals("")) {
+                                                    if(prefix != null && !prefix.equals("")) {
                                                         //Bukkit.getLogger().info("\"" + prefix + "\"");
                                                         //Bukkit.getLogger().info(possibleColors.get(0));
                                                         possibleColors.set(0, prefix);
@@ -164,21 +164,21 @@ public class TeamHandler implements Listener {
                                                     //Bukkit.getLogger().info("Real Color: \"" + realColor + "\"");
                                                     possibleColors.remove(realColor);
                                                     team.setPrefix(realColor);
-                                                    for (OfflinePlayer offlinePlayer : team.getPlayers()) {
-                                                        if (offlinePlayer.isOnline()) {
+                                                    for(OfflinePlayer offlinePlayer : team.getPlayers()) {
+                                                        if(offlinePlayer.isOnline()) {
                                                             Player onlinePlayer = offlinePlayer.getPlayer();
                                                             HealthHandler.updateHealth(onlinePlayer);
                                                         }
                                                     }
                                                     return true;
                                                 }
-                                            } else if (color.length() == 4 && color.charAt(0) == '&' && color.charAt(2) == '&') {
+                                            } else if(color.length() == 4 && color.charAt(0) == '&' && color.charAt(2) == '&') {
                                                 char colorChar = color.charAt(1);
-                                                if (isHexChar(colorChar)) {
+                                                if(isHexChar(colorChar)) {
                                                     char colorChar2 = color.charAt(3);
-                                                    if (isHexChar(colorChar2)) {
+                                                    if(isHexChar(colorChar2)) {
                                                         String prefix = team.getPrefix();
-                                                        if (prefix != null) {
+                                                        if(prefix != null) {
                                                             //Bukkit.getLogger().info("\"" + prefix + "\"");
                                                             //Bukkit.getLogger().info(possibleColors.get(0));
                                                             possibleColors.set(0, prefix);
@@ -188,8 +188,8 @@ public class TeamHandler implements Listener {
                                                         //Bukkit.getLogger().info("Real Color: \"" + realColor + "\"");
                                                         possibleColors.remove(realColor);
                                                         team.setPrefix(realColor);
-                                                        for (OfflinePlayer offlinePlayer : team.getPlayers()) {
-                                                            if (offlinePlayer.isOnline()) {
+                                                        for(OfflinePlayer offlinePlayer : team.getPlayers()) {
+                                                            if(offlinePlayer.isOnline()) {
                                                                 Player onlinePlayer = offlinePlayer.getPlayer();
                                                                 HealthHandler.updateHealth(onlinePlayer);
                                                             }
@@ -210,10 +210,10 @@ public class TeamHandler implements Listener {
                                 } else {
                                     MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
                                 }
-                            } else if (arguments[0].equalsIgnoreCase("deny")) {
-                                if (invites.containsKey(player.getName())) {
+                            } else if(arguments[0].equalsIgnoreCase("deny")) {
+                                if(invites.containsKey(player.getName())) {
                                     Player requester = ProPlugin.getPlayer(invites.get(player.getName()));
-                                    if (requester != null) {
+                                    if(requester != null) {
                                         MessageHandler.sendMessage(requester, AccountHandler.getPrefix(player) + " &chas denied your team request");
                                         final String name = requester.getName();
                                         delayedRequests.add(name);
@@ -228,22 +228,22 @@ public class TeamHandler implements Listener {
                                 } else {
                                     MessageHandler.sendMessage(player, "&cYou do not have a pending team invite");
                                 }
-                            } else if (delayedRequests.contains(player.getName())) {
+                            } else if(delayedRequests.contains(player.getName())) {
                                 MessageHandler.sendMessage(player, "&cCannot send invite due to being denied within the last &e3 &cseconds");
                                 MessageHandler.sendMessage(player, "Please try again in a few seconds");
                             } else {
                                 String target = arguments[0];
                                 Player targetPlayer = ProPlugin.getPlayer(target);
-                                if (targetPlayer == null) {
+                                if(targetPlayer == null) {
                                     MessageHandler.sendMessage(player, "&c" + target + " is not online");
-                                } else if (invites.containsKey(player.getName()) && invites.get(player.getName()).equals(targetPlayer.getName())) {
+                                } else if(invites.containsKey(player.getName()) && invites.get(player.getName()).equals(targetPlayer.getName())) {
                                     invites.remove(player.getName());
                                     Team team = null;
-                                    if (OSTB.getScoreboard().getTeam(targetPlayer.getName()) == null) {
+                                    if(OSTB.getScoreboard().getTeam(targetPlayer.getName()) == null) {
                                         team = OSTB.getScoreboard().registerNewTeam(targetPlayer.getName());
                                     } else {
                                         team = OSTB.getScoreboard().getTeam(targetPlayer.getName());
-                                        if (team.getPlayers().size() >= getMaxTeamSize()) {
+                                        if(team.getPlayers().size() >= getMaxTeamSize()) {
                                             MessageHandler.sendMessage(player, "&cTeam has already reached the max team size of &e" + getMaxTeamSize());
                                             return true;
                                         }
@@ -256,22 +256,22 @@ public class TeamHandler implements Listener {
                                     teamChat(targetPlayer, "has joined the team");
                                     teamChat(player, "has joined the team");
                                     updateColors();
-                                } else if (invites.containsKey(targetPlayer.getName())) {
+                                } else if(invites.containsKey(targetPlayer.getName())) {
                                     MessageHandler.sendMessage(player, AccountHandler.getPrefix(targetPlayer) + " &calready has a pending invite");
-                                } else if (targetPlayer.getName().equals(player.getName())) {
+                                } else if(targetPlayer.getName().equals(player.getName())) {
                                     MessageHandler.sendMessage(player, "&cYou cannot invite yourself to a team");
-                                } else if (teams.containsKey(targetPlayer.getName())) {
+                                } else if(teams.containsKey(targetPlayer.getName())) {
                                     MessageHandler.sendMessage(player, AccountHandler.getPrefix(targetPlayer) + " &cis already in a team");
                                 } else {
-                                    if (teams.containsKey(player.getName())) {
+                                    if(teams.containsKey(player.getName())) {
                                         int size = teams.get(player.getName()).getSize();
                                         int inviteCount = 0;
-                                        for (String inviter : invites.values()) {
-                                            if (inviter.equals(player.getName())) {
+                                        for(String inviter : invites.values()) {
+                                            if(inviter.equals(player.getName())) {
                                                 ++inviteCount;
                                             }
                                         }
-                                        if (size >= getMaxTeamSize() || size + inviteCount >= getMaxTeamSize()) {
+                                        if(size >= getMaxTeamSize() || size + inviteCount >= getMaxTeamSize()) {
                                             MessageHandler.sendMessage(player, "&cCannot invite more members: Max team size is &e" + getMaxTeamSize());
                                             return true;
                                         }
@@ -292,20 +292,20 @@ public class TeamHandler implements Listener {
         };
         new CommandBase("sc", true) {
             @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
+            public boolean execute(CommandSender sender, String [] arguments) {
                 Player player = (Player) sender;
                 Team team = teams.get(player.getName());
-                if (team == null) {
+                if(team == null) {
                     MessageHandler.sendMessage(player, "&cYou are not in a team");
                 } else {
-                    for (OfflinePlayer member : team.getPlayers()) {
-                        if (member.isOnline()) {
+                    for(OfflinePlayer member : team.getPlayers()) {
+                        if(member.isOnline()) {
                             Player onlineMember = member.getPlayer();
-                            if (!SpectatorHandler.contains(onlineMember)) {
+                            if(!SpectatorHandler.contains(onlineMember)) {
                                 Location location = onlineMember.getLocation();
                                 String locationString = location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ();
-                                for (OfflinePlayer member2 : team.getPlayers()) {
-                                    if (member2.isOnline()) {
+                                for(OfflinePlayer member2 : team.getPlayers()) {
+                                    if(member2.isOnline()) {
                                         Player onlineMember2 = member2.getPlayer();
                                         MessageHandler.sendMessage(onlineMember2, AccountHandler.getPrefix(onlineMember) + ": " + locationString);
                                     }
@@ -319,13 +319,13 @@ public class TeamHandler implements Listener {
         };
         new CommandBase("teamChat", -1, true) {
             @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
+            public boolean execute(CommandSender sender, String [] arguments) {
                 Player player = (Player) sender;
                 Team team = teams.get(player.getName());
-                if (team == null) {
+                if(team == null) {
                     MessageHandler.sendMessage(player, "&cYou are not in a team");
-                } else if (arguments.length == 0) {
-                    if (teamChat.contains(player.getName())) {
+                } else if(arguments.length == 0) {
+                    if(teamChat.contains(player.getName())) {
                         teamChat.remove(player.getName());
                         MessageHandler.sendMessage(player, "Team chat is now &cOFF");
                     } else {
@@ -334,7 +334,7 @@ public class TeamHandler implements Listener {
                     }
                 } else {
                     String message = "";
-                    for (int a = 0; a < arguments.length; ++a) {
+                    for(int a = 0; a < arguments.length; ++a) {
                         message += arguments[a] + " ";
                     }
                     teamChat(player, message);
@@ -348,11 +348,11 @@ public class TeamHandler implements Listener {
 
     public static boolean teamChat(Player player, String message) {
         Team team = teams.get(player.getName());
-        if (team == null) {
+        if(team == null) {
             return false;
         } else {
-            for (OfflinePlayer member : team.getPlayers()) {
-                if (member.isOnline()) {
+            for(OfflinePlayer member : team.getPlayers()) {
+                if(member.isOnline()) {
                     Player onlineMember = member.getPlayer();
                     MessageHandler.sendMessage(onlineMember, "&bTC: " + AccountHandler.getPrefix(player) + ": " + message);
                 }
@@ -375,17 +375,17 @@ public class TeamHandler implements Listener {
     }
 
     public static void removeFromTeam(String name) {
-        if (teams.containsKey(name)) {
+        if(teams.containsKey(name)) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(name);
             Team team = teams.get(name);
             team.removePlayer(player);
-            if (team.getPlayers().size() == 1) {
-                for (OfflinePlayer member : team.getPlayers()) {
+            if(team.getPlayers().size() == 1) {
+                for(OfflinePlayer member : team.getPlayers()) {
                     removeFromTeam(member.getName());
                 }
             }
             teams.remove(name);
-            if (player.isOnline()) {
+            if(player.isOnline()) {
                 updateColors();
             }
         }
@@ -399,11 +399,11 @@ public class TeamHandler implements Listener {
         ItemStack enabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.LIME.getData()).setName("&aENABLED").addLore("&fClick the icon above to toggle").getItemStack();
         ItemStack disabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.RED.getData()).setName("&cDISABLED").addLore("&fClick the icon above to toggle").getItemStack();
         Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-        int[] slots = new int[]{1, 3, 5, 7};
-        String[] names = new String[]{"Solo", "Teams of 2", "Teams of 3", "Teams of 4"};
-        for (int a = 0; a < slots.length; ++a) {
+        int [] slots = new int [] {1, 3, 5, 7};
+        String [] names = new String [] {"Solo", "Teams of 2", "Teams of 3", "Teams of 4"};
+        for(int a = 0; a < slots.length; ++a) {
             inventory.setItem(slots[a], new ItemCreator(Material.SKULL_ITEM, 3).setAmount(a + 1).setName("&b" + names[a]).getItemStack());
-            if (maxSize == a + 1) {
+            if(maxSize == a + 1) {
                 inventory.setItem(slots[a] + 9, enabled);
             } else {
                 inventory.setItem(slots[a] + 9, disabled);
@@ -429,8 +429,8 @@ public class TeamHandler implements Listener {
     }
 
     private static void updateColors() {
-        for (Team team : TeamHandler.getTeams()) {
-            if (team.getPrefix() == null || team.getPrefix().equals("")) {
+        for(Team team : TeamHandler.getTeams()) {
+            if(team.getPrefix() == null || team.getPrefix().equals("")) {
                 team.setPrefix(possibleColors.get(0));
                 possibleColors.remove(0);
             }
@@ -453,21 +453,21 @@ public class TeamHandler implements Listener {
 
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
-        if (event.getTitle().equals(name)) {
+        if(event.getTitle().equals(name)) {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
             Material type = item.getType();
-            if (type == Material.ARROW) {
+            if(type == Material.ARROW) {
                 String name = event.getItemTitle();
-                if (name.contains("Back")) {
+                if(name.contains("Back")) {
                     ScenarioManager.open(player);
                 } else {
                     OptionsHandler.open(player);
                 }
-            } else if (type == Material.STAINED_GLASS_PANE) {
+            } else if(type == Material.STAINED_GLASS_PANE) {
                 open(player);
             } else {
-                if (OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+                if(OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
                     player.closeInventory();
                     MessageHandler.sendMessage(player, "&cYou cannot edit the Team Size during the game");
                 } else {
@@ -482,7 +482,7 @@ public class TeamHandler implements Listener {
 
     @EventHandler
     public void onPostPlayerJoin(PostPlayerJoinEvent event) {
-        if (getMaxTeamSize() > 1 && OSTB.getMiniGame().getGameState() != GameStates.STARTED && !HostedEvent.isEvent()) {
+        if(getMaxTeamSize() > 1 && OSTB.getMiniGame().getGameState() != GameStates.STARTED && !HostedEvent.isEvent()) {
             MessageHandler.sendLine(event.getPlayer(), "&c&k");
             MessageHandler.sendMessage(event.getPlayer(), "");
             MessageHandler.sendMessage(event.getPlayer(), "Make a team with &b/team");
@@ -495,8 +495,8 @@ public class TeamHandler implements Listener {
 
     @EventHandler
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (teamChat.contains(event.getPlayer().getName())) {
-            if (teamChat(event.getPlayer(), event.getMessage())) {
+        if(teamChat.contains(event.getPlayer().getName())) {
+            if(teamChat(event.getPlayer(), event.getMessage())) {
                 event.setCancelled(true);
             }
         }

@@ -28,25 +28,25 @@ public class XrayDetection implements Listener {
                 double distance = Math.sqrt((0 - x) * (0 - x) + (0 - z) * (0 - z));
                 Bukkit.getLogger().info("Distance: " + distance);
                 Bukkit.getLogger().info(x + ", " + z);
-                for (int y = 30; y > 6; --y) {
+                for(int y = 30; y > 6; --y) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == Material.STONE) {
+                    if(block.getType() == Material.STONE) {
                         boolean aroundStone = true;
-                        for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN}) {
+                        for(BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN}) {
                             Block relative = block.getRelative(face);
-                            if (relative.getType() != Material.STONE && relative.getType() != Material.DIAMOND_ORE) {
+                            if(relative.getType() != Material.STONE && relative.getType() != Material.DIAMOND_ORE) {
                                 aroundStone = false;
                                 break;
                             }
                         }
-                        if (aroundStone) {
+                        if(aroundStone) {
                             block.setType(Material.DIAMOND_ORE);
                         }
                     }
                 }
-                if (z < 1500) {
+                if(z < 1500) {
                     ++z;
-                } else if (x < 1500) {
+                } else if(x < 1500) {
                     ++x;
                 } else {
                     Bukkit.getScheduler().cancelTask(taskID);

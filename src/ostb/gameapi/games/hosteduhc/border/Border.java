@@ -33,22 +33,22 @@ public class Border implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 5) {
-            if (placeBorder) {
-                for (int x = -radius; x <= radius; ++x) {
-                    for (int z = -radius; z <= radius; ++z) {
+        if(ticks == 5) {
+            if(placeBorder) {
+                for(int x = -radius; x <= radius; ++x) {
+                    for(int z = -radius; z <= radius; ++z) {
                         int distance = (int) Math.sqrt((0 - x) * (0 - x) + (0 - z) * (0 - z));
-                        if (distance == radius) {
+                        if(distance == radius) {
                             Block block = world.getBlockAt(x, y, z);
                             block.setType(Material.BEDROCK);
                         }
                     }
                 }
-                if (++y >= yLimit) {
+                if(++y >= yLimit) {
                     placeBorder = false;
                     y = 0;
-                    for (Entity entity : world.getEntities()) {
-                        if (BorderHandler.getDistance(entity.getLocation()) > radius) {
+                    for(Entity entity : world.getEntities()) {
+                        if(BorderHandler.getDistance(entity.getLocation()) > radius) {
                             entity.remove();
                         }
                     }
@@ -60,32 +60,32 @@ public class Border implements Listener {
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.getEntity().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getLocation()) > startingRadius) {
+        if(event.getEntity().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getLocation()) > startingRadius) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
-        if (event.getEntity().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getLocation()) > startingRadius) {
+        if(event.getEntity().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getLocation()) > startingRadius) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockFromTo(BlockFromToEvent event) {
-        if (event.getBlock().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getBlock().getLocation()) > startingRadius) {
+        if(event.getBlock().getWorld().getName().equalsIgnoreCase(world.getName()) && BorderHandler.getDistance(event.getBlock().getLocation()) > startingRadius) {
             event.setCancelled(true);
         }
     }
 
     public void pregenSettings() {
-        if (!pregen) {
+        if(!pregen) {
             pregen = true;
             setBorder(radius);
             EventUtil.register(this);
-            for (Entity entity : world.getEntities()) {
-                if (BorderHandler.getDistance(entity.getLocation()) > startingRadius) {
+            for(Entity entity : world.getEntities()) {
+                if(BorderHandler.getDistance(entity.getLocation()) > startingRadius) {
                     entity.remove();
                 }
             }

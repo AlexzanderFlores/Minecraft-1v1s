@@ -27,7 +27,7 @@ public class HealthHandler implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = ProPlugin.getPlayer(arguments[0]);
-                if (player == null) {
+                if(player == null) {
                     MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
                 } else {
                     MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player) + " &ahas &c" + (int) player.getHealth() + " &ahealth");
@@ -40,7 +40,7 @@ public class HealthHandler implements Listener {
     }
 
     public static void updateHealth() {
-        for (Player player : ProPlugin.getPlayers()) {
+        for(Player player : ProPlugin.getPlayers()) {
             updateHealth(player);
         }
     }
@@ -48,18 +48,18 @@ public class HealthHandler implements Listener {
     public static void updateHealth(Player player) {
         String color = AccountHandler.getRank(player).getColor().toString();
         Team team = TeamHandler.getTeam(player);
-        if (team != null) {
+        if(team != null) {
             color = team.getPrefix();
         }
         //Bukkit.getLogger().info("Prefix: \"" + color + "\"");
         String name = StringUtil.color(color) + player.getName();
         name += " " + ChatColor.WHITE + (int) player.getHealth();
-        if (name.length() > 16) {
+        if(name.length() > 16) {
             name = name.substring(0, 11) + " " + ChatColor.WHITE + (int) player.getHealth();
         }
         try {
             player.setPlayerListName(name);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
 
         }
     }
@@ -71,14 +71,14 @@ public class HealthHandler implements Listener {
 
     @EventHandler
     public void onPostPlayerJoin(PostPlayerJoinEvent event) {
-        if (!SpectatorHandler.contains(event.getPlayer())) {
+        if(!SpectatorHandler.contains(event.getPlayer())) {
             updateHealth(event.getPlayer());
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player && !event.isCancelled()) {
+        if(event.getEntity() instanceof Player && !event.isCancelled()) {
             Player player = (Player) event.getEntity();
             final String name = player.getName();
             new DelayedTask(new Runnable() {
@@ -92,7 +92,7 @@ public class HealthHandler implements Listener {
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if (event.getEntity() instanceof Player && !event.isCancelled()) {
+        if(event.getEntity() instanceof Player && !event.isCancelled()) {
             Player player = (Player) event.getEntity();
             final String name = player.getName();
             new DelayedTask(new Runnable() {

@@ -46,13 +46,13 @@ public class DisconnectHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            if (!HostedEvent.isEvent()) {
+        if(ticks == 20) {
+            if(!HostedEvent.isEvent()) {
                 Iterator<UUID> iterator = times.keySet().iterator();
-                while (iterator.hasNext()) {
+                while(iterator.hasNext()) {
                     UUID uuid = iterator.next();
                     times.put(uuid, times.get(uuid) + 1);
-                    if (times.get(uuid) >= (60 * 5)) {
+                    if(times.get(uuid) >= (60 * 5)) {
                         Bukkit.getPluginManager().callEvent(new PlayerTimeOutEvent(uuid));
                         iterator.remove();
                         String name = AccountHandler.getName(uuid);
@@ -77,7 +77,7 @@ public class DisconnectHandler implements Listener {
 
     @EventHandler
     public void onPlayerSpectator(PlayerSpectatorEvent event) {
-        if (times.containsKey(event.getPlayer().getUniqueId())) {
+        if(times.containsKey(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         }
     }
@@ -85,7 +85,7 @@ public class DisconnectHandler implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerLeaveEvent event) {
         Player player = event.getPlayer();
-        if (OSTB.getMiniGame().getGameState() == GameStates.STARTED && !SpectatorHandler.contains(player) && !cannotRelog.contains(player.getName())) {
+        if(OSTB.getMiniGame().getGameState() == GameStates.STARTED && !SpectatorHandler.contains(player) && !cannotRelog.contains(player.getName())) {
             times.put(player.getUniqueId(), 0);
         }
     }

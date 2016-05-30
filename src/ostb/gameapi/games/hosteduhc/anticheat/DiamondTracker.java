@@ -32,13 +32,13 @@ public class DiamondTracker implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.DIAMOND_ORE) {
+        if(event.getBlock().getType() == Material.DIAMOND_ORE) {
             Player player = event.getPlayer();
             int times = 0;
-            if (mined.containsKey(player.getName())) {
+            if(mined.containsKey(player.getName())) {
                 times = mined.get(player.getName());
             }
-            if (++times >= 10 && !delayed.contains(player.getName())) {
+            if(++times >= 10 && !delayed.contains(player.getName())) {
                 final String name = player.getName();
                 delayed.add(name);
                 new DelayedTask(new Runnable() {
@@ -47,8 +47,8 @@ public class DiamondTracker implements Listener {
                         delayed.remove(name);
                     }
                 }, 20 * 5);
-                for (Player online : Bukkit.getOnlinePlayers()) {
-                    if (HostHandler.isHost(online.getUniqueId())) {
+                for(Player online : Bukkit.getOnlinePlayers()) {
+                    if(HostHandler.isHost(online.getUniqueId())) {
                         MessageHandler.sendMessage(online, AccountHandler.getPrefix(player) + " &cHAS MINED &e&l" + times + " &cDIAMONDS WITHIN THE LAST 5 MINUTES");
                     }
                 }
@@ -60,7 +60,7 @@ public class DiamondTracker implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20 * 60 * 5) {
+        if(ticks == 20 * 60 * 5) {
             mined.clear();
         }
     }

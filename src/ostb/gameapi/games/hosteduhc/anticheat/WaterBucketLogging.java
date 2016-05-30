@@ -31,16 +31,16 @@ public class WaterBucketLogging implements Listener {
         new CommandBase("bucket", 0, 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!Ranks.OWNER.hasRank(player) && !HostHandler.isHost(player.getUniqueId())) {
+                    if(!Ranks.OWNER.hasRank(player) && !HostHandler.isHost(player.getUniqueId())) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
                 }
-                if (arguments.length == 0) {
-                    if (sender instanceof Player) {
-                        if (enabled.contains(sender.getName())) {
+                if(arguments.length == 0) {
+                    if(sender instanceof Player) {
+                        if(enabled.contains(sender.getName())) {
                             enabled.remove(sender.getName());
                             MessageHandler.sendMessage(sender, "Bucket alerts are now &cOFF");
                         } else {
@@ -52,7 +52,7 @@ public class WaterBucketLogging implements Listener {
                     }
                 } else {
                     String name = arguments[0].toLowerCase();
-                    if (counters.containsKey(name)) {
+                    if(counters.containsKey(name)) {
                         CountDownUtil countDown = new CountDownUtil(counter - counters.get(name));
                         MessageHandler.sendMessage(sender, name + " placed a water bucket down " + countDown.getCounterAsString() + " &aago");
                     } else {
@@ -69,11 +69,11 @@ public class WaterBucketLogging implements Listener {
 
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (event.getBucket() == Material.WATER_BUCKET) {
+        if(event.getBucket() == Material.WATER_BUCKET) {
             counters.put(event.getPlayer().getName().toLowerCase(), counter);
-            for (String name : enabled) {
+            for(String name : enabled) {
                 Player player = ProPlugin.getPlayer(name);
-                if (player != null) {
+                if(player != null) {
                     MessageHandler.sendMessage(player, "&6&lBucket: " + AccountHandler.getPrefix(event.getPlayer()) + " &ehas placed a water bucket");
                 }
             }
@@ -83,7 +83,7 @@ public class WaterBucketLogging implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
+        if(ticks == 20) {
             --counter;
         }
     }

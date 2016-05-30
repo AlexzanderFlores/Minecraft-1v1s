@@ -14,7 +14,7 @@ public class SurfaceHandler implements Listener {
     private CountDownUtil countDown = null;
 
     public SurfaceHandler() {
-        if (!HostedEvent.isEvent()) {
+        if(!HostedEvent.isEvent()) {
             countDown = new CountDownUtil(60 * 2);
             EventUtil.register(this);
         }
@@ -23,15 +23,15 @@ public class SurfaceHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            if (countDown.canDisplay()) {
+        if(ticks == 20) {
+            if(countDown.canDisplay()) {
                 MessageHandler.alert("Teleporting players to surface in " + countDown.getCounterAsString());
             }
             countDown.decrementCounter();
-            if (countDown.getCounter() <= 0) {
+            if(countDown.getCounter() <= 0) {
                 TimeEvent.getHandlerList().unregister(this);
-                for (Player player : ProPlugin.getPlayers()) {
-                    if (player.getWorld().getName().equals(WorldHandler.getWorld().getName()) && player.getLocation().getY() <= 55) {
+                for(Player player : ProPlugin.getPlayers()) {
+                    if(player.getWorld().getName().equals(WorldHandler.getWorld().getName()) && player.getLocation().getY() <= 55) {
                         player.teleport(WorldHandler.getGround(player.getLocation()));
                     }
                 }

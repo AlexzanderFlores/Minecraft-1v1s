@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -52,7 +51,6 @@ import org.bukkit.potion.PotionEffectType;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
-import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.MouseClickEvent;
@@ -99,8 +97,8 @@ public class Events implements Listener {
 
     private static int countBlocks(Player player) {
         int counter = 0;
-        for (String name : blocks.values()) {
-            if (name.equals(player.getName())) {
+        for(String name : blocks.values()) {
+            if(name.equals(player.getName())) {
                 ++counter;
             }
         }
@@ -109,7 +107,7 @@ public class Events implements Listener {
 
     public static void start() {
         WorldHandler.getWorld().setTime(0);
-        for (Block block : glass) {
+        for(Block block : glass) {
             block.setType(Material.AIR);
             block.setData((byte) 0);
         }
@@ -121,17 +119,17 @@ public class Events implements Listener {
                 String winner = null;
                 int bestScore = 0;
                 MessageHandler.alertLine();
-                for (Player player : ProPlugin.getPlayers()) {
-                    for (PotionEffect effect : player.getActivePotionEffects()) {
+                for(Player player : ProPlugin.getPlayers()) {
+                    for(PotionEffect effect : player.getActivePotionEffects()) {
                         player.removePotionEffect(effect.getType());
                     }
                     int score = countBlocks(player);
                     MessageHandler.sendMessage(player, "Glass Coloring Score: &e" + score);
-                    if (score > bestScore) {
+                    if(score > bestScore) {
                         winner = AccountHandler.getPrefix(player);
                         bestScore = score;
                     }
-                    if (HostHandler.isHost(player.getUniqueId())) {
+                    if(HostHandler.isHost(player.getUniqueId())) {
                         String perm = "worldborder.*";
                         PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
                         permission.setPermission(perm, true);
@@ -139,7 +137,7 @@ public class Events implements Listener {
                         permission.unsetPermission(perm);
                         permission.remove();
                         permission = null;
-                        if (HostHandler.getMainHost() != null && HostHandler.getMainHost().getName().equals(player.getName())) {
+                        if(HostHandler.getMainHost() != null && HostHandler.getMainHost().getName().equals(player.getName())) {
                             SpectatorHandler.add(player);
                         }
                     }
@@ -147,16 +145,16 @@ public class Events implements Listener {
                 MessageHandler.alert("&eMost glass colored: " + winner == null ? "none" : winner + " &ewith &c" + bestScore);
                 MessageHandler.alertLine();
                 blocks.clear();
-                for (Entity entity : WorldHandler.getWorld().getEntities()) {
-                    if (entity instanceof Pig || entity instanceof Sheep) {
+                for(Entity entity : WorldHandler.getWorld().getEntities()) {
+                    if(entity instanceof Pig || entity instanceof Sheep) {
                         LivingEntity livingEntity = (LivingEntity) entity;
-                        if (!ScatterHandler.isSaved(livingEntity)) {
+                        if(!ScatterHandler.isSaved(livingEntity)) {
                             livingEntity.remove();
                         }
                     }
                 }
                 ScatterHandler.doneSaving();
-                if (OptionsHandler.isRush()) {
+                if(OptionsHandler.isRush()) {
                     OSTB.getMiniGame().setCounter(60 * 30);
                     new GracePeriod(60 * 10);
                 } else {
@@ -167,7 +165,7 @@ public class Events implements Listener {
                 new DelayedTask(new Runnable() {
                     @Override
                     public void run() {
-                        for (Player player : Bukkit.getOnlinePlayers()) {
+                        for(Player player : Bukkit.getOnlinePlayers()) {
                             player.setFireTicks(0);
                         }
                         postStart = true;
@@ -199,37 +197,37 @@ public class Events implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20 && runOneSecond) {
+        if(ticks == 20 && runOneSecond) {
             MiniGame miniGame = OSTB.getMiniGame();
             GameStates gameState = miniGame.getGameState();
-            if (gameState == GameStates.STARTED) {
+            if(gameState == GameStates.STARTED) {
                 int counter = miniGame.getCounter();
-                if (counter <= 0) {
+                if(counter <= 0) {
                     runOneSecond = false;
                     WorldHandler.getWorld().setGameRuleValue("doDaylightCycle", "false");
                     WorldHandler.getWorld().setTime(6000);
-                    if (HostedEvent.isEvent()) {
+                    if(HostedEvent.isEvent()) {
                         OSTB.getSidebar().update("&5Elite UHC");
                     } else {
                         new SurfaceHandler();
                         OSTB.getSidebar().setName("&aGo to 0, 0!");
                     }
                     setMoveToCenter(true);
-                    for (Player player : ProPlugin.getPlayers()) {
+                    for(Player player : ProPlugin.getPlayers()) {
                         BorderHandler.giveCompass(player);
                     }
                 } else {
-                    if (GracePeriod.isRunning()) {
+                    if(GracePeriod.isRunning()) {
                         OSTB.getSidebar().update("&bGrace For " + GracePeriod.getGraceCounterString());
                     } else {
                         OSTB.getSidebar().update("&aIn Game " + miniGame.getCounterAsString());
-                        if (!HostedEvent.isEvent()) {
-                            if (counter <= 5 || (counter < 60 && counter % 10 == 0)) {
+                        if(!HostedEvent.isEvent()) {
+                            if(counter <= 5 || (counter < 60 && counter % 10 == 0)) {
                                 MessageHandler.alert("Meetup in &e" + miniGame.getCounterAsString());
                             }
                         }
                     }
-                    if (!HostedEvent.isEvent() && (++alertCounter == 10 || alertCounter == 60)) {
+                    if(!HostedEvent.isEvent() && (++alertCounter == 10 || alertCounter == 60)) {
                         MessageHandler.alertLine();
                         MessageHandler.alert("");
                         MessageHandler.alert("&4&lIf you have questions please run these:");
@@ -242,36 +240,36 @@ public class Events implements Listener {
                     }
                 }
             }
-        } else if (ticks == 20 * 5) {
-            if (moveToBox) {
+        } else if(ticks == 20 * 5) {
+            if(moveToBox) {
                 World world = WorldHandler.getWorld();
                 int counter = 0;
-                for (Player player : ProPlugin.getPlayers()) {
-                    if (!player.getWorld().getName().equals(world.getName())) {
-                        if (++counter >= 10) {
+                for(Player player : ProPlugin.getPlayers()) {
+                    if(!player.getWorld().getName().equals(world.getName())) {
+                        if(++counter >= 10) {
                             break;
                         }
                         player.teleport(new Location(world, 0, 201, 0));
-                        if (player.getAllowFlight()) {
+                        if(player.getAllowFlight()) {
                             player.setFlying(false);
                             player.setAllowFlight(false);
                         }
                     }
                 }
-                if (counter == 0) {
+                if(counter == 0) {
                     moveToBox = false;
                 }
             }
-        } else if (ticks == 20 * 30) {
-            if (glass != null) {
-                for (Block block : glass) {
+        } else if(ticks == 20 * 30) {
+            if(glass != null) {
+                for(Block block : glass) {
                     block.setType(Material.STAINED_GLASS);
                     block.setData((byte) 0);
                 }
             }
-        } else if (ticks == 20 * 60) {
+        } else if(ticks == 20 * 60) {
             GameStates state = OSTB.getMiniGame().getGameState();
-            if ((state == GameStates.WAITING || (state == GameStates.STARTING && OSTB.getMiniGame().getCounter() > 30)) && !WhitelistHandler.isWhitelisted()) {
+            if((state == GameStates.WAITING || (state == GameStates.STARTING && OSTB.getMiniGame().getCounter() > 30)) && !WhitelistHandler.isWhitelisted()) {
                 AlertHandler.alert("&6&l" + TweetHandler.getTeamSize() + " " + TweetHandler.getScenarios() + " UHC OPEN NOW! &c&l/join UHC1" + TweetHandler.getURL());
             }
         }
@@ -282,27 +280,27 @@ public class Events implements Listener {
         glass = new ArrayList<Block>();
         World world = WorldHandler.getWorld();
         world.setTime(0);
-        for (Entity entity : world.getEntities()) {
-            if (!(entity instanceof Player) && entity instanceof Monster) {
+        for(Entity entity : world.getEntities()) {
+            if(!(entity instanceof Player) && entity instanceof Monster) {
                 entity.remove();
             }
         }
         Location center = world.getSpawnLocation();
         center.setY(200);
         int radius = 14;
-        for (int x = -radius; x <= radius; ++x) {
-            for (int z = -radius; z <= radius; ++z) {
-                for (int y = 200; y <= 206; ++y) {
+        for(int x = -radius; x <= radius; ++x) {
+            for(int z = -radius; z <= radius; ++z) {
+                for(int y = 200; y <= 206; ++y) {
                     Block block = world.getBlockAt(x, y, z);
                     boolean inRadius = block.getLocation().toVector().isInSphere(center.toVector(), radius);
-                    if ((y == 200 || y == 206) && inRadius) {
+                    if((y == 200 || y == 206) && inRadius) {
                         block.setType(Material.STAINED_GLASS);
                         glass.add(block);
-                    } else if (y > 200 && !inRadius) {
+                    } else if(y > 200 && !inRadius) {
                         try {
                             block.setType(Material.STAINED_GLASS);
                             glass.add(block);
-                        } catch (Exception e) {
+                        } catch(Exception e) {
                             Bukkit.getLogger().info(ChatColor.RED + e.getMessage());
                         }
                     }
@@ -315,7 +313,7 @@ public class Events implements Listener {
     @EventHandler
     public void onGameStart(GameStartEvent event) {
         OSTB.getProPlugin().removeFlags();
-        for (Player player : ProPlugin.getPlayers()) {
+        for(Player player : ProPlugin.getPlayers()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 999999999, 0));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 999999999, 0));
         }
@@ -331,20 +329,20 @@ public class Events implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         GameStates state = OSTB.getMiniGame().getGameState();
-        if (state == GameStates.WAITING || state == GameStates.VOTING) {
+        if(state == GameStates.WAITING || state == GameStates.VOTING) {
             player.teleport(new Location(OSTB.getMiniGame().getLobby(), 0.5, 26, 0.5, -90.0f, -0.0f));
         }
-        if (HostHandler.isHost(player.getUniqueId()) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
+        if(HostHandler.isHost(player.getUniqueId()) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
             player.getInventory().addItem(forceStartItem);
         }
     }
 
     @EventHandler
     public void onWhitelistDisable(WhitelistDisabledEvent event) {
-        for (Player player : ProPlugin.getPlayers()) {
+        for(Player player : ProPlugin.getPlayers()) {
             player.closeInventory();
             player.getInventory().clear();
-            if (HostHandler.isHost(player.getUniqueId())) {
+            if(HostHandler.isHost(player.getUniqueId())) {
                 player.getInventory().addItem(forceStartItem);
             }
         }
@@ -352,9 +350,9 @@ public class Events implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity().getCustomName() != null && event.getEntityType() == EntityType.SHEEP) {
-            for (Entity entity : event.getEntity().getNearbyEntities(15, 15, 15)) {
-                if (entity instanceof Sheep) {
+        if(event.getEntity().getCustomName() != null && event.getEntityType() == EntityType.SHEEP) {
+            for(Entity entity : event.getEntity().getNearbyEntities(15, 15, 15)) {
+                if(entity instanceof Sheep) {
                     Sheep sheep = (Sheep) entity;
                     sheep.setCustomName(null);
                 }
@@ -365,8 +363,8 @@ public class Events implements Listener {
     @EventHandler
     public void onMouseClick(MouseClickEvent event) {
         Player player = event.getPlayer();
-        if (ItemUtil.isItem(player.getItemInHand(), forceStartItem)) {
-            if (OSTB.getMiniGame().getGameState() == GameStates.STARTING) {
+        if(ItemUtil.isItem(player.getItemInHand(), forceStartItem)) {
+            if(OSTB.getMiniGame().getGameState() == GameStates.STARTING) {
                 MessageHandler.sendMessage(player, "&cThe game is already starting");
             } else {
                 OSTB.getMiniGame().setGameState(GameStates.STARTING);
@@ -377,16 +375,16 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (OSTB.getMiniGame().getGameState() == GameStates.STARTING && event.getClickedBlock() != null) {
+        if(OSTB.getMiniGame().getGameState() == GameStates.STARTING && event.getClickedBlock() != null) {
             Player player = event.getPlayer();
             Block block = event.getClickedBlock();
             byte data = 0;
             Random random = new Random();
             do {
                 data = (byte) random.nextInt(15);
-            } while (data == block.getData());
+            } while(data == block.getData());
             block.setData(data);
-            if (random.nextBoolean()) {
+            if(random.nextBoolean()) {
                 EffectUtil.playSound(player, Sound.NOTE_PIANO);
             } else {
                 EffectUtil.playSound(player, Sound.NOTE_PLING);
@@ -397,34 +395,34 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (postStart) {
-            if (event.getEntity() instanceof Player && firstMinute && event.getCause() == DamageCause.DROWNING) {
+        if(postStart) {
+            if(event.getEntity() instanceof Player && firstMinute && event.getCause() == DamageCause.DROWNING) {
                 Player player = (Player) event.getEntity();
                 EffectUtil.playSound(player, Sound.ENDERDRAGON_DEATH);
                 MessageHandler.sendMessage(player, "&cGet out of the water, you're drowning!");
                 event.setCancelled(true);
-            } else if (event.getCause() != DamageCause.ENTITY_ATTACK) {
+            } else if(event.getCause() != DamageCause.ENTITY_ATTACK) {
                 event.setCancelled(false);
             }
-        } else if (event.getEntity() instanceof Player || event.getCause() == DamageCause.FALL) {
+        } else if(event.getEntity() instanceof Player || event.getCause() == DamageCause.FALL) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (postStart && OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
-            if (event.getEntity() instanceof Player) {
+        if(postStart && OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+            if(event.getEntity() instanceof Player) {
                 Player damager = null;
-                if (event.getDamager() instanceof Player) {
+                if(event.getDamager() instanceof Player) {
                     damager = (Player) event.getDamager();
-                } else if (event.getDamager() instanceof Projectile) {
+                } else if(event.getDamager() instanceof Projectile) {
                     Projectile projectile = (Projectile) event.getDamager();
-                    if (projectile.getShooter() instanceof Player) {
+                    if(projectile.getShooter() instanceof Player) {
                         damager = (Player) projectile.getShooter();
                     }
                 }
-                if (damager == null) {
+                if(damager == null) {
                     event.setCancelled(false);
                 }
             } else {
@@ -437,7 +435,7 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if (event.getItem().getType() == Material.GOLDEN_APPLE) {
+        if(event.getItem().getType() == Material.GOLDEN_APPLE) {
             Player player = event.getPlayer();
             ParticleTypes.FLAME.displaySpiral(player.getLocation());
         }
@@ -445,32 +443,16 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockFromTo(BlockFromToEvent event) {
-        if (!event.getBlock().getWorld().getName().equals("lobby")) {
+        if(!event.getBlock().getWorld().getName().equals("lobby")) {
             event.setCancelled(false);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onGameDeath(GameDeathEvent event) {
-        if (OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
-            Player player = event.getPlayer();
-            Location location = player.getLocation();
-            location.getBlock().setType(Material.NETHER_FENCE);
-            Block block = location.getBlock().getRelative(0, 1, 0);
-            block.setType(Material.SKULL);
-            block.setData((byte) 1);
-            Skull skull = (Skull) block.getState();
-            skull.setSkullType(SkullType.PLAYER);
-            skull.setOwner(player.getName());
-            skull.update();
         }
     }
 
     @EventHandler
     public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        if (item != null && item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null) {
-            if (item.getItemMeta().getDisplayName().equals(ChatColor.LIGHT_PURPLE + "Ultra Golden Apple (" + ChatColor.GOLD + "+4 Hearts" + ChatColor.LIGHT_PURPLE + ")")) {
+        if(item != null && item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null) {
+            if(item.getItemMeta().getDisplayName().equals(ChatColor.LIGHT_PURPLE + "Ultra Golden Apple (" + ChatColor.GOLD + "+4 Hearts" + ChatColor.LIGHT_PURPLE + ")")) {
                 Player player = event.getPlayer();
                 double newHealth = event.getPlayer().getHealth() + 4.0d;
                 player.setHealth(newHealth > player.getMaxHealth() ? player.getMaxHealth() : newHealth);
@@ -481,9 +463,9 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked() instanceof Player) {
+        if(event.getRightClicked() instanceof Player) {
             Player player = event.getPlayer();
-            if (SpectatorHandler.contains(player) && (HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player))) {
+            if(SpectatorHandler.contains(player) && (HostHandler.isHost(player.getUniqueId()) || Ranks.isStaff(player))) {
                 Player target = (Player) event.getRightClicked();
                 player.chat("/invSee " + target.getName());
             }
@@ -492,7 +474,7 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
-        if (event.getCause() == TeleportCause.NETHER_PORTAL && !OptionsHandler.isNetherEnabled()) {
+        if(event.getCause() == TeleportCause.NETHER_PORTAL && !OptionsHandler.isNetherEnabled()) {
             MessageHandler.sendMessage(event.getPlayer(), "&cThe Nether is disabled");
             event.setCancelled(true);
         }
@@ -506,7 +488,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerBan(PlayerBanEvent event) {
         Player player = Bukkit.getPlayer(event.getUUID());
-        if (player != null) {
+        if(player != null) {
             player.setHealth(0.0d);
         }
     }
@@ -514,23 +496,23 @@ public class Events implements Listener {
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         EntityType type = event.getEntityType();
-        if (event.getSpawnReason() != SpawnReason.CUSTOM && (type == EntityType.PIG || type == EntityType.SHEEP)) {
+        if(event.getSpawnReason() != SpawnReason.CUSTOM && (type == EntityType.PIG || type == EntityType.SHEEP)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!canBreakBlocks) {
+        if(!canBreakBlocks) {
             event.setCancelled(true);
         }
         Block block = event.getBlock();
-        if (block.getWorld().getName().equals("lobby")) {
+        if(block.getWorld().getName().equals("lobby")) {
             event.setCancelled(true);
-        } else if (!event.isCancelled() && handleAppleSpawning(block)) {
+        } else if(!event.isCancelled() && handleAppleSpawning(block)) {
             event.setCancelled(true);
         }
-        if (block.getType() == Material.SKULL) {
+        if(block.getType() == Material.SKULL) {
             Skull skull = (Skull) block.getState();
             ItemStack item = new ItemCreator(Material.SKULL_ITEM, 3).setName(skull.getOwner() + "'s Head").getItemStack();
             SkullMeta meta = (SkullMeta) item.getItemMeta();
@@ -566,16 +548,16 @@ public class Events implements Listener {
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
         Material type = event.getEntity().getItemStack().getType();
-        if (type == Material.EGG || type == Material.SEEDS || type == Material.SULPHUR || type == Material.WOOL) {
+        if(type == Material.EGG || type == Material.SEEDS || type == Material.SULPHUR || type == Material.WOOL) {
             event.setCancelled(true);
-        } else if (type == Material.SPIDER_EYE && !OptionsHandler.isNetherEnabled()) {
+        } else if(type == Material.SPIDER_EYE && !OptionsHandler.isNetherEnabled()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (event.getBlockClicked().getLocation().getY() >= 175) {
+        if(event.getBlockClicked().getLocation().getY() >= 175) {
             MessageHandler.sendMessage(event.getPlayer(), "&cYou cannot empty buckets at this height");
             event.setCancelled(true);
         }
@@ -584,9 +566,9 @@ public class Events implements Listener {
     @EventHandler
     public void onLeavesDecay(LeavesDecayEvent event) {
         Block block = event.getBlock();
-        if (block.getWorld().getName().equals("lobby")) {
+        if(block.getWorld().getName().equals("lobby")) {
             event.setCancelled(true);
-        } else if (!event.isCancelled()) {
+        } else if(!event.isCancelled()) {
             handleAppleSpawning(block);
         }
     }
@@ -594,9 +576,9 @@ public class Events implements Listener {
     private boolean handleAppleSpawning(Block block) {
         Material type = block.getType();
         byte data = block.getData();
-        if ((type == Material.LEAVES && data == 0) || (type == Material.LEAVES && data == 8) || (type == Material.LEAVES_2 && data == 1)) {
+        if((type == Material.LEAVES && data == 0) || (type == Material.LEAVES && data == 8) || (type == Material.LEAVES_2 && data == 1)) {
             block.setType(Material.AIR);
-            if (random.nextInt(100) + 1 <= OptionsHandler.getAppleRates()) {
+            if(random.nextInt(100) + 1 <= OptionsHandler.getAppleRates()) {
                 block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.APPLE));
                 return true;
             }

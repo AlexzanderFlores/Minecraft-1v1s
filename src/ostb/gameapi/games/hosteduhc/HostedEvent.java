@@ -39,15 +39,15 @@ public class HostedEvent implements Listener {
         new CommandBase("toggleEvent") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
                     Player main = HostHandler.getMainHost();
-                    if (main == null || main.getUniqueId() != player.getUniqueId()) {
+                    if(main == null || main.getUniqueId() != player.getUniqueId()) {
                         MessageHandler.sendMessage(player, "&cYou must be the main UHC host to use this command");
                         return true;
                     }
                 }
-                if (isEvent) {
+                if(isEvent) {
                     disable(sender);
                 } else {
                     enable(sender);
@@ -64,7 +64,7 @@ public class HostedEvent implements Listener {
 
     private void enable(CommandSender sender) {
         isEvent = true;
-        if (sender != null) {
+        if(sender != null) {
             MessageHandler.sendMessage(sender, "Event mode is now &eON");
         }
         EventUtil.register(instance);
@@ -81,7 +81,7 @@ public class HostedEvent implements Listener {
 
     @EventHandler
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (Ranks.isStaff(event.getPlayer()) && !Ranks.OWNER.hasRank(event.getPlayer())) {
+        if(Ranks.isStaff(event.getPlayer()) && !Ranks.OWNER.hasRank(event.getPlayer())) {
             MessageHandler.sendMessage(event.getPlayer(), "&cTo talk in chat during an event you must have " + Ranks.OWNER.getPrefix());
             event.setCancelled(true);
         }
@@ -89,7 +89,7 @@ public class HostedEvent implements Listener {
 
     @EventHandler
     public void onPrivateMessage(PrivateMessageEvent event) {
-        if (Ranks.isStaff(event.getPlayer()) && !Ranks.OWNER.hasRank(event.getPlayer())) {
+        if(Ranks.isStaff(event.getPlayer()) && !Ranks.OWNER.hasRank(event.getPlayer())) {
             MessageHandler.sendMessage(event.getPlayer(), "&cTo private message during an event you must have " + Ranks.OWNER.getPrefix());
             event.setCancelled(true);
         }
@@ -103,7 +103,7 @@ public class HostedEvent implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (died == null) {
+        if(died == null) {
             died = new ArrayList<String>();
         }
         died.add(event.getEntity().getName());
@@ -117,7 +117,7 @@ public class HostedEvent implements Listener {
             @Override
             public void run() {
                 Player player = ProPlugin.getPlayer(name);
-                if (player != null) {
+                if(player != null) {
                     MessageHandler.sendLine(player, "&e");
                     MessageHandler.sendMessage(player, "");
                     MessageHandler.sendMessage(player, "");
@@ -138,7 +138,7 @@ public class HostedEvent implements Listener {
             @Override
             public void run() {
                 Player player = ProPlugin.getPlayer(name);
-                if (player != null) {
+                if(player != null) {
                     ProPlugin.sendPlayerToServer(player, "hub");
                 }
                 died.remove(name);
@@ -148,7 +148,7 @@ public class HostedEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerSpectator(PlayerSpectatorEvent event) {
-        if (event.getState() == SpectatorState.ADDED && died != null && died.contains(event.getPlayer())) {
+        if(event.getState() == SpectatorState.ADDED && died != null && died.contains(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

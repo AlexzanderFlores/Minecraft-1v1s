@@ -53,18 +53,18 @@ public class OptionsHandler implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (arguments.length == 0) {
+                if(arguments.length == 0) {
                     MessageHandler.sendMessage(player, "Apple Rates: &c" + getAppleRates() + "&a%");
-                } else if (arguments.length == 1) {
-                    if (HostHandler.isHost(player.getUniqueId())) {
+                } else if(arguments.length == 1) {
+                    if(HostHandler.isHost(player.getUniqueId())) {
                         try {
                             appleRates = Integer.valueOf(arguments[0]);
-                            if (appleRates <= 0 || appleRates > 100) {
+                            if(appleRates <= 0 || appleRates > 100) {
                                 MessageHandler.sendMessage(player, "&cInvalid Apple Rate! Select 1 - 100");
                             } else {
                                 MessageHandler.alert("Apple Rates are now &c" + appleRates + "&a%");
                             }
-                        } catch (NumberFormatException e) {
+                        } catch(NumberFormatException e) {
                             return false;
                         }
                     } else {
@@ -163,10 +163,10 @@ public class OptionsHandler implements Listener {
         boolean[] states = new boolean[]{isRush(), isNetherEnabled(), false, allowHorses(), allowHorseHealing(), allowNotchApples(), allowStrengthOne(),
                 allowStrengthTwo(), allowPearlDamage(), getAbsorption(), getEnd()
         };
-        int[] slots = new int[]{10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31};
-        for (int a = 0; a < items.length; ++a) {
+        int [] slots = new int [] {10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31};
+        for(int a = 0; a < items.length; ++a) {
             inventory.setItem(slots[a], items[a]);
-            if (states[a]) {
+            if(states[a]) {
                 inventory.setItem(slots[a] + 9, enabled);
             } else {
                 inventory.setItem(slots[a] + 9, disabled);
@@ -179,24 +179,24 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
-        if (event.getTitle().equals(name)) {
+        if(event.getTitle().equals(name)) {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
             Material type = item.getType();
-            if (type == Material.ARROW) {
+            if(type == Material.ARROW) {
                 String name = event.getItemTitle();
-                if (name.contains("Back")) {
+                if(name.contains("Back")) {
                     TeamHandler.open(player);
                 } else {
                     new TweetHandler();
                     player.closeInventory();
                 }
-            } else if (type == Material.DIAMOND_BOOTS) {
+            } else if(type == Material.DIAMOND_BOOTS) {
                 rush = !rush;
                 open(player);
-            } else if (type == Material.NETHERRACK) {
+            } else if(type == Material.NETHERRACK) {
                 nether = !nether;
-                if (nether) {
+                if(nether) {
                     strengthOne = true;
                     strengthTwo = true;
                     WorldHandler.generateNether();
@@ -205,45 +205,45 @@ public class OptionsHandler implements Listener {
                     strengthTwo = false;
                 }
                 open(player);
-            } else if (type == Material.APPLE) {
+            } else if(type == Material.APPLE) {
                 open(player);
-            } else if (type == Material.SADDLE) {
+            } else if(type == Material.SADDLE) {
                 horses = !horses;
-                if (!horses) {
+                if(!horses) {
                     horseHealing = false;
                 }
                 open(player);
-            } else if (type == Material.BREAD) {
-                if (horses) {
+            } else if(type == Material.BREAD) {
+                if(horses) {
                     horseHealing = !horseHealing;
                 } else {
                     horseHealing = false;
                 }
                 open(player);
             } else if (type == Material.GOLDEN_APPLE) {
-                if (item.getData().getData() == 1) {
+                if(item.getData().getData() == 1) {
                     notchApples = !notchApples;
                 } else {
                     absorption = !absorption;
                 }
                 open(player);
-            } else if (type == Material.DIAMOND_SWORD) {
-                if (item.getAmount() == 1) {
+            } else if(type == Material.DIAMOND_SWORD) {
+                if(item.getAmount() == 1) {
                     strengthOne = !strengthOne;
                 } else if (item.getAmount() == 2) {
                     strengthTwo = !strengthTwo;
                 }
-                if (!nether) {
+                if(!nether) {
                     strengthOne = false;
                     strengthTwo = false;
                 }
                 open(player);
-            } else if (type == Material.ENDER_PEARL) {
+            } else if(type == Material.ENDER_PEARL) {
                 pearlDamage = !pearlDamage;
                 open(player);
-            } else if (type == Material.ENDER_STONE) {
+            } else if(type == Material.ENDER_STONE) {
                 end = !end;
-                if (end) {
+                if(end) {
                     WorldHandler.generateEnd();
                 }
                 open(player);
@@ -254,14 +254,14 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.getEntityType() == EntityType.HORSE && !allowHorses()) {
+        if(event.getEntityType() == EntityType.HORSE && !allowHorses()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if (event.getEntity() instanceof Horse && !allowHorseHealing()) {
+        if(event.getEntity() instanceof Horse && !allowHorseHealing()) {
             event.setCancelled(true);
         }
     }
@@ -269,7 +269,7 @@ public class OptionsHandler implements Listener {
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (event.getWhoClicked() instanceof Player && item.getType() == Material.GOLDEN_APPLE && item.getData().getData() == 1 && !allowNotchApples()) {
+        if(event.getWhoClicked() instanceof Player && item.getType() == Material.GOLDEN_APPLE && item.getData().getData() == 1 && !allowNotchApples()) {
             Player player = (Player) event.getWhoClicked();
             player.closeInventory();
             MessageHandler.sendMessage(player, "&cYou may not craft that item");
@@ -281,7 +281,7 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (!allowPearlDamage() && event.getCause() == TeleportCause.ENDER_PEARL) {
+        if(!allowPearlDamage() && event.getCause() == TeleportCause.ENDER_PEARL) {
             event.getPlayer().teleport(event.getTo());
             event.setCancelled(true);
         }
@@ -289,13 +289,13 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if (!getAbsorption() && event.getItem().getType() == Material.GOLDEN_APPLE) {
+        if(!getAbsorption() && event.getItem().getType() == Material.GOLDEN_APPLE) {
             final String name = event.getPlayer().getName();
             new DelayedTask(new Runnable() {
                 @Override
                 public void run() {
                     Player player = ProPlugin.getPlayer(name);
-                    if (player != null) {
+                    if(player != null) {
                         player.removePotionEffect(PotionEffectType.ABSORPTION);
                     }
                 }
@@ -305,12 +305,12 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onGameStart(GameStartEvent event) {
-        if (ScenarioManager.getActiveScenarios().contains(CutClean.getInstance())) {
+        if(ScenarioManager.getActiveScenarios().contains(CutClean.getInstance())) {
             appleRates = 4;
         }
-        if (!allowHorses()) {
-            for (Entity entity : Bukkit.getWorlds().get(1).getEntities()) {
-                if (entity instanceof Horse) {
+        if(!allowHorses()) {
+            for(Entity entity : Bukkit.getWorlds().get(1).getEntities()) {
+                if(entity instanceof Horse) {
                     entity.remove();
                 }
             }

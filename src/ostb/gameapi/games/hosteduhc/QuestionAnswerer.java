@@ -87,8 +87,8 @@ public class QuestionAnswerer implements Listener {
     }
 
     public static boolean askQuestion(Player player, String text) {
-        for (Question question : questions) {
-            if (question.matches(text) && question.tell(player)) {
+        for(Question question : questions) {
+            if(question.matches(text) && question.tell(player)) {
                 MessageHandler.sendMessage(player, "&c&lNot what you asked? Resend your message");
                 return true;
             }
@@ -98,14 +98,14 @@ public class QuestionAnswerer implements Listener {
 
     @EventHandler
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (!HostedEvent.isEvent() && askQuestion(event.getPlayer(), event.getMessage())) {
+        if(!HostedEvent.isEvent() && askQuestion(event.getPlayer(), event.getMessage())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onGameDeath(GameDeathEvent event) {
-        for (Question question : questions) {
+        for(Question question : questions) {
             question.remove(event.getPlayer());
         }
     }
@@ -117,11 +117,11 @@ public class QuestionAnswerer implements Listener {
 
         public Question(String[] keyWords, String message) {
             this.keyWords = new ArrayList<String>();
-            for (String keyWord : keyWords) {
+            for(String keyWord : keyWords) {
                 this.keyWords.add(keyWord.toLowerCase());
             }
             this.message = message;
-            if (questions == null) {
+            if(questions == null) {
                 questions = new ArrayList<Question>();
             }
             questions.add(this);
@@ -129,8 +129,8 @@ public class QuestionAnswerer implements Listener {
         }
 
         public boolean matches(String message) {
-            for (String keyWord : keyWords) {
-                if (message.toLowerCase().replace(" ", "").contains(keyWord.toLowerCase())) {
+            for(String keyWord : keyWords) {
+                if(message.toLowerCase().replace(" ", "").contains(keyWord.toLowerCase())) {
                     return true;
                 }
             }
@@ -138,10 +138,10 @@ public class QuestionAnswerer implements Listener {
         }
 
         public boolean tell(Player player) {
-            if (!alreadyTold.contains(player.getName())) {
+            if(!alreadyTold.contains(player.getName())) {
                 alreadyTold.add(player.getName());
                 MessageHandler.sendMessage(player, "");
-                if (message.startsWith("/")) {
+                if(message.startsWith("/")) {
                     player.chat(message);
                 } else {
                     MessageHandler.sendMessage(player, message);

@@ -34,7 +34,7 @@ public class TweetHandler implements Listener {
     private static long id = 0;
 
     public TweetHandler() {
-        if (item == null) {
+        if(item == null) {
             tweet = "";
             item = new ItemCreator(Material.NAME_TAG).setName("&aLaunch Tweet").getItemStack();
             new CommandBase("opensIn", 1) {
@@ -42,14 +42,14 @@ public class TweetHandler implements Listener {
                 public boolean execute(CommandSender sender, String[] arguments) {
                     try {
                         opensIn = Integer.valueOf(arguments[0]);
-                        if (opensIn < 5 || opensIn > 10) {
+                        if(opensIn < 5 || opensIn > 10) {
                             MessageHandler.sendMessage(sender, "&cYour game must open in 5 - 10 minutes");
                             opensIn = -1;
                         } else {
                             MessageHandler.sendMessage(sender, "This game will open in &c" + opensIn);
                             MessageHandler.sendMessage(sender, "To continue click the \"&cLaunch Tweet&a\" item again");
                         }
-                    } catch (NumberFormatException e) {
+                    } catch(NumberFormatException e) {
                         return false;
                     }
                     return true;
@@ -59,16 +59,16 @@ public class TweetHandler implements Listener {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
                     Player player = (Player) sender;
-                    if (HostHandler.isHost(player.getUniqueId())) {
-                        if (HostedEvent.isEvent()) {
+                    if(HostHandler.isHost(player.getUniqueId())) {
+                        if(HostedEvent.isEvent()) {
                             MessageHandler.alert("Game will open in &c" + opensIn + " &aminutes");
                             countDown = new CountDownUtil(60 * opensIn);
-                        } else if (hasTweeted) {
+                        } else if(hasTweeted) {
                             MessageHandler.sendMessage(player, "&cThis game has already been tweeted");
                         } else {
                             String message = getTeamSize() + " " + getScenarios() + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
                             id = Tweeter.tweet(message, "uhc.jpg");
-                            if (id == -1) {
+                            if(id == -1) {
                                 MessageHandler.sendMessage(player, "&cFailed to send Tweet! Possible duplicate tweet");
                             } else {
                                 hasTweeted = true;
@@ -86,13 +86,13 @@ public class TweetHandler implements Listener {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
                     Player player = (Player) sender;
-                    if (!HostedEvent.isEvent() && HostHandler.isHost(player.getUniqueId())) {
+                    if(!HostedEvent.isEvent() && HostHandler.isHost(player.getUniqueId())) {
                         String url = arguments[0];
-                        if (FileHandler.isImage(url)) {
+                        if(FileHandler.isImage(url)) {
                             String message = "Congrats to ";
-                            if (arguments.length > 2) {
-                                for (int a = 1; a < arguments.length; ++a) {
-                                    if (a == arguments.length - 1) {
+                            if(arguments.length > 2) {
+                                for(int a = 1; a < arguments.length; ++a) {
+                                    if(a == arguments.length - 1) {
                                         message = message.substring(0, message.length() - 2);
                                         message += " & " + arguments[a];
                                     } else {
@@ -103,7 +103,7 @@ public class TweetHandler implements Listener {
                                 message += arguments[1];
                             }
                             message += " for winning this UHC!";
-                            if (!message.equals(tweet)) {
+                            if(!message.equals(tweet)) {
                                 MessageHandler.sendLine(player);
                                 MessageHandler.sendMessage(player, "");
                                 MessageHandler.sendMessage(player, "Does this tweet look correct? If so run this command again");
@@ -117,7 +117,7 @@ public class TweetHandler implements Listener {
                                 FileHandler.delete(new File(path));
                                 FileHandler.downloadImage(url, path);
                                 long id = Tweeter.tweet(tweet, path);
-                                if (id == -1) {
+                                if(id == -1) {
                                     MessageHandler.sendMessage(player, "&cFailed to send tweet. Possible duplicate tweet.");
                                 } else {
                                     MessageHandler.sendLine(player);
@@ -133,7 +133,7 @@ public class TweetHandler implements Listener {
                                     @Override
                                     public boolean execute(CommandSender sender, String[] arguments) {
                                         Player player = (Player) sender;
-                                        if (HostHandler.isHost(player.getUniqueId())) {
+                                        if(HostHandler.isHost(player.getUniqueId())) {
                                             ProPlugin.restartServer();
                                         } else {
                                             MessageHandler.sendUnknownCommand(player);
@@ -153,9 +153,9 @@ public class TweetHandler implements Listener {
             }.enableDelay(5);
             EventUtil.register(this);
         }
-        for (Player player : ProPlugin.getPlayers()) {
-            if (HostHandler.isHost(player.getUniqueId())) {
-                if (!player.getInventory().contains(item)) {
+        for(Player player : ProPlugin.getPlayers()) {
+            if(HostHandler.isHost(player.getUniqueId())) {
+                if(!player.getInventory().contains(item)) {
                     player.getInventory().addItem(item);
                 }
                 MessageHandler.sendMessage(player, "To continue click the \"&cLaunch Tweet&a\" item");
@@ -170,11 +170,11 @@ public class TweetHandler implements Listener {
 
     public static String getScenarios() {
         String scenarios = "";
-        for (Scenario scenario : ScenarioManager.getActiveScenarios()) {
+        for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
             scenarios += scenario.getName() + ", ";
         }
         scenarios = scenarios.substring(0, scenarios.length() - 2);
-        if (OptionsHandler.isRush()) {
+        if(OptionsHandler.isRush()) {
             scenarios += " Rush";
         }
         return scenarios;
@@ -194,10 +194,10 @@ public class TweetHandler implements Listener {
 
     public static String getURL() {
         try {
-            if (id != -1) {
+            if(id != -1) {
                 return " &ehttps://twitter.com/" + UHC.account + "/status/" + id;
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
 
         }
         return "";
@@ -206,8 +206,8 @@ public class TweetHandler implements Listener {
     @EventHandler
     public void onMouseClick(MouseClickEvent event) {
         Player player = event.getPlayer();
-        if (ItemUtil.isItem(player.getItemInHand(), item)) {
-            if (opensIn <= 0) {
+        if(ItemUtil.isItem(player.getItemInHand(), item)) {
+            if(opensIn <= 0) {
                 MessageHandler.sendMessage(player, "Set how long (in minutes) until this game opens:");
                 MessageHandler.sendMessage(player, "&e/opensIn <delay in minutes>");
             } else {
@@ -229,17 +229,17 @@ public class TweetHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            if (countDown != null && countDown.getCounter() > 0) {
-                if (countDown.canDisplay()) {
+        if(ticks == 20) {
+            if(countDown != null && countDown.getCounter() > 0) {
+                if(countDown.canDisplay()) {
                     MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
                 }
                 int counter = countDown.getCounter();
-                if (!HostedEvent.isEvent() && counter % 60 == 0) {
+                if(!HostedEvent.isEvent() && counter % 60 == 0) {
                     AlertHandler.alert("&6&l" + getTeamSize() + " " + getScenarios() + " &6&lUHC OPENING IN &b&l" + (counter / 60) + " &6&lMINUTE" + ((counter / 60) == 1 ? "" : "S") + getURL());
                 }
                 countDown.decrementCounter();
-                if (countDown.getCounter() <= 0) {
+                if(countDown.getCounter() <= 0) {
                     WhitelistHandler.unWhitelist();
                 }
             }

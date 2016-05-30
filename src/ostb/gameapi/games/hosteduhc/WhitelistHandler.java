@@ -42,17 +42,17 @@ public class WhitelistHandler implements Listener {
         new CommandBase("wl", 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!Ranks.OWNER.hasRank(player) && !HostHandler.isHost(player.getUniqueId())) {
+                    if(!Ranks.OWNER.hasRank(player) && !HostHandler.isHost(player.getUniqueId())) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
                 }
                 UUID uuid = AccountHandler.getUUID(arguments[0]);
-                if (uuid == null) {
+                if(uuid == null) {
                     MessageHandler.sendMessage(sender, "&c" + arguments[0] + " has never logged in before");
-                } else if (manualWhitelisted.contains(uuid)) {
+                } else if(manualWhitelisted.contains(uuid)) {
                     manualWhitelisted.remove(uuid);
                     MessageHandler.sendMessage(sender, "&cRemoved &e" + arguments[0] + " &cfrom the whitelist");
                 } else {
@@ -85,18 +85,18 @@ public class WhitelistHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        if (enabled) {
+        if(enabled) {
             UUID uuid = event.getPlayer().getUniqueId();
-            if (HostedEvent.isEvent() && TeamHandler.getTeam(event.getPlayer().getName()) != null) {
-                if (!manualWhitelisted.contains(uuid) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+            if(HostedEvent.isEvent() && TeamHandler.getTeam(event.getPlayer().getName()) != null) {
+                if(!manualWhitelisted.contains(uuid) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
                     manualWhitelisted.add(event.getPlayer().getUniqueId());
                 }
             }
-            if (whitelisted.contains(uuid) || Ranks.isStaff(event.getPlayer()) || HostHandler.isHost(uuid)) {
+            if(whitelisted.contains(uuid) || Ranks.isStaff(event.getPlayer()) || HostHandler.isHost(uuid)) {
                 event.setResult(Result.ALLOWED);
             } else {
                 event.setResult(Result.KICK_OTHER);
-                if (OSTB.getMiniGame().getGameState() == GameStates.WAITING && !TweetHandler.getURL().endsWith("/0")) {
+                if(OSTB.getMiniGame().getGameState() == GameStates.WAITING && !TweetHandler.getURL().endsWith("/0")) {
                     event.setKickMessage("This server is currently whitelisted. " + ChatColor.GREEN + "Get whitelisted:" + StringUtil.color(TweetHandler.getURL()));
                 } else {
                     event.setKickMessage("This server is currently whitelisted");
@@ -107,14 +107,14 @@ public class WhitelistHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPostPlayerLogin(PlayerLoginEvent event) {
-        if (manualWhitelisted.contains(event.getPlayer().getUniqueId())) {
+        if(manualWhitelisted.contains(event.getPlayer().getUniqueId())) {
             event.setResult(Result.ALLOWED);
         }
     }
 
     @EventHandler
     public void onGameStart(GameStartEvent event) {
-        for (Player player : ProPlugin.getPlayers()) {
+        for(Player player : ProPlugin.getPlayers()) {
             whitelisted.add(player.getUniqueId());
         }
     }
@@ -127,18 +127,18 @@ public class WhitelistHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20 * 5) {
-            if (enabled && OSTB.getMiniGame().getGameState() == GameStates.WAITING && !HostedEvent.isEvent()) {
+        if(ticks == 20 * 5) {
+            if(enabled && OSTB.getMiniGame().getGameState() == GameStates.WAITING && !HostedEvent.isEvent()) {
                 new AsyncDelayedTask(new Runnable() {
                     @Override
                     public void run() {
-                        for (Status status : Tweeter.getReplies()) {
+                        for(Status status : Tweeter.getReplies()) {
                             String text = status.getText();
-                            for (String word : text.split(" ")) {
-                                if (!word.contains("@")) {
+                            for(String word : text.split(" ")) {
+                                if(!word.contains("@")) {
                                     Bukkit.getLogger().info("\"" + word + "\"");
                                     UUID uuid = AccountHandler.getUUID(word);
-                                    if (uuid != null && !whitelisted.contains(uuid)) {
+                                    if(uuid != null && !whitelisted.contains(uuid)) {
                                         MessageHandler.alert("&c" + word + " &aRetweeted & Replied with their IGN for Pre-Whitelist" + TweetHandler.getURL());
                                         whitelisted.add(uuid);
                                     }

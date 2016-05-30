@@ -20,7 +20,7 @@ public class KillLogger implements Listener {
 
     public KillLogger() {
         kills = new HashMap<String, Integer>();
-        if (HostedEvent.isEvent()) {
+        if(HostedEvent.isEvent()) {
             OSTB.getSidebar().setText(new String[]{
                     " ",
                     "&cNo Deaths",
@@ -39,7 +39,7 @@ public class KillLogger implements Listener {
 
     private static String getText(Player player) {
         String text = AccountHandler.getRank(player).getColor() + player.getName();
-        if (text.length() > 16) {
+        if(text.length() > 16) {
             text = text.substring(0, 16);
         }
         return text;
@@ -48,7 +48,7 @@ public class KillLogger implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (kills.containsKey(player.getName())) {
+        if(kills.containsKey(player.getName())) {
             OSTB.getSidebar().setText(getText(player), kills.get(player.getName()));
         }
         OSTB.getSidebar().setText("Playing", ProPlugin.getPlayers().size());
@@ -56,9 +56,9 @@ public class KillLogger implements Listener {
 
     @EventHandler
     public void onGameDeath(GameDeathEvent event) {
-        if (kills.isEmpty()) {
+        if(kills.isEmpty()) {
             OSTB.getSidebar().removeScoresBelow(0);
-            if (HostedEvent.isEvent()) {
+            if(HostedEvent.isEvent()) {
                 OSTB.getSidebar().setText(new String[]{
                         " ",
                         "&5Elite UHC"
@@ -69,16 +69,16 @@ public class KillLogger implements Listener {
         kills.remove(player.getName());
         OSTB.getSidebar().removeText(getText(player));
         Player killer = event.getKiller();
-        if (killer == null) {
+        if(killer == null) {
             String name = "PVE";
-            if (kills.containsKey(name)) {
+            if(kills.containsKey(name)) {
                 kills.put(name, kills.get(name) + 1);
             } else {
                 kills.put(name, 1);
             }
             OSTB.getSidebar().setText("&6" + name, kills.get(name));
         } else {
-            if (kills.containsKey(killer.getName())) {
+            if(kills.containsKey(killer.getName())) {
                 kills.put(killer.getName(), kills.get(killer.getName()) + 1);
             } else {
                 kills.put(killer.getName(), 1);

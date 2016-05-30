@@ -50,7 +50,7 @@ public class ScatterHandler implements Listener {
         random = new Random();
         EventUtil.register(instance);
         String command = "spreadPlayers 0 0 100 " + (BorderHandler.getOverworldBorder().getRadius() / 2 + (BorderHandler.getOverworldBorder().getRadius() / 3) - 250) + " false ";
-        for (Player player : ProPlugin.getPlayers()) {
+        for(Player player : ProPlugin.getPlayers()) {
             command += player.getName() + " ";
             ++toScatter;
         }
@@ -59,9 +59,9 @@ public class ScatterHandler implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (HostHandler.isHost(player.getUniqueId())) {
+                if(HostHandler.isHost(player.getUniqueId())) {
                     Player target = ProPlugin.getPlayer(arguments[0]);
-                    if (target == null) {
+                    if(target == null) {
                         MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
                     } else {
                         target.setNoDamageTicks(20 * 10);
@@ -79,45 +79,45 @@ public class ScatterHandler implements Listener {
         new CommandBase("forceStart") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (sender instanceof Player) {
+                if(sender instanceof Player) {
                     Player player = (Player) sender;
                     Player main = HostHandler.getMainHost();
-                    if (main == null || main.getUniqueId() != player.getUniqueId()) {
+                    if(main == null || main.getUniqueId() != player.getUniqueId()) {
                         MessageHandler.sendMessage(player, "&cYou must be the main UHC host to use this command");
                         return true;
                     }
                 }
                 String msg = "";
                 int counter = 0;
-                for (String name : locations.keySet()) {
+                for(String name : locations.keySet()) {
                     msg += name + ", ";
                     ++counter;
                 }
-                if (msg.equals("")) {
+                if(msg.equals("")) {
                     msg = "&cNone, ";
                 }
                 MessageHandler.sendMessage(sender, "Players in the locations list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
                 msg = "";
                 counter = 0;
-                for (String name : scattered) {
+                for(String name : scattered) {
                     msg += name + ", ";
                     ++counter;
                 }
-                if (msg.equals("")) {
+                if(msg.equals("")) {
                     msg = "&cNone, ";
                 }
                 MessageHandler.sendMessage(sender, "Players in the scattered list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
                 HandlerList.unregisterAll(instance);
-                if (teams != null) {
+                if(teams != null) {
                     teams.clear();
                     teams = null;
                 }
-                if (locations != null) {
+                if(locations != null) {
                     locations.clear();
                     locations = null;
                 }
                 scatter = false;
-                if (scattered != null) {
+                if(scattered != null) {
                     scattered.clear();
                     scattered = null;
                 }
@@ -132,7 +132,7 @@ public class ScatterHandler implements Listener {
     }
 
     public static void doneSaving() {
-        if (savedEntities != null) {
+        if(savedEntities != null) {
             savedEntities.clear();
             savedEntities = null;
         }
@@ -140,7 +140,7 @@ public class ScatterHandler implements Listener {
 
     private void scatter(Player player, int counter, int size, Location location) {
         player.setNoDamageTicks(20 * 15);
-        if (!scattered.contains(player.getName())) {
+        if(!scattered.contains(player.getName())) {
             MessageHandler.alert("&eScattering " + AccountHandler.getPrefix(player) + " &e[&a" + (counter + 1) + "&7/&a" + size + "&e]");
         }
         player.teleport(location);
@@ -149,16 +149,16 @@ public class ScatterHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 10) {
-            if (scatter && locations != null && !locations.isEmpty()) {
+        if(ticks == 10) {
+            if(scatter && locations != null && !locations.isEmpty()) {
                 List<Player> players = ProPlugin.getPlayers();
-                for (int b = 0; b < players.size(); ++b) {
+                for(int b = 0; b < players.size(); ++b) {
                     Player player = players.get(b);
-                    if (locations != null && player != null && locations.containsKey(player.getName())) {
+                    if(locations != null && player != null && locations.containsKey(player.getName())) {
                         Location location = locations.get(player.getName());
                         Team team = TeamHandler.getTeam(player);
-                        if (team != null) {
-                            if (teams.containsKey(team)) {
+                        if(team != null) {
+                            if(teams.containsKey(team)) {
                                 location = teams.get(team);
                             } else {
                                 teams.put(team, location);
@@ -166,10 +166,10 @@ public class ScatterHandler implements Listener {
                         }
                         scatter(player, b, players.size(), location);
                         locations.remove(player.getName());
-                        if (!scattered.contains(player.getName())) {
+                        if(!scattered.contains(player.getName())) {
                             scattered.add(player.getName());
                         }
-                        if (scattered.size() >= players.size()) {
+                        if(scattered.size() >= players.size()) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "forceStart");
                         }
                         break;
@@ -182,27 +182,27 @@ public class ScatterHandler implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         String name = event.getPlayer().getName();
-        if (locations.containsKey(name)) {
+        if(locations.containsKey(name)) {
             World world = WorldHandler.getWorld();
             Location to = event.getTo();
             Location from = event.getFrom();
-            if (to.getWorld().getName().equals(world.getName()) && from.getWorld().getName().equals(world.getName()) && to.getY() < 200 && from.getY() >= 200) {
+            if(to.getWorld().getName().equals(world.getName()) && from.getWorld().getName().equals(world.getName()) && to.getY() < 200 && from.getY() >= 200) {
                 locations.remove(name);
             }
         } else {
             Location to = WorldHandler.getGround(event.getTo()).add(0, 15, 0);
             EntityType type = random.nextBoolean() ? EntityType.PIG : EntityType.SHEEP;
-            for (int a = 0; a < 5; ++a) {
+            for(int a = 0; a < 5; ++a) {
                 int x = random.nextInt(5);
                 int z = random.nextInt(5);
-                if (random.nextBoolean()) {
+                if(random.nextBoolean()) {
                     x *= -1;
                 }
-                if (random.nextBoolean()) {
+                if(random.nextBoolean()) {
                     z *= -1;
                 }
                 LivingEntity livingEntity = (LivingEntity) to.getWorld().spawnEntity(to.clone().add(x, -14, z), type);
-                if (type == EntityType.SHEEP) {
+                if(type == EntityType.SHEEP) {
                     livingEntity.setCustomName(StringUtil.color("&bSheep Drop Food"));
                 }
                 savedEntities.add(livingEntity);
@@ -210,7 +210,7 @@ public class ScatterHandler implements Listener {
             locations.put(name, to);
             to.getChunk().load(true);
             event.setCancelled(true);
-            if (locations.size() >= toScatter) {
+            if(locations.size() >= toScatter) {
                 scatter = true;
             }
         }

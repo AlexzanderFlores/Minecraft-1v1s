@@ -25,8 +25,8 @@ public class CommandSpy implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
-                    if (enabled.contains(player.getName())) {
+                if(Ranks.OWNER.hasRank(player) || HostHandler.isHost(player.getUniqueId())) {
+                    if(enabled.contains(player.getName())) {
                         enabled.remove(player.getName());
                         MessageHandler.sendMessage(player, "Command Spy is now &cOFF");
                     } else {
@@ -45,12 +45,12 @@ public class CommandSpy implements Listener {
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        if (Ranks.OWNER.hasRank(event.getPlayer())) {
+        if(Ranks.OWNER.hasRank(event.getPlayer())) {
             return;
         }
-        for (String name : enabled) {
+        for(String name : enabled) {
             Player player = ProPlugin.getPlayer(name);
-            if (player != null) {
+            if(player != null) {
                 MessageHandler.sendMessage(player, "&6&lCS: " + AccountHandler.getPrefix(event.getPlayer()) + ": " + event.getMessage());
             }
         }

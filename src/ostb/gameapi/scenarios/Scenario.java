@@ -36,7 +36,7 @@ public abstract class Scenario implements Listener {
         disable(fromEvent);
         EventUtil.register(this);
         enabled = true;
-        if (!fromEvent) {
+        if(!fromEvent) {
             Bukkit.getPluginManager().callEvent(new ScenarioStateChangeEvent(this, true));
         }
     }
@@ -44,7 +44,7 @@ public abstract class Scenario implements Listener {
     public void disable(boolean fromEvent) {
         HandlerList.unregisterAll(this);
         enabled = false;
-        if (!fromEvent) {
+        if(!fromEvent) {
             Bukkit.getPluginManager().callEvent(new ScenarioStateChangeEvent(this, false));
         }
     }

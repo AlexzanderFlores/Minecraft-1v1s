@@ -34,7 +34,7 @@ public class BorderHandler implements Listener {
     private static List<String> delayed = null;
 
     public BorderHandler() {
-        if (instance == null) {
+        if(instance == null) {
             instance = this;
             delayed = new ArrayList<>();
         }
@@ -53,13 +53,13 @@ public class BorderHandler implements Listener {
     }
 
     public static void setOverworldBorder() {
-        if (overworldBorder == null) {
+        if(overworldBorder == null) {
             overworldBorder = new Border(1500, WorldHandler.getWorld());
         }
     }
 
     public static void setNetherBorder() {
-        if (netherBorder == null) {
+        if(netherBorder == null) {
             netherBorder = new Border(overworldBorder.getStartingRadius() / 8, WorldHandler.getNether());
         }
     }
@@ -68,25 +68,25 @@ public class BorderHandler implements Listener {
         new CommandBase("setBorder", 1, true) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (arguments.length == 2) {
-                    if (arguments[0].equalsIgnoreCase("overworld") || arguments[0].equalsIgnoreCase("nether")) {
+                if(arguments.length == 2) {
+                    if(arguments[0].equalsIgnoreCase("overworld") || arguments[0].equalsIgnoreCase("nether")) {
                         int radius = 0;
                         try {
                             radius = Integer.valueOf(arguments[1]);
-                        } catch (NumberFormatException e) {
+                        } catch(NumberFormatException e) {
                             MessageHandler.sendMessage(sender, "&cSecond argument must be a positive integer");
                             return true;
                         }
-                        if (radius < 0) {
+                        if(radius < 0) {
                             MessageHandler.sendMessage(sender, "&cThe radius must be a positive");
                         } else {
                             Border border = null;
-                            if (arguments[0].equalsIgnoreCase("overworld")) {
+                            if(arguments[0].equalsIgnoreCase("overworld")) {
                                 border = BorderHandler.overworldBorder;
-                            } else if (arguments[0].equalsIgnoreCase("nether")) {
+                            } else if(arguments[0].equalsIgnoreCase("nether")) {
                                 border = BorderHandler.netherBorder;
                             }
-                            if (border != null) {
+                            if(border != null) {
                                 border.setBorder(radius);
                                 MessageHandler.sendMessage(sender, "The border has been changed to &b" + radius);
                             } else {
@@ -105,21 +105,21 @@ public class BorderHandler implements Listener {
         new CommandBase("compass", 1) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (arguments.length == 0 && sender instanceof Player) {
+                if(arguments.length == 0 && sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
+                    if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
                 }
                 String name = arguments[0];
                 Player target = ProPlugin.getPlayer(name);
-                if (target == null) {
+                if(target == null) {
                     MessageHandler.sendMessage(sender, "&c" + name + " is not online");
                 } else {
-                    if (sender instanceof Player) {
+                    if(sender instanceof Player) {
                         Player player = (Player) sender;
-                        if (!HostHandler.isHost(player.getUniqueId()) && !Ranks.isStaff(sender)) {
+                        if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.isStaff(sender)) {
                             MessageHandler.sendUnknownCommand(sender);
                             return true;
                         }
@@ -132,30 +132,30 @@ public class BorderHandler implements Listener {
         new CommandBase("getOutOfBounds") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if (arguments.length == 0 && sender instanceof Player) {
+                if(arguments.length == 0 && sender instanceof Player) {
                     Player player = (Player) sender;
-                    if (!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
+                    if(!HostHandler.isHost(player.getUniqueId()) && !Ranks.OWNER.hasRank(player)) {
                         MessageHandler.sendUnknownCommand(player);
                         return true;
                     }
                 }
                 String message = "";
                 int counter = 0;
-                for (Player player : ProPlugin.getPlayers()) {
+                for(Player player : ProPlugin.getPlayers()) {
                     boolean add = false;
                     String worldName = player.getWorld().getName();
-                    if (worldName.equalsIgnoreCase(WorldHandler.getWorld().getName()) && getDistance(player.getLocation()) > BorderHandler.overworldBorder.getRadius()) {
+                    if(worldName.equalsIgnoreCase(WorldHandler.getWorld().getName()) && getDistance(player.getLocation()) > BorderHandler.overworldBorder.getRadius()) {
                         add = true;
-                    } else if ((worldName.equalsIgnoreCase(WorldHandler.getNether().getName()) || worldName.equalsIgnoreCase(WorldHandler.getEnd().getName()))
+                    } else if((worldName.equalsIgnoreCase(WorldHandler.getNether().getName()) || worldName.equalsIgnoreCase(WorldHandler.getEnd().getName()))
                             && BorderHandler.overworldBorder.isShrinking()) {
                         add = true;
                     }
-                    if (add) {
+                    if(add) {
                         message += AccountHandler.getPrefix(player) + " &b(" + worldName + "), ";
                         ++counter;
                     }
                 }
-                if (counter == 0) {
+                if(counter == 0) {
                     MessageHandler.sendMessage(sender, "There are no players out of bounds at this time");
                 } else {
                     message = "Players out of bounds (&e" + counter + "&a): " + message;
@@ -181,11 +181,11 @@ public class BorderHandler implements Listener {
     }
 
     public static void giveCompass(Player player) {
-        if (!player.getInventory().contains(Material.COMPASS)) {
+        if(!player.getInventory().contains(Material.COMPASS)) {
             MessageHandler.sendLine(player);
             MessageHandler.sendMessage(player, "&6&lGiving out compasses that point to &c&l0&7&l, &c&l0");
             player.getInventory().addItem(new ItemStack(Material.COMPASS));
-            if (!player.getInventory().contains(Material.COMPASS)) {
+            if(!player.getInventory().contains(Material.COMPASS)) {
                 MessageHandler.sendMessage(player, "&c&lYour inventory was full! Check the ground near you!");
                 player.getWorld().dropItem(player.getLocation(), new ItemStack(Material.COMPASS));
             }
@@ -195,9 +195,9 @@ public class BorderHandler implements Listener {
 
     public static Border getBorder(World world) {
         Border border = null;
-        if (world.getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
+        if(world.getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
             border = overworldBorder;
-        } else if (world.getName().equalsIgnoreCase(WorldHandler.getNether().getName())) {
+        } else if(world.getName().equalsIgnoreCase(WorldHandler.getNether().getName())) {
             border = netherBorder;
         }
         return border;
@@ -207,11 +207,11 @@ public class BorderHandler implements Listener {
         boolean out = false;
         double distance = getDistance(player.getLocation());
         String worldName = player.getWorld().getName();
-        if (worldName.equalsIgnoreCase(WorldHandler.getWorld().getName()) && distance > overworldBorder.getRadius()) {
+        if(worldName.equalsIgnoreCase(WorldHandler.getWorld().getName()) && distance > overworldBorder.getRadius()) {
             out = true;
-        } else if (WorldHandler.getNether() != null && worldName.equalsIgnoreCase(WorldHandler.getNether().getName()) && Events.getMoveToCenter()) {
+        } else if(WorldHandler.getNether() != null && worldName.equalsIgnoreCase(WorldHandler.getNether().getName()) && Events.getMoveToCenter()) {
             out = true;
-        } else if (WorldHandler.getEnd() != null && worldName.equalsIgnoreCase(WorldHandler.getEnd().getName()) && Events.getMoveToCenter()) {
+        } else if(WorldHandler.getEnd() != null && worldName.equalsIgnoreCase(WorldHandler.getEnd().getName()) && Events.getMoveToCenter()) {
             out = true;
         }
         return out;
@@ -220,11 +220,11 @@ public class BorderHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            for (Player player : ProPlugin.getPlayers()) {
-                if (isPlayerOutOfBounds(player)) {
+        if(ticks == 20) {
+            for(Player player : ProPlugin.getPlayers()) {
+                if(isPlayerOutOfBounds(player)) {
                     final String name = player.getName();
-                    if (!delayed.contains(name)) {
+                    if(!delayed.contains(name)) {
                         delayed.add(name);
                         new DelayedTask(new Runnable() {
                             @Override
@@ -232,7 +232,7 @@ public class BorderHandler implements Listener {
                                 delayed.remove(name);
                             }
                         }, 20 * delay);
-                        if (player.getWorld().getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
+                        if(player.getWorld().getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
                             MessageHandler.sendLine(player);
                             MessageHandler.sendMessage(player, "");
                             MessageHandler.sendMessage(player, "&4&lYOU ARE OUT OF BOUNDS! " + (Events.getMoveToCenter() ? "GO TO &e&l0, 0" : ""));
@@ -243,15 +243,15 @@ public class BorderHandler implements Listener {
                     }
                 }
             }
-        } else if (ticks == 20 * 60) {
-            if (Events.getMoveToCenter() && overworldBorder.getRadius() > 200) {
+        } else if(ticks == 20 * 60) {
+            if(Events.getMoveToCenter() && overworldBorder.getRadius() > 200) {
                 int amount = HostedEvent.isEvent() ? 10 : 100;
                 overworldBorder.setBorder(overworldBorder.getRadius() + (amount * -1));
                 updateScoreboard();
                 MessageHandler.alert("&6The border radius has decreased &b" + amount + " &6blocks to &b" + overworldBorder.getRadius());
-                if (Events.getMoveToCenter()) {
-                    for (Player player : ProPlugin.getPlayers()) {
-                        if (!player.getWorld().getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
+                if(Events.getMoveToCenter()) {
+                    for(Player player : ProPlugin.getPlayers()) {
+                        if(!player.getWorld().getName().equalsIgnoreCase(WorldHandler.getWorld().getName())) {
                             MessageHandler.sendMessage(player, "Go to the overworld and head to &e0, 0");
                         }
                     }
