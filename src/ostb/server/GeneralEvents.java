@@ -32,6 +32,7 @@ import ostb.server.DB.Databases;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.StringUtil;
+import ostb.server.util.UnicodeUtil;
 
 public class GeneralEvents implements Listener {
 	private List<String> blockedCommands = null;
@@ -163,6 +164,7 @@ public class GeneralEvents implements Listener {
 		// Color codes for premium and above
 		if(Ranks.PREMIUM.hasRank(player)) {
 			event.setMessage(StringUtil.color(event.getMessage()));
+			event.setMessage(event.getMessage().replace("<3", UnicodeUtil.getHeart()) + ChatColor.WHITE);
 			
 			// Be sure owner rank has all color codes, do not remove any bad ones
 			if(!Ranks.OWNER.hasRank(player)) {
