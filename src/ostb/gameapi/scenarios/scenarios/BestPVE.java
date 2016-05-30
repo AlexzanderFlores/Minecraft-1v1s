@@ -15,7 +15,7 @@ import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameStartEvent;
-import ostb.gameapi.games.hosteduhc.HealthHandler;
+import ostb.gameapi.games.uhc.HealthHandler;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;

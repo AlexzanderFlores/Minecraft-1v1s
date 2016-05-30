@@ -2,7 +2,7 @@ package ostb.gameapi.scenarios.scenarios;
 
 import org.bukkit.Material;
 
-import ostb.gameapi.games.hosteduhc.OptionsHandler;
+import ostb.gameapi.games.uhc.OptionsHandler;
 import ostb.gameapi.scenarios.Scenario;
 
 public class TrueLove extends Scenario {
