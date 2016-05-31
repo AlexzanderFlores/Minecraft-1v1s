@@ -83,20 +83,21 @@ public class SaveYourItems extends InventoryViewer {
 				player.openInventory(inventory);
 				ResultSet resultSet = null;
 				try {
-					resultSet = db.getConnection().prepareStatement("SELECT material,data,enchant,durability,slot FROM " + db.getName() + " WHERE uuid = '" + sUUID + "'").executeQuery();
+					resultSet = db.getConnection().prepareStatement("SELECT material,data,enchant,durability,amount,slot FROM " + db.getName() + " WHERE uuid = '" + sUUID + "'").executeQuery();
 					while(resultSet.next()) {
 						Material material = Material.valueOf(resultSet.getString("material"));
 						int data = resultSet.getInt("data");
 						String enchant = resultSet.getString("enchant");
 						int durability = resultSet.getInt("durability");
+						int amount = resultSet.getInt("amount");
 						int slot = resultSet.getInt("slot");
-						ItemStack item = new ItemStack(material, 1, (byte) data);
+						ItemStack item = new ItemStack(material, amount, (byte) data);
 						item.setDurability((short) durability);
 						if(!enchant.equals("none")) {
 							String [] split = enchant.split(":");
 							Enchantment ench = null;
 							for(Enchantment enchantment : Enchantment.values()) {
-								if(enchantment.toString().equals(enchant)) {
+								if(enchantment.getName().equals(enchant)) {
 									ench = enchantment;
 									break;
 								}
@@ -136,15 +137,15 @@ public class SaveYourItems extends InventoryViewer {
 							String enchant = "none";
 							if(item.getEnchantments() != null && item.getEnchantments().size() > 0) {
 								for(Enchantment enchantment : item.getEnchantments().keySet()) {
-									enchant = enchantment.toString() + ":" + item.getEnchantments().get(enchantment);
+									enchant = enchantment.getName().toString() + ":" + item.getEnchantments().get(enchantment);
 									break;
 								}
 							}
 							int durability = item.getDurability();
-							db.insert("'" + uuid.toString() + "', '" + material + "', '" + data + "', '" + enchant + "', '" + durability + "', '" + a + "'");
+							db.insert("'" + uuid.toString() + "', '" + material + "', '" + data + "', '" + enchant + "', '" + durability + "', '" + item.getAmount() + "', '" + a + "'");
 						}
 					}
-					MessageHandler.sendMessage(player, "&e" + inventory.getName() + " &xhas been saved");
+					MessageHandler.sendMessage(player, "&b" + inventory.getName() + " &xhas been saved");
 				}
 			});
 		}
