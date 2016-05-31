@@ -20,7 +20,7 @@ public class TimeHandler implements Listener {
 	private static final String defaultOptions = "1000111110";
 	
 	public TimeHandler() {
-		new CommandBase("addUHCGame", 6, -1) {
+		new CommandBase("addUHCGame", 5, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				int day = 0;
@@ -38,17 +38,8 @@ public class TimeHandler implements Listener {
 					MessageHandler.sendMessage(sender, "&cInvalid options length. Default example: &b1000111110");
 					return true;
 				}
-				String teamSizes = arguments[4];
-				if(teamSizes.length() != 3 || !teamSizes.toLowerCase().startsWith("to") || !(teamSizes.charAt(2) >= 49 && teamSizes.charAt(2) <= 52)) {
-					String examples = "";
-					for(int a = 1; a <= 4; ++a) {
-						examples += "&bTo" + a + "&c, ";
-					}
-					MessageHandler.sendMessage(sender, "&cInvalid taem size. Examples: " + examples.substring(0, examples.length() - 4));
-					return true;
-				}
-				String scenarios = teamSizes + " ";
-				for(int a = 5; a < arguments.length; ++a) {
+				String scenarios = "";
+				for(int a = 4; a < arguments.length; ++a) {
 					String scenario = arguments[a];
 					if(!ScenarioManager.isScenario(scenario)) {
 						MessageHandler.sendMessage(sender, "&c\"" + scenario + "\" is not a valid scenario. Valid scenarios are the names on the left below:");
@@ -59,7 +50,7 @@ public class TimeHandler implements Listener {
 					}
 					scenarios += scenario + " ";
 				}
-				addGame(day, hour, started, options, scenarios);
+				addGame(day, hour, started, options, scenarios.substring(0, scenarios.length() - 1));
 				MessageHandler.sendMessage(sender, "Added game:");
 				MessageHandler.sendMessage(sender, "Day: &b" + day);
 				MessageHandler.sendMessage(sender, "Hour: &b" + hour);

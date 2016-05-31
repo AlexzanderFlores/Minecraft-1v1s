@@ -418,6 +418,7 @@ public class TeamHandler implements Listener {
     }
 
     public static void setMaxTeamSize(int size) {
+    	Bukkit.getLogger().info("Setting max team size to " + size);
         maxSize = size;
     }
 

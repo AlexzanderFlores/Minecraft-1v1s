@@ -1,6 +1,8 @@
 package ostb.gameapi.games.uhc;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,6 +20,7 @@ import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.AlertHandler;
 import ostb.server.CommandBase;
+import ostb.server.DB;
 import ostb.server.Tweeter;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
@@ -125,7 +128,7 @@ public class TweetHandler implements Listener {
         } else if(hasTweeted) {
             MessageHandler.sendMessage(sender, "&cThis game has already been tweeted");
         } else {
-            String message = getScenarios(gameID) + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
+            String message = getScenarios(gameID) + "\n\n" + getIP() + " -> " + getCommand() + "\n\n" + getOpensIn();
             id = Tweeter.tweet(message, "uhc.jpg");
             if(id == -1) {
                 MessageHandler.sendMessage(sender, "&cFailed to send Tweet! Possible duplicate tweet");
@@ -142,14 +145,29 @@ public class TweetHandler implements Listener {
     }
 
     public static String getScenarios(int id) {
-        String scenarios = "";
-        for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
-            scenarios += scenario.getName() + ", ";
-        }
-        scenarios = scenarios.substring(0, scenarios.length() - 2);
+    	DB db = DB.PLAYERS_UHC_TIMES;
+    	OptionsHandler.applyOptions(db.getString("id", "" + id, "options"));
+    	String scenarios = db.getString("id", "" + id, "scenarios");
+    	String [] split = scenarios.split(" ");
+    	List<String> list = new ArrayList<String>();
+    	for(String string : split) {
+    		list.add(string);
+    	}
+    	for(Scenario scenario : ScenarioManager.getAllScenarios()) {
+    		if(list.contains(scenario.getShortName())) {
+    			scenario.enable(false);
+    		} else {
+    			scenario.disable(false);
+    		}
+    	}
+    	list.clear();
+    	list = null;
         if(OptionsHandler.isRush()) {
             scenarios += " Rush";
         }
+        int teamSize = TeamHandler.getMaxTeamSize();
+        String size = teamSize == 1 ? "FFA" : "To" + teamSize;
+        scenarios = size + " " + scenarios;
         TweetHandler.scenarios = scenarios;
         return scenarios;
     }
@@ -159,7 +177,7 @@ public class TweetHandler implements Listener {
     }
 
     private static String getCommand() {
-        return "Run /join " + OSTB.getServerName();
+        return "/join " + OSTB.getServerName();
     }
 
     private static String getOpensIn() {

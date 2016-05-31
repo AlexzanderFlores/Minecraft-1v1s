@@ -159,11 +159,18 @@ public class OptionsHandler implements Listener {
     		} catch(NumberFormatException e) {
     			return false;
     		}
-    		TeamHandler.setMaxTeamSize(Integer.valueOf(options.charAt(0)));
-    		rush = options.charAt(1) == '1' ? true : false;
-    		if(options.charAt(2) == '1') {
-    			
-    		}
+    		TeamHandler.setMaxTeamSize(Integer.valueOf(options.charAt(0)) - 48);
+    		setRush(options.charAt(1) == '1');
+    		setAllowNether(options.charAt(2) == '1');
+    		Bukkit.getLogger().info("> " + options.substring(3, 5));
+    		int rates = Integer.valueOf(options.substring(3, 5));
+    		Bukkit.getLogger().info("> " + rates);
+    		setAppleRates(rates == 00 ? 100 : rates);
+    		setAllowHorses(options.charAt(5) == '1');
+    		setAllowHorseHealing(options.charAt(6) == '1');
+    		setAllowPearlDamage(options.charAt(7) == '1');
+    		setAllowAbsorption(options.charAt(8) == '1');
+    		setAllowEnd(options.charAt(9) == '1');
     		return true;
     	}
     	return false;
