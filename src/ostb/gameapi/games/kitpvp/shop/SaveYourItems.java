@@ -94,16 +94,20 @@ public class SaveYourItems extends InventoryViewer {
 						ItemStack item = new ItemStack(material, amount, (byte) data);
 						item.setDurability((short) durability);
 						if(!enchant.equals("none")) {
-							String [] split = enchant.split(":");
-							Enchantment ench = null;
-							for(Enchantment enchantment : Enchantment.values()) {
-								if(enchantment.getName().equals(enchant)) {
-									ench = enchantment;
-									break;
+							try {
+								String [] split = enchant.split(":");
+								Enchantment ench = null;
+								for(Enchantment enchantment : Enchantment.values()) {
+									if(enchantment != null && enchantment.getName().equals(enchant)) {
+										ench = enchantment;
+										break;
+									}
 								}
-							}
-							if(ench != null) {
-								item.addUnsafeEnchantment(ench, Integer.valueOf(split[1]));
+								if(ench != null) {
+									item.addUnsafeEnchantment(ench, Integer.valueOf(split[1]));
+								}
+							} catch(Exception e) {
+								
 							}
 						}
 						inventory.setItem(slot, item);
