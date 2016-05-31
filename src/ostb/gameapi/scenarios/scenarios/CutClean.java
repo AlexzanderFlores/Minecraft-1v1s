@@ -23,7 +23,7 @@ public class CutClean extends Scenario {
 	private static CutClean instance = null;
 	
 	public CutClean() {
-		super("Cut Clean", "CC", Material.IRON_INGOT);
+		super("CutClean", "CC", Material.IRON_INGOT);
 		instance = this;
 		setInfo("Ores auto smelt and food auto cooks. Breaking the base of a tree breaks the whole tree.");
 		enable(true);

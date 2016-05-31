@@ -27,6 +27,30 @@ import ostb.staff.StaffMode;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("uhc", 0, 1, true) {
+			@Override
+			public boolean execute(final CommandSender sender, final String [] arguments) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						Player player = (Player) sender;
+						if(arguments.length == 1) {
+							MessageHandler.sendMessage(player, arguments[0]);
+						} else {
+							int counter = 0;
+							for(String url : DB.NETWORK_UHC_URL.getAllStrings("url")) {
+								ChatClickHandler.sendMessageToRunCommand(player, " &bClick here", "Click to view URL", "/uhc " + url, "&eView UHC server " + ++counter + ": ");
+							}
+							if(counter == 0) {
+								MessageHandler.sendMessage(player, "&cThere are no UHC games at this time.");
+							}
+						}
+					}
+				});
+				return true;
+			}
+		}.enableDelay(1);
+		
 		new CommandBase("giveKey", 3) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

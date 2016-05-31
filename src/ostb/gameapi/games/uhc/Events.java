@@ -56,7 +56,6 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.AlertHandler;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
@@ -217,11 +216,6 @@ public class Events implements Listener {
                 if(counter == 0) {
                     moveToBox = false;
                 }
-            }
-        } else if(ticks == 20 * 60) {
-            GameStates state = OSTB.getMiniGame().getGameState();
-            if((state == GameStates.WAITING || (state == GameStates.STARTING && OSTB.getMiniGame().getCounter() > 30)) && !WhitelistHandler.isWhitelisted()) {
-                AlertHandler.alert("&6&l" + TweetHandler.getScenarios() + " UHC OPEN NOW! &c&l/join UHC1" + TweetHandler.getURL());
             }
         }
     }

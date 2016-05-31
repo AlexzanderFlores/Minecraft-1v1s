@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
@@ -18,107 +16,96 @@ import ostb.customevents.TimeEvent;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.AlertHandler;
 import ostb.server.CommandBase;
+import ostb.server.CommandDispatcher;
 import ostb.server.DB;
 import ostb.server.Tweeter;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
-import ostb.server.util.ItemCreator;
 
 public class TweetHandler implements Listener {
-    private static ItemStack item = null;
     private static int opensIn = 10;
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
+    private static boolean storedURl = false;
     private static String tweet = null;
     private static String scenarios = null;
     private static long id = 0;
 
     public TweetHandler() {
-        if(item == null) {
-            tweet = "";
-            item = new ItemCreator(Material.NAME_TAG).setName("&aLaunch Tweet").getItemStack();
-            new CommandBase("endTweet", 2, -1, true) {
-                @Override
-                public boolean execute(CommandSender sender, String[] arguments) {
-                    Player player = (Player) sender;
-                    if(!HostedEvent.isEvent() && Ranks.OWNER.hasRank(player)) {
-                        String url = arguments[0];
-                        if(FileHandler.isImage(url)) {
-                            String message = "Congrats to ";
-                            if(arguments.length > 2) {
-                                for(int a = 1; a < arguments.length; ++a) {
-                                    if(a == arguments.length - 1) {
-                                        message = message.substring(0, message.length() - 2);
-                                        message += " & " + arguments[a];
-                                    } else {
-                                        message += arguments[a] + ", ";
-                                    }
-                                }
-                            } else {
-                                message += arguments[1];
-                            }
-                            message += " for winning this UHC!";
-                            if(!message.equals(tweet)) {
-                                MessageHandler.sendLine(player);
-                                MessageHandler.sendMessage(player, "");
-                                MessageHandler.sendMessage(player, "Does this tweet look correct? If so run this command again");
-                                MessageHandler.sendMessage(player, "");
-                                MessageHandler.sendMessage(player, message);
-                                MessageHandler.sendMessage(player, "");
-                                MessageHandler.sendLine(player);
-                                tweet = message;
-                            } else {
-                                String path = Bukkit.getWorldContainer().getPath() + "/../resources/winner.png";
-                                FileHandler.delete(new File(path));
-                                FileHandler.downloadImage(url, path);
-                                long id = Tweeter.tweet(tweet, path);
-                                if(id == -1) {
-                                    MessageHandler.sendMessage(player, "&cFailed to send tweet. Possible duplicate tweet.");
+    	tweet = "";
+        new CommandBase("endTweet", 2, -1, true) {
+            @Override
+            public boolean execute(CommandSender sender, String[] arguments) {
+                Player player = (Player) sender;
+                if(!HostedEvent.isEvent() && Ranks.OWNER.hasRank(player)) {
+                    String url = arguments[0];
+                    if(FileHandler.isImage(url)) {
+                        String message = "Congrats to ";
+                        if(arguments.length > 2) {
+                            for(int a = 1; a < arguments.length; ++a) {
+                                if(a == arguments.length - 1) {
+                                    message = message.substring(0, message.length() - 2);
+                                    message += " & " + arguments[a];
                                 } else {
-                                    MessageHandler.sendLine(player);
-                                    MessageHandler.sendMessage(player, "");
-                                    MessageHandler.sendMessage(player, "&6To restart the server run &b/uhcOver");
-                                    MessageHandler.sendMessage(player, "");
-                                    MessageHandler.sendLine(player);
-                                    MessageHandler.alert("");
-                                    MessageHandler.alert("Tweet Sent! &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id);
-                                    MessageHandler.alert("");
+                                    message += arguments[a] + ", ";
                                 }
-                                new CommandBase("uhcOver", true) {
-                                    @Override
-                                    public boolean execute(CommandSender sender, String[] arguments) {
-                                        Player player = (Player) sender;
-                                        if(Ranks.OWNER.hasRank(player)) {
-                                            ProPlugin.restartServer();
-                                        } else {
-                                            MessageHandler.sendUnknownCommand(player);
-                                        }
-                                        return true;
-                                    }
-                                };
                             }
                         } else {
-                            MessageHandler.sendMessage(player, "&cYou cannot use this URL! Please right click the image and click \"Copy Image Location\" then paste that URL");
+                            message += arguments[1];
+                        }
+                        message += " for winning this UHC!";
+                        if(!message.equals(tweet)) {
+                            MessageHandler.sendLine(player);
+                            MessageHandler.sendMessage(player, "");
+                            MessageHandler.sendMessage(player, "Does this tweet look correct? If so run this command again");
+                            MessageHandler.sendMessage(player, "");
+                            MessageHandler.sendMessage(player, message);
+                            MessageHandler.sendMessage(player, "");
+                            MessageHandler.sendLine(player);
+                            tweet = message;
+                        } else {
+                            String path = Bukkit.getWorldContainer().getPath() + "/../resources/winner.png";
+                            FileHandler.delete(new File(path));
+                            FileHandler.downloadImage(url, path);
+                            long id = Tweeter.tweet(tweet, path);
+                            if(id == -1) {
+                                MessageHandler.sendMessage(player, "&cFailed to send tweet. Possible duplicate tweet.");
+                            } else {
+                                MessageHandler.sendLine(player);
+                                MessageHandler.sendMessage(player, "");
+                                MessageHandler.sendMessage(player, "&6To restart the server run &b/uhcOver");
+                                MessageHandler.sendMessage(player, "");
+                                MessageHandler.sendLine(player);
+                                MessageHandler.alert("");
+                                MessageHandler.alert("Tweet Sent! &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id);
+                                MessageHandler.alert("");
+                            }
+                            new CommandBase("uhcOver", true) {
+                                @Override
+                                public boolean execute(CommandSender sender, String[] arguments) {
+                                    Player player = (Player) sender;
+                                    if(Ranks.OWNER.hasRank(player)) {
+                                        ProPlugin.restartServer();
+                                    } else {
+                                        MessageHandler.sendUnknownCommand(player);
+                                    }
+                                    return true;
+                                }
+                            };
                         }
                     } else {
-                        MessageHandler.sendUnknownCommand(player);
+                        MessageHandler.sendMessage(player, "&cYou cannot use this URL! Please right click the image and click \"Copy Image Location\" then paste that URL");
                     }
-                    return true;
+                } else {
+                    MessageHandler.sendUnknownCommand(player);
                 }
-            }.enableDelay(5);
-            EventUtil.register(this);
-        }
-        for(Player player : ProPlugin.getPlayers()) {
-            if(Ranks.OWNER.hasRank(player)) {
-                if(!player.getInventory().contains(item)) {
-                    player.getInventory().addItem(item);
-                }
-                MessageHandler.sendMessage(player, "To continue click the \"&cLaunch Tweet&a\" item");
+                return true;
             }
-        }
+        }.enableDelay(5);
+        EventUtil.register(this);
     }
 
     public static void tweet(CommandSender sender, int gameID) {
@@ -139,13 +126,13 @@ public class TweetHandler implements Listener {
             }
         }
     }
-    
+
     public static String getScenarios() {
     	return scenarios;
     }
 
     public static String getScenarios(int id) {
-    	DB db = DB.PLAYERS_UHC_TIMES;
+    	DB db = DB.NETWORK_UHC_TIMES;
     	OptionsHandler.applyOptions(db.getString("id", "" + id, "options"));
     	String scenarios = db.getString("id", "" + id, "scenarios");
     	String [] split = scenarios.split(" ");
@@ -156,6 +143,7 @@ public class TweetHandler implements Listener {
     	for(Scenario scenario : ScenarioManager.getAllScenarios()) {
     		if(list.contains(scenario.getShortName())) {
     			scenario.enable(false);
+    			scenarios = scenarios.replace(scenario.getShortName(), scenario.getName());
     		} else {
     			scenario.disable(false);
     		}
@@ -173,7 +161,7 @@ public class TweetHandler implements Listener {
     }
 
     private static String getIP() {
-        return "IP: OutsideTheBlock.org";
+        return "IP OutsideTheBlock.org";
     }
 
     private static String getCommand() {
@@ -187,6 +175,20 @@ public class TweetHandler implements Listener {
     public static String getURL() {
         try {
             if(id != -1) {
+            	if(!storedURl) {
+            		storedURl = true;
+            		new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							int server = Integer.valueOf(OSTB.getServerName().replace("UHC", ""));
+							if(DB.NETWORK_UHC_URL.isKeySet("server", "" + server)) {
+								DB.NETWORK_UHC_URL.updateString("url", getURL(), "server", "" + server);
+							} else {
+								DB.NETWORK_UHC_URL.insert("'" + server + "', '" + getURL() + "'");
+							}
+						}
+					});
+            	}
                 return " &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id;
             }
         } catch(Exception e) {
@@ -203,8 +205,9 @@ public class TweetHandler implements Listener {
                 MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
             }
             int counter = countDown.getCounter();
-            if(!HostedEvent.isEvent() && counter % 60 == 0) {
-                AlertHandler.alert("&6&l" + scenarios + " &6&lUHC OPENING IN &b&l" + (counter / 60) + " &6&lMINUTE" + ((counter / 60) == 1 ? "" : "S") + getURL());
+            int minutes = counter / 60;
+            if(!HostedEvent.isEvent() && (minutes % 5 == 0 || minutes == 1)) {
+            	CommandDispatcher.sendToServer(OSTB.getServerName().toLowerCase(), "say &a&lUHC: &eA game is launching soon, run command &b/uhc");
             }
             countDown.decrementCounter();
             if(countDown.getCounter() <= 0) {

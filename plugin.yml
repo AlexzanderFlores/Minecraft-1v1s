@@ -306,3 +306,6 @@ commands:
 
   addUHCGame:
     usage: /addUHCGame <day> <hour> <started> <options> <scenarios>
+
+  uhc:
+    usage: /uhc

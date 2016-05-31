@@ -27,6 +27,7 @@ import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
+import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.Tweeter;
 import ostb.server.tasks.DelayedTask;
@@ -71,6 +72,7 @@ public class UHC extends MiniGame {
         new GoldenHeadUtil();
         new SkullPikeUtil();
         new TimeHandler();
+        new TweetHandler();
         //UHC:
         ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/../twitter.yml");
         String consumerKey = config.getConfig().getString("uhc.consumerkey");
@@ -295,7 +297,7 @@ public class UHC extends MiniGame {
 					OSTB.getSidebar().removeScore(14);
 				}
 				int teamSize = TeamHandler.getMaxTeamSize();
-				String scenarios = "To" + teamSize + " " +  ScenarioManager.getText();
+				String scenarios = (teamSize == 1 ? "FFA" : "To" + teamSize) + " " +  ScenarioManager.getText();
 				if(!scenarios.equals(oldScenarios)) {
 					oldScenarios = scenarios;
 					removeScore(11);
@@ -340,6 +342,8 @@ public class UHC extends MiniGame {
 
     @Override
     public void disable() {
+    	int server = Integer.valueOf(OSTB.getServerName().replace("UHC", ""));
+    	DB.NETWORK_UHC_URL.delete("server", "" + server);
         super.disable();
         String container = Bukkit.getWorldContainer().getPath();
         Bukkit.unloadWorld(getLobby(), false);

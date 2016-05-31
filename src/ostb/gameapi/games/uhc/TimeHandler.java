@@ -84,8 +84,7 @@ public class TimeHandler implements Listener {
 					Calendar calendar = Calendar.getInstance();
 					int day = calendar.get(Calendar.DAY_OF_YEAR);
 					int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-					Bukkit.getLogger().info("Day: " + day + " Hour: " + hourOfDay);
-					DB db = DB.PLAYERS_UHC_TIMES;
+					DB db = DB.NETWORK_UHC_TIMES;
 					if(db.isKeySet("day", "" + day)) {
 						String [] keys = new String [] {"day", "hour", "started"};
 						String [] values = new String [] {day + "", + hourOfDay + "", "0"};
@@ -108,7 +107,7 @@ public class TimeHandler implements Listener {
 	}
 	
 	private int addGame(int day, int hour, int started, String options, String scenarios) {
-		DB db = DB.PLAYERS_UHC_TIMES;
+		DB db = DB.NETWORK_UHC_TIMES;
 		db.insert("'" + day + "', '" + hour + "', '" + started + "', '" + options + "', '" + scenarios + "'");
 		String [] keys = new String [] {"day", "hour", "started", "options", "scenarios"};
 		String [] values = new String [] {day + "", hour + "", started + "", options, scenarios};
