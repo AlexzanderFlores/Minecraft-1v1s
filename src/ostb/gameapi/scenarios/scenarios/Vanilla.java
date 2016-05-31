@@ -11,6 +11,7 @@ public class Vanilla extends Scenario {
         super("Vanilla", "Vanilla", Material.DIAMOND_PICKAXE);
         instance = this;
         setInfo("Default Minecraft setting, no extra changes");
+        setPrimary(true);
     }
 
     public static Vanilla getInstance() {

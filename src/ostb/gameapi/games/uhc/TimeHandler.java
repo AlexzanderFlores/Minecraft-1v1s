@@ -1,6 +1,8 @@
 package ostb.gameapi.games.uhc;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -63,7 +65,7 @@ public class TimeHandler implements Listener {
 		}.setRequiredRank(Ranks.OWNER);
 		EventUtil.register(this);
 	}
-	
+
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
@@ -104,7 +106,37 @@ public class TimeHandler implements Listener {
 							// 35% chance of a FFA
 							int teamSize = chance <= 20 ? 3 : chance <= 65 ? 2 : 1;
 							String options = teamSize + defaultOptions.substring(1);
-							String scenarios = ScenarioManager.getText();
+							//int rushChance = 100;
+							List<Scenario> primaryScenarios = new ArrayList<Scenario>();
+							List<Scenario> secondaryScenarios = new ArrayList<Scenario>();
+							for(Scenario scenario : ScenarioManager.getAllScenarios()) {
+								if(scenario.isPrimary()) {
+									primaryScenarios.add(scenario);
+								} else {
+									secondaryScenarios.add(scenario);
+								}
+							}
+							List<Scenario> enabledScenarios = new ArrayList<Scenario>();
+							enabledScenarios.add(primaryScenarios.get(random.nextInt(primaryScenarios.size())));
+							chance = random.nextInt(100) + 1;
+							int secondaryScenarioCount = chance <= 20 ? 2 : chance <= 60 ? 1 : 0;
+							for(int b = 0; b < secondaryScenarioCount; ++b) {
+								Scenario randomScenario = null;
+								do {
+									randomScenario = secondaryScenarios.get(random.nextInt(secondaryScenarios.size()));
+								} while(enabledScenarios.contains(randomScenario));
+								enabledScenarios.add(randomScenario);
+							}
+							primaryScenarios.clear();
+							primaryScenarios = null;
+							secondaryScenarios.clear();
+							secondaryScenarios = null;
+							String scenarios = "";//ScenarioManager.getText();
+							for(Scenario scenario : enabledScenarios) {
+								scenarios += scenario.getShortName() + " ";
+							}
+							enabledScenarios.clear();
+							enabledScenarios = null;
 							addGame(day, hour, 0, options, scenarios);
 						}
 					}
@@ -112,7 +144,7 @@ public class TimeHandler implements Listener {
 			});
 		}
 	}
-	
+
 	private int addGame(int day, int hour, int started, String options, String scenarios) {
 		DB db = DB.NETWORK_UHC_TIMES;
 		db.insert("'" + day + "', '" + hour + "', '" + started + "', '" + options + "', '" + scenarios + "'");

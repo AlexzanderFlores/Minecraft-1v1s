@@ -24,6 +24,7 @@ public class TimeBomb extends Scenario {
         instance = this;
         setInfo("Whenever a player dies their items are placed in a chest at their death location. Chests explode after 30 seconds of being placed.");
         counters = new HashMap<Location, Integer>();
+        setPrimary(false);
     }
 
     public static TimeBomb getInstance() {

@@ -10,6 +10,7 @@ public class TripleOres extends OreMultipliers {
         super("TripleOres", "3xO", 3, new ItemStack(Material.IRON_INGOT, 3));
         instance = this;
         setInfo("Whenever an ore is mined it drops 3x the amount instead.");
+        setPrimary(false);
     }
 
     public static TripleOres getInstance() {

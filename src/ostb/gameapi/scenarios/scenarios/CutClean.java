@@ -26,6 +26,7 @@ public class CutClean extends Scenario {
 		super("CutClean", "CC", Material.IRON_INGOT);
 		instance = this;
 		setInfo("Ores auto smelt and food auto cooks. Breaking the base of a tree breaks the whole tree.");
+		setPrimary(true);
 		enable(true);
 	}
 	

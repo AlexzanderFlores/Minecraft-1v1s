@@ -14,6 +14,7 @@ public abstract class Scenario implements Listener {
     private String shortName = null;
     private ItemStack item = null;
     private boolean enabled = false;
+    private boolean primary = true;
     private String info = null;
 
     public Scenario(String name, String shortName, Material material) {
@@ -57,6 +58,14 @@ public abstract class Scenario implements Listener {
 
     public boolean isEnabled() {
         return this.enabled;
+    }
+    
+    public boolean isPrimary() {
+    	return this.primary;
+    }
+    
+    public void setPrimary(boolean primary) {
+    	this.primary = primary;
     }
 
     public String getInfo() {

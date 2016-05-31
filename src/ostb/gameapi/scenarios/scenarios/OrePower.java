@@ -10,6 +10,7 @@ public class OrePower extends Scenario {
     public OrePower() {
         super("OrePower", "OP", Material.IRON_ORE);
         instance = this;
+        setPrimary(true);
     }
 
     public static OrePower getInstance() {
