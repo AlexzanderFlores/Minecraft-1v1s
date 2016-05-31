@@ -3,17 +3,16 @@ package ostb.gameapi.games.uhc;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -26,7 +25,6 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.scenarios.scenarios.CutClean;
 import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -39,9 +37,6 @@ public class OptionsHandler implements Listener {
     private static int appleRates = 1;
     private static boolean horses = true;
     private static boolean horseHealing = true;
-    private static boolean notchApples = false;
-    private static boolean strengthOne = false;
-    private static boolean strengthTwo = false;
     private static boolean pearlDamage = true;
     private static boolean absorption = true;
     private static boolean crossTeaming = false;
@@ -50,31 +45,6 @@ public class OptionsHandler implements Listener {
 
     public OptionsHandler() {
         name = "Other Options";
-        new CommandBase("appleRates", 0, 1, true) {
-            @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
-                Player player = (Player) sender;
-                if(arguments.length == 0) {
-                    MessageHandler.sendMessage(player, "Apple Rates: &c" + getAppleRates() + "&a%");
-                } else if(arguments.length == 1) {
-                    if(Ranks.OWNER.hasRank(player)) {
-                        try {
-                            appleRates = Integer.valueOf(arguments[0]);
-                            if(appleRates <= 0 || appleRates > 100) {
-                                MessageHandler.sendMessage(player, "&cInvalid Apple Rate! Select 1 - 100");
-                            } else {
-                                MessageHandler.alert("Apple Rates are now &c" + appleRates + "&a%");
-                            }
-                        } catch(NumberFormatException e) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        };
         new CommandBase("isNetherOn") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
@@ -88,41 +58,69 @@ public class OptionsHandler implements Listener {
     public static boolean isRush() {
         return rush;
     }
+    
+    public static void setRush(boolean rush) {
+    	OptionsHandler.rush = rush;
+    }
 
     public static boolean isNetherEnabled() {
         return nether;
+    }
+    
+    public static void setAllowNether(boolean nether) {
+    	OptionsHandler.nether = nether;
+    	if(nether) {
+    		WorldHandler.generateNether();
+    	}
     }
 
     public static int getAppleRates() {
         return appleRates;
     }
+    
+    public static void setAppleRates(int appleRates) {
+    	OptionsHandler.appleRates = appleRates;
+    }
 
-    public static boolean allowHorses() {
+    public static boolean getAllowHorses() {
         return horses;
     }
+    
+    public static void setAllowHorses(boolean horses) {
+    	OptionsHandler.horses = horses;
+    	if(!horses) {
+    		for(World world : Bukkit.getWorlds()) {
+    			for(Entity entity : world.getEntities()) {
+    				if(entity instanceof Horse) {
+    					entity.remove();
+    				}
+    			}
+    		}
+    	}
+    }
 
-    public static boolean allowHorseHealing() {
+    public static boolean getAllowHorseHealing() {
         return horseHealing;
     }
-
-    public static boolean allowNotchApples() {
-        return notchApples;
+    
+    public static void setAllowHorseHealing(boolean horseHealing) {
+    	OptionsHandler.horseHealing = horseHealing;
     }
 
-    public static boolean allowStrengthOne() {
-        return strengthOne;
-    }
-
-    public static boolean allowStrengthTwo() {
-        return strengthTwo;
-    }
-
-    public static boolean allowPearlDamage() {
+    public static boolean getAllowPearlDamage() {
         return pearlDamage;
     }
+    
+    public static void setAllowPearlDamage(boolean pearlDamage) {
+    	OptionsHandler.pearlDamage = pearlDamage;
+    }
 
-    public static boolean getAbsorption() {
+    public static boolean getAllowAbsorption() {
         return absorption;
+    }
+    
+    public static void setAllowAbsorption(boolean absorption) {
+    	OptionsHandler.absorption = absorption;
     }
 
     public static boolean getCrossTeaming() {
@@ -133,14 +131,44 @@ public class OptionsHandler implements Listener {
         OptionsHandler.crossTeaming = crossTeaming;
     }
 
-    public static boolean getEnd() {
+    public static boolean isEndEnabled() {
         return end;
     }
-
-    public static boolean getNether() {
-        return nether;
+    
+    public static void setAllowEnd(boolean end) {
+    	OptionsHandler.end = end;
+    	if(end) {
+    		WorldHandler.generateEnd();
+    	}
     }
 
+    public static boolean applyOptions(String options) {
+    	//1234456789
+		//1 = team size
+		//2 = bool for rush
+		//3 = bool for nether
+		//44 = apple rates, 00 = 100%
+		//5 = bool for horses
+		//6 = bool for horse healing
+		//7 = bool for pearl damage
+		//8 = bool for absorption
+		//9 = bool for end
+    	if(options.length() == 10) {
+    		try {
+    			Integer.valueOf(options);
+    		} catch(NumberFormatException e) {
+    			return false;
+    		}
+    		TeamHandler.setMaxTeamSize(Integer.valueOf(options.charAt(0)));
+    		rush = options.charAt(1) == '1' ? true : false;
+    		if(options.charAt(2) == '1') {
+    			
+    		}
+    		return true;
+    	}
+    	return false;
+    }
+    
     public static void open(Player player) {
         ItemStack enabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.LIME.getData()).setName("&aENABLED").addLore("&fClick the icon above to toggle").getItemStack();
         ItemStack disabled = new ItemCreator(Material.STAINED_GLASS_PANE, DyeColor.RED.getData()).setName("&cDISABLED").addLore("&fClick the icon above to toggle").getItemStack();
@@ -154,17 +182,12 @@ public class OptionsHandler implements Listener {
                         .addLore("&f/appleRates [percentage]").addLore("").addLore("&aCurrent Rates: &c" + getAppleRates() + "&a%").getItemStack(),
                 new ItemCreator(Material.SADDLE).setName("&bHorses").getItemStack(),
                 new ItemCreator(Material.BREAD).setName("&bHorse Healing").getItemStack(),
-                new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&bNotch Apples").getItemStack(),
-                new ItemCreator(Material.DIAMOND_SWORD).setName("&bStrength I").getItemStack(),
-                new ItemCreator(Material.DIAMOND_SWORD).setAmount(2).setName("&bStrength II").getItemStack(),
                 new ItemCreator(Material.ENDER_PEARL).setName("&bEnder Pearl Damage").getItemStack(),
                 new ItemCreator(Material.GOLDEN_APPLE).setName("&bAbsorption").getItemStack(),
                 new ItemCreator(Material.ENDER_STONE).setName("&bEnd Enabled").getItemStack()
         };
-        boolean[] states = new boolean[]{isRush(), isNetherEnabled(), false, allowHorses(), allowHorseHealing(), allowNotchApples(), allowStrengthOne(),
-                allowStrengthTwo(), allowPearlDamage(), getAbsorption(), getEnd()
-        };
-        int [] slots = new int [] {10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31};
+        boolean [] states = new boolean [] {isRush(), isNetherEnabled(), false, getAllowHorses(), getAllowHorseHealing(), getAllowPearlDamage(), getAllowAbsorption(), isEndEnabled()};
+        int [] slots = new int [] {10, 11, 12, 13, 14, 15, 16, 28};
         for(int a = 0; a < items.length; ++a) {
             inventory.setItem(slots[a], items[a]);
             if(states[a]) {
@@ -193,60 +216,34 @@ public class OptionsHandler implements Listener {
                     player.closeInventory();
                 }
             } else if(type == Material.DIAMOND_BOOTS) {
-                rush = !rush;
+                setRush(!rush);
                 open(player);
             } else if(type == Material.NETHERRACK) {
-                nether = !nether;
-                if(nether) {
-                    strengthOne = true;
-                    strengthTwo = true;
-                    WorldHandler.generateNether();
-                } else {
-                    strengthOne = false;
-                    strengthTwo = false;
-                }
+                setAllowNether(!nether);
                 open(player);
             } else if(type == Material.APPLE) {
                 open(player);
             } else if(type == Material.SADDLE) {
-                horses = !horses;
-                if(!horses) {
-                    horseHealing = false;
+            	setAllowHorses(!getAllowHorses());
+                if(!getAllowHorses()) {
+                    setAllowHorseHealing(false);
                 }
                 open(player);
             } else if(type == Material.BREAD) {
-                if(horses) {
-                    horseHealing = !horseHealing;
+                if(getAllowHorses()) {
+                    setAllowHorseHealing(!getAllowHorseHealing());
                 } else {
-                    horseHealing = false;
-                }
-                open(player);
-            } else if (type == Material.GOLDEN_APPLE) {
-                if(item.getData().getData() == 1) {
-                    notchApples = !notchApples;
-                } else {
-                    absorption = !absorption;
-                }
-                open(player);
-            } else if(type == Material.DIAMOND_SWORD) {
-                if(item.getAmount() == 1) {
-                    strengthOne = !strengthOne;
-                } else if (item.getAmount() == 2) {
-                    strengthTwo = !strengthTwo;
-                }
-                if(!nether) {
-                    strengthOne = false;
-                    strengthTwo = false;
+                    setAllowHorseHealing(false);
                 }
                 open(player);
             } else if(type == Material.ENDER_PEARL) {
-                pearlDamage = !pearlDamage;
+                setAllowPearlDamage(!pearlDamage);
                 open(player);
+            } else if(type == Material.GOLDEN_APPLE) {
+            	setAllowAbsorption(!getAllowAbsorption());
+            	open(player);
             } else if(type == Material.ENDER_STONE) {
-                end = !end;
-                if(end) {
-                    WorldHandler.generateEnd();
-                }
+                setAllowEnd(!end);
                 open(player);
             }
             event.setCancelled(true);
@@ -255,34 +252,21 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if(event.getEntityType() == EntityType.HORSE && !allowHorses()) {
+        if(event.getEntityType() == EntityType.HORSE && !getAllowHorses()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if(event.getEntity() instanceof Horse && !allowHorseHealing()) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onCraftItem(CraftItemEvent event) {
-        ItemStack item = event.getCurrentItem();
-        if(event.getWhoClicked() instanceof Player && item.getType() == Material.GOLDEN_APPLE && item.getData().getData() == 1 && !allowNotchApples()) {
-            Player player = (Player) event.getWhoClicked();
-            player.closeInventory();
-            MessageHandler.sendMessage(player, "&cYou may not craft that item");
-            event.setCurrentItem(new ItemStack(Material.AIR));
-            event.setResult(Result.DENY);
+        if(event.getEntity() instanceof Horse && !getAllowHorseHealing()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if(!allowPearlDamage() && event.getCause() == TeleportCause.ENDER_PEARL) {
+        if(!getAllowPearlDamage() && event.getCause() == TeleportCause.ENDER_PEARL) {
             event.getPlayer().teleport(event.getTo());
             event.setCancelled(true);
         }
@@ -290,7 +274,7 @@ public class OptionsHandler implements Listener {
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if(!getAbsorption() && event.getItem().getType() == Material.GOLDEN_APPLE) {
+        if(!getAllowAbsorption() && event.getItem().getType() == Material.GOLDEN_APPLE) {
             final String name = event.getPlayer().getName();
             new DelayedTask(new Runnable() {
                 @Override
@@ -309,7 +293,7 @@ public class OptionsHandler implements Listener {
         if(ScenarioManager.getActiveScenarios().contains(CutClean.getInstance())) {
             appleRates = 4;
         }
-        if(!allowHorses()) {
+        if(!getAllowHorses()) {
             for(Entity entity : Bukkit.getWorlds().get(1).getEntities()) {
                 if(entity instanceof Horse) {
                     entity.remove();

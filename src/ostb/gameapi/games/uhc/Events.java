@@ -221,7 +221,7 @@ public class Events implements Listener {
         } else if(ticks == 20 * 60) {
             GameStates state = OSTB.getMiniGame().getGameState();
             if((state == GameStates.WAITING || (state == GameStates.STARTING && OSTB.getMiniGame().getCounter() > 30)) && !WhitelistHandler.isWhitelisted()) {
-                AlertHandler.alert("&6&l" + TweetHandler.getTeamSize() + " " + TweetHandler.getScenarios() + " UHC OPEN NOW! &c&l/join UHC1" + TweetHandler.getURL());
+                AlertHandler.alert("&6&l" + TweetHandler.getScenarios() + " UHC OPEN NOW! &c&l/join UHC1" + TweetHandler.getURL());
             }
         }
     }

@@ -166,7 +166,7 @@ public class WorldHandler implements Listener {
         if(BorderHandler.getNetherBorder() != null) {
             BorderHandler.getNetherBorder().pregenSettings();
         }*/
-        if(OptionsHandler.getEnd() || OptionsHandler.getNether()) {
+        if(OptionsHandler.isEndEnabled() || OptionsHandler.isNetherEnabled()) {
             new PortalHandler();
         }
     }

@@ -49,6 +49,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -96,6 +97,7 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.StringUtil;
 
+@SuppressWarnings("deprecation")
 public class ProPlugin extends CountDownUtil implements Listener {
 	private String name = null;
 	private List<String> importedWorlds = null;
@@ -1093,6 +1095,19 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		if(!getAllowInventoryClicking()) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onCraftItem(CraftItemEvent event) {
+		ItemStack item = event.getCurrentItem();
+        if(event.getWhoClicked() instanceof Player && item.getType() == Material.GOLDEN_APPLE && item.getData().getData() == 1) {
+            Player player = (Player) event.getWhoClicked();
+            player.closeInventory();
+            MessageHandler.sendMessage(player, "&cYou may not craft that item");
+            event.setCurrentItem(new ItemStack(Material.AIR));
+            event.setResult(org.bukkit.event.Event.Result.DENY);
+            event.setCancelled(true);
+        }
 	}
 	
 	@EventHandler

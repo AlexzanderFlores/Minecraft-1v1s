@@ -76,7 +76,7 @@ public class QuestionAnswerer implements Listener {
         }, "Enchanting is &e1.7");
         new Question(new String[]{
                 "Absor"
-        }, "Absorption is " + (OptionsHandler.getAbsorption() ? "&eEnabled" : "&cDisabled"));
+        }, "Absorption is " + (OptionsHandler.getAllowAbsorption() ? "&eEnabled" : "&cDisabled"));
         new Question(new String[]{
                 "iPVP"
         }, "/info");

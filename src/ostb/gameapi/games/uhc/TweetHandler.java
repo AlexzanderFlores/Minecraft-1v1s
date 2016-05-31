@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
-import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -24,7 +23,6 @@ import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.ItemUtil;
 
 public class TweetHandler implements Listener {
     private static ItemStack item = null;
@@ -32,6 +30,7 @@ public class TweetHandler implements Listener {
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
     private static String tweet = null;
+    private static String scenarios = null;
     private static long id = 0;
 
     public TweetHandler() {
@@ -126,7 +125,7 @@ public class TweetHandler implements Listener {
         } else if(hasTweeted) {
             MessageHandler.sendMessage(sender, "&cThis game has already been tweeted");
         } else {
-            String message = getTeamSize() + " " + getScenarios() + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
+            String message = getScenarios(gameID) + "\n\n" + getIP() + "\n" + getCommand() + "\n\n" + getOpensIn();
             id = Tweeter.tweet(message, "uhc.jpg");
             if(id == -1) {
                 MessageHandler.sendMessage(sender, "&cFailed to send Tweet! Possible duplicate tweet");
@@ -137,13 +136,12 @@ public class TweetHandler implements Listener {
             }
         }
     }
-
-    public static String getTeamSize() {
-        int maxTeamSize = TeamHandler.getMaxTeamSize();
-        return maxTeamSize == 1 ? "FFA" : "FFA - To" + maxTeamSize;
+    
+    public static String getScenarios() {
+    	return scenarios;
     }
 
-    public static String getScenarios() {
+    public static String getScenarios(int id) {
         String scenarios = "";
         for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
             scenarios += scenario.getName() + ", ";
@@ -152,6 +150,7 @@ public class TweetHandler implements Listener {
         if(OptionsHandler.isRush()) {
             scenarios += " Rush";
         }
+        TweetHandler.scenarios = scenarios;
         return scenarios;
     }
 
@@ -179,44 +178,19 @@ public class TweetHandler implements Listener {
     }
 
     @EventHandler
-    public void onMouseClick(MouseClickEvent event) {
-        Player player = event.getPlayer();
-        if(ItemUtil.isItem(player.getItemInHand(), item)) {
-            if(opensIn <= 0) {
-                MessageHandler.sendMessage(player, "Set how long (in minutes) until this game opens:");
-                MessageHandler.sendMessage(player, "&e/opensIn <delay in minutes>");
-            } else {
-                MessageHandler.sendLine(player);
-                MessageHandler.sendMessage(player, "Is this information correct? &aRun &e/tweet &aif it is");
-                MessageHandler.sendMessage(player, "");
-                MessageHandler.sendMessage(player, getTeamSize() + " " + getScenarios());
-                MessageHandler.sendMessage(player, "");
-                MessageHandler.sendMessage(player, getIP());
-                MessageHandler.sendMessage(player, getCommand());
-                MessageHandler.sendMessage(player, "");
-                MessageHandler.sendMessage(player, getOpensIn());
-                MessageHandler.sendLine(player);
-            }
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if(ticks == 20) {
-            if(countDown != null && countDown.getCounter() > 0) {
-                if(countDown.canDisplay()) {
-                    MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
-                }
-                int counter = countDown.getCounter();
-                if(!HostedEvent.isEvent() && counter % 60 == 0) {
-                    AlertHandler.alert("&6&l" + getTeamSize() + " " + getScenarios() + " &6&lUHC OPENING IN &b&l" + (counter / 60) + " &6&lMINUTE" + ((counter / 60) == 1 ? "" : "S") + getURL());
-                }
-                countDown.decrementCounter();
-                if(countDown.getCounter() <= 0) {
-                    WhitelistHandler.unWhitelist();
-                }
+        if(ticks == 20 && countDown != null && countDown.getCounter() > 0) {
+        	if(countDown.canDisplay()) {
+                MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
+            }
+            int counter = countDown.getCounter();
+            if(!HostedEvent.isEvent() && counter % 60 == 0) {
+                AlertHandler.alert("&6&l" + scenarios + " &6&lUHC OPENING IN &b&l" + (counter / 60) + " &6&lMINUTE" + ((counter / 60) == 1 ? "" : "S") + getURL());
+            }
+            countDown.decrementCounter();
+            if(countDown.getCounter() <= 0) {
+                WhitelistHandler.unWhitelist();
             }
         }
     }

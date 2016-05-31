@@ -178,12 +178,11 @@ public class UHC extends MiniGame {
                 MessageHandler.sendMessage(sender, "Is Rush: &b" + OptionsHandler.isRush());
                 MessageHandler.sendMessage(sender, "Nether Enabled: &b" + OptionsHandler.isNetherEnabled());
                 MessageHandler.sendMessage(sender, "Apple Rates: &b" + OptionsHandler.getAppleRates() + "&a%");
-                MessageHandler.sendMessage(sender, "Horses Enabled: &b" + OptionsHandler.allowHorses());
-                MessageHandler.sendMessage(sender, "Horse Healing Enabled: &b" + OptionsHandler.allowHorseHealing());
-                MessageHandler.sendMessage(sender, "Notch Apples Enabled: &b" + OptionsHandler.allowNotchApples());
+                MessageHandler.sendMessage(sender, "Horses Enabled: &b" + OptionsHandler.getAllowHorses());
+                MessageHandler.sendMessage(sender, "Horse Healing Enabled: &b" + OptionsHandler.getAllowHorseHealing());
                 MessageHandler.sendMessage(sender, "Team damage: &bFalse");
-                MessageHandler.sendMessage(sender, "Ender Pearl damage: &b" + OptionsHandler.allowPearlDamage());
-                MessageHandler.sendMessage(sender, "Absorption: &b" + OptionsHandler.getAbsorption());
+                MessageHandler.sendMessage(sender, "Ender Pearl damage: &b" + OptionsHandler.getAllowPearlDamage());
+                MessageHandler.sendMessage(sender, "Absorption: &b" + OptionsHandler.getAllowAbsorption());
                 MessageHandler.sendLine(sender);
                 return true;
             }

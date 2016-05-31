@@ -26,7 +26,7 @@ public class PortalHandler implements Listener {
         world = WorldHandler.getWorld();
         nether = WorldHandler.getNether();
         end = WorldHandler.getEnd();
-        if(OptionsHandler.getEnd()) {
+        if(OptionsHandler.isEndEnabled()) {
             end.spawnEntity(new Location(end, 0, 125, 0), EntityType.ENDER_DRAGON);
         }
         EventUtil.register(this);
@@ -150,7 +150,7 @@ public class PortalHandler implements Listener {
                 toWorld = world;
             } else if(fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.NETHER_PORTAL) {
                 toWorld = nether;
-            } else if(fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.END_PORTAL && OptionsHandler.getEnd()) {
+            } else if(fromWorldName.equalsIgnoreCase(world.getName()) && tpCause == TeleportCause.END_PORTAL && OptionsHandler.isEndEnabled()) {
                 toWorld = end;
             } else if(fromWorldName.equalsIgnoreCase(end.getName())) {
                 toWorld = world;
