@@ -69,6 +69,10 @@ public class ScenarioManager implements Listener {
         };
         EventUtil.register(this);
     }
+    
+    public static List<Scenario> getAllScenarios() {
+    	return new ArrayList<Scenario>(scenarios.values());
+    }
 
     public static List<Scenario> getActiveScenarios() {
         List<Scenario> scenarios2 = new ArrayList<Scenario>();
@@ -86,6 +90,15 @@ public class ScenarioManager implements Listener {
     		text += scenario.getShortName() + " ";
     	}
     	return text;
+    }
+    
+    public static boolean isScenario(String shortName) {
+    	for(Scenario scenario : scenarios.values()) {
+    		if(scenario.getShortName().equals(shortName)) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     public static boolean open(Player player) {

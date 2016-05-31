@@ -38,13 +38,6 @@ public class TweetHandler implements Listener {
         if(item == null) {
             tweet = "";
             item = new ItemCreator(Material.NAME_TAG).setName("&aLaunch Tweet").getItemStack();
-            new CommandBase("tweet", true) {
-                @Override
-                public boolean execute(CommandSender sender, String[] arguments) {
-                	tweet(sender);
-                    return true;
-                }
-            }.setRequiredRank(Ranks.OWNER);
             new CommandBase("endTweet", 2, -1, true) {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
@@ -126,7 +119,7 @@ public class TweetHandler implements Listener {
         }
     }
 
-    public static void tweet(CommandSender sender) {
+    public static void tweet(CommandSender sender, int gameID) {
     	if(HostedEvent.isEvent()) {
             MessageHandler.alert("Game will open in &c" + opensIn + " &xminutes");
             countDown = new CountDownUtil(60 * opensIn);

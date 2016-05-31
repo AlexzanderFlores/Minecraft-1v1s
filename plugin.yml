@@ -303,3 +303,6 @@ commands:
 
   forceStart:
     usage: /forceStart
+
+  addUHCGame:
+    usage: /addUHCGame <day> <hour> <started> <options> <scenarios>
