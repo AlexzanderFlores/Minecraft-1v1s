@@ -29,7 +29,6 @@ public class TweetHandler implements Listener {
     private static int opensIn = 10;
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
-    private static boolean storedURl = false;
     private static String tweet = null;
     private static String scenarios = null;
     private static long id = 0;
@@ -115,7 +114,7 @@ public class TweetHandler implements Listener {
         } else if(hasTweeted) {
             MessageHandler.sendMessage(sender, "&cThis game has already been tweeted");
         } else {
-            String message = getScenarios(gameID) + "\n\n" + getIP() + " -> " + getCommand() + "\n\n" + getOpensIn();
+            String message = getScenarios(gameID) + "\n\n" + getIP() + " > " + getCommand() + "\n\n" + getOpensIn();
             id = Tweeter.tweet(message, "uhc.jpg");
             if(id == -1) {
                 MessageHandler.sendMessage(sender, "&cFailed to send Tweet! Possible duplicate tweet");
@@ -123,8 +122,24 @@ public class TweetHandler implements Listener {
                 hasTweeted = true;
                 MessageHandler.alert("Tweet sent! Game will open in &c" + opensIn + " &xminutes");
                 countDown = new CountDownUtil(60 * opensIn);
+                new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						int server = Integer.valueOf(OSTB.getServerName().replace("UHC", ""));
+						String url = getURL();
+						if(DB.NETWORK_UHC_URL.isKeySet("server", "" + server)) {
+							DB.NETWORK_UHC_URL.updateString("url", url, "server", "" + server);
+						} else {
+							DB.NETWORK_UHC_URL.insert("'" + server + "', '" + url + "'");
+						}
+					}
+				});
             }
         }
+    }
+
+    public static String getURL() {
+    	return "https://twitter.com/" + UHC.getAcount() + "/status/" + id;
     }
 
     public static String getScenarios() {
@@ -172,31 +187,6 @@ public class TweetHandler implements Listener {
         return "Opens in " + opensIn + " minute" + (opensIn == 1 ? "" : "s");
     }
 
-    public static String getURL() {
-        try {
-            if(id != -1) {
-            	if(!storedURl) {
-            		storedURl = true;
-            		new AsyncDelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							int server = Integer.valueOf(OSTB.getServerName().replace("UHC", ""));
-							if(DB.NETWORK_UHC_URL.isKeySet("server", "" + server)) {
-								DB.NETWORK_UHC_URL.updateString("url", getURL(), "server", "" + server);
-							} else {
-								DB.NETWORK_UHC_URL.insert("'" + server + "', '" + getURL() + "'");
-							}
-						}
-					});
-            	}
-                return " &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id;
-            }
-        } catch(Exception e) {
-
-        }
-        return "";
-    }
-
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
@@ -205,9 +195,8 @@ public class TweetHandler implements Listener {
                 MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
             }
             int counter = countDown.getCounter();
-            int minutes = counter / 60;
-            if(!HostedEvent.isEvent() && (minutes % 5 == 0 || minutes == 1)) {
-            	CommandDispatcher.sendToServer(OSTB.getServerName().toLowerCase(), "say &a&lUHC: &eA game is launching soon, run command &b/uhc");
+            if(!HostedEvent.isEvent() && (counter == 10 * 60 || counter == 5 * 60 || counter == 60)) {
+            	CommandDispatcher.sendToGame("UHC", "say &a&lUHC: &eA game is launching soon, run command &b/uhc");
             }
             countDown.decrementCounter();
             if(countDown.getCounter() <= 0) {

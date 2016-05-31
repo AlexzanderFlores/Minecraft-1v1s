@@ -1,6 +1,7 @@
 package ostb.gameapi.games.uhc;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -70,17 +71,17 @@ public class TimeHandler implements Listener {
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
-					//day INT, hour INT, started BOOL, options INT
-					//1234456789
-					//1 = team size
-					//2 = bool for rush
-					//3 = bool for nether
-					//44 = apple rates, 00 = 100%
-					//5 = bool for horses
-					//6 = bool for horse healing
-					//7 = bool for pearl damage
-					//8 = bool for absorption
-					//9 = bool for end
+					// day INT, hour INT, started BOOL, options INT
+					// 1234456789
+					// 1 = team size
+					// 2 = bool for rush
+					// 3 = bool for nether
+					// 44 = apple rates, 00 = 100%
+					// 5 = bool for horses
+					// 6 = bool for horse healing
+					// 7 = bool for pearl damage
+					// 8 = bool for absorption
+					// 9 = bool for end
 					Calendar calendar = Calendar.getInstance();
 					int day = calendar.get(Calendar.DAY_OF_YEAR);
 					int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
@@ -95,10 +96,16 @@ public class TimeHandler implements Listener {
 						}
 					} else {
 						db.delete("day", (day - 1) + "");
-						int teamSize = TeamHandler.getMaxTeamSize();
-						String scenarios = "To" + teamSize + " " +  ScenarioManager.getText();
+						Random random = new Random();
 						for(int a = 0, hour = 12; a < 5; ++a, hour += 2) {
-							addGame(day, hour, 0, defaultOptions, scenarios);
+							int chance = random.nextInt(100) + 1;
+							// 20% chance of a To3
+							// 45% chance of a To2
+							// 35% chance of a FFA
+							int teamSize = chance <= 20 ? 3 : chance <= 65 ? 2 : 1;
+							String options = teamSize + defaultOptions.substring(1);
+							String scenarios = ScenarioManager.getText();
+							addGame(day, hour, 0, options, scenarios);
 						}
 					}
 				}
