@@ -120,7 +120,7 @@ public class TimeHandler implements Listener {
 							Scenario primaryScenario = null;
 							do {
 								primaryScenario = primaryScenarios.get(random.nextInt(primaryScenarios.size()));
-							} while(lastPrimary.equals(primaryScenario.getName()));
+							} while(lastPrimary.equals(primaryScenario.getName()) || (primaryScenario.getName().equals("Vanilla") && random.nextBoolean()));
 							lastPrimary = primaryScenario.getName();
 							enabledScenarios.add(primaryScenario);
 							chance = random.nextInt(100) + 1;
