@@ -150,6 +150,7 @@ public class TweetHandler implements Listener {
     	DB db = DB.NETWORK_UHC_TIMES;
     	OptionsHandler.applyOptions(db.getString("id", "" + id, "options"));
     	String scenarios = db.getString("id", "" + id, "scenarios");
+    	scenarios = scenarios.replace("Rush", "");
     	String [] split = scenarios.split(" ");
     	List<String> list = new ArrayList<String>();
     	for(String string : split) {
@@ -167,6 +168,7 @@ public class TweetHandler implements Listener {
     	list = null;
         if(OptionsHandler.isRush()) {
             scenarios += " Rush";
+            Bukkit.getLogger().info("Adding rush");
         }
         int teamSize = TeamHandler.getMaxTeamSize();
         String size = teamSize == 1 ? "FFA" : "To" + teamSize;

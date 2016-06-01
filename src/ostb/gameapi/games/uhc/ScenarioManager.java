@@ -82,6 +82,15 @@ public class ScenarioManager implements Listener {
         return scenarios2;
     }
     
+    public static Scenario getScenario(String text) {
+    	for(Scenario scenario : scenarios.values()) {
+    		if(scenario.getName().equals(text) || scenario.getShortName().equals(text)) {
+    			return scenario;
+    		}
+    	}
+    	return null;
+    }
+    
     public static String getText() {
     	String text = "";
     	for(Scenario scenario : getActiveScenarios()) {

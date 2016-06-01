@@ -99,14 +99,14 @@ public class TimeHandler implements Listener {
 					} else {
 						db.delete("day", (day - 1) + "");
 						Random random = new Random();
-						for(int a = 0, hour = 12; a < 5; ++a, hour += 2) {
+						String lastPrimary = "";
+						for(int a = 0, hour = 0; a < 24; ++a, hour += 1) {
 							int chance = random.nextInt(100) + 1;
 							// 20% chance of a To3
 							// 45% chance of a To2
 							// 35% chance of a FFA
 							int teamSize = chance <= 20 ? 3 : chance <= 65 ? 2 : 1;
-							String options = teamSize + defaultOptions.substring(1);
-							//int rushChance = 100;
+							int rushChance = 50;
 							List<Scenario> primaryScenarios = new ArrayList<Scenario>();
 							List<Scenario> secondaryScenarios = new ArrayList<Scenario>();
 							for(Scenario scenario : ScenarioManager.getAllScenarios()) {
@@ -117,31 +117,75 @@ public class TimeHandler implements Listener {
 								}
 							}
 							List<Scenario> enabledScenarios = new ArrayList<Scenario>();
-							enabledScenarios.add(primaryScenarios.get(random.nextInt(primaryScenarios.size())));
+							Scenario primaryScenario = null;
+							do {
+								primaryScenario = primaryScenarios.get(random.nextInt(primaryScenarios.size()));
+							} while(lastPrimary.equals(primaryScenario.getName()));
+							lastPrimary = primaryScenario.getName();
+							enabledScenarios.add(primaryScenario);
 							chance = random.nextInt(100) + 1;
 							int secondaryScenarioCount = chance <= 20 ? 2 : chance <= 60 ? 1 : 0;
+							if(enabledScenarios.get(0).getName().equals("Vanilla")) {
+								secondaryScenarioCount = 0;
+								rushChance = 0;
+							}
 							for(int b = 0; b < secondaryScenarioCount; ++b) {
 								Scenario randomScenario = null;
 								do {
 									randomScenario = secondaryScenarios.get(random.nextInt(secondaryScenarios.size()));
 								} while(enabledScenarios.contains(randomScenario));
+								if(randomScenario.getName().equals("TripleOres")) {
+									Scenario cutClean = ScenarioManager.getScenario("CutClean");
+									if(!enabledScenarios.contains(cutClean)) {
+										enabledScenarios.add(cutClean);
+									}
+									rushChance = 90;
+								} else if(randomScenario.getName().equals("Barebones")) {
+									rushChance = 100;
+								} else if(randomScenario.getName().equals("TrueLove")) {
+									teamSize = 1;
+								}
 								enabledScenarios.add(randomScenario);
 							}
 							primaryScenarios.clear();
 							primaryScenarios = null;
 							secondaryScenarios.clear();
 							secondaryScenarios = null;
-							String scenarios = "";//ScenarioManager.getText();
+							String scenarios = "";
 							for(Scenario scenario : enabledScenarios) {
 								scenarios += scenario.getShortName() + " ";
 							}
+							String options = teamSize + defaultOptions.substring(1);
+							chance = random.nextInt(100) + 1;
+							if(rushChance >= chance) {
+								options = options.substring(0, 1) + '1' + options.substring(2);
+								scenarios += "Rush ";
+							}
 							enabledScenarios.clear();
 							enabledScenarios = null;
-							addGame(day, hour, 0, options, scenarios);
+							addGame(day, hour, 0, options, scenarios.substring(0, scenarios.length() - 1));
 						}
 					}
 				}
 			});
+			new CommandBase("test") {
+				@Override
+				public boolean execute(CommandSender sender, String [] arguments) {
+					MessageHandler.sendMessage(sender, "Primary:");
+					for(Scenario scenario : ScenarioManager.getAllScenarios()) {
+						if(scenario.isPrimary()) {
+							MessageHandler.sendMessage(sender, "&b" + scenario.getName() + " &7- &b" + scenario.getShortName());
+						}
+					}
+					MessageHandler.sendMessage(sender, "Secondary:");
+					for(Scenario scenario : ScenarioManager.getAllScenarios()) {
+						if(!scenario.isPrimary()) {
+							MessageHandler.sendMessage(sender, "&b" + scenario.getName() + " &7- &b" + scenario.getShortName());
+						}
+					}
+					return true;
+				}
+			};
 		}
 	}
 
