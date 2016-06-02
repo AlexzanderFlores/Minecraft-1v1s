@@ -120,7 +120,7 @@ public class TimeHandler implements Listener {
 							Scenario primaryScenario = null;
 							do {
 								primaryScenario = primaryScenarios.get(random.nextInt(primaryScenarios.size()));
-							} while(lastPrimary.equals(primaryScenario.getName()) || (primaryScenario.getName().equals("Vanilla") && random.nextBoolean()));
+							} while(lastPrimary.equals(primaryScenario.getName()) || (primaryScenario.getName().equals("Vanilla") && (random.nextInt(100) + 1) >= 20));
 							lastPrimary = primaryScenario.getName();
 							enabledScenarios.add(primaryScenario);
 							chance = random.nextInt(100) + 1;
@@ -128,6 +128,8 @@ public class TimeHandler implements Listener {
 							if(enabledScenarios.get(0).getName().equals("Vanilla")) {
 								secondaryScenarioCount = 0;
 								rushChance = 0;
+							} else if(enabledScenarios.get(0).getName().equals("Barebones")) {
+								rushChance = 100;
 							}
 							for(int b = 0; b < secondaryScenarioCount; ++b) {
 								Scenario randomScenario = null;
@@ -139,9 +141,9 @@ public class TimeHandler implements Listener {
 									if(!enabledScenarios.contains(cutClean)) {
 										enabledScenarios.add(cutClean);
 									}
-									rushChance = 90;
-								} else if(randomScenario.getName().equals("Barebones")) {
-									rushChance = 100;
+									if(rushChance == 50) {
+										rushChance = 90;
+									}
 								} else if(randomScenario.getName().equals("TrueLove")) {
 									teamSize = 1;
 								}

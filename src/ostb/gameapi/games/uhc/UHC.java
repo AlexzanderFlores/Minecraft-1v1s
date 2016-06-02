@@ -1,6 +1,7 @@
 package ostb.gameapi.games.uhc;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -192,13 +193,17 @@ public class UHC extends MiniGame {
         new CommandBase("sinfo") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                for(Scenario scenario : ScenarioManager.getActiveScenarios()) {
-                    MessageHandler.sendMessage(sender, "");
+            	List<Scenario> scenarios = ScenarioManager.getActiveScenarios();
+                for(int a = 0; a < scenarios.size(); ++a) {
+                    if(a == 0) {
+                    	MessageHandler.sendMessage(sender, "");
+                    }
+                    Scenario scenario = scenarios.get(a);
                     String info = scenario.getInfo();
                     if(info == null) {
-                        MessageHandler.sendMessage(sender, "&cNo info to display at this time for " + scenario.getName());
+                        MessageHandler.sendMessage(sender, "&cNo info to display at this time for &b" + scenario.getName());
                     } else {
-                        MessageHandler.sendMessage(sender, "&b&l" + scenario.getName() + " &e" + info);
+                        MessageHandler.sendMessage(sender, "&e&l" + scenario.getName() + " &b" + info);
                     }
                     MessageHandler.sendMessage(sender, "");
                 }
@@ -297,7 +302,7 @@ public class UHC extends MiniGame {
 					OSTB.getSidebar().removeScore(14);
 				}
 				int teamSize = TeamHandler.getMaxTeamSize();
-				String scenarios = (teamSize == 1 ? "FFA" : "To" + teamSize) + " " +  ScenarioManager.getText();
+				String scenarios = (teamSize == 1 ? "FFA" : "To" + teamSize) + " " +  ScenarioManager.getText() + (OptionsHandler.isRush() ? " Rush" : "");
 				if(!scenarios.equals(oldScenarios)) {
 					oldScenarios = scenarios;
 					removeScore(11);

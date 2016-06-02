@@ -167,8 +167,7 @@ public class TweetHandler implements Listener {
     	list.clear();
     	list = null;
         if(OptionsHandler.isRush()) {
-            scenarios += " Rush";
-            Bukkit.getLogger().info("Adding rush");
+            scenarios += "Rush";
         }
         int teamSize = TeamHandler.getMaxTeamSize();
         String size = teamSize == 1 ? "FFA" : "To" + teamSize;

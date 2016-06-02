@@ -96,7 +96,7 @@ public class ScenarioManager implements Listener {
     	for(Scenario scenario : getActiveScenarios()) {
     		text += scenario.getShortName() + " ";
     	}
-    	return text;
+    	return text.substring(0, text.length() - 1);
     }
     
     public static boolean isScenario(String shortName) {
