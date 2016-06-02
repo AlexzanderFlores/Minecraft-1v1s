@@ -28,12 +28,10 @@ import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class TeamHandler implements Listener {
@@ -67,7 +65,7 @@ public class TeamHandler implements Listener {
                 }
             }
         }
-        new DelayedTask(new Runnable() {
+        /*new DelayedTask(new Runnable() {
             @Override
             public void run() {
                 if(HostedEvent.isEvent()) {
@@ -84,7 +82,7 @@ public class TeamHandler implements Listener {
                     addTeam("Shadoune666", "ImGamerBroz", "&1");
                 }
             }
-        }, 20 * 2);
+        }, 20 * 2);*/
         new CommandBase("team", 0, 3, true) {
             @Override
             public boolean execute(CommandSender sender, String [] arguments) {
@@ -96,7 +94,6 @@ public class TeamHandler implements Listener {
                     MessageHandler.sendMessage(player, "/team deny &eDeny an invite");
                     MessageHandler.sendMessage(player, "/team leave &eLeave your current team");
                     MessageHandler.sendMessage(player, "/team kick <name> &eKick a player from your team");
-                    MessageHandler.sendMessage(player, "/team color <color code> &eChange your team's color");
                     MessageHandler.sendMessage(player, "/team list &eList all players in your team");
                     MessageHandler.sendMessage(player, "/teamChat &eToggle team chat on/off");
                     MessageHandler.sendMessage(player, "/teamChat <message> &eSend a message in team chat");
@@ -138,77 +135,6 @@ public class TeamHandler implements Listener {
                                     teams.remove(target.getName());
                                 } else {
                                     MessageHandler.sendMessage(player, "&cYou are not in a team");
-                                }
-                            } else if(arguments[0].equalsIgnoreCase("color")) {
-                                Team team = teams.get(player.getName());
-                                if(team == null) {
-                                    MessageHandler.sendMessage(player, "&cYou do not have a team");
-                                    return true;
-                                }
-                                if(Ranks.PREMIUM.hasRank(player)) {
-                                    if(arguments.length == 2) {
-                                        String color = arguments[1].toLowerCase();
-                                        char character = ChatColor.WHITE.toString().charAt(0);
-                                        if(possibleColors.contains(color.replace("&", String.valueOf(character)))) {
-                                            if(color.length() == 2 && color.charAt(0) == '&') {
-                                                char colorChar = color.charAt(1);
-                                                if(isHexChar(colorChar)) {
-                                                    String prefix = team.getPrefix();
-                                                    if(prefix != null && !prefix.equals("")) {
-                                                        //Bukkit.getLogger().info("\"" + prefix + "\"");
-                                                        //Bukkit.getLogger().info(possibleColors.get(0));
-                                                        possibleColors.set(0, prefix);
-                                                        //Bukkit.getLogger().info(possibleColors.get(1));
-                                                    }
-                                                    String realColor = color.replace("&", String.valueOf(character));
-                                                    //Bukkit.getLogger().info("Real Color: \"" + realColor + "\"");
-                                                    possibleColors.remove(realColor);
-                                                    team.setPrefix(realColor);
-                                                    for(OfflinePlayer offlinePlayer : team.getPlayers()) {
-                                                        if(offlinePlayer.isOnline()) {
-                                                            Player onlinePlayer = offlinePlayer.getPlayer();
-                                                            HealthHandler.updateHealth(onlinePlayer);
-                                                        }
-                                                    }
-                                                    return true;
-                                                }
-                                            } else if(color.length() == 4 && color.charAt(0) == '&' && color.charAt(2) == '&') {
-                                                char colorChar = color.charAt(1);
-                                                if(isHexChar(colorChar)) {
-                                                    char colorChar2 = color.charAt(3);
-                                                    if(isHexChar(colorChar2)) {
-                                                        String prefix = team.getPrefix();
-                                                        if(prefix != null) {
-                                                            //Bukkit.getLogger().info("\"" + prefix + "\"");
-                                                            //Bukkit.getLogger().info(possibleColors.get(0));
-                                                            possibleColors.set(0, prefix);
-                                                            //Bukkit.getLogger().info(possibleColors.get(1));
-                                                        }
-                                                        String realColor = color.replace("&", String.valueOf(character));
-                                                        //Bukkit.getLogger().info("Real Color: \"" + realColor + "\"");
-                                                        possibleColors.remove(realColor);
-                                                        team.setPrefix(realColor);
-                                                        for(OfflinePlayer offlinePlayer : team.getPlayers()) {
-                                                            if(offlinePlayer.isOnline()) {
-                                                                Player onlinePlayer = offlinePlayer.getPlayer();
-                                                                HealthHandler.updateHealth(onlinePlayer);
-                                                            }
-                                                        }
-                                                        return true;
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            MessageHandler.sendMessage(player, "&cThat is not a valid color to use at this time");
-                                            return true;
-                                        }
-                                        MessageHandler.sendMessage(player, "&cYour color must be in this format: &e&X &cor &e&X&X");
-                                        MessageHandler.sendMessage(player, "Replace X with your color code, run &b/coloredChat");
-                                    } else {
-                                        MessageHandler.sendMessage(player, "/team color <color code>");
-                                    }
-                                } else {
-                                    MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
                                 }
                             } else if(arguments[0].equalsIgnoreCase("deny")) {
                                 if(invites.containsKey(player.getName())) {
@@ -431,7 +357,7 @@ public class TeamHandler implements Listener {
         }
     }
 
-    private void addTeam(String nameOne, String nameTwo, String color) {
+    /*private void addTeam(String nameOne, String nameTwo, String color) {
         Team team = OSTB.getScoreboard().registerNewTeam(nameOne);
         team.addPlayer(Bukkit.getOfflinePlayer(nameOne));
         team.addPlayer(Bukkit.getOfflinePlayer(nameTwo));
@@ -442,7 +368,7 @@ public class TeamHandler implements Listener {
 
     private boolean isHexChar(char character) {
         return (character >= 48 && character <= 57) || (character >= 97 && character <= 102) || (character >= 108 && character <= 111);
-    }
+    }*/
 
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {

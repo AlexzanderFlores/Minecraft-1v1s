@@ -30,8 +30,8 @@ public class HealthHandler implements Listener {
                 if(player == null) {
                     MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
                 } else {
-                    MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player) + " &ahas &c" + (int) player.getHealth() + " &ahealth");
                     updateHealth(player);
+                    MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player) + " &ahas &c" + (int) player.getHealth() + " &ahealth");
                 }
                 return true;
             }
@@ -51,7 +51,6 @@ public class HealthHandler implements Listener {
         if(team != null) {
             color = team.getPrefix();
         }
-        //Bukkit.getLogger().info("Prefix: \"" + color + "\"");
         String name = StringUtil.color(color) + player.getName();
         name += " " + ChatColor.WHITE + (int) player.getHealth();
         if(name.length() > 16) {
@@ -79,12 +78,11 @@ public class HealthHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player && !event.isCancelled()) {
-            Player player = (Player) event.getEntity();
-            final String name = player.getName();
+            final Player player = (Player) event.getEntity();
             new DelayedTask(new Runnable() {
                 @Override
                 public void run() {
-                    updateHealth(ProPlugin.getPlayer(name));
+                    updateHealth(player);
                 }
             });
         }
@@ -93,12 +91,11 @@ public class HealthHandler implements Listener {
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
         if(event.getEntity() instanceof Player && !event.isCancelled()) {
-            Player player = (Player) event.getEntity();
-            final String name = player.getName();
+            final Player player = (Player) event.getEntity();
             new DelayedTask(new Runnable() {
                 @Override
                 public void run() {
-                    updateHealth(ProPlugin.getPlayer(name));
+                    updateHealth(player);
                 }
             });
         }

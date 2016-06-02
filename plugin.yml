@@ -228,6 +228,7 @@ commands:
 # UHC commands
   health:
     usage: /health [name]
+    aliases: [h]
     
   toggleEvent:
     usage: /toggleEvent

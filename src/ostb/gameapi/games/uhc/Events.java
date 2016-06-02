@@ -24,15 +24,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -347,17 +343,6 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if(event.getRightClicked() instanceof Player) {
-            Player player = event.getPlayer();
-            if(SpectatorHandler.contains(player) && Ranks.isStaff(player)) {
-                Player target = (Player) event.getRightClicked();
-                player.chat("/invSee " + target.getName());
-            }
-        }
-    }
-
-    @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
         if(event.getCause() == TeleportCause.NETHER_PORTAL && !OptionsHandler.isNetherEnabled()) {
             MessageHandler.sendMessage(event.getPlayer(), "&cThe Nether is disabled");
@@ -375,14 +360,6 @@ public class Events implements Listener {
         Player player = Bukkit.getPlayer(event.getUUID());
         if(player != null) {
             player.setHealth(0.0d);
-        }
-    }
-
-    @EventHandler
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        EntityType type = event.getEntityType();
-        if(event.getSpawnReason() != SpawnReason.CUSTOM && (type == EntityType.PIG || type == EntityType.SHEEP)) {
-            event.setCancelled(true);
         }
     }
 
@@ -407,27 +384,6 @@ public class Events implements Listener {
             block.setType(Material.AIR);
             event.setCancelled(true);
         }
-        /*if(!event.isCancelled()) {
-            Material type = block.getType();
-			if(type == Material.REDSTONE_ORE || type == Material.GLOWING_REDSTONE_ORE || type == Material.LAPIS_ORE) {
-				if(!delayed.contains(event.getPlayer().getName())) {
-					final String name = event.getPlayer().getName();
-					delayed.add(name);
-					new DelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							delayed.remove(name);
-						}
-					}, 20 * 3);
-					String blockName = type == Material.LAPIS_ORE ? "Lapis" : "Redstone";
-					MessageHandler.sendMessage(event.getPlayer(), "&cCancelling block dropping for " + blockName + " for performance reasons");
-				}
-				block.setType(Material.AIR);
-				ExperienceOrb exp = (ExperienceOrb) block.getWorld().spawnEntity(block.getLocation(), EntityType.EXPERIENCE_ORB);
-				exp.setExperience(1);
-				event.setCancelled(true);
-			}
-		}*/
     }
 
     @EventHandler
@@ -437,20 +393,14 @@ public class Events implements Listener {
             event.setCancelled(true);
         } else if(type == Material.SPIDER_EYE && !OptionsHandler.isNetherEnabled()) {
             event.setCancelled(true);
+        } else if(type == Material.REDSTONE) {
+        	event.getEntity().setTicksLived(20 * 60 * 4);
         }
     }
     
     @EventHandler
     public void onAutoRestart(AutoRestartEvent event) {
     	event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if(event.getBlockClicked().getLocation().getY() >= 175) {
-            MessageHandler.sendMessage(event.getPlayer(), "&cYou cannot empty buckets at this height");
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler
