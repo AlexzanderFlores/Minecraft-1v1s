@@ -19,6 +19,7 @@ import anticheat.events.PlayerBanEvent;
 import npc.NPCRegistrationHandler.NPCs;
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.CounterDecrementEvent;
 import ostb.customevents.game.GameEndingEvent;
@@ -114,7 +115,11 @@ public class MiniGameEvents implements Listener {
 				}
 			}
 		} else if(ticks == 20 * 60 * 5 && Bukkit.getOnlinePlayers().isEmpty()) {
-			ProPlugin.restartServer();
+			AutoRestartEvent autoRestartEvent = new AutoRestartEvent();
+			Bukkit.getPluginManager().callEvent(autoRestartEvent);
+			if(!autoRestartEvent.isCancelled()) {
+				ProPlugin.restartServer();
+			}
 		}
 	}
 	
@@ -262,5 +267,10 @@ public class MiniGameEvents implements Listener {
 		if(event.getSpawnReason() != SpawnReason.CUSTOM && event.getEntity().getWorld().equals(getMiniGame().getLobby())) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onAutoRestart(AutoRestartEvent event) {
+		event.setCancelled(true);
 	}
 }

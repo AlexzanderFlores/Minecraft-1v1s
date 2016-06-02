@@ -43,6 +43,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
@@ -61,7 +62,6 @@ import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
-import ostb.server.util.UnicodeUtil;
 
 @SuppressWarnings("deprecation")
 public class Events implements Listener {
@@ -70,7 +70,6 @@ public class Events implements Listener {
     private static boolean moveToCenter = false;
     private static boolean postStart = false;
     private static boolean canBreakBlocks = false;
-    private static int alertCounter = 0;
     private ItemStack forceStartItem = null;
     private Random random = null;
     private boolean runOneSecond = true;
@@ -129,12 +128,10 @@ public class Events implements Listener {
                         MessageHandler.alert("&cFall/mob damage is now enabled");
                     }
                 }, 20 * 15);
-                MessageHandler.alert("&cDrowning is now disabled for the next 60 seconds");
                 new DelayedTask(new Runnable() {
                     @Override
                     public void run() {
                         firstMinute = false;
-                        MessageHandler.alert("&cDrowning damage is now enabled");
                     }
                 }, 20 * 60);
                 canBreakBlocks = true;
@@ -183,17 +180,6 @@ public class Events implements Listener {
                         if(counter <= 5 || (counter < 60 && counter % 10 == 0)) {
                             MessageHandler.alert("Meetup in &e" + miniGame.getCounterAsString());
                         }
-                    }
-                    if(!HostedEvent.isEvent() && (++alertCounter == 10 || alertCounter == 60)) {
-                        MessageHandler.alertLine();
-                        MessageHandler.alert("");
-                        MessageHandler.alert("&4&lIf you have questions please run these:");
-                        MessageHandler.alert("");
-                        MessageHandler.alert("  " + UnicodeUtil.getUnicode("27A4") + " &b&l/sInfo");
-                        MessageHandler.alert("  " + UnicodeUtil.getUnicode("27A4") + " &b&l/info");
-                        MessageHandler.alert("  " + UnicodeUtil.getUnicode("27A4") + " &b&l/rules");
-                        MessageHandler.alert("");
-                        MessageHandler.alertLine();
                     }
                 }
             }
@@ -452,6 +438,11 @@ public class Events implements Listener {
         } else if(type == Material.SPIDER_EYE && !OptionsHandler.isNetherEnabled()) {
             event.setCancelled(true);
         }
+    }
+    
+    @EventHandler
+    public void onAutoRestart(AutoRestartEvent event) {
+    	event.setCancelled(true);
     }
 
     @EventHandler

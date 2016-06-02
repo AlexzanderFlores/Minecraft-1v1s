@@ -226,41 +226,17 @@ commands:
     usage: /purchase <name> <package name>
 
 # UHC commands
-  heal:
-    usage: /heal [name | all]
-
-  invSee:
-    usage: /invSee <name>
-
   health:
     usage: /health [name]
     
-  commandSpy:
-    usage: /commandSpy
-    
   toggleEvent:
     usage: /toggleEvent
-    
-  feed:
-    usage: /feed [name | all]
     
   info:
     usage: /info
     
   sinfo:
     usage: /sinfo
-    
-  uhcKick:
-    usage: /uhcKick <name>
-
-  uhcKill:
-    usage: /uhcKill <name>
-
-  host:
-    usage: /host <additional arguments>
-        
-  helpop:
-    usage: /helpop <text>
         
   tele:
     usage: /tele <name> [name]
@@ -280,23 +256,8 @@ commands:
   teamChat:
     usage: /teamChat
         
-  appleRates:
-    usage: /appleRates
-        
-  isNetherOn:
-    usage: /isNetherOn
-        
   rules:
     usage: /rules
-
-  setBorder:
-    usage: /setBorder
-        
-  compass:
-    usage: /compass
-            
-  getOutOfBounds:
-    usage: /getOutOfBounds
 
   lateScatter:
     usage: /lateScatter

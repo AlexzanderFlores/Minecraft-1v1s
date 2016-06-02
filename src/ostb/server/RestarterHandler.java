@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.OSTB.Plugins;
+import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.ServerRestartAlertEvent;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
@@ -105,9 +105,13 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 				}
 			}
 		} else if(ticks == 20 * 5) {
-			if(PerformanceHandler.getMemory() >= 70 && !running && OSTB.getMiniGame() == null && OSTB.getPlugin() != Plugins.PREGEN) {
-				setCounter(60);
-				running = true;
+			if(PerformanceHandler.getMemory() >= 70 && !running) {
+				AutoRestartEvent autoRestartEvent = new AutoRestartEvent();
+				Bukkit.getPluginManager().callEvent(autoRestartEvent);
+				if(!autoRestartEvent.isCancelled()) {
+					setCounter(60);
+					running = true;
+				}
 			}
 		}
 	}

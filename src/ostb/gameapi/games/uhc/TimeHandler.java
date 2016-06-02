@@ -20,7 +20,7 @@ import ostb.server.DB;
 import ostb.server.util.EventUtil;
 
 public class TimeHandler implements Listener {
-	private static final String defaultOptions = "1000111110";
+	private static final String defaultOptions = "1100111110";
 	
 	public TimeHandler() {
 		new CommandBase("addUHCGame", 5, -1) {
@@ -100,7 +100,7 @@ public class TimeHandler implements Listener {
 						db.delete("day", (day - 1) + "");
 						Random random = new Random();
 						String lastPrimary = "";
-						for(int a = 0, hour = 0; a < 24; ++a, hour += 1) {
+						for(int a = 0, hour = 10; a < 5; ++a, hour += 2) {
 							int chance = random.nextInt(100) + 1;
 							// 20% chance of a To3
 							// 45% chance of a To2
