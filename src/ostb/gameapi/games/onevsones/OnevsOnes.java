@@ -10,6 +10,7 @@ import org.bukkit.entity.ItemFrame;
 
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.competitive.EloHandler;
 import ostb.gameapi.competitive.EloRanking;
 import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.onevsones.kits.Archer;
@@ -58,7 +59,7 @@ public class OnevsOnes extends ProPlugin {
         new BelowNameHealthScoreboardUtil();
         new PrivateBattleHandler();
         new HotbarEditor();
-        new EloHandler();
+        new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
         List<ItemFrame> frames = new ArrayList<ItemFrame>();
         frames.add(ImageMap.getItemFrame(world, -16, 7, 3));

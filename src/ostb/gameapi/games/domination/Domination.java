@@ -40,7 +40,7 @@ public class Domination extends MiniGame {
 		CoinsHandler.setKillCoins(20);
 		CoinsHandler.setWinCoins(75);
 		new StatsHandler(DB.PLAYERS_STATS_DOMINATION, DB.PLAYERS_STATS_DOMINATION_MONTHLY, DB.PLAYERS_STATS_DOMINATION_WEEKLY);
-		StatsHandler.setEloDB(DB.PLAYERS_DOMINATION_ELO);
+		StatsHandler.setEloDB(DB.PLAYERS_DOMINATION_ELO, 1000);
 		List<ItemFrame> frames = new ArrayList<ItemFrame>();
 		World world = getLobby();
 		frames.add(ImageMap.getItemFrame(world, 14, 7, -2));

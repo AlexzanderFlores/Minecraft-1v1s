@@ -283,9 +283,9 @@ public class StatsHandler implements Listener {
 		return enabled;
 	}
 	
-	public static void setEloDB(DB elo) {
+	public static void setEloDB(DB elo, int starting) {
 		if(StatsHandler.elo == null) {
-			new EloHandler();
+			new EloHandler(starting);
 		}
 		StatsHandler.elo = elo;
 	}

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -19,9 +20,17 @@ import ostb.server.util.EventUtil;
 
 public class EloHandler implements Listener {
 	private static Map<String, Integer> elo = null;
+	private static DB db = null;
+	private static int starting = 0;
 	
-	public EloHandler() {
+	public EloHandler(int starting) {
+		this(null, starting);
+	}
+	
+	public EloHandler(DB db, int starting) {
 		elo = new HashMap<String, Integer>();
+		EloHandler.db = db;
+		EloHandler.starting = starting;
 		new CommandBase("elo", 0, 1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -80,18 +89,31 @@ public class EloHandler implements Listener {
 	}
 	
 	@EventHandler
+	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		String name = player.getName();
+		UUID uuid = player.getUniqueId();
+		DB db = EloHandler.db == null ? StatsHandler.getEloDB() : EloHandler.db;
+		if(db != null) {
+			if(db.isUUIDSet(uuid)) {
+				elo.put(name, db.getInt("uuid", uuid.toString(), "amount"));
+			} else {
+				elo.put(name, starting);
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
 		UUID uuid = event.getUUID();
 		String name = event.getName();
 		if(elo.containsKey(name)) {
-			DB db = StatsHandler.getEloDB();
-			if(db != null) {
-				int amount = elo.get(name);
-				if(db.isUUIDSet(uuid)) {
-					db.updateInt("elo", amount, "uuid", uuid.toString());
-				} else {
-					db.insert("'" + uuid.toString() + "', '" + amount + "'");
-				}
+			DB db = EloHandler.db == null ? StatsHandler.getEloDB() : EloHandler.db;
+			int amount = elo.get(name);
+			if(db.isUUIDSet(uuid)) {
+				db.updateInt("elo", amount, "uuid", uuid.toString());
+			} else {
+				db.insert("'" + uuid.toString() + "', '" + amount + "'");
 			}
 			elo.remove(name);
 		}
