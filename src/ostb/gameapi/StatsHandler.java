@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -20,6 +21,7 @@ import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
+import ostb.customevents.player.StatsChangeEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
@@ -29,7 +31,6 @@ import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.DoubleUtil;
-import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.TimeUtil;
 
@@ -373,8 +374,17 @@ public class StatsHandler implements Listener {
 		return gameStats.get(player.getName()).getMonthlyDeaths();
 	}
 	
-	public static void addWin(Player player) {
+	private static boolean canEditStats(Player player) {
 		if(viewOnly) {
+			return false;
+		}
+		StatsChangeEvent event = new StatsChangeEvent(player);
+		Bukkit.getPluginManager().callEvent(event);
+		return !event.isCancelled();
+	}
+	
+	public static void addWin(Player player) {
+		if(!canEditStats(player)) {
 			return;
 		}
 		loadStats(player);
@@ -384,7 +394,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addLoss(Player player) {
-		if(viewOnly) {
+		if(!canEditStats(player)) {
 			return;
 		}
 		loadStats(player);
@@ -394,7 +404,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addKill(Player player) {
-		if(viewOnly) {
+		if(!canEditStats(player)) {
 			return;
 		}
 		loadStats(player);
@@ -404,7 +414,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addDeath(Player player) {
-		if(viewOnly) {
+		if(!canEditStats(player)) {
 			return;
 		}
 		loadStats(player);
@@ -414,7 +424,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void removeDeath(Player player) {
-		if(viewOnly) {
+		if(!canEditStats(player)) {
 			return;
 		}
 		loadStats(player);
@@ -443,7 +453,6 @@ public class StatsHandler implements Listener {
 	@EventHandler
 	public void onGameDeath(GameDeathEvent event) {
 		addDeath(event.getPlayer());
-		EffectUtil.displayDeath(event.getPlayer().getLocation());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

@@ -25,6 +25,7 @@ import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
+import ostb.server.util.EventUtil;
 
 public class ScatterHandler implements Listener {
 	private Map<String, Location> spawns = null;
@@ -77,6 +78,7 @@ public class ScatterHandler implements Listener {
 				return true;
 			}
 		}.enableDelay(2);
+		EventUtil.register(this);
 		String command = "spreadPlayers 0 0 100 " + size + " false ";
 		for(Player player : ProPlugin.getPlayers()) {
 			player.setNoDamageTicks(20 * 30);
