@@ -196,7 +196,7 @@ public class UHC extends MiniGame {
 		} catch(NullPointerException e) {
 			
 		}
-    	String container = Bukkit.getWorldContainer().getPath();
+    	String container = Bukkit.getWorldContainer().getPath().replace(".", "");
 		for(World world : Bukkit.getWorlds()) {
 			Bukkit.unloadWorld(world, false);
 			if(world.getName().equals("lobby") && !new File(container + "/../resources/maps/lobby").exists()) {
@@ -205,8 +205,6 @@ public class UHC extends MiniGame {
 			if(new File(container + "/" + world.getName() + "/pregen.yml").exists()) {
 				Bukkit.getLogger().info("World is pregened");
 				continue;
-			} else {
-				Bukkit.getLogger().info("World is NOT pregened");
 			}
 			FileHandler.delete(new File(container + "/" + world.getName()));
 		}
