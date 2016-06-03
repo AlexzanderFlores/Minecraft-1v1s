@@ -47,7 +47,6 @@ import ostb.customevents.player.PlayerHeadshotEvent;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.gameapi.uhc.ScatterHandler;
 import ostb.player.MessageHandler;
@@ -80,21 +79,11 @@ public class Events implements Listener {
         new DelayedTask(new Runnable() {
             @Override
             public void run() {
-                MessageHandler.alertLine();
                 for(Player player : ProPlugin.getPlayers()) {
                     for(PotionEffect effect : player.getActivePotionEffects()) {
                         player.removePotionEffect(effect.getType());
                     }
-                    if(Ranks.OWNER.hasRank(player)) {
-                    	player.setOp(true);
-                        player.chat("/wb clear all");
-                        player.setOp(false);
-                        if(HostHandler.getMainHost() != null && HostHandler.getMainHost().getName().equals(player.getName())) {
-                            SpectatorHandler.add(player);
-                        }
-                    }
                 }
-                MessageHandler.alertLine();
                 if(OptionsHandler.isRush()) {
                     OSTB.getMiniGame().setCounter(60 * 30);
                     new GracePeriod(60 * 10);
@@ -108,10 +97,10 @@ public class Events implements Listener {
                     public void run() {
                         for(Player player : Bukkit.getOnlinePlayers()) {
                             player.setFireTicks(0);
+                            player.setHealth(player.getMaxHealth());
+                            player.setFoodLevel(20);
                         }
                         postStart = true;
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "heal all");
-                        MessageHandler.alert("&cFall/mob damage is now enabled");
                     }
                 }, 20 * 15);
                 new DelayedTask(new Runnable() {
@@ -122,7 +111,7 @@ public class Events implements Listener {
                 }, 20 * 60);
                 canBreakBlocks = true;
             }
-        }, 20 * 5);
+        }, 20 * 3);
     }
 
     public static boolean getMoveToCenter() {

@@ -19,6 +19,7 @@ import anticheat.events.TimeEvent;
 import ostb.ProPlugin;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.games.uhc.Events;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
@@ -133,7 +134,7 @@ public class ScatterHandler implements Listener {
 					if(chatAlerts) {
 						MessageHandler.alert("&eScattering " + AccountHandler.getPrefix(player) + " &e[&a" + scattered.size() + "&7/&a" + spawns.size() + "&e]");
 					}
-					if(scattered.size() >= ProPlugin.getPlayers().size()) {
+					if(scattered.size() >= spawns.size()) {
 						ChunkUnloadEvent.getHandlerList().unregister(this);
 						PlayerLeaveEvent.getHandlerList().unregister(this);
 						logSpawns = false;
@@ -141,6 +142,7 @@ public class ScatterHandler implements Listener {
 						scattered = null;
 						spawns.clear();
 						spawns = null;
+						Events.start();
 					}
 				}
 			}
