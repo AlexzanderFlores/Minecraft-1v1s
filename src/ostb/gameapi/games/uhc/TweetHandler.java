@@ -108,6 +108,9 @@ public class TweetHandler implements Listener {
     }
 
     public static void tweet(CommandSender sender, int gameID) {
+    	if(WorldHandler.isPreGenerated()) {
+    		return;
+    	}
     	if(HostedEvent.isEvent()) {
             MessageHandler.alert("Game will open in &c" + opensIn + " &xminutes");
             countDown = new CountDownUtil(60 * opensIn);

@@ -27,7 +27,6 @@ import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.Tweeter;
-import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
@@ -132,32 +131,6 @@ public class UHC extends MiniGame {
                 return true;
             }
         };
-        new DelayedTask(new Runnable() {
-            @Override
-            public void run() {
-                new CommandBase("rules") {
-                    @Override
-                    public boolean execute(CommandSender sender, String [] arguments) {
-                        MessageHandler.sendLine(sender);
-                        MessageHandler.sendMessage(sender, "Strip Mining: &cNOT ALLOWED");
-                        MessageHandler.sendMessage(sender, "Stair Casing: ONLY START ABOVE Y 32");
-                        MessageHandler.sendMessage(sender, "Roller Coastering: ONLY START ABOVE AND COME BACK TO Y 32");
-                        MessageHandler.sendMessage(sender, "Mining to Coordinates: &cNOT ALLOWED");
-                        MessageHandler.sendMessage(sender, "iPVP: &cNOT ALLOWED");
-                        MessageHandler.sendMessage(sender, "Cross Teaming: " + (OptionsHandler.getCrossTeaming() ? "&eALLOWED" : "&cNOT ALLOWED"));
-                        MessageHandler.sendMessage(sender, "Spoiling While Spectating: &cNOT ALLOWED");
-                        MessageHandler.sendMessage(sender, "Sky Basing: &eONLY BEFORE MEET UP");
-                        MessageHandler.sendMessage(sender, "Ground Hogging: &eONLY BEFORE MEET UP");
-                        MessageHandler.sendMessage(sender, "Poke holing: &eALLOWED");
-                        MessageHandler.sendMessage(sender, "Mining to Sounds: &eALLOWED");
-                        MessageHandler.sendMessage(sender, "Stalking: &eALLOWED");
-                        MessageHandler.sendMessage(sender, "&bHave a Question? &c/helpop <question>");
-                        MessageHandler.sendLine(sender);
-                        return true;
-                    }
-                };
-            }
-        });
         OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {

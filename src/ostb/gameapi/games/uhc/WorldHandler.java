@@ -3,40 +3,25 @@ package ostb.gameapi.games.uhc;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+
+import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
 import ostb.OSTB;
-import ostb.customevents.game.GameStartEvent;
-import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.BiomeSwap;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
-import ostb.server.util.ItemCreator;
-import ostb.server.util.ItemUtil;
 
-@SuppressWarnings("deprecation")
 public class WorldHandler implements Listener {
-    private static String name = null;
-    private static String pregenName = null;
-    private static ItemStack item = null;
-    private static ItemStack pregenItem = null;
     private static World world = null;
     private static World nether = null;
     private static World end = null;
@@ -44,14 +29,7 @@ public class WorldHandler implements Listener {
     private static int radius = 1500;
 
     public WorldHandler() {
-        name = "World Options";
-        pregenName = "Pregen Options";
-        item = new ItemCreator(Material.GRASS).setName("&a" + name).getItemStack();
-        pregenItem = new ItemCreator(Material.GRASS).setName("&a" + pregenName).getItemStack();
         BiomeSwap.setUpUHC();
-        /*if(!BorderHandler.isEnabled()) {
-            new BorderHandler();
-        }*/
         generateWorld();
         EventUtil.register(this);
     }
@@ -77,10 +55,12 @@ public class WorldHandler implements Listener {
 		world.getWorldBorder().setDamageAmount(1.0d);
 		world.getWorldBorder().setWarningDistance(25);
 		world.getWorldBorder().setWarningTime(20 * 10);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set " + radius + " " + radius + " 0 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 40");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
 		setBorder();
         OSTB.getMiniGame().setMap(world);
         MessageHandler.alert("Generating World... Complete!");
-        //BorderHandler.setOverworldBorder();
     }
 
     public static void generateNether() {
@@ -102,8 +82,6 @@ public class WorldHandler implements Listener {
         nether.setGameRuleValue("naturalRegeneration", "false");
         nether.setDifficulty(Difficulty.HARD);
         MessageHandler.alert("Generating Nether... Complete!");
-        //BorderHandler.setNetherBorder();
-        //BorderHandler.getNetherBorder().pregenSettings();
     }
 
     public static void generateEnd() {
@@ -158,141 +136,9 @@ public class WorldHandler implements Listener {
     		
     	}
     }
-
+    
     @EventHandler
-    public void onGameStart(GameStartEvent event) {
-        /*BorderHandler.registerEvents();
-        BorderHandler.getOverworldBorder().pregenSettings();
-        if(BorderHandler.getNetherBorder() != null) {
-            BorderHandler.getNetherBorder().pregenSettings();
-        }*/
-        if(OptionsHandler.isEndEnabled() || OptionsHandler.isNetherEnabled()) {
-            new PortalHandler();
-        }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if(WhitelistHandler.isWhitelisted() && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
-            Player player = event.getPlayer();
-            if(Ranks.OWNER.hasRank(player)) {
-                player.getInventory().setItem(1, item);
-                player.getInventory().setItem(2, pregenItem);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onMouseClick(MouseClickEvent event) {
-        Player player = event.getPlayer();
-        if(ItemUtil.isItem(player.getItemInHand(), item)) {
-            Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
-            inventory.setItem(9, new ItemCreator(Material.GRASS).setName("&aTeleport to &eLobby").getItemStack());
-            inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&aTeleport to &eWorld").getItemStack());
-            inventory.setItem(20, new ItemCreator(Material.LOG).setName("&cRemove &atrees near 0, 0").getItemStack());
-            inventory.setItem(13, new ItemCreator(Material.NETHERRACK).setName("&aTeleport to &cNether").getItemStack());
-            inventory.setItem(15, new ItemCreator(Material.GRASS).setName("&aRemake &eWorld").getItemStack());
-            inventory.setItem(17, new ItemCreator(Material.NETHERRACK).setName("&aRemake &cNether").getItemStack());
-            inventory.setItem(39, new ItemCreator(Material.ENDER_STONE).setName("&aTeleport to &fEnd").getItemStack());
-            inventory.setItem(41, new ItemCreator(Material.ENDER_STONE).setName("&aRemake &fEnd").getItemStack());
-            player.openInventory(inventory);
-            event.setCancelled(true);
-        } else if(ItemUtil.isItem(player.getItemInHand(), pregenItem)) {
-            Inventory inventory = Bukkit.createInventory(player, 9 * 3, pregenName);
-            inventory.setItem(11, new ItemCreator(Material.GRASS).setName("&aPregen &eWorld").getItemStack());
-            inventory.setItem(15, new ItemCreator(Material.BEDROCK).setName("&cCancel Pregen").getItemStack());
-            player.openInventory(inventory);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onInventoryItemClick(InventoryItemClickEvent event) {
-        if(event.getTitle().equals(name)) {
-            Player player = event.getPlayer();
-            String name = ChatColor.stripColor(event.getItemTitle());
-            player.closeInventory();
-            if(name.contains("Teleport to Lobby")) {
-                player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
-                player.setAllowFlight(true);
-                player.setFlying(true);
-            } else if(name.contains("Teleport to World")) {
-                player.teleport(getWorld().getSpawnLocation());
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                player.getWorld().setTime(0);
-            } else if(name.contains("Remove trees near 0, 0")) {
-                MessageHandler.alert("Removing trees...");
-                World world = getWorld();
-                Location location = world.getSpawnLocation();
-                int max = 100;
-                for(int x = -location.getBlockX() - max; x <= location.getBlockX() + max; ++x) {
-                    for(int y = 55; y <= 150; ++y) {
-                        for(int z = -location.getBlockZ() - max; z <= location.getBlockZ() + max; ++z) {
-                            Block block = world.getBlockAt(x, y, z);
-                            Material type = block.getType();
-                            if(type == Material.LOG || type == Material.LOG_2 || type == Material.LEAVES || type == Material.LEAVES_2) {
-                                block.setType(Material.AIR);
-                                block.setData((byte) 0);
-                                if(block.getRelative(0, -1, 0).getType() == Material.DIRT) {
-                                	block.getRelative(0, -1, 0).setType(Material.GRASS);
-                                }
-                            }
-                        }
-                    }
-                }
-                MessageHandler.alert("Removed trees!");
-            } else if(name.contains("Teleport to Nether")) {
-                if(getNether() == null) {
-                    MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
-                } else {
-                    player.teleport(getNether().getSpawnLocation());
-                    player.setAllowFlight(true);
-                    player.setFlying(true);
-                }
-            } else if(name.contains("Teleport to End")) {
-                if(getEnd() == null) {
-                    MessageHandler.sendMessage(player, "&cThe end world is not available currently");
-                } else {
-                    player.teleport(getEnd().getSpawnLocation());
-                    player.setAllowFlight(true);
-                    player.setFlying(true);
-                }
-            } else if(name.contains("Remake World")) {
-                generateWorld();
-            } else if(name.contains("Remake Nether")) {
-                if(getNether() == null) {
-                    MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
-                } else {
-                    generateNether();
-                }
-            } else if(name.contains("Remake End")) {
-                if(getEnd() == null) {
-                    MessageHandler.sendMessage(player, "&cThe nether world is not available currently");
-                } else {
-                    generateEnd();
-                }
-            }
-            event.setCancelled(true);
-        } else if(event.getTitle().equals(pregenName)) {
-            Player player = event.getPlayer();
-            player.setOp(true);
-            Material type = event.getItem().getType();
-            if(type == Material.BEDROCK) {
-                player.chat("/wb fill cancel");
-            }
-            if(type == Material.GRASS) {
-                int border = 100;//BorderHandler.getOverworldBorder().getRadius();
-                player.chat("/wb " + getWorld().getName() + " set " + border + " " + border + " 0 0");
-                player.chat("/wb " + getWorld().getName() + " fill 60");
-                player.chat("/wb fill confirm");
-                //BorderHandler.getOverworldBorder().pregenSettings();
-                //BorderHandler.registerCommands();
-            }
-            player.setOp(false);
-            preGenerated = true;
-            player.closeInventory();
-            event.setCancelled(true);
-        }
+	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
+    	preGenerated = true;
     }
 }

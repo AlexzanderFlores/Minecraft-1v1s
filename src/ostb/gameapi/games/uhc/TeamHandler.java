@@ -27,6 +27,7 @@ import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
@@ -87,16 +88,15 @@ public class TeamHandler implements Listener {
             @Override
             public boolean execute(CommandSender sender, String [] arguments) {
                 Player player = (Player) sender;
-                if(arguments.length == 0 || (arguments.length == 1 && arguments[0].equalsIgnoreCase("help"))) {
-                    MessageHandler.sendMessage(player, "/team &eDisplays team commands");
-                    MessageHandler.sendMessage(player, "/team help &eDisplays team commands");
-                    MessageHandler.sendMessage(player, "/team <name> &eInvite or accept someone to your team");
-                    MessageHandler.sendMessage(player, "/team deny &eDeny an invite");
-                    MessageHandler.sendMessage(player, "/team leave &eLeave your current team");
-                    MessageHandler.sendMessage(player, "/team kick <name> &eKick a player from your team");
-                    MessageHandler.sendMessage(player, "/team list &eList all players in your team");
-                    MessageHandler.sendMessage(player, "/teamChat &eToggle team chat on/off");
-                    MessageHandler.sendMessage(player, "/teamChat <message> &eSend a message in team chat");
+                if(arguments.length == 0) {
+                    MessageHandler.sendMessage(player, "/team &7- &bDisplays team commands");
+                    MessageHandler.sendMessage(player, "/team <name> &7- &bInvite or accept someone to your team");
+                    MessageHandler.sendMessage(player, "/team deny &7- &bDeny an invite");
+                    MessageHandler.sendMessage(player, "/team leave &7- &bLeave your current team");
+                    MessageHandler.sendMessage(player, "/team kick <name> &7- &bKick a player from your team");
+                    MessageHandler.sendMessage(player, "/team list &7- &bList all players in your team");
+                    MessageHandler.sendMessage(player, "/teamChat &7- &bToggle team chat on/off");
+                    MessageHandler.sendMessage(player, "/teamChat <message> &7- &bSend a message in team chat");
                 } else if(arguments.length >= 1) {
                     if(getMaxTeamSize() > 1) {
                         if(arguments[0].equalsIgnoreCase("list")) {
@@ -401,13 +401,7 @@ public class TeamHandler implements Listener {
     @EventHandler
     public void onPostPlayerJoin(PostPlayerJoinEvent event) {
         if(getMaxTeamSize() > 1 && OSTB.getMiniGame().getGameState() != GameStates.STARTED && !HostedEvent.isEvent()) {
-            MessageHandler.sendLine(event.getPlayer(), "&c&k");
-            MessageHandler.sendMessage(event.getPlayer(), "");
-            MessageHandler.sendMessage(event.getPlayer(), "Make a team with &b/team");
-            MessageHandler.sendMessage(event.getPlayer(), "Team chat toggle on/off: &b/teamChat");
-            MessageHandler.sendMessage(event.getPlayer(), "Team chat single message: &b/teamChat <message>");
-            MessageHandler.sendMessage(event.getPlayer(), "");
-            MessageHandler.sendLine(event.getPlayer(), "&c&k");
+            new TitleDisplayer(event.getPlayer(), "&2Team Commands:", "&e/team").setFadeOut(20 * 5).display();
         }
     }
 
