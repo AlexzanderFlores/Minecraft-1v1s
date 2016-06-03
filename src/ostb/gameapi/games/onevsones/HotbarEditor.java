@@ -40,30 +40,30 @@ public class HotbarEditor implements Listener {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
-                if (kits.containsKey(player.getName())) {
+                if(kits.containsKey(player.getName())) {
                     final String name = player.getName();
                     new AsyncDelayedTask(new Runnable() {
                         @Override
                         public void run() {
                             Player player = ProPlugin.getPlayer(name);
-                            if (player != null) {
+                            if(player != null) {
                                 String kit = kits.get(name).getName().replace(" ", "_");
                                 String path = OSTB.getInstance().getDataFolder().getPath() + "/hot_bars/" + name + "/" + kit + ".yml";
                                 File file = new File(path);
-                                if (file.exists()) {
+                                if(file.exists()) {
                                     MessageHandler.sendMessage(player, "&cDeleting your old hot bar set up");
                                     file.delete();
                                 }
                                 ConfigurationUtil config = new ConfigurationUtil(path);
-                                for (ArmorSlot slot : ArmorSlot.values()) {
+                                for(ArmorSlot slot : ArmorSlot.values()) {
                                     ItemStack item = player.getInventory().getItem(slot.getSlot());
-                                    if (item != null) {
+                                    if(item != null) {
                                         config.getConfig().set(slot.getSlot() + "", getItemName(item));
                                     }
                                 }
-                                for (int a = 0; a < player.getInventory().getSize(); ++a) {
+                                for(int a = 0; a < player.getInventory().getSize(); ++a) {
                                     ItemStack item = player.getInventory().getContents()[a];
-                                    if (item != null) {
+                                    if(item != null) {
                                         config.getConfig().set(a + "", getItemName(item));
                                     }
                                 }
@@ -99,7 +99,7 @@ public class HotbarEditor implements Listener {
 				MessageHandler.sendMessage(player, "&cYou do not have any hot bar editing passes. Get &e3 &cwith &b/vote");
 			}
 		}*/
-        if (Ranks.PREMIUM.hasRank(player)) {
+        if(Ranks.PREMIUM.hasRank(player)) {
             player.openInventory(LobbyHandler.getKitSelectorInventory(player, HotbarEditor.name, false));
         } else {
             MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
@@ -107,19 +107,19 @@ public class HotbarEditor implements Listener {
     }
 
     private String getItemName(ItemStack item) {
-        if (item != null) {
+        if(item != null) {
             int id = item.getTypeId();
             byte data = item.getData().getData();
             int amount = item.getAmount();
             String name = id + ":" + data + ":" + amount;
-            if (item.getType() == Material.POTION) {
+            if(item.getType() == Material.POTION) {
                 Potion potion = Potion.fromItemStack(item);
                 name += ":" + potion.getType().toString() + ":" + potion.getLevel() + ":" + (potion.isSplash() ? 1 : 0);
             } else {
                 name += ":NULL:0:0";
             }
             Map<Enchantment, Integer> enchants = item.getEnchantments();
-            for (Enchantment enchantment : enchants.keySet()) {
+            for(Enchantment enchantment : enchants.keySet()) {
                 name += ":" + enchantment.getName() + ":" + enchants.get(enchantment);
             }
             return name;
@@ -129,15 +129,15 @@ public class HotbarEditor implements Listener {
 
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
-        if (event.getTitle().equals(name)) {
+        if(event.getTitle().equals(name)) {
             Player player = event.getPlayer();
-            if (QueueHandler.isInQueue(player) || QueueHandler.isWaitingForMap(player)) {
+            if(QueueHandler.isInQueue(player) || QueueHandler.isWaitingForMap(player)) {
                 QueueHandler.remove(player);
                 MessageHandler.sendMessage(player, "&cYou have been removed from the queue");
             }
             PrivateBattleHandler.removeAllInvitesFromPlayer(player);
             OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
-            if (kit != null) {
+            if(kit != null) {
                 kit.give(player, false);
                 kits.put(player.getName(), kit);
             }

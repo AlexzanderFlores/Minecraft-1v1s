@@ -68,18 +68,18 @@ public class LobbyHandler implements Listener {
     }
 
     public static Location spawn(Player player, boolean giveItems) {
-        final Location location = new Location(player.getWorld(), 0.5, 5, 0.5, -360.0f, 0.0f);
+        Location location = new Location(player.getWorld(), 0.5, 5, 0.5, -180.0f, 0.0f);
         Random random = new Random();
         int range = 5;
         location.setX(location.getBlockX() + (random.nextInt(range) * (random.nextBoolean() ? 1 : -1)));
         location.setY(location.getY() + 2.5d);
         location.setZ(location.getBlockZ() + (random.nextInt(range) * (random.nextBoolean() ? 1 : -1)));
         player.teleport(location);
-        if (!SpectatorHandler.contains(player)) {
-            if (Ranks.PREMIUM.hasRank(player)) {
+        if(!SpectatorHandler.contains(player)) {
+            if(Ranks.PREMIUM.hasRank(player)) {
                 player.setAllowFlight(true);
             }
-            if (giveItems) {
+            if(giveItems) {
                 giveItems(player);
             }
         }
@@ -104,9 +104,9 @@ public class LobbyHandler implements Listener {
     public static Inventory getKitSelectorInventory(Player player, String name, boolean showUsers) {
         Inventory inventory = Bukkit.createInventory(player, 18, name);
         List<OneVsOneKit> kits = OneVsOneKit.getKits();
-        for (int a = 0; a < kits.size(); ++a) {
+        for(int a = 0; a < kits.size(); ++a) {
             OneVsOneKit kit = kits.get(a);
-            if (showUsers) {
+            if(showUsers) {
                 inventory.setItem(a, new ItemCreator(kit.getIcon().clone()).setAmount(kit.getUsers()).getItemStack());
             } else {
                 inventory.setItem(a, new ItemCreator(kit.getIcon().clone()).setAmount(1).getItemStack());
@@ -122,10 +122,10 @@ public class LobbyHandler implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
+        if(event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (isInLobby(player)) {
-                if (event.getCause() == DamageCause.VOID) {
+            if(isInLobby(player)) {
+                if(event.getCause() == DamageCause.VOID) {
                     spawn(player, false);
                 }
                 event.setCancelled(true);
@@ -136,21 +136,21 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            for (String name : watching) {
+        if(ticks == 20) {
+            for(String name : watching) {
                 Player player = ProPlugin.getPlayer(name);
-                if (player != null) {
+                if(player != null) {
                     InventoryView view = player.getOpenInventory();
                     List<OneVsOneKit> kits = OneVsOneKit.getKits();
-                    for (int a = 0; a < kits.size(); ++a) {
+                    for(int a = 0; a < kits.size(); ++a) {
                         OneVsOneKit kit = kits.get(a);
                         ItemCreator creator = new ItemCreator(kit.getIcon().clone());
                         creator.setAmount(kit.getUsers());
-                        if (creator.getAmount() % 2 != 0) {
+                        if(creator.getAmount() % 2 != 0) {
                             creator.addEnchantment(Enchantment.DURABILITY);
                             creator.addLore("&bPlayer(s) waiting in queue");
                             creator.addLore("&bClick to play");
-                            if (kit.getName().equals("UHC")) {
+                            if(kit.getName().equals("UHC")) {
                                 creator.setData(3);
                             }
                         }
@@ -164,14 +164,14 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
     	Player player = event.getPlayer();
-        if (event.getTitle().equals("Kit Selection") && !PrivateBattleHandler.choosingMapType(event.getPlayer())) {
+        if(event.getTitle().equals("Kit Selection") && !PrivateBattleHandler.choosingMapType(event.getPlayer())) {
             player.closeInventory();
             OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
-            if (kit == null) {
+            if(kit == null) {
                 MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
             } else {
             	String kitName = ChatColor.stripColor(kit.getName().toLowerCase().replace(" ", ""));
-        		if (kitName.equals("pyro") || kitName.equals("ender") || kitName.equals("tnt") || kitName.equals("onehitwonder") || kitName.equals("quickshot")) {
+        		if(kitName.equals("pyro") || kitName.equals("ender") || kitName.equals("tnt") || kitName.equals("onehitwonder") || kitName.equals("quickshot")) {
         			run(kit, player);
         		} else {
         			Inventory inventory = Bukkit.createInventory(player, 9 * 3, invName);
@@ -182,23 +182,23 @@ public class LobbyHandler implements Listener {
         		}
             }
             event.setCancelled(true);
-        } else if (event.getTitle().equals("Request a Battle")) {
+        } else if(event.getTitle().equals("Request a Battle")) {
             final String name = event.getItem().getItemMeta().getDisplayName();
             new DelayedTask(new Runnable() {
                 @Override
                 public void run() {
                     Player player = ProPlugin.getPlayer(name);
-                    if (player != null) {
+                    if(player != null) {
                         player.chat("/battle " + name);
                     }
                 }
             });
             player.closeInventory();
             event.setCancelled(true);
-        } else if (event.getTitle().equals(invName)) {
+        } else if(event.getTitle().equals(invName)) {
         	if(event.getSlot() == 11) {
         		int matches = RankedMatches.getMatches(player);
-        		if (matches > 0) {
+        		if(matches > 0) {
         			RankedMatches.setPlayingRanked(player);
         			player.getInventory().clear();
                     OneVsOneKit kit = kitSelecting.get(player.getName());
@@ -225,15 +225,15 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!Ranks.OWNER.hasRank(player)) {
+        if(!Ranks.OWNER.hasRank(player)) {
             Location to = event.getTo();
-            if (player.isFlying() && to.getY() >= 23) {
+            if(player.isFlying() && to.getY() >= 23) {
                 event.setTo(event.getFrom());
             }
-            if (isInLobby(player) && !SpectatorHandler.contains(player)) {
+            if(isInLobby(player) && !SpectatorHandler.contains(player)) {
                 int x = to.getBlockX();
                 int z = to.getBlockZ();
-                if (x >= 35 || x <= -35 || z >= 35 || z <= -35) {
+                if(x >= 35 || x <= -35 || z >= 35 || z <= -35) {
                     event.setTo(event.getFrom());
                 }
             }
@@ -242,7 +242,7 @@ public class LobbyHandler implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (isInLobby(event.getPlayer())) {
+        if(isInLobby(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -250,9 +250,9 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onMouseClick(MouseClickEvent event) {
         Player player = event.getPlayer();
-        if (isInLobby(player)) {
+        if(isInLobby(player)) {
             ItemStack item = player.getItemInHand();
-            if (item.equals(kitSelector)) {
+            if(item.equals(kitSelector)) {
             	openKitSelection(player);
             }
         }
@@ -284,7 +284,7 @@ public class LobbyHandler implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getPlayer() instanceof Player) {
+        if(event.getPlayer() instanceof Player) {
             Player player = (Player) event.getPlayer();
             EffectUtil.playSound(player, Sound.CHEST_OPEN);
         }
@@ -298,9 +298,9 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         Projectile projectile = (Projectile) event.getEntity();
-        if (projectile.getShooter() instanceof Player) {
+        if(projectile.getShooter() instanceof Player) {
             Player player = (Player) projectile.getShooter();
-            if (isInLobby(player)) {
+            if(isInLobby(player)) {
                 event.setCancelled(true);
             }
         }
@@ -308,7 +308,7 @@ public class LobbyHandler implements Listener {
 
     @EventHandler
     public void onPlayerAFK(PlayerAFKEvent event) {
-        if (Bukkit.getOnlinePlayers().size() >= Bukkit.getMaxPlayers()) {
+        if(Bukkit.getOnlinePlayers().size() >= Bukkit.getMaxPlayers()) {
             ProPlugin.sendPlayerToServer(event.getPlayer(), "hub");
         }
     }

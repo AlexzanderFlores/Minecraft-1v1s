@@ -62,12 +62,12 @@ public class Battle implements Listener {
         this.tournament = tournament;
         this.ranked = ranked;
         int radius = 25;
-        for (int x = -radius; x <= radius; ++x) {
-            for (int z = -radius; z <= radius; ++z) {
-                for (int y = 1; y <= 4; ++y) {
+        for(int x = -radius; x <= radius; ++x) {
+            for(int z = -radius; z <= radius; ++z) {
+                for(int y = 1; y <= 4; ++y) {
                     Block near = targetBlock.getRelative(x, y, z);
                     String type = near.getType().toString();
-                    if (type.contains("WATER") || type.contains("LAVA") || type.contains("OBSIDIAN")) {
+                    if(type.contains("WATER") || type.contains("LAVA") || type.contains("OBSIDIAN")) {
                         near.setType(Material.AIR);
                         near.setData((byte) 0);
                     }
@@ -81,7 +81,7 @@ public class Battle implements Listener {
         Location locationOne = targetBlock.getRelative(17, 1, 0).getLocation();
         locationOne.setYaw(-270.0f);
         playerOne.teleport(locationOne);
-        for (PotionEffect effect : playerOne.getActivePotionEffects()) {
+        for(PotionEffect effect : playerOne.getActivePotionEffects()) {
             playerOne.removePotionEffect(effect.getType());
         }
         playerOne.setAllowFlight(false);
@@ -89,14 +89,14 @@ public class Battle implements Listener {
         Location locationTwo = targetBlock.getRelative(-17, 1, 0).getLocation();
         locationTwo.setYaw(-90.0f);
         MessageHandler.sendMessage(playerOne, "To quit this battle do &e/quit");
-        if (playerTwo == null) {
+        if(playerTwo == null) {
             MessageHandler.sendMessage(playerOne, "There was an odd number of players, you must wait for a match to be available");
         } else {
             playerOne.hidePlayer(playerTwo);
             playerTwo.hidePlayer(playerOne);
             MessageHandler.sendMessage(playerTwo, "To quit this battle do &e/quit");
             playerTwo.teleport(locationTwo);
-            for (PotionEffect effect : playerTwo.getActivePotionEffects()) {
+            for(PotionEffect effect : playerTwo.getActivePotionEffects()) {
                 playerTwo.removePotionEffect(effect.getType());
             }
             playerTwo.setAllowFlight(false);
@@ -112,7 +112,7 @@ public class Battle implements Listener {
     }
 
     public Player getCompetitor(Player player) {
-        if (playerOne.getName().equals(player.getName())) {
+        if(playerOne.getName().equals(player.getName())) {
             return playerTwo;
         } else {
             return playerOne;
@@ -156,9 +156,9 @@ public class Battle implements Listener {
         playerOne.showPlayer(playerTwo);
         playerTwo.showPlayer(playerOne);
         OneVsOneKit kit = OneVsOneKit.getPlayersKit(playerOne);
-        if (kit != null) {
+        if(kit != null) {
             String name = kit.getName();
-            if (name.equals("One Hit Wonder") || name.equals("Quickshot")) {
+            if(name.equals("One Hit Wonder") || name.equals("Quickshot")) {
                 playerOne.setHealth(1.0d);
                 playerTwo.setHealth(1.0d);
             }
@@ -175,15 +175,15 @@ public class Battle implements Listener {
         playerOne.setFireTicks(0);
         playerTwo.setFireTicks(0);
         List<Integer> maps = MapProvider.openMaps.get(getMapNumber());
-        if (maps == null) {
+        if(maps == null) {
             maps = new ArrayList<Integer>();
         }
         maps.add(targetX);
         MapProvider.openMaps.put(getMapNumber(), maps);
-        if (OSTB.getPlugin() == Plugins.ONEVSONE) {
+        if(OSTB.getPlugin() == Plugins.ONEVSONE) {
             ProPlugin.resetPlayer(playerOne);
             ProPlugin.resetPlayer(playerTwo);
-            if (!tournament) {
+            if(!tournament) {
                 LobbyHandler.spawn(playerOne);
                 LobbyHandler.spawn(playerTwo);
             }
@@ -194,8 +194,8 @@ public class Battle implements Listener {
         BattleHandler.removePlayerBattle(playerTwo);
         playerOne = null;
         playerTwo = null;
-        if (placedBlocks != null) {
-            for (Block block : placedBlocks) {
+        if(placedBlocks != null) {
+            for(Block block : placedBlocks) {
                 block.setType(Material.AIR);
                 block.setData((byte) 0);
             }
@@ -208,11 +208,11 @@ public class Battle implements Listener {
         int z1 = -35;
         int x2 = targetX + 35;
         int z2 = 35;
-        for (int x = x1; x <= x2; ++x) {
-            for (int z = z1; z <= z2; ++z) {
+        for(int x = x1; x <= x2; ++x) {
+            for(int z = z1; z <= z2; ++z) {
                 Block block = world.getBlockAt(x, 4, z);
                 Material type = block.getType();
-                if (type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA || type == Material.OBSIDIAN) {
+                if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA || type == Material.OBSIDIAN) {
                     block.setType(Material.AIR);
                     block.setData((byte) 0);
                 }
@@ -224,18 +224,18 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerLeaveEvent event) {
-        if (contains(event.getPlayer())) {
+        if(contains(event.getPlayer())) {
             end();
         }
     }
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if (event.getEntity() instanceof Player) {
+        if(event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (contains(player)) {
+            if(contains(player)) {
                 String name = kit.getName();
-                if ((name.equals("UHC") || name.equals("One Hit Wonder") || name.equals("Quickshot")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
+                if((name.equals("UHC") || name.equals("One Hit Wonder") || name.equals("Quickshot")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
                     event.setCancelled(true);
                 }
             }
@@ -244,36 +244,36 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (contains(event.getPlayer())) {
+        if(contains(event.getPlayer())) {
             end();
         }
     }
 
     @EventHandler
     public void onStatsChange(StatsChangeEvent event) {
-        if (contains(event.getPlayer()) && !isRanked()) {
+        if(contains(event.getPlayer()) && !isRanked()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (contains(event.getPlayer()) && event.getBlock().getY() < 7) {
-            if (isStarted()) {
+        if(contains(event.getPlayer()) && event.getBlock().getY() < 7) {
+            if(isStarted()) {
                 Material type = event.getBlock().getType();
-                if (type == Material.TNT) {
+                if(type == Material.TNT) {
                     Player player = event.getPlayer();
                     ItemStack item = event.getItemInHand();
                     int amount = item.getAmount();
-                    if (amount <= 1) {
+                    if(amount <= 1) {
                         player.setItemInHand(new ItemStack(Material.AIR));
                     } else {
                         player.setItemInHand(new ItemStack(type, amount - 1));
                     }
                     TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(event.getBlock().getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
                     tnt.setFuseTicks(tnt.getFuseTicks() / 2);
-                } else if (type == Material.FIRE || type == Material.COBBLESTONE) {
-                    if (!placedBlocks.contains(event.getBlock())) {
+                } else if(type == Material.FIRE || type == Material.COBBLESTONE) {
+                    if(!placedBlocks.contains(event.getBlock())) {
                         placedBlocks.add(event.getBlock());
                     }
                     event.setCancelled(false);
@@ -285,18 +285,18 @@ public class Battle implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (contains(player) && placedBlocks.contains(event.getBlock())) {
+        if(contains(player) && placedBlocks.contains(event.getBlock())) {
             event.setCancelled(false);
         }
     }
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        if (event.getEntity() instanceof Arrow) {
+        if(event.getEntity() instanceof Arrow) {
             Arrow arrow = (Arrow) event.getEntity();
-            if (arrow.getShooter() instanceof Player) {
+            if(arrow.getShooter() instanceof Player) {
                 Player player = (Player) arrow.getShooter();
-                if (contains(player) && getTimer() < 5) {
+                if(contains(player) && getTimer() < 5) {
                     MessageHandler.sendMessage(player, "&cCannot shoot your bow at this time");
                     event.setCancelled(true);
                 }
@@ -306,8 +306,8 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (contains(event.getPlayer()) && getTimer() < 5) {
-            if (!sentMessage.contains(event.getPlayer().getName())) {
+        if(contains(event.getPlayer()) && getTimer() < 5) {
+            if(!sentMessage.contains(event.getPlayer().getName())) {
                 sentMessage.add(event.getPlayer().getName());
                 MessageHandler.sendMessage(event.getPlayer(), "&cCannot move for the first 5 seconds of your battle");
                 MessageHandler.sendMessage(event.getPlayer(), "&6Take this time to edit your hot bar!");
@@ -318,12 +318,12 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.getCause() == TeleportCause.ENDER_PEARL) {
+        if(event.getCause() == TeleportCause.ENDER_PEARL) {
             Player player = event.getPlayer();
-            if (contains(player)) {
-                if (isStarted()) {
+            if(contains(player)) {
+                if(isStarted()) {
                     Location to = event.getTo();
-                    if (to.getBlockY() > 5 || !player.getLocation().toVector().isInSphere(to.toVector(), 30)) {
+                    if(to.getBlockY() > 5 || !player.getLocation().toVector().isInSphere(to.toVector(), 30)) {
                         player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
                         MessageHandler.sendMessage(player, "&cCannot teleport to that location");
                         event.setCancelled(true);

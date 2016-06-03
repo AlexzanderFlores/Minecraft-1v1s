@@ -31,14 +31,14 @@ public class Kohi extends OneVsOneKit {
         setItem(7, fireResistance.toItemStack(1));
         Potion speed = new Potion(PotionType.SPEED, 1, false);
         speed.setTier(Tier.TWO);
-        for (int slot : new int[]{8, 33, 34, 35}) {
+        for (int slot : new int [] {8, 33, 34, 35}) {
             setItem(slot, speed.toItemStack(1));
         }
         Potion slowness = new Potion(PotionType.SLOWNESS, 1, true);
-        for (int slot : new int[]{16, 17, 25, 26}) {
+        for (int slot : new int [] {16, 17, 25, 26}) {
             setItem(slot, slowness.toItemStack(1));
         }
-        for (int slot : new int[]{10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32}) {
+        for (int slot : new int [] {10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32}) {
             setItem(slot, health.toItemStack(1));
         }
     }

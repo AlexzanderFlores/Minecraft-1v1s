@@ -48,20 +48,6 @@ public class RankedMatches implements Listener {
 		if(Ranks.PREMIUM.hasRank(player)) {
 			return 999;
 		}
-		/*if (matches.get(player.getName()) <= 0 && Ranks.PRO.hasRank(player)) {
-			int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-			UUID uuid = player.getUniqueId();
-			if (day != DB.PLAYERS_VERSUS_FREE_RANKED.getInt("uuid", uuid.toString(), "day")) {
-				if (DB.PLAYERS_VERSUS_FREE_RANKED.isUUIDSet(uuid)) {
-					DB.PLAYERS_VERSUS_FREE_RANKED.updateInt("day", day, "uuid", uuid.toString());
-				} else {
-					DB.PLAYERS_VERSUS_FREE_RANKED.insert("'" + uuid.toString() + "', '" + day + "'");
-				}
-				int toAdd = 20;
-				matches.put(player.getName(), toAdd);
-				MessageHandler.sendMessage(player, Ranks.PRO.getPrefix() + "&aperk: +" + toAdd + " daily ranked matches");
-			}
-		}*/
 		return matches.get(player.getName());
 	}
 	
@@ -70,7 +56,7 @@ public class RankedMatches implements Listener {
 	}
 	
 	public static void setPlayingRanked(Player player) {
-		if (!ranked.contains(player.getName())) {
+		if(!ranked.contains(player.getName())) {
 			matches.put(player.getName(), getMatches(player) - 1);
 			ranked.add(player.getName());
 		}
@@ -90,16 +76,16 @@ public class RankedMatches implements Listener {
 	@EventHandler
 	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
 		String name = event.getName();
-		if (matches.containsKey(name)) {
+		if(matches.containsKey(name)) {
 			UUID uuid = event.getUUID();
 			int amount = matches.get(name);
-			if (DB.PLAYERS_ONE_VS_ONE_RANKED.isUUIDSet(uuid)) {
-				if (amount <= 0) {
+			if(DB.PLAYERS_ONE_VS_ONE_RANKED.isUUIDSet(uuid)) {
+				if(amount <= 0) {
 					DB.PLAYERS_ONE_VS_ONE_RANKED.deleteUUID(uuid);
 				} else {
 					DB.PLAYERS_ONE_VS_ONE_RANKED.updateInt("amount", amount, "uuid", uuid.toString());
 				}
-			} else if (amount > 0) {
+			} else if(amount > 0) {
 				DB.PLAYERS_ONE_VS_ONE_RANKED.insert("'" + uuid.toString() + "', '" + amount + "'");
 			}
 			matches.remove(name);

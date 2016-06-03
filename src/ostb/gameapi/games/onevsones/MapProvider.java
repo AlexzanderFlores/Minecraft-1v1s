@@ -25,10 +25,10 @@ public class MapProvider implements Listener {
         Block mapCheckBlock = world.getBlockAt(0, 3, 0);
         do {
             mapCheckBlock = mapCheckBlock.getRelative(100, 0, 0);
-            if (mapCheckBlock.getType() != Material.AIR) {
+            if(mapCheckBlock.getType() != Material.AIR) {
                 ++numberOfMaps;
             }
-        } while (mapCheckBlock.getType() != Material.AIR);
+        } while(mapCheckBlock.getType() != Material.AIR);
         EventUtil.register(this);
     }
 
@@ -37,16 +37,16 @@ public class MapProvider implements Listener {
         Block targetBlock = world.getBlockAt(targetX, 3, 0);
         int map = new Random().nextInt(numberOfMaps) + 1;
         //Commented code is to look for an already existing map to use.
-        if (openMaps.containsKey(map)) {
+        if(openMaps.containsKey(map)) {
             List<Integer> maps = openMaps.get(map);
-            if (maps != null && !maps.isEmpty()) {
+            if(maps != null && !maps.isEmpty()) {
                 targetX = maps.get(0);
                 maps.remove(0);
                 openMaps.put(map, maps);
                 targetBlock = world.getBlockAt(targetX, 3, 0);
             }
         }
-        if (targetX == 0) {
+        if(targetX == 0) {
             int y = 50;
             int x1 = Integer.valueOf((map - 1) + "70");
             int z1 = -35;
@@ -55,12 +55,12 @@ public class MapProvider implements Listener {
             do {
                 targetX -= 100;
                 targetBlock = world.getBlockAt(targetX, 3, 0);
-            } while (targetBlock.getType() != Material.AIR);
-            for (int y1 = 0; y1 < y; ++y1) {
-                for (int x = x1; x <= x2; ++x) {
-                    for (int z = z1; z <= z2; ++z) {
+            } while(targetBlock.getType() != Material.AIR);
+            for(int y1 = 0; y1 < y; ++y1) {
+                for(int x = x1; x <= x2; ++x) {
+                    for(int z = z1; z <= z2; ++z) {
                         Block block = world.getBlockAt(x, y1, z);
-                        if (block.getType() != Material.AIR) {
+                        if(block.getType() != Material.AIR) {
                             world.getBlockAt(targetX + x - (100 * map), y1, z).setType(block.getType());
                             world.getBlockAt(targetX + x - (100 * map), y1, z).setData(block.getData());
                         }
@@ -74,10 +74,10 @@ public class MapProvider implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
-        if (ticks == 20) {
-            for (Battle battle : BattleHandler.getBattles()) {
+        if(ticks == 20) {
+            for(Battle battle : BattleHandler.getBattles()) {
                 battle.incrementTimer();
-                if (battle.getTimer() == 5) {
+                if(battle.getTimer() == 5) {
                     battle.start();
                 }
             }

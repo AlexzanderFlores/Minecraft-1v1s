@@ -38,7 +38,7 @@ public class OneVsOneKit {
         this.name = name;
         this.icon = new ItemCreator(icon).setAmount(0).setName("&a" + name).getItemStack();
         items = new HashMap<Integer, ItemStack>();
-        if (kits == null) {
+        if(kits == null) {
             kits = new ArrayList<OneVsOneKit>();
         }
         kits.add(this);
@@ -53,8 +53,8 @@ public class OneVsOneKit {
     }
 
     public static OneVsOneKit getKit(String name) {
-        for (OneVsOneKit kit : getKits()) {
-            if (kit.getName().equals(name)) {
+        for(OneVsOneKit kit : getKits()) {
+            if(kit.getName().equals(name)) {
                 return kit;
             }
         }
@@ -66,7 +66,7 @@ public class OneVsOneKit {
     }
 
     public static void removePlayerKit(Player player) {
-        if (playersKits != null && playersKits.containsKey(player.getName())) {
+        if(playersKits != null && playersKits.containsKey(player.getName())) {
             playersKits.remove(player.getName());
         }
     }
@@ -81,11 +81,11 @@ public class OneVsOneKit {
 
     public int getUsers() {
         int counter = 0;
-        if (playersKits == null) {
+        if(playersKits == null) {
             return counter;
         }
-        for (OneVsOneKit kit : playersKits.values()) {
-            if (kit.getName().equals(getName())) {
+        for(OneVsOneKit kit : playersKits.values()) {
+            if(kit.getName().equals(getName())) {
                 ++counter;
             }
         }
@@ -99,13 +99,13 @@ public class OneVsOneKit {
     public void setArmor(ItemStack armor) {
         ArmorSlot type = null;
         String name = armor.getType().toString().split("_")[1];
-        if (name.equals("HELMET")) {
+        if(name.equals("HELMET")) {
             type = ArmorSlot.HELMET;
-        } else if (name.equals("CHESTPLATE")) {
+        } else if(name.equals("CHESTPLATE")) {
             type = ArmorSlot.CHESTPLATE;
-        } else if (name.equals("LEGGINGS")) {
+        } else if(name.equals("LEGGINGS")) {
             type = ArmorSlot.LEGGINGS;
-        } else if (name.equals("BOOTS")) {
+        } else if(name.equals("BOOTS")) {
             type = ArmorSlot.BOOTS;
         }
         setItem(type.getSlot(), armor);
@@ -130,25 +130,25 @@ public class OneVsOneKit {
             @Override
             public void run() {
                 Player player = ProPlugin.getPlayer(name);
-                if (player != null) {
+                if(player != null) {
                     player.getInventory().clear();
                     String path = OSTB.getInstance().getDataFolder().getPath() + "/hot_bars/" + name + "/" + kitName + ".yml";
                     File file = new File(path);
-                    if (Ranks.PREMIUM.hasRank(player) && file.exists()) {
+                    if(Ranks.PREMIUM.hasRank(player) && file.exists()) {
                         MessageHandler.sendMessage(player, "Loading saved hot bar set up");
                         ConfigurationUtil config = new ConfigurationUtil(path);
-                        for (String key : config.getConfig().getKeys(false)) {
+                        for(String key : config.getConfig().getKeys(false)) {
                             String item = config.getConfig().getString(key);
                             String[] itemData = item.split(":");
                             int id = Integer.valueOf(itemData[0]);
                             byte data = Byte.valueOf(itemData[1]);
                             int amount = Integer.valueOf(itemData[2]);
                             String typeName = itemData[3];
-                            if (typeName.equals("NULL")) {
+                            if(typeName.equals("NULL")) {
                                 ItemStack itemStack = new ItemStack(id, amount, data);
-                                if (itemData.length > 6) {
-                                    for (int a = 6; a < itemData.length; ++a) {
-                                        if (a % 2 == 0) {
+                                if(itemData.length > 6) {
+                                    for(int a = 6; a < itemData.length; ++a) {
+                                        if(a % 2 == 0) {
                                             Enchantment enchant = Enchantment.getByName(itemData[a]);
                                             int level = Integer.valueOf(itemData[a + 1]);
                                             itemStack.addEnchantment(enchant, level);
@@ -165,7 +165,7 @@ public class OneVsOneKit {
                         }
                     } else {
                         MessageHandler.sendMessage(player, "&cLoading default hot bar set up. To save your edit and save your hot bar click the name tag item in the lobby");
-                        for (int slot : items.keySet()) {
+                        for(int slot : items.keySet()) {
                             player.getInventory().setItem(slot, items.get(slot));
                         }
                         player.updateInventory();
@@ -173,10 +173,10 @@ public class OneVsOneKit {
                 }
             }
         });
-        if (playersKits == null) {
+        if(playersKits == null) {
             playersKits = new HashMap<String, OneVsOneKit>();
         }
-        if (setInMemory) {
+        if(setInMemory) {
             playersKits.put(player.getName(), this);
         }
     }

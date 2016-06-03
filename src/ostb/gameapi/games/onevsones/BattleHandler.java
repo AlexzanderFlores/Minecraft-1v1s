@@ -53,25 +53,25 @@ public class BattleHandler implements Listener {
         battles = new ArrayList<Battle>();
         playerBattles = new HashMap<String, Battle>();
         mapCoords = new HashMap<Integer, Integer>();
-        if (OSTB.getPlugin() == Plugins.ONEVSONE) {
+        if(OSTB.getPlugin() == Plugins.ONEVSONE) {
             new CommandBase("quit", true) {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
                     Player player = (Player) sender;
-                    if (QueueHandler.isInQueue(player)) {
+                    if(QueueHandler.isInQueue(player)) {
                         QueueHandler.remove(player);
                         ProPlugin.resetPlayer(player);
                         LobbyHandler.spawn(player);
                     } else {
                         Battle battle = getBattle(player);
-                        if (battle == null) {
+                        if(battle == null) {
                             MessageHandler.sendMessage(player, "&cNo battle detected, still sending you to the spawn");
                             QueueHandler.remove(player);
                             LobbyHandler.spawn(player);
                         } else {
                             MessageHandler.sendMessage(player, "You were given a death for quiting");
                             Player competitor = battle.getCompetitor(player);
-                            if (competitor != null) {
+                            if(competitor != null) {
                                 MessageHandler.sendMessage(competitor, "You were given a kill for your opponent quiting");
                                 StatsHandler.addKill(competitor);
                                 StatsHandler.addDeath(player);
@@ -88,8 +88,8 @@ public class BattleHandler implements Listener {
                     Player player = (Player) sender;
                     Block block = player.getLocation().getBlock();
                     Battle battle = getBattle(player);
-                    if (battle != null && battle.isStarted()) {
-                        if (battle.getPlacedBlocks().contains(block)) {
+                    if(battle != null && battle.isStarted()) {
+                        if(battle.getPlacedBlocks().contains(block)) {
                             MessageHandler.sendMessage(player, "&eYES");
                         } else {
                             MessageHandler.sendMessage(player, "&cNO");
@@ -154,18 +154,18 @@ public class BattleHandler implements Listener {
         EffectUtil.playSound(player, Sound.ZOMBIE_DEATH);
         Player killer = player.getKiller();
         Bukkit.getPluginManager().callEvent(new BattleEndEvent(killer, player, OneVsOneKit.getPlayersKit(player)));
-        if (killer == null) {
-            if (OSTB.getPlugin() == Plugins.ONEVSONE) {
+        if(killer == null) {
+            if(OSTB.getPlugin() == Plugins.ONEVSONE) {
                 player.sendMessage(event.getDeathMessage());
             }
         } else {
             EffectUtil.playSound(killer, Sound.LEVEL_UP);
             double health = DoubleUtil.round(((double) killer.getHealth() / 2), 2);
-            if (health <= 0) {
+            if(health <= 0) {
                 health = 0.10;
             }
             event.setDeathMessage(event.getDeathMessage() + ChatColor.translateAlternateColorCodes('&', " &fwith &c" + health + " &4" + UnicodeUtil.getHeart()));
-            if (OSTB.getPlugin() == Plugins.ONEVSONE) {
+            if(OSTB.getPlugin() == Plugins.ONEVSONE) {
                 MessageHandler.sendMessage(player, event.getDeathMessage());
                 MessageHandler.sendMessage(killer, event.getDeathMessage());
             }
@@ -175,46 +175,46 @@ public class BattleHandler implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (event.blockList() != null) {
+        if(event.blockList() != null) {
             event.blockList().clear();
         }
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow) {
+        if(event.getEntity() instanceof Arrow) {
             event.getEntity().remove();
         }
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getCause() == DamageCause.FALL) {
+        if(event.getCause() == DamageCause.FALL) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (event.getBlockClicked().getLocation().getY() != 3) {
+        if(event.getBlockClicked().getLocation().getY() != 3) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (event.getItemDrop().getItemStack().getType() == Material.POTION) {
+        if(event.getItemDrop().getItemStack().getType() == Material.POTION) {
             event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
 
     @EventHandler
     public void onBlockFromTo(BlockFromToEvent event) {
-        if (event.getBlock().getY() == 4) {
+        if(event.getBlock().getY() == 4) {
             Material type = event.getBlock().getType();
-            if (type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
+            if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
                 Block toBlock = event.getToBlock();
-                if (toBlock.getType() == Material.AIR && generatesCobble(type, toBlock)) {
+                if(toBlock.getType() == Material.AIR && generatesCobble(type, toBlock)) {
                     event.setCancelled(true);
                 } else {
                     event.setCancelled(false);
@@ -226,9 +226,9 @@ public class BattleHandler implements Listener {
     public boolean generatesCobble(Material type, Block block) {
         Material mirrorID1 = (type == Material.WATER || type == Material.STATIONARY_WATER ? Material.LAVA : Material.WATER);
         Material mirrorID2 = (type == Material.WATER || type == Material.STATIONARY_WATER ? Material.STATIONARY_LAVA : Material.STATIONARY_WATER);
-        for (BlockFace face : faces) {
+        for(BlockFace face : faces) {
             Block relative = block.getRelative(face, 1);
-            if (relative.getType() == mirrorID1 || relative.getType() == mirrorID2) {
+            if(relative.getType() == mirrorID1 || relative.getType() == mirrorID2) {
                 return true;
             }
         }

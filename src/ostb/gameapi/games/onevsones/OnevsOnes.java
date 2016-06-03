@@ -75,7 +75,7 @@ public class OnevsOnes extends ProPlugin {
         String container = Bukkit.getWorldContainer().getPath();
         Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
         File newWorld = new File(container + "/../resources/maps/onevsone");
-        if (newWorld.exists() && newWorld.isDirectory()) {
+        if(newWorld.exists() && newWorld.isDirectory()) {
             FileHandler.delete(new File(container + "/lobby"));
             FileHandler.copyFolder(newWorld, new File(container + "/lobby"));
         }
