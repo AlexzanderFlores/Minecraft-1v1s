@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.uhc;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 
 public class OreMultipliers extends Scenario {
     private static OreMultipliers instance = null;

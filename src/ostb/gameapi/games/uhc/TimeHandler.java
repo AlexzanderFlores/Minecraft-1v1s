@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 
 import anticheat.util.AsyncDelayedTask;
 import ostb.customevents.TimeEvent;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;

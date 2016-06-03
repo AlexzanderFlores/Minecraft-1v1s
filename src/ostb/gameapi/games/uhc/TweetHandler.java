@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
@@ -114,9 +114,7 @@ public class TweetHandler implements Listener {
     	if(HostedEvent.isEvent()) {
             MessageHandler.alert("Game will open in &c" + opensIn + " &xminutes");
             countDown = new CountDownUtil(60 * opensIn);
-        } else if(hasTweeted) {
-            MessageHandler.sendMessage(sender, "&cThis game has already been tweeted");
-        } else {
+        } else if(!hasTweeted) {
             String message = getScenarios(gameID) + "\n\n" + getIP() + " > " + getCommand() + "\n\n" + getOpensIn();
             id = Tweeter.tweet(message, "uhc.jpg");
             if(id == -1) {

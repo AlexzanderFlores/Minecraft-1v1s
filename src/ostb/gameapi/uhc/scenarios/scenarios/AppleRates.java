@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import java.util.Random;
 

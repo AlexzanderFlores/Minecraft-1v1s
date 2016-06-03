@@ -1,10 +1,10 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import org.bukkit.Material;
 
 import ostb.gameapi.games.uhc.OptionsHandler;
 import ostb.gameapi.games.uhc.TeamHandler;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 
 public class TrueLove extends Scenario {
     private static TrueLove instance = null;

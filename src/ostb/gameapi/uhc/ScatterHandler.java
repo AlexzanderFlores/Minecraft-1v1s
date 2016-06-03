@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.uhc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import anticheat.events.TimeEvent;
 import ostb.ProPlugin;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;

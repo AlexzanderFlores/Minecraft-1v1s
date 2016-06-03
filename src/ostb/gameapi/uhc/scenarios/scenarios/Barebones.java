@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.game.GameDeathEvent;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 
 public class Barebones extends Scenario {

@@ -3,12 +3,12 @@ package ostb.gameapi.games.speeduhc;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.gameapi.GoldenHeadUtil;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.SkullPikeUtil;
-import ostb.gameapi.scenarios.scenarios.AppleRates;
-import ostb.gameapi.scenarios.scenarios.CutClean;
-import ostb.gameapi.scenarios.scenarios.OreMultipliers;
+import ostb.gameapi.uhc.GoldenHeadUtil;
+import ostb.gameapi.uhc.SkullPikeUtil;
+import ostb.gameapi.uhc.scenarios.scenarios.AppleRates;
+import ostb.gameapi.uhc.scenarios.scenarios.CutClean;
+import ostb.gameapi.uhc.scenarios.scenarios.OreMultipliers;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.BiomeSwap;
 

@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios;
+package ostb.gameapi.uhc.scenarios;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

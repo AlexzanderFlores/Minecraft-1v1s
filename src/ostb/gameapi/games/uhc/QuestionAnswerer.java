@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import ostb.customevents.game.GameDeathEvent;
-import ostb.gameapi.scenarios.scenarios.CutClean;
+import ostb.gameapi.uhc.scenarios.scenarios.CutClean;
 import ostb.player.MessageHandler;
 import ostb.server.util.EventUtil;
 

@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios;
+package ostb.gameapi.uhc.scenarios;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

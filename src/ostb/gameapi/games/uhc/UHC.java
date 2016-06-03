@@ -10,15 +10,15 @@ import org.bukkit.entity.Player;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.gameapi.GoldenHeadUtil;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.SkullPikeUtil;
 import ostb.gameapi.games.uhc.anticheat.AntiIPVP;
 import ostb.gameapi.games.uhc.anticheat.CommandSpy;
 import ostb.gameapi.games.uhc.anticheat.DiamondTracker;
 import ostb.gameapi.games.uhc.anticheat.StripMineDetection;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.GoldenHeadUtil;
+import ostb.gameapi.uhc.SkullPikeUtil;
+import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;

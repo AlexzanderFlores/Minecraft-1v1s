@@ -1,8 +1,8 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import org.bukkit.Material;
 
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 
 public class Vanilla extends Scenario {
     private static Vanilla instance = null;

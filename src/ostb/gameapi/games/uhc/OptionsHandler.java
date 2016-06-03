@@ -23,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.gameapi.scenarios.scenarios.CutClean;
+import ostb.gameapi.uhc.scenarios.scenarios.CutClean;
 import ostb.player.MessageHandler;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;

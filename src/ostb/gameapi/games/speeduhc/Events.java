@@ -25,7 +25,7 @@ import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.game.GiveMapRatingItemEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.ScatterHandler;
+import ostb.gameapi.uhc.ScatterHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.util.CountDownUtil;

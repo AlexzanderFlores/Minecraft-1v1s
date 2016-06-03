@@ -1,4 +1,4 @@
-package ostb.gameapi.scenarios.scenarios;
+package ostb.gameapi.uhc.scenarios.scenarios;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.gameapi.games.uhc.HealthHandler;
-import ostb.gameapi.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
