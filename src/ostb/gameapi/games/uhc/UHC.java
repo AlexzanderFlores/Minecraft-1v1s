@@ -202,8 +202,10 @@ public class UHC extends MiniGame {
 			if(world.getName().equals("lobby") && !new File(container + "/../resources/maps/lobby").exists()) {
 				continue;
 			}
-			if(new File(container + "/" + world.getName() + "/pregen.yml").exists()) {
-				Bukkit.getLogger().info("World is pregened");
+			if(new File(container + world.getName() + "/pregen.yml").exists()) {
+				for(int a = 0; a < 5; ++a) {
+					Bukkit.getLogger().info("World is pregened");
+				}
 				continue;
 			}
 			FileHandler.delete(new File(container + "/" + world.getName()));
