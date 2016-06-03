@@ -28,7 +28,7 @@ import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.games.domination.Ranking;
+import ostb.gameapi.competitive.EloRanking;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
@@ -73,7 +73,7 @@ public class TeamHandler implements Listener {
 							msg = msg.replace(badColor + "", "");
 						}
 					}
-					MessageHandler.alert("&6[Shout] " + Ranking.getRank(player).getPrefix() + " " + AccountHandler.getPrefix(player) + "&f: " + msg);
+					MessageHandler.alert("&6[Shout] " + EloRanking.getRank(player).getPrefix() + " " + AccountHandler.getPrefix(player) + "&f: " + msg);
 					MessageHandler.alert("To shout use &e/shout <message>");
 				} else {
 					MessageHandler.sendMessage(player, "&cYou are out of shouts for this game");

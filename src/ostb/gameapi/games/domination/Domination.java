@@ -1,6 +1,11 @@
 package ostb.gameapi.games.domination;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
@@ -8,9 +13,10 @@ import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.AssistTracker;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.StatsHandler;
 import ostb.gameapi.TeamHandler;
 import ostb.gameapi.TemporaryFireUtil;
+import ostb.gameapi.competitive.EloRanking;
+import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.domination.mapeffects.Divided_Kingdom;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
@@ -18,6 +24,7 @@ import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.util.CountDownUtil;
+import ostb.server.util.ImageMap;
 
 public class Domination extends MiniGame {
 	private int lastRedSize = -1;
@@ -34,7 +41,13 @@ public class Domination extends MiniGame {
 		CoinsHandler.setWinCoins(75);
 		new StatsHandler(DB.PLAYERS_STATS_DOMINATION, DB.PLAYERS_STATS_DOMINATION_MONTHLY, DB.PLAYERS_STATS_DOMINATION_WEEKLY);
 		StatsHandler.setEloDB(DB.PLAYERS_DOMINATION_ELO);
-		new Ranking();
+		List<ItemFrame> frames = new ArrayList<ItemFrame>();
+		World world = getLobby();
+		frames.add(ImageMap.getItemFrame(world, 14, 7, -2));
+		frames.add(ImageMap.getItemFrame(world, -14, 7, 2));
+		new EloRanking(frames, DB.PLAYERS_DOMINATION_ELO, DB.PLAYERS_DOMINATION_RANK);
+		frames.clear();
+		frames = null;
 		new Events();
 		new BelowNameHealthScoreboardUtil();
 		new AutoRespawn();

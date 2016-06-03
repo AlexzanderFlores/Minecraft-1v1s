@@ -3,7 +3,7 @@ package ostb.gameapi.games.skywars;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.StatsHandler;
+import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.skywars.mapeffects.Frozen;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;

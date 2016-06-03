@@ -1,4 +1,4 @@
-package ostb.gameapi.games.domination;
+package ostb.gameapi.competitive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,12 +16,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import npc.util.EventUtil;
-import ostb.OSTB;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.EloHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -31,7 +28,7 @@ import ostb.server.util.EffectUtil;
 import ostb.server.util.ImageMap;
 import ostb.server.util.StringUtil;
 
-public class Ranking implements Listener {
+public class EloRanking implements Listener {
 	public enum EloRank {
 		BRONZE(-1, 100, "&6[Bronze]"),
 		SILVER(0.60, 60, "&7[Silver]"),
@@ -71,32 +68,20 @@ public class Ranking implements Listener {
 		}
 	};
 	private static Map<UUID, EloRank> eloRanks = null;
-	private List<ItemFrame> frames = null;
+	private static List<ItemFrame> frames = null;
+	private static DB eloDB = null;
+	private static DB rankDB = null;
 	
-	public Ranking() {
+	public EloRanking(List<ItemFrame> itemFrames, DB eloDB, DB rankDB) {
 		eloRanks = new HashMap<UUID, EloRank>();
 		frames = new ArrayList<ItemFrame>();
+		EloRanking.eloDB = eloDB;
+		EloRanking.rankDB = rankDB;
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
-		World lobby = OSTB.getMiniGame().getLobby();
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, 14, 7, -2), "Elo", path).getItemFrames());
-		frames.addAll(new ImageMap(ImageMap.getItemFrame(lobby, -14, 7, 2), "Elo", path).getItemFrames());
-		new AsyncDelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				DB table = DB.PLAYERS_DOMINATION_ELO;
-				int size = table.getSize();
-				for(EloRank eloRank : EloRank.values()) {
-					int start = 0;
-					int end = (int) (size * eloRank.getPercentage());
-					List<String> result = table.getOrdered("elo", "elo", new int [] {start, end}, true);
-					int required = 0;
-					if(result != null && !result.isEmpty()) {
-						required = Integer.valueOf(result.get(result.size() - 1));
-					}
-					eloRank.setRequired(required);
-				}
-			}
-		});
+		for(ItemFrame itemFrame : itemFrames) {
+			frames.addAll(new ImageMap(itemFrame, "Elo", path).getItemFrames());
+		}
+		loadData();
 		EventUtil.register(this);
 	}
 	
@@ -110,22 +95,26 @@ public class Ranking implements Listener {
 		}
 	}
 	
-	@EventHandler
-	public void onPlayerItemFrameInteract(PlayerItemFrameInteractEvent event) {
-		if(frames.contains(event.getItemFrame())) {
-			Player player = event.getPlayer();
-			EloRank rank = getRank(player);
-			MessageHandler.sendMessage(player, "You are within the percent range for " + rank.getPrefix() + " &x(Top &c" + rank.getDisplayPercentage() + "%&x)");
-			if(Ranks.PREMIUM.hasRank(player)) {
-				MessageHandler.sendMessage(player, "Your exact Elo value is &e" + EloHandler.getElo(player));
-			} else {
-				MessageHandler.sendMessage(player, "&cTo view your exact Elo value you must have " + Ranks.PREMIUM.getPrefix());
+	public static void loadData() {
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				int size = eloDB.getSize();
+				for(EloRank eloRank : EloRank.values()) {
+					int start = 0;
+					int end = (int) (size * eloRank.getPercentage());
+					List<String> result = eloDB.getOrdered("elo", "elo", new int [] {start, end}, true);
+					int required = 0;
+					if(result != null && !result.isEmpty()) {
+						required = Integer.valueOf(result.get(result.size() - 1));
+					}
+					eloRank.setRequired(required);
+				}
 			}
-		}
+		});
 	}
 	
-	@EventHandler
-	public void onGameEnding(GameEndingEvent event) {
+	public static void updateRanks() {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			int elo = 0;
 			EloRank [] ranks = EloRank.values();
@@ -151,12 +140,31 @@ public class Ranking implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerItemFrameInteract(PlayerItemFrameInteractEvent event) {
+		if(frames.contains(event.getItemFrame())) {
+			Player player = event.getPlayer();
+			EloRank rank = getRank(player);
+			MessageHandler.sendMessage(player, "You are within the percent range for " + rank.getPrefix() + " &x(Top &c" + rank.getDisplayPercentage() + "%&x)");
+			if(Ranks.PREMIUM.hasRank(player)) {
+				MessageHandler.sendMessage(player, "Your exact Elo value is &e" + EloHandler.getElo(player));
+			} else {
+				MessageHandler.sendMessage(player, "&cTo view your exact Elo value you must have " + Ranks.PREMIUM.getPrefix());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onGameEnding(GameEndingEvent event) {
+		updateRanks();
+	}
+	
+	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		int elo = 1000;
-		if(DB.PLAYERS_DOMINATION_ELO.isUUIDSet(uuid)) {
-			elo = DB.PLAYERS_DOMINATION_ELO.getInt("uuid", uuid.toString(), "elo");
+		if(eloDB.isUUIDSet(uuid)) {
+			elo = eloDB.getInt("uuid", uuid.toString(), "elo");
 		}
 		EloHandler.add(player, elo);
 		EloRank rank = EloRank.BRONZE;
@@ -169,10 +177,10 @@ public class Ranking implements Listener {
 			}
 		}
 		eloRanks.put(uuid, rank);
-		if(DB.PLAYERS_DOMINATION_RANK.isUUIDSet(uuid)) {
-			DB.PLAYERS_DOMINATION_RANK.updateString("rank", rank.toString(), "uuid", uuid.toString());
+		if(rankDB.isUUIDSet(uuid)) {
+			rankDB.updateString("rank", rank.toString(), "uuid", uuid.toString());
 		} else {
-			DB.PLAYERS_DOMINATION_RANK.insert("'" + uuid.toString() + "', '" + rank.toString() + "'");
+			rankDB.insert("'" + uuid.toString() + "', '" + rank.toString() + "'");
 		}
 	}
 	

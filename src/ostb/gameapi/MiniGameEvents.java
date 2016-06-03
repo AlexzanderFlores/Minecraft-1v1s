@@ -31,6 +31,7 @@ import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.competitive.StatsHandler;
 import ostb.player.TitleDisplayer;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;

@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.competitive;
 
 import java.util.HashMap;
 import java.util.Map;

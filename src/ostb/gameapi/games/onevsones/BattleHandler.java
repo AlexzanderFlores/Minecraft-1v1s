@@ -30,7 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.gameapi.StatsHandler;
+import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.onevsones.events.BattleEndEvent;
 import ostb.gameapi.games.onevsones.kits.OneVsOneKit;
 import ostb.player.MessageHandler;

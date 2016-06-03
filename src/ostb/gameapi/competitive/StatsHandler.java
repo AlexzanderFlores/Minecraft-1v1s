@@ -1,4 +1,4 @@
-package ostb.gameapi;
+package ostb.gameapi.competitive;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
 import ostb.customevents.player.StatsChangeEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
+import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;

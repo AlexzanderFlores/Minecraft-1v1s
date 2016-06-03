@@ -1,12 +1,17 @@
 package ostb.gameapi.games.onevsones;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.ItemFrame;
 
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.StatsHandler;
+import ostb.gameapi.competitive.EloRanking;
+import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.onevsones.kits.Archer;
 import ostb.gameapi.games.onevsones.kits.Chain;
 import ostb.gameapi.games.onevsones.kits.Diamond;
@@ -25,6 +30,7 @@ import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.util.FileHandler;
+import ostb.server.util.ImageMap;
 
 public class OnevsOnes extends ProPlugin {
 	public OnevsOnes() {
@@ -38,6 +44,7 @@ public class OnevsOnes extends ProPlugin {
         setAllowEntityCombusting(true);
         setAllowInventoryClicking(true);
         setAutoVanishStaff(true);
+        World world = Bukkit.getWorlds().get(0);
         new SpectatorHandler();
 		new ServerLogger();
 		new TeamScoreboardHandler();
@@ -45,7 +52,7 @@ public class OnevsOnes extends ProPlugin {
 		new LobbyHandler();
         new QueueHandler();
         new BattleHandler();
-        new MapProvider(Bukkit.getWorlds().get(0));
+        new MapProvider(world);
         new SpectatorHandler();
         new TeamScoreboardHandler();
         new BelowNameHealthScoreboardUtil();
@@ -53,6 +60,12 @@ public class OnevsOnes extends ProPlugin {
         new HotbarEditor();
         new VersusElo();
         new ServerLogger();
+        List<ItemFrame> frames = new ArrayList<ItemFrame>();
+        frames.add(ImageMap.getItemFrame(world, 823, 6, 801));
+        frames.add(ImageMap.getItemFrame(world, 854, 6, 796));
+        new EloRanking(frames, DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
+        frames.clear();
+        frames = null;
         // Kits
         new Leather();
         new Gold();

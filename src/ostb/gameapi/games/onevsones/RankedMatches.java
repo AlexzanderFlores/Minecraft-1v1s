@@ -64,7 +64,7 @@ public class RankedMatches implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		matches.put(event.getPlayer().getName(), DB.PLAYERS_ONE_VS_ONE_RANKED.getInt("uuid", event.getPlayer().getUniqueId().toString(), "amount"));
+		matches.put(event.getPlayer().getName(), DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.getInt("uuid", event.getPlayer().getUniqueId().toString(), "amount"));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
@@ -79,14 +79,14 @@ public class RankedMatches implements Listener {
 		if(matches.containsKey(name)) {
 			UUID uuid = event.getUUID();
 			int amount = matches.get(name);
-			if(DB.PLAYERS_ONE_VS_ONE_RANKED.isUUIDSet(uuid)) {
+			if(DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.isUUIDSet(uuid)) {
 				if(amount <= 0) {
-					DB.PLAYERS_ONE_VS_ONE_RANKED.deleteUUID(uuid);
+					DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.deleteUUID(uuid);
 				} else {
-					DB.PLAYERS_ONE_VS_ONE_RANKED.updateInt("amount", amount, "uuid", uuid.toString());
+					DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.updateInt("amount", amount, "uuid", uuid.toString());
 				}
 			} else if(amount > 0) {
-				DB.PLAYERS_ONE_VS_ONE_RANKED.insert("'" + uuid.toString() + "', '" + amount + "'");
+				DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.insert("'" + uuid.toString() + "', '" + amount + "'");
 			}
 			matches.remove(name);
 			ranked.remove(name);
