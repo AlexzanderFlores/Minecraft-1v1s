@@ -13,11 +13,19 @@ import org.bukkit.inventory.ItemStack;
 import ostb.server.util.EventUtil;
 
 public class AppleRates implements Listener {
-	private int rates = 0;
+	private static int rates = 0;
 	
 	public AppleRates(int rates) {
-		this.rates = rates;
+		AppleRates.rates = rates;
 		EventUtil.register(this);
+	}
+	
+	public static int getRates() {
+		return rates;
+	}
+	
+	public static void setRates(int rates) {
+		AppleRates.rates = rates;
 	}
 	
 	private boolean spawn() {

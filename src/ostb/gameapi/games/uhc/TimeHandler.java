@@ -53,6 +53,9 @@ public class TimeHandler implements Listener {
 					}
 					scenarios += scenario + " ";
 				}
+				if(options.charAt(1) == '1') {
+					scenarios += "Rush ";
+				}
 				addGame(day, hour, started, options, scenarios.substring(0, scenarios.length() - 1));
 				MessageHandler.sendMessage(sender, "Added game:");
 				MessageHandler.sendMessage(sender, "Day: &b" + day);

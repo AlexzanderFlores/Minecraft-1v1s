@@ -115,7 +115,9 @@ public class WhitelistHandler implements Listener {
     @EventHandler
     public void onGameStart(GameStartEvent event) {
         for(Player player : ProPlugin.getPlayers()) {
-            whitelisted.add(player.getUniqueId());
+            if(!whitelisted.contains(player.getUniqueId())) {
+            	whitelisted.add(player.getUniqueId());
+            }
         }
     }
 
@@ -128,20 +130,20 @@ public class WhitelistHandler implements Listener {
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
         if(ticks == 20 * 5) {
-            if(enabled && OSTB.getMiniGame().getGameState() == GameStates.WAITING && !HostedEvent.isEvent()) {
-                new AsyncDelayedTask(new Runnable() {
+        	if(enabled && OSTB.getMiniGame().getGameState() == GameStates.WAITING && !HostedEvent.isEvent()) {
+            	new AsyncDelayedTask(new Runnable() {
                     @Override
                     public void run() {
                         for(Status status : Tweeter.getReplies()) {
                             String text = status.getText();
-                            for(String word : text.split(" ")) {
-                                if(!word.contains("@")) {
-                                    Bukkit.getLogger().info("\"" + word + "\"");
-                                    UUID uuid = AccountHandler.getUUID(word);
-                                    if(uuid != null && !whitelisted.contains(uuid)) {
-                                        MessageHandler.alert("&c" + word + " &aRetweeted & Replied with their IGN for Pre-Whitelist" + TweetHandler.getURL());
-                                        whitelisted.add(uuid);
-                                    }
+                            String [] split = text.split(" ");
+                            if(split.length > 0 && !split[0].startsWith("@")) {
+                            	String ign = split[0];
+                            	UUID uuid = AccountHandler.getUUID(ign);
+                                if(uuid != null && !whitelisted.contains(uuid)) {
+                                    MessageHandler.alert("&a&lWhitelist: &e" + ign + " Replied to the tweet with their IGN");
+                                    MessageHandler.alert(TweetHandler.getURL());
+                                    whitelisted.add(uuid);
                                 }
                             }
                         }

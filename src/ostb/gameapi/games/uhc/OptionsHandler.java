@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.gameapi.uhc.scenarios.scenarios.AppleRates;
 import ostb.gameapi.uhc.scenarios.scenarios.CutClean;
 import ostb.player.MessageHandler;
 import ostb.server.CommandBase;
@@ -34,7 +35,6 @@ import ostb.server.util.ItemCreator;
 public class OptionsHandler implements Listener {
     private static boolean rush = false;
     private static boolean nether = false;
-    private static int appleRates = 1;
     private static boolean horses = true;
     private static boolean horseHealing = true;
     private static boolean pearlDamage = true;
@@ -72,14 +72,6 @@ public class OptionsHandler implements Listener {
     	if(nether) {
     		WorldHandler.generateNether();
     	}
-    }
-
-    public static int getAppleRates() {
-        return appleRates;
-    }
-    
-    public static void setAppleRates(int appleRates) {
-    	OptionsHandler.appleRates = appleRates;
     }
 
     public static boolean getAllowHorses() {
@@ -163,7 +155,7 @@ public class OptionsHandler implements Listener {
     		setRush(options.charAt(1) == '1');
     		setAllowNether(options.charAt(2) == '1');
     		int rates = Integer.valueOf(options.substring(3, 5));
-    		setAppleRates(rates == 00 ? 100 : rates);
+    		new AppleRates(rates == 00 ? 100 : rates);
     		setAllowHorses(options.charAt(5) == '1');
     		setAllowHorseHealing(options.charAt(6) == '1');
     		setAllowPearlDamage(options.charAt(7) == '1');
@@ -184,7 +176,7 @@ public class OptionsHandler implements Listener {
                 new ItemCreator(Material.DIAMOND_BOOTS).setName("&bRush").getItemStack(),
                 new ItemCreator(Material.NETHERRACK).setName("&bNether Enabled").getItemStack(),
                 new ItemCreator(Material.APPLE).setName("&bApple Rates").addLore("&4NOTE: &fEdit this with:")
-                        .addLore("&f/appleRates [percentage]").addLore("").addLore("&aCurrent Rates: &c" + getAppleRates() + "&a%").getItemStack(),
+                        .addLore("&f/appleRates [percentage]").addLore("").addLore("&aCurrent Rates: &c" + AppleRates.getRates() + "&a%").getItemStack(),
                 new ItemCreator(Material.SADDLE).setName("&bHorses").getItemStack(),
                 new ItemCreator(Material.BREAD).setName("&bHorse Healing").getItemStack(),
                 new ItemCreator(Material.ENDER_PEARL).setName("&bEnder Pearl Damage").getItemStack(),
@@ -295,7 +287,7 @@ public class OptionsHandler implements Listener {
     @EventHandler
     public void onGameStart(GameStartEvent event) {
         if(ScenarioManager.getActiveScenarios().contains(CutClean.getInstance())) {
-            appleRates = 4;
+            AppleRates.setRates(4);
         }
         if(!getAllowHorses()) {
             for(Entity entity : Bukkit.getWorlds().get(1).getEntities()) {

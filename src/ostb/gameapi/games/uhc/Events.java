@@ -1,7 +1,5 @@
 package ostb.gameapi.games.uhc;
 
-import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -57,7 +55,6 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
 
-@SuppressWarnings("deprecation")
 public class Events implements Listener {
     private static boolean moveToBox = false;
     private static boolean firstMinute = false;
@@ -65,12 +62,10 @@ public class Events implements Listener {
     private static boolean postStart = false;
     private static boolean canBreakBlocks = false;
     private ItemStack forceStartItem = null;
-    private Random random = null;
     private boolean runOneSecond = true;
 
     public Events() {
         forceStartItem = new ItemCreator(Material.NAME_TAG).setName("&aForce Start Game").getItemStack();
-        random = new Random();
         EventUtil.register(this);
     }
 
@@ -350,8 +345,6 @@ public class Events implements Listener {
         Block block = event.getBlock();
         if(block.getWorld().getName().equals("lobby")) {
             event.setCancelled(true);
-        } else if(!event.isCancelled() && handleAppleSpawning(block)) {
-            event.setCancelled(true);
         }
         if(block.getType() == Material.SKULL) {
             Skull skull = (Skull) block.getState();
@@ -387,21 +380,6 @@ public class Events implements Listener {
         Block block = event.getBlock();
         if(block.getWorld().getName().equals("lobby")) {
             event.setCancelled(true);
-        } else if(!event.isCancelled()) {
-            handleAppleSpawning(block);
         }
-    }
-
-    private boolean handleAppleSpawning(Block block) {
-        Material type = block.getType();
-        byte data = block.getData();
-        if((type == Material.LEAVES && data == 0) || (type == Material.LEAVES && data == 8) || (type == Material.LEAVES_2 && data == 1)) {
-            block.setType(Material.AIR);
-            if(random.nextInt(100) + 1 <= OptionsHandler.getAppleRates()) {
-                block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.APPLE));
-                return true;
-            }
-        }
-        return false;
     }
 }

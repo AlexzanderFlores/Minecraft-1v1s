@@ -19,6 +19,7 @@ import ostb.gameapi.games.uhc.anticheat.StripMineDetection;
 import ostb.gameapi.uhc.GoldenHeadUtil;
 import ostb.gameapi.uhc.SkullPikeUtil;
 import ostb.gameapi.uhc.scenarios.Scenario;
+import ostb.gameapi.uhc.scenarios.scenarios.AppleRates;
 import ostb.player.MessageHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
@@ -98,7 +99,7 @@ public class UHC extends MiniGame {
                 	MessageHandler.sendMessage(sender, "Team damage: &bFalse");
                 }
                 MessageHandler.sendMessage(sender, "Nether: " + (OptionsHandler.isNetherEnabled() ? "&bON" : "&cOFF") + " &xEnd: " + (OptionsHandler.isEndEnabled() ? "&bON" : "&cOFF"));
-                MessageHandler.sendMessage(sender, "Apple rates: &b" + OptionsHandler.getAppleRates() + "%");
+                MessageHandler.sendMessage(sender, "Apple rates: &b" + AppleRates.getRates() + "%");
                 MessageHandler.sendMessage(sender, "Horses: " + (OptionsHandler.getAllowHorses() ? "&bON" : "&cOFF") + " &7(&eHorse Healing is " + (OptionsHandler.getAllowHorseHealing() ? "&bON" : "&cOFF") + "&7)");
                 MessageHandler.sendMessage(sender, "Ender pearl damage: " + (OptionsHandler.getAllowPearlDamage() ? "&bON" : "&cOFF"));
                 MessageHandler.sendMessage(sender, "Absorption: " + (OptionsHandler.getAllowAbsorption() ? "&bON" : "&cOFF"));
