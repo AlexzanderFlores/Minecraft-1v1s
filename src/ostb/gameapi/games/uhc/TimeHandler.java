@@ -170,24 +170,6 @@ public class TimeHandler implements Listener {
 					}
 				}
 			});
-			new CommandBase("test") {
-				@Override
-				public boolean execute(CommandSender sender, String [] arguments) {
-					MessageHandler.sendMessage(sender, "Primary:");
-					for(Scenario scenario : ScenarioManager.getAllScenarios()) {
-						if(scenario.isPrimary()) {
-							MessageHandler.sendMessage(sender, "&b" + scenario.getName() + " &7- &b" + scenario.getShortName());
-						}
-					}
-					MessageHandler.sendMessage(sender, "Secondary:");
-					for(Scenario scenario : ScenarioManager.getAllScenarios()) {
-						if(!scenario.isPrimary()) {
-							MessageHandler.sendMessage(sender, "&b" + scenario.getName() + " &7- &b" + scenario.getShortName());
-						}
-					}
-					return true;
-				}
-			};
 		}
 	}
 

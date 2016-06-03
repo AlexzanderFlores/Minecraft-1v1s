@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import ostb.customevents.DeleteImportedWorldEvent;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.tasks.DelayedTask;
@@ -103,5 +104,10 @@ public class Events implements Listener {
 		if(event.getEntityType() == EntityType.ARMOR_STAND) {
 			event.setCancelled(false);
 		}
+	}
+	
+	@EventHandler
+	public void onDeleteImportedWorld(DeleteImportedWorldEvent event) {
+		event.setCancelled(true);
 	}
 }

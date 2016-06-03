@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
 import ostb.OSTB;
+import ostb.customevents.DeleteImportedWorldEvent;
 import ostb.player.MessageHandler;
 import ostb.server.BiomeSwap;
 import ostb.server.util.EventUtil;
@@ -56,9 +57,11 @@ public class WorldHandler implements Listener {
 		world.getWorldBorder().setDamageAmount(1.0d);
 		world.getWorldBorder().setWarningDistance(25);
 		world.getWorldBorder().setWarningTime(20 * 10);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set " + radius + " " + radius + " 0 0");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 40");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
+		if(!hasPregened(world)) {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set " + radius + " " + radius + " 0 0");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 40");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
+		}
 		setBorder();
         OSTB.getMiniGame().setMap(world);
         MessageHandler.alert("Generating World... Complete!");
@@ -138,6 +141,11 @@ public class WorldHandler implements Listener {
     	}
     }
     
+    private static boolean hasPregened(World world) {
+    	String container = Bukkit.getWorldContainer().getPath();
+    	return new File(container + world.getName() + "/pregne.yml").exists();
+    }
+    
     @EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
     	preGenerated = true;
@@ -148,6 +156,13 @@ public class WorldHandler implements Listener {
     		} catch(IOException e) {
     			e.printStackTrace();
     		}
+    	}
+    }
+    
+    @EventHandler
+    public void onDeleteImportedWorld(DeleteImportedWorldEvent event) {
+    	if(event.getWorld().getName().equals(getWorld().getName()) && hasPregened(event.getWorld())) {
+    		event.setCancelled(true);
     	}
     }
 }
