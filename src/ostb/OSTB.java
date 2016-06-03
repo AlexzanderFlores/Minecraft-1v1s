@@ -68,7 +68,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		SWT("SWT", "sky_wars", "Team Sky Wars"),
 		SUHC("SUHC", "speed_uhc", "Speed UHC"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
-		ONE_VS_ONE("1v1s", "1v1", "1v1s"),
+		ONEVSONE("1v1s", "1v1", "1v1s"),
 		UHC("UHC", "uhc", "UHC"),
 		PREGEN("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
@@ -153,7 +153,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 				proPlugin = new SpeedUHC();
 			} else if(plugin == Plugins.KITPVP) {
 				proPlugin = new KitPVP();
-			} else if(plugin == Plugins.ONE_VS_ONE) {
+			} else if(plugin == Plugins.ONEVSONE) {
 				proPlugin = new OnevsOnes();
 			} else if(plugin == Plugins.UHC) {
 				proPlugin = new UHC();

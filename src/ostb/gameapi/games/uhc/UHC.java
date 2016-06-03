@@ -49,6 +49,7 @@ public class UHC extends MiniGame {
         setRestartWithOnePlayerLeft(false);
         setDoDaylightCycle(true);
         setUseCoinBoosters(false);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill cancel");
         new Events();
         new HostHandler();
         new WhitelistHandler();

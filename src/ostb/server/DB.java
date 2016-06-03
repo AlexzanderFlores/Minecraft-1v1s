@@ -57,6 +57,9 @@ public enum DB {
 	PLAYERS_STATS_KIT_PVP("uuid VARCHAR(40), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(uuid)"),
 	PLAYERS_STATS_KIT_PVP_MONTHLY("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date VARCHAR(10), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(id)"),
 	PLAYERS_STATS_KIT_PVP_WEEKLY("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date VARCHAR(10), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(id)"),
+	PLAYERS_STATS_ONE_VS_ONE("uuid VARCHAR(40), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(uuid)"),
+	PLAYERS_STATS_ONE_VS_ONE_MONTHLY("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date VARCHAR(10), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(id)"),
+	PLAYERS_STATS_ONE_VS_ONE_WEEKLY("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), date VARCHAR(10), wins INT, losses INT, kills INT, deaths INT, PRIMARY KEY(id)"),
 	PLAYERS_STAT_RESETS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Votes
 	PLAYERS_LIFETIME_VOTES("uuid VARCHAR(40), amount INT, day INT, streak INT, highest_streak INT, PRIMARY KEY(uuid)"),
