@@ -180,7 +180,7 @@ public class OptionsHandler implements Listener {
         ItemStack back = new ItemCreator(Material.ARROW).setName("&eBack").getItemStack();
         ItemStack finish = new ItemCreator(Material.ARROW).setName("&eFinish Set Up").getItemStack();
         Inventory inventory = Bukkit.createInventory(player, 9 * 6, name);
-        ItemStack[] items = new ItemStack[]{
+        ItemStack [] items = new ItemStack[]{
                 new ItemCreator(Material.DIAMOND_BOOTS).setName("&bRush").getItemStack(),
                 new ItemCreator(Material.NETHERRACK).setName("&bNether Enabled").getItemStack(),
                 new ItemCreator(Material.APPLE).setName("&bApple Rates").addLore("&4NOTE: &fEdit this with:")

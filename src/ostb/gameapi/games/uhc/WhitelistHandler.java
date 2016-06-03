@@ -97,7 +97,7 @@ public class WhitelistHandler implements Listener {
             } else {
                 event.setResult(Result.KICK_OTHER);
                 if(OSTB.getMiniGame().getGameState() == GameStates.WAITING && !TweetHandler.getURL().endsWith("/0")) {
-                    event.setKickMessage("This server is currently whitelisted. " + ChatColor.GREEN + "Get whitelisted:" + StringUtil.color(TweetHandler.getURL()));
+                    event.setKickMessage("This server is currently whitelisted. " + ChatColor.GREEN + "Get whitelisted:\n" + StringUtil.color(TweetHandler.getURL()));
                 } else {
                     event.setKickMessage("This server is currently whitelisted");
                 }

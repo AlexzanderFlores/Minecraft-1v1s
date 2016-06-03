@@ -49,7 +49,8 @@ public class BestPVE extends Scenario {
                                 ++counter;
                             }
                         }
-                        MessageHandler.sendMessage(sender, "Players in the Best PVE list: (&e" + counter + "&a): " + players.substring(0, players.length() - 2));
+                        MessageHandler.sendMessage(sender, "Players in the Best PVE list: (&e" + counter + "&x): " + players.substring(0, players.length() - 2));
+                        return true;
                     }
                 } else if(arguments[0].equalsIgnoreCase("add") && arguments.length == 2) {
                     String name = arguments[1];
@@ -72,9 +73,9 @@ public class BestPVE extends Scenario {
                     }
                     return true;
                 }
-                MessageHandler.sendMessage(sender, "&f/bestPVE &a- &eLists all players in the list");
-                MessageHandler.sendMessage(sender, "&f/bestPVE add <name> &a- &eAdds a player to the list");
-                MessageHandler.sendMessage(sender, "&f/bestPVE remove <name> &a- &eRemoves a player to the list");
+                MessageHandler.sendMessage(sender, "&e/bestPVE &7- &bLists all players in the list");
+                MessageHandler.sendMessage(sender, "&e/bestPVE add <name> &7- &bAdds a player to the list");
+                MessageHandler.sendMessage(sender, "&e/bestPVE remove <name> &7- &bRemoves a player to the list");
                 return true;
             }
         }.setRequiredRank(Ranks.OWNER);
@@ -90,14 +91,14 @@ public class BestPVE extends Scenario {
     private void add(Player player) {
         if(!bestPVE.contains(player.getUniqueId())) {
             bestPVE.add(player.getUniqueId());
-            MessageHandler.sendMessage(player, "&eYou have been added to the \"Best PVE\" list &f/sInfo");
+            MessageHandler.sendMessage(player, "&a&lBest PVE: &eYou have been &aadded &eto the Best PVE list &b/sInfo");
         }
     }
 
     private void remove(Player player) {
         if(bestPVE.contains(player.getUniqueId())) {
             bestPVE.remove(player.getUniqueId());
-            MessageHandler.sendMessage(player, "&cYou have been removed from the \"Best PVE\" list &f/sInfo");
+            MessageHandler.sendMessage(player, "&a&lBest PVE: &eYou have been &cremoved &eto the Best PVE list &b/sInfo");
         }
     }
 
@@ -124,7 +125,7 @@ public class BestPVE extends Scenario {
                             player.setHealth(newHealth);
                         }
                         HealthHandler.updateHealth(player);
-                        MessageHandler.sendMessage(player, "&eYou have given 1 max heart and have been healed 1 heart due to being on the Best PVE list &f/sInfo");
+                        MessageHandler.sendMessage(player, "&a&lBest PVE: &eYou have given 1 max heart and have been healed 1 heart &b/sInfo");
                     }
                 }
             }
