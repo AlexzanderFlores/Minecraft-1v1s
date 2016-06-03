@@ -1,6 +1,7 @@
 package ostb.gameapi.games.uhc;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -140,5 +141,13 @@ public class WorldHandler implements Listener {
     @EventHandler
 	public void onWorldBorderFinish(WorldBorderFillFinishedEvent event) {
     	preGenerated = true;
+    	File file = new File(Bukkit.getWorldContainer().getPath() + "/" + getWorld().getName() + "/pregen.yml");
+    	if(!file.exists()) {
+    		try {
+    			file.createNewFile();
+    		} catch(IOException e) {
+    			e.printStackTrace();
+    		}
+    	}
     }
 }

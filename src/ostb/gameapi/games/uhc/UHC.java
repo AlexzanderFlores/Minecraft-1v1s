@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import npc.NPCRegistrationHandler.NPCs;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.GoldenHeadUtil;
@@ -187,9 +189,27 @@ public class UHC extends MiniGame {
     public void disable() {
     	int server = Integer.valueOf(OSTB.getServerName().replace("UHC", ""));
     	DB.NETWORK_UHC_URL.delete("server", "" + server);
-        super.disable();
-        String container = Bukkit.getWorldContainer().getPath();
-        Bukkit.unloadWorld(getLobby(), false);
+    	try {
+			for(NPCs npc : NPCs.values()) {
+				npc.unregister();
+			}
+		} catch(NullPointerException e) {
+			
+		}
+    	String container = Bukkit.getWorldContainer().getPath();
+		for(World world : Bukkit.getWorlds()) {
+			Bukkit.unloadWorld(world, false);
+			if(world.getName().equals("lobby") && !new File(container + "/../resources/maps/lobby").exists()) {
+				continue;
+			}
+			if(new File(container + "/" + world.getName() + "/pregen.yml").exists()) {
+				Bukkit.getLogger().info("World is pregened");
+				continue;
+			} else {
+				Bukkit.getLogger().info("World is NOT pregened");
+			}
+			FileHandler.delete(new File(container + "/" + world.getName()));
+		}
         File newWorld = new File(container + "/../resources/maps/uhc");
         if(newWorld.exists() && newWorld.isDirectory()) {
             FileHandler.delete(new File(container + "/lobby"));
