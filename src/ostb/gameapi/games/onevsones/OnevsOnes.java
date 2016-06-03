@@ -58,11 +58,11 @@ public class OnevsOnes extends ProPlugin {
         new BelowNameHealthScoreboardUtil();
         new PrivateBattleHandler();
         new HotbarEditor();
-        new VersusElo();
+        new EloHandler();
         new ServerLogger();
         List<ItemFrame> frames = new ArrayList<ItemFrame>();
-        frames.add(ImageMap.getItemFrame(world, 823, 6, 801));
-        frames.add(ImageMap.getItemFrame(world, 854, 6, 796));
+        frames.add(ImageMap.getItemFrame(world, -16, 7, 3));
+        frames.add(ImageMap.getItemFrame(world, 15, 7, -2));
         new EloRanking(frames, DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         frames.clear();
         frames = null;

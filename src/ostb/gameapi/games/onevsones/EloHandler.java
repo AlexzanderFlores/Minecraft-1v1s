@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -21,36 +20,12 @@ import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
-import ostb.server.util.StringUtil;
 
-public class VersusElo implements Listener {
+public class EloHandler implements Listener {
     private static Map<String, Integer> elo = null;
     private static final int starting = 1000;
-    
-    public enum EloRanks {
-    	BRONZE(0, 1300, "&6&lBronze"),
-    	SILVER(1301, 1600, "&f&lSilver"),
-    	GOLD(1601, 1900, "&e&lGold"),
-    	DIAMOND_(1900, 2200, "&b&lDiamond"),
-    	LEGENDARY(2201, 9999, "&d&lLegendary");
-    	
-    	private int start = 0;
-    	private int end = 0;
-    	private String prefix = null;
-    	
-    	private EloRanks(int start, int end, String prefix) {
-    		this.start = start;
-    		this.end = end;
-    		this.prefix = StringUtil.color(prefix);
-    	}
-    	
-    	public boolean isInRange(Player player) {
-    		int elo = VersusElo.elo.get(player.getName());
-    		return elo >= start && elo <= end;
-    	}
-    }
 	
-	public VersusElo() {
+	public EloHandler() {
 		elo = new HashMap<String, Integer>();
 		new CommandBase("elo", -1) {
 			@Override
@@ -127,20 +102,6 @@ public class VersusElo implements Listener {
 				ChatClickHandler.sendMessageToRunCommand(player, " &cClick here", "Click to view elo", "/versusStats", "&aView elo: &f/versusStats [name] &aor");
 				MessageHandler.sendLine(player);
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-		Player player = event.getPlayer();
-		if(elo.containsKey(player.getName())) {
-			EloRanks rank = EloRanks.BRONZE;
-			for(EloRanks eloRanks : EloRanks.values()) {
-				if(eloRanks.isInRange(player)) {
-					rank = eloRanks;
-				}
-			}
-			event.setFormat(rank.prefix + ChatColor.WHITE + " " + event.getFormat());
 		}
 	}
 	
