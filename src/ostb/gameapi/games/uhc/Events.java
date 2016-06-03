@@ -1,5 +1,6 @@
 package ostb.gameapi.games.uhc;
 
+import java.io.File;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -146,6 +147,17 @@ public class Events implements Listener {
     @EventHandler
     public void onTime(TimeEvent event) {
         long ticks = event.getTicks();
+        if(ticks == 20 * 5) {
+        	String container = Bukkit.getWorldContainer().getPath();
+            for(World world : Bukkit.getWorlds()) {
+    			Bukkit.unloadWorld(world, false);
+    			if(new File(container + "/" + world.getName() + "/pregen.yml").exists()) {
+    				Bukkit.getLogger().info("File exists");
+    			} else {
+    				Bukkit.getLogger().info("File does NOT exists");
+    			}
+            }
+        }
         if(ticks == 20 && runOneSecond) {
             MiniGame miniGame = OSTB.getMiniGame();
             GameStates gameState = miniGame.getGameState();
