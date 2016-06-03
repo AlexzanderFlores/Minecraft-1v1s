@@ -12,14 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
 import ostb.customevents.player.InventoryItemClickEvent;
-import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.scenarios.Scenario;
 import ostb.gameapi.scenarios.ScenarioStateChangeEvent;
 import ostb.gameapi.scenarios.scenarios.Barebones;
@@ -35,13 +31,11 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.ItemUtil;
 
 @SuppressWarnings("deprecation")
 public class ScenarioManager implements Listener {
     private static Map<Integer, Scenario> scenarios = null;
     private static String name = null;
-    private ItemStack item = null;
 
     public ScenarioManager() {
         scenarios = new HashMap<Integer, Scenario>();
@@ -54,7 +48,6 @@ public class ScenarioManager implements Listener {
         scenarios.put(16, TrueLove.getInstance());
         resetScenarios();
         name = "Scenario Manager";
-        item = new ItemCreator(Material.EYE_OF_ENDER).setName("&a" + name).getItemStack();
         new CommandBase("scenarios", true) {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
@@ -151,23 +144,6 @@ public class ScenarioManager implements Listener {
             scenario.disable(false);
         }
         Vanilla.getInstance().enable(false);
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if(WhitelistHandler.isWhitelisted() && Ranks.OWNER.hasRank(player) && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
-            player.getInventory().setItem(0, item);
-        }
-    }
-
-    @EventHandler
-    public void onMouseClick(MouseClickEvent event) {
-        Player player = event.getPlayer();
-        if(ItemUtil.isItem(player.getItemInHand(), item)) {
-            open(player);
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler

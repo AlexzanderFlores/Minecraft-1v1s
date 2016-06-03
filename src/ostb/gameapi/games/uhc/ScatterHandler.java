@@ -23,13 +23,9 @@ import org.bukkit.scoreboard.Team;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
-import ostb.player.account.AccountHandler.Ranks;
-import ostb.server.CommandBase;
 import ostb.server.util.EventUtil;
-import ostb.server.util.StringUtil;
 
 public class ScatterHandler implements Listener {
     private static List<LivingEntity> savedEntities = null;
@@ -56,35 +52,6 @@ public class ScatterHandler implements Listener {
             ++toScatter;
         }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-        new CommandBase("lateScatter", 1, true) {
-            @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
-                Player player = (Player) sender;
-                if(Ranks.OWNER.hasRank(player)) {
-                    Player target = ProPlugin.getPlayer(arguments[0]);
-                    if(target == null) {
-                        MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
-                    } else {
-                        target.setNoDamageTicks(20 * 10);
-                        SpectatorHandler.remove(target);
-                        target.teleport(WorldHandler.getWorld().getSpawnLocation());
-                        int size = (int) WorldHandler.getWorld().getWorldBorder().getSize();
-                        String command = "spreadPlayers 0 0 100 " + size / 2 + " false " + target.getName();
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-                    }
-                } else {
-                    MessageHandler.sendUnknownCommand(player);
-                }
-                return true;
-            }
-        };
-        new CommandBase("forceStart") {
-            @Override
-            public boolean execute(CommandSender sender, String[] arguments) {
-                forceStart(sender);
-                return true;
-            }
-        }.setRequiredRank(Ranks.OWNER);
     }
     
     private void forceStart(CommandSender sender) {
@@ -97,7 +64,7 @@ public class ScatterHandler implements Listener {
         if(msg.equals("")) {
             msg = "&cNone, ";
         }
-        MessageHandler.sendMessage(sender, "Players in the locations list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
+        MessageHandler.sendMessage(sender, "Players in the locations list: (&e" + counter + "&x) " + msg.substring(0, msg.length() - 2));
         msg = "";
         counter = 0;
         for(String name : scattered) {
@@ -107,7 +74,7 @@ public class ScatterHandler implements Listener {
         if(msg.equals("")) {
             msg = "&cNone, ";
         }
-        MessageHandler.sendMessage(sender, "Players in the scattered list: (&e" + counter + "&a) " + msg.substring(0, msg.length() - 2));
+        MessageHandler.sendMessage(sender, "Players in the scattered list: (&e" + counter + "&x) " + msg.substring(0, msg.length() - 2));
         HandlerList.unregisterAll(instance);
         if(teams != null) {
             teams.clear();
@@ -200,9 +167,6 @@ public class ScatterHandler implements Listener {
                     z *= -1;
                 }
                 LivingEntity livingEntity = (LivingEntity) to.getWorld().spawnEntity(to.clone().add(x, -14, z), type);
-                if(type == EntityType.SHEEP) {
-                    livingEntity.setCustomName(StringUtil.color("&bSheep Drop Food"));
-                }
                 savedEntities.add(livingEntity);
             }
             locations.put(name, to);

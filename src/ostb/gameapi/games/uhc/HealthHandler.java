@@ -31,7 +31,7 @@ public class HealthHandler implements Listener {
                     MessageHandler.sendMessage(sender, "&c" + arguments[0] + " is not online");
                 } else {
                     updateHealth(player);
-                    MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player) + " &ahas &c" + (int) player.getHealth() + " &ahealth");
+                    MessageHandler.sendMessage(sender, AccountHandler.getPrefix(player) + " &xhas &c" + (int) player.getHealth() + " &xhealth");
                 }
                 return true;
             }

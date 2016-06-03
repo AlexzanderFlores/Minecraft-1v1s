@@ -93,8 +93,9 @@ public class TimeHandler implements Listener {
 						String [] values = new String [] {day + "", + hourOfDay + "", "0"};
 						if(db.isKeySet(keys, values)) {
 							int id = db.getInt(keys, values, "id");
-							db.updateInt("started", 1, keys, values);
-							TweetHandler.tweet(Bukkit.getConsoleSender(), id);
+							if(TweetHandler.tweet(Bukkit.getConsoleSender(), id)) {
+								db.updateInt("started", 1, keys, values);
+							}
 						}
 					} else {
 						db.delete("day", (day - 1) + "");

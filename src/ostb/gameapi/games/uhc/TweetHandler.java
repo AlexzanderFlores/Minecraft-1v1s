@@ -107,9 +107,9 @@ public class TweetHandler implements Listener {
         EventUtil.register(this);
     }
 
-    public static void tweet(CommandSender sender, int gameID) {
-    	if(WorldHandler.isPreGenerated()) {
-    		return;
+    public static boolean tweet(CommandSender sender, int gameID) {
+    	if(!WorldHandler.isPreGenerated()) {
+    		return false;
     	}
     	if(HostedEvent.isEvent()) {
             MessageHandler.alert("Game will open in &c" + opensIn + " &xminutes");
@@ -137,8 +137,10 @@ public class TweetHandler implements Listener {
 						}
 					}
 				});
+                return true;
             }
         }
+    	return false;
     }
 
     public static String getURL() {

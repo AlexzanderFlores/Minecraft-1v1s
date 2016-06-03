@@ -18,70 +18,55 @@ public class QuestionAnswerer implements Listener {
 
     public QuestionAnswerer() {
         new Question(new String[]{
-                "AppleRate"
+        	"AppleRate"
         }, "/info");
         new Question(new String[]{
-                "Nether"
+        	"Nether"
         }, "/info");
         new Question(new String[]{
-                "Godapple", "Notchapple"
+        	"Godapple", "Notchapple"
         }, "/info");
         new Question(new String[]{
-                "Shear"
+        	"Shear"
         }, "Shears are &eEnabled");
         new Question(new String[]{
-                "Horse",
+        	"Horse",
         }, "/info");
         new Question(new String[]{
-                "Stalkin"
+        	"Stalkin"
         }, "Stalking is &eAllowed");
         new Question(new String[]{
-                "Head",
+        	"Head",
         }, "Heads are &eEnabled");
         new Question(new String[]{
-                "Crossteam"
+        	"Crossteam"
         }, "Cross teaming is " + (OptionsHandler.getCrossTeaming() ? "&eALLOWED" : "&cNot Allowed"));
         new Question(new String[]{
-                "Flint"
+        	"Flint"
         }, "Flint Rates are &e" + (CutClean.getInstance().isEnabled() ? "50" : "10") + "&a%");
         new Question(new String[]{
-                "Poke"
-        }, "Pole holing is &eAllowed");
-        new Question(new String[]{
-                "Strip"
-        }, "/rules");
-        new Question(new String[]{
-                "FriendlyFire", "TeamDamage", "TeamDmg", "FF"
+        	"FriendlyFire", "TeamDamage", "TeamDmg", "FF"
         }, "Damaging team mates is &cDisabled");
         new Question(new String[]{
-                "Heal"
+        	"Heal"
         }, "Final heal is &cOff");
         new Question(new String[]{
-                "Sounds"
-        }, "Mining to sounds is &eEnabled");
-        new Question(new String[]{
-                "Staircas"
-        }, "/rules");
-        new Question(new String[]{
-                "Rollercoaster"
-        }, "/rules");
-        new Question(new String[]{
-                "Scenario"
+        	"Scenario"
         }, "/info");
         new Question(new String[]{
-                "Relog"
+        	"Relog"
         }, "Relog is &eEnabled &amax of &e5 &aminutes");
         new Question(new String[]{
-                "1.7enchanting", "1.8enchanting"
-        }, "Enchanting is &e1.7");
+        	"1.7enchanting", "1.8enchanting"
+        }, "Enchanting is &e1.8");
         new Question(new String[]{
-                "Absor"
+        	"Absor"
         }, "Absorption is " + (OptionsHandler.getAllowAbsorption() ? "&eEnabled" : "&cDisabled"));
         new Question(new String[]{
-                "iPVP"
+        	"iPVP"
         }, "/info");
         new Question(new String[]{
-                "stats"
+        	"stats"
         }, "Stats will not be enabled");
         EventUtil.register(this);
     }
@@ -115,7 +100,7 @@ public class QuestionAnswerer implements Listener {
         private List<String> keyWords = null;
         private String message = null;
 
-        public Question(String[] keyWords, String message) {
+        public Question(String [] keyWords, String message) {
             this.keyWords = new ArrayList<String>();
             for(String keyWord : keyWords) {
                 this.keyWords.add(keyWord.toLowerCase());

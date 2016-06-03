@@ -12,9 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Sheep;
@@ -49,6 +47,7 @@ import ostb.customevents.player.PlayerHeadshotEvent;
 import ostb.gameapi.GracePeriod;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.ScatterHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.player.MessageHandler;
@@ -96,15 +95,6 @@ public class Events implements Listener {
                     }
                 }
                 MessageHandler.alertLine();
-                for(Entity entity : WorldHandler.getWorld().getEntities()) {
-                    if(entity instanceof Pig || entity instanceof Sheep) {
-                        LivingEntity livingEntity = (LivingEntity) entity;
-                        if(!ScatterHandler.isSaved(livingEntity)) {
-                            livingEntity.remove();
-                        }
-                    }
-                }
-                ScatterHandler.doneSaving();
                 if(OptionsHandler.isRush()) {
                     OSTB.getMiniGame().setCounter(60 * 30);
                     new GracePeriod(60 * 10);
@@ -242,7 +232,7 @@ public class Events implements Listener {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 999999999, 0));
         }
         new DisconnectHandler();
-        new ScatterHandler();
+        new ScatterHandler(((int) WorldHandler.getWorld().getWorldBorder().getSize()) / 2, true);
         OSTB.getMiniGame().setResetPlayerUponJoining(false);
         OSTB.getMiniGame().setCounter(60 * 60);
     }

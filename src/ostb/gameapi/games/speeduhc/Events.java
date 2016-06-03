@@ -1,15 +1,7 @@
 package ostb.gameapi.games.speeduhc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -22,7 +14,6 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,69 +23,17 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.game.GiveMapRatingItemEvent;
-import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.MiniGame;
 import ostb.gameapi.MiniGame.GameStates;
-import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.ScatterHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
-import ostb.server.CommandBase;
-import ostb.server.DB;
-import ostb.server.tasks.AsyncDelayedTask;
-import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
 public class Events implements Listener {
-	private Map<String, Location> spawns = null;
-	private List<String> scattered = null;
-	private boolean logSpawns = false;
-	private boolean canRescatter = false;
-	
 	public Events() {
-		spawns = new HashMap<String, Location>();
-		scattered = new ArrayList<String>();
-		new CommandBase("rescatter", true) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				final Player player = (Player) sender;
-				if(SpectatorHandler.contains(player)) {
-					MessageHandler.sendMessage(player, "&cYou cannot rescatter as a spectator");
-				} else {
-					if(canRescatter) {
-						new AsyncDelayedTask(new Runnable() {
-							@Override
-							public void run() {
-								UUID uuid = player.getUniqueId();
-								if(DB.PLAYERS_SPEED_UHC_RESCATTER.isUUIDSet(uuid)) {
-									int amount = DB.PLAYERS_SPEED_UHC_RESCATTER.getInt("uuid", uuid.toString(), "amount");
-									if(amount > 0) {
-										DB.PLAYERS_SPEED_UHC_RESCATTER.updateInt("amount", --amount, "uuid", uuid.toString());
-										final String command = "spreadPlayers 0 0 100 500 false " + player.getName();
-										player.setNoDamageTicks(20 * 30);
-										new DelayedTask(new Runnable() {
-											@Override
-											public void run() {
-												Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-											}
-										});
-										new TitleDisplayer(player, "&e" + amount + " &brescatter" + (amount == 1 ? "" : "s") + " left", "&cGet more with &a/vote").display();
-										return;
-									} else {
-										DB.PLAYERS_SPEED_UHC_RESCATTER.deleteUUID(uuid);
-									}
-								}
-								new TitleDisplayer(player, "&cOut of rescatters", "&cGet more with &a/vote").display();
-							}
-						});
-					} else {
-						MessageHandler.sendMessage(player, "&cYou cannot rescatter at this time");
-					}
-				}
-				return true;
-			}
-		}.enableDelay(2);
 		EventUtil.register(this);
 	}
 	
@@ -120,42 +59,12 @@ public class Events implements Listener {
 					}
 				}
 			}
-			if(spawns != null && !spawns.isEmpty()) {
-				String name = null;
-				for(String spawn : spawns.keySet()) {
-					if(!scattered.contains(spawn)) {
-						name = spawn;
-						break;
-					}
-				}
-				Player player = ProPlugin.getPlayer(name);
-				if(player != null) {
-					scattered.add(name);
-					Location location = spawns.get(name);
-					player.teleport(location);
-					if(scattered.size() >= ProPlugin.getPlayers().size()) {
-						ChunkUnloadEvent.getHandlerList().unregister(this);
-						PlayerLeaveEvent.getHandlerList().unregister(this);
-						logSpawns = false;
-						scattered.clear();
-						scattered = null;
-						spawns.clear();
-						spawns = null;
-					}
-				}
-			}
 		}
 	}
 	
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onPlayerLeave(PlayerLeaveEvent event) {
-		spawns.remove(event.getPlayer().getName());
-		scattered.remove(event.getPlayer().getName());
 	}
 	
 	@EventHandler
@@ -169,39 +78,7 @@ public class Events implements Listener {
 	public void onGameStart(GameStartEvent event) {
 		OSTB.getProPlugin().removeFlags();
 		OSTB.getMiniGame().setCounter(60 * 10);
-		String command = "spreadPlayers 0 0 100 500 false ";
-		for(Player player : ProPlugin.getPlayers()) {
-			player.setNoDamageTicks(20 * 30);
-			command += player.getName() + " ";
-			new TitleDisplayer(player, "&bScattering...").display();
-		}
-		logSpawns = true;
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				for(Player player : ProPlugin.getPlayers()) {
-					new TitleDisplayer(player, "&bBad scatter?", "&bRun command &c/rescatter").display();
-				}
-			}
-		}, 20);
-		canRescatter = true;
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				canRescatter = false;
-			}
-		}, 20 * 20);
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				for(Player player : ProPlugin.getPlayers()) {
-					new TitleDisplayer(player, "&bHealing All...").display();
-					player.setHealth(player.getMaxHealth());
-					player.setFoodLevel(20);
-				}
-			}
-		}, 20 * 30);
+		new ScatterHandler(500, false);
 	}
 	
 	@EventHandler
@@ -242,16 +119,6 @@ public class Events implements Listener {
 			creator.addEnchantment(Enchantment.DURABILITY, 3);
 		}
 		event.setCurrentItem(creator.getItemStack());
-	}
-	
-	@EventHandler
-	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		Player player = event.getPlayer();
-		if(logSpawns && !spawns.containsKey(player.getName()) && !SpectatorHandler.contains(player)) {
-			spawns.put(player.getName(), event.getTo());
-			event.getTo().getChunk().load(true);
-			event.setCancelled(true);
-		}
 	}
 	
 	@EventHandler
