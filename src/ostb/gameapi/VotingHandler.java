@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
@@ -105,6 +106,11 @@ public class VotingHandler implements Listener {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
+		armorStand.setGravity(false);
+		armorStand.setVisible(false);
+		armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
+		armorStand.setCustomNameVisible(true);
 		EventUtil.register(this);
 	}
 	

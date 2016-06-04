@@ -4,18 +4,15 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import anticheat.util.DelayedTask;
 import ostb.OSTB;
-import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -31,7 +28,6 @@ import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
-import ostb.server.util.StringUtil;
 
 public abstract class MiniGame extends ProPlugin {
 	private int requiredPlayers = 4;
@@ -90,14 +86,6 @@ public abstract class MiniGame extends ProPlugin {
 			if(entity instanceof ArmorStand) {
 				entity.remove();
 			}
-		}
-		//TODO: Add a better system for checking this
-		if(OSTB.getPlugin() != Plugins.KITPVP) {
-			ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
-			armorStand.setGravity(false);
-			armorStand.setVisible(false);
-			armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
-			armorStand.setCustomNameVisible(true);
 		}
 		new MiniGameEvents();
 		new SpectatorHandler();
