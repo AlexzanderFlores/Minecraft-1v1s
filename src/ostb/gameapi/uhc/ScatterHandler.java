@@ -14,12 +14,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.scoreboard.Team;
 
 import anticheat.events.TimeEvent;
+import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.OSTB.Plugins;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.games.uhc.Events;
+import ostb.gameapi.games.uhc.TeamHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
@@ -31,6 +35,7 @@ import ostb.server.util.EventUtil;
 
 public class ScatterHandler implements Listener {
 	private Map<String, Location> spawns = null;
+	private Map<Team, Location> teams = null;
 	private List<String> scattered = null;
 	private boolean logSpawns = false;
 	private boolean canRescatter = false;
@@ -38,6 +43,7 @@ public class ScatterHandler implements Listener {
 	
 	public ScatterHandler(int size, boolean chatAlerts) {
 		spawns = new HashMap<String, Location>();
+		teams = new HashMap<Team, Location>();
 		scattered = new ArrayList<String>();
 		this.chatAlerts = chatAlerts;
 		new CommandBase("rescatter", true) {
@@ -100,7 +106,7 @@ public class ScatterHandler implements Listener {
 			@Override
 			public void run() {
 				for(Player player : ProPlugin.getPlayers()) {
-					new TitleDisplayer(player, "&bHealing All...").display();
+					new TitleDisplayer(player, "&bHealing All").display();
 					player.setHealth(player.getMaxHealth());
 					player.setFoodLevel(20);
 				}
@@ -111,7 +117,7 @@ public class ScatterHandler implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20) {
+		if(ticks == 5) {
 			if(spawns != null && !spawns.isEmpty()) {
 				String name = null;
 				for(String spawn : spawns.keySet()) {
@@ -124,13 +130,18 @@ public class ScatterHandler implements Listener {
 				if(player != null) {
 					scattered.add(name);
 					Location location = spawns.get(name);
+					if(OSTB.getPlugin() == Plugins.UHC) {
+						Team team = TeamHandler.getTeam(player);
+	                    if(team != null) {
+	                        if(teams.containsKey(team)) {
+	                            location = teams.get(team);
+	                        } else {
+	                            teams.put(team, location);
+	                        }
+	                    }
+					}
 					player.teleport(location);
-					new DelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							new TitleDisplayer(player, "&bBad scatter?", "&bRun command &c/rescatter").display();
-						}
-					}, 20);
+					new TitleDisplayer(player, "&bBad scatter?", "&bRun command &c/rescatter").setFadeOut(20 * 2).display();
 					if(chatAlerts) {
 						MessageHandler.alert("&eScattering " + AccountHandler.getPrefix(player) + " &e[&a" + scattered.size() + "&7/&a" + spawns.size() + "&e]");
 					}

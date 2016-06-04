@@ -25,7 +25,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +38,7 @@ import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.game.GameStartingEvent;
-import ostb.customevents.player.MouseClickEvent;
+import ostb.customevents.game.GiveMapRatingItemEvent;
 import ostb.customevents.player.PlayerBanEvent;
 import ostb.customevents.player.PlayerHeadshotEvent;
 import ostb.gameapi.GracePeriod;
@@ -48,12 +47,10 @@ import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.games.uhc.events.WhitelistDisabledEvent;
 import ostb.gameapi.uhc.ScatterHandler;
 import ostb.player.MessageHandler;
-import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.ItemUtil;
 
 public class Events implements Listener {
     private static boolean moveToBox = false;
@@ -61,11 +58,9 @@ public class Events implements Listener {
     private static boolean moveToCenter = false;
     private static boolean postStart = false;
     private static boolean canBreakBlocks = false;
-    private ItemStack forceStartItem = null;
     private boolean runOneSecond = true;
 
     public Events() {
-        forceStartItem = new ItemCreator(Material.NAME_TAG).setName("&aForce Start Game").getItemStack();
         EventUtil.register(this);
     }
 
@@ -222,25 +217,10 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        GameStates state = OSTB.getMiniGame().getGameState();
-        /*if(state == GameStates.WAITING || state == GameStates.VOTING) {
-        	player.teleport(OSTB.getMiniGame().getLobby().getSpawnLocation());
-        }*/
-        if(Ranks.OWNER.hasRank(player) && !WhitelistHandler.isWhitelisted() && (state == GameStates.WAITING || state == GameStates.VOTING)) {
-            player.getInventory().addItem(forceStartItem);
-        }
-    }
-
-    @EventHandler
     public void onWhitelistDisable(WhitelistDisabledEvent event) {
         for(Player player : ProPlugin.getPlayers()) {
             player.closeInventory();
             player.getInventory().clear();
-            if(Ranks.OWNER.hasRank(player)) {
-                player.getInventory().addItem(forceStartItem);
-            }
         }
     }
 
@@ -253,19 +233,6 @@ public class Events implements Listener {
                     sheep.setCustomName(null);
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onMouseClick(MouseClickEvent event) {
-        Player player = event.getPlayer();
-        if(ItemUtil.isItem(player.getItemInHand(), forceStartItem)) {
-            if(OSTB.getMiniGame().getGameState() == GameStates.STARTING) {
-                MessageHandler.sendMessage(player, "&cThe game is already starting");
-            } else {
-                OSTB.getMiniGame().setGameState(GameStates.STARTING);
-            }
-            event.setCancelled(true);
         }
     }
 
@@ -381,5 +348,10 @@ public class Events implements Listener {
         if(block.getWorld().getName().equals("lobby")) {
             event.setCancelled(true);
         }
+    }
+    
+    @EventHandler
+    public void onGiveMapRatingitem(GiveMapRatingItemEvent event) {
+    	event.setCancelled(true);
     }
 }

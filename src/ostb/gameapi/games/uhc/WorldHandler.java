@@ -18,6 +18,7 @@ import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
 
 import ostb.OSTB;
 import ostb.customevents.DeleteImportedWorldEvent;
+import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.server.BiomeSwap;
 import ostb.server.util.EventUtil;
@@ -59,7 +60,7 @@ public class WorldHandler implements Listener {
 		world.getWorldBorder().setWarningTime(20 * 10);
 		if(!hasPregened(world)) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " set " + radius + " " + radius + " 0 0");
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 40");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb " + world.getName() + " fill 100");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wb fill confirm");
 		}
 		setBorder();
@@ -165,4 +166,13 @@ public class WorldHandler implements Listener {
     		event.setCancelled(true);
     	}
     }
+    
+    @EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 1 && Events.getMoveToCenter() && radius > 200) {
+			radius -= 0.0625;
+			setBorder();
+		}
+	}
 }

@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scoreboard.Team;
 
 import anticheat.util.DelayedTask;
 import ostb.OSTB;
@@ -94,22 +95,23 @@ public class TweetHandler implements Listener {
     			kills += KillLogger.getKills(players.get(a));
     		}
     	}
-        message += " for winning this UHC with " + kills + " kills!";
+        message += " for winning this UHC with " + kills + " kill" + (kills == 1 ? "" : "s") + "!";
         long id = Tweeter.tweet(message, TweetHandler.id);
+        int delay = 20;
+        MessageHandler.alert("");
         if(id == -1) {
             Bukkit.getLogger().info("Failed to send tweet. Possible duplicate tweet.");
         } else {
-            MessageHandler.alert("");
-            MessageHandler.alert("Tweet Sent! &ehttps://twitter.com/" + UHC.getAcount() + "/status/" + id);
-            MessageHandler.alert("Server restarting in &c10 &xseconds");
-            MessageHandler.alert("");
+            MessageHandler.alert("&chttps://twitter.com/" + UHC.getAcount() + "/status/" + id);
         }
+        MessageHandler.alert("Server restarting in &c" + delay + " &xseconds");
+        MessageHandler.alert("");
         new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				ProPlugin.restartServer();
 			}
-		}, 20 * 10);
+		}, 20 * delay);
     }
 
     public static String getURL() {
@@ -172,18 +174,28 @@ public class TweetHandler implements Listener {
                 }
                 int counter = countDown.getCounter();
                 if(!HostedEvent.isEvent() && (counter == 10 * 60 || counter == 5 * 60)) {
-                	CommandDispatcher.sendToGame("UHC", "say &a&lUHC: &eA game is launching soon, run command &b/uhc");
+                	CommandDispatcher.sendToAll("say &a&lUHC: &eA game is launching soon, run command &b/uhc");
                 }
                 countDown.decrementCounter();
                 if(countDown.getCounter() <= 0) {
-                	CommandDispatcher.sendToGame("UHC", "say &a&lUHC: &eA game has launched! Run command &b/uhc");
+                	CommandDispatcher.sendToAll("say &a&lUHC: &eA game has launched! Run command &b/uhc");
                     WhitelistHandler.unWhitelist();
                 }
         	} else if(OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
-        		int playing = ProPlugin.getPlayers().size();
+        		List<Player> players = ProPlugin.getPlayers();
+        		int playing = players.size();
         		int teamSize = TeamHandler.getMaxTeamSize();
         		if(playing <= teamSize || TeamHandler.getTeams().size() == 1) {
-        			endTweet();
+        			boolean end = true;
+        			Team team = TeamHandler.getTeam(players.get(0));
+        			for(Player player : players) {
+        				if(TeamHandler.getTeam(player) != team) {
+        					end = false;
+        				}
+        			}
+        			if(end) {
+        				endTweet();
+        			}
         		} else if(ScenarioManager.getScenario("TrueLove").isEnabled()) {
         			if(playing <= 2) {
         				
@@ -191,6 +203,8 @@ public class TweetHandler implements Listener {
         				endTweet();
         			}
         		}
+        		players.clear();
+        		players = null;
         	}
         }
     }

@@ -54,7 +54,6 @@ public class UHC extends MiniGame {
         new WorldHandler();
         new AntiIPVP();
         new HealthHandler();
-        new BelowNameHealthScoreboardUtil();
         new QuestionAnswerer();
         new HostedEvent();
         new GoldenHeadUtil();
@@ -154,6 +153,8 @@ public class UHC extends MiniGame {
 				String countDown = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA);
 				if(GracePeriod.isRunning()) {
 					countDown += " " + GracePeriod.getGraceCounterString(ChatColor.GRAY) + " Grace";
+				} else if(getCounter() <= 0) {
+					countDown = "&cGo To 0&7, &c0";
 				}
 				setText(new String [] {
 					"&e&lBorder Radius",
@@ -175,6 +176,7 @@ public class UHC extends MiniGame {
 				super.update();
 			}
 		});
+        new BelowNameHealthScoreboardUtil();
     }
 
     @Override
