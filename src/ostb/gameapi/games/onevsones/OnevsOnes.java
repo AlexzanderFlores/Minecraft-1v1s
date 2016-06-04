@@ -55,7 +55,6 @@ public class OnevsOnes extends ProPlugin {
         new BattleHandler();
         new MapProvider(world);
         new SpectatorHandler();
-        new TeamScoreboardHandler();
         new BelowNameHealthScoreboardUtil();
         new PrivateBattleHandler();
         new HotbarEditor();

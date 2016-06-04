@@ -26,15 +26,14 @@ import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
 
 public class TweetHandler implements Listener {
-    private static int opensIn = 10;
+    private static int opensIn = 1;
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
-    private static String tweet = null;
+    private static boolean hasTweetedEnd = false;
     private static String scenarios = null;
     private static long id = 0;
 
     public TweetHandler() {
-    	tweet = "";
         EventUtil.register(this);
     }
 
@@ -73,6 +72,10 @@ public class TweetHandler implements Listener {
     }
 
     private static void endTweet() {
+    	if(hasTweetedEnd) {
+    		return;
+    	}
+    	hasTweetedEnd = true;
     	List<Player> players = ProPlugin.getPlayers();
     	String message = "Congrats to ";
     	String player = "";
@@ -94,7 +97,7 @@ public class TweetHandler implements Listener {
         String path = Bukkit.getWorldContainer().getPath() + "/../resources/winner.png";
         FileHandler.delete(new File(path));
         FileHandler.downloadImage("http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=340&wt=20&abg=240&abd=130&ajg=330&ajd=30&ratio=15&format=png&login=" + player + "&headOnly=false&displayHairs=true&randomness=186", path);
-        long id = Tweeter.tweet(tweet, path, TweetHandler.id);
+        long id = Tweeter.tweet(message, path, TweetHandler.id);
         if(id == -1) {
             Bukkit.getLogger().info("Failed to send tweet. Possible duplicate tweet.");
         } else {
@@ -170,11 +173,12 @@ public class TweetHandler implements Listener {
                     MessageHandler.alert("Game opening in " + countDown.getCounterAsString());
                 }
                 int counter = countDown.getCounter();
-                if(!HostedEvent.isEvent() && (counter == 10 * 60 || counter == 5 * 60 || counter == 60)) {
+                if(!HostedEvent.isEvent() && (counter == 10 * 60 || counter == 5 * 60)) {
                 	CommandDispatcher.sendToGame("UHC", "say &a&lUHC: &eA game is launching soon, run command &b/uhc");
                 }
                 countDown.decrementCounter();
                 if(countDown.getCounter() <= 0) {
+                	CommandDispatcher.sendToGame("UHC", "say &a&lUHC: &eA game has launched! Run command &b/uhc");
                     WhitelistHandler.unWhitelist();
                 }
         	} else if(OSTB.getMiniGame().getGameState() == GameStates.STARTED) {

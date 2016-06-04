@@ -162,11 +162,7 @@ public class EloRanking implements Listener {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
-		int elo = 1000;
-		if(eloDB.isUUIDSet(uuid)) {
-			elo = eloDB.getInt("uuid", uuid.toString(), "elo");
-		}
-		EloHandler.add(player, elo);
+		int elo = EloHandler.getElo(player);
 		EloRank rank = EloRank.BRONZE;
 		EloRank [] ranks = EloRank.values();
 		for(int a = ranks.length - 1; a >= 0; --a) {

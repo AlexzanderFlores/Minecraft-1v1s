@@ -78,8 +78,10 @@ public class TeamScoreboardHandler implements Listener {
 		Player player = event.getPlayer();
 		Scoreboard scoreboard = player.getScoreboard();
 		for(Ranks rank : Ranks.values()) {
-			Team team = scoreboard.registerNewTeam(getName(rank));
-			team.setPrefix(rank.getColor()+"");
+			if(scoreboard.getTeam(getName(rank)) == null) {
+				Team team = scoreboard.registerNewTeam(getName(rank));
+				team.setPrefix(rank.getColor() + "");
+			}
 		}
 		set(event.getPlayer());
 	}

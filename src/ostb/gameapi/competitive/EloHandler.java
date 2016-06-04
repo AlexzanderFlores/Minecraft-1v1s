@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import ostb.customevents.player.AsyncPlayerJoinEvent;
@@ -88,7 +89,7 @@ public class EloHandler implements Listener {
 		return elo.get(player.getName());
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
@@ -96,7 +97,7 @@ public class EloHandler implements Listener {
 		DB db = EloHandler.db == null ? StatsHandler.getEloDB() : EloHandler.db;
 		if(db != null) {
 			if(db.isUUIDSet(uuid)) {
-				elo.put(name, db.getInt("uuid", uuid.toString(), "amount"));
+				elo.put(name, db.getInt("uuid", uuid.toString(), "elo"));
 			} else {
 				elo.put(name, starting);
 			}
