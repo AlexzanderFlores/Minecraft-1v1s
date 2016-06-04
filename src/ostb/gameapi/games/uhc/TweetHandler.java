@@ -77,9 +77,11 @@ public class TweetHandler implements Listener {
     	List<Player> players = ProPlugin.getPlayers();
     	String message = "Congrats to ";
     	String player = "";
+    	int kills = 0;
     	if(players.size() == 1) {
     		player = players.get(0).getName();
     		message += player;
+    		kills = KillLogger.getKills(players.get(0));
     	} else {
     		for(int a = 0; a < players.size(); ++a) {
     			if(a == players.size() - 1) {
@@ -89,9 +91,10 @@ public class TweetHandler implements Listener {
     				player = players.get(a).getName();
     				message += player + ", ";
     			}
+    			kills += KillLogger.getKills(players.get(a));
     		}
     	}
-        message += " for winning this UHC with X kills!";
+        message += " for winning this UHC with " + kills + " kills!";
         long id = Tweeter.tweet(message, TweetHandler.id);
         if(id == -1) {
             Bukkit.getLogger().info("Failed to send tweet. Possible duplicate tweet.");
@@ -179,7 +182,7 @@ public class TweetHandler implements Listener {
         	} else if(OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
         		int playing = ProPlugin.getPlayers().size();
         		int teamSize = TeamHandler.getMaxTeamSize();
-        		if(playing <= teamSize || (teamSize == 1 && TeamHandler.getTeams().size() == 1)) {
+        		if(playing <= teamSize || TeamHandler.getTeams().size() == 1) {
         			endTweet();
         		} else if(ScenarioManager.getScenario("TrueLove").isEnabled()) {
         			if(playing <= 2) {
