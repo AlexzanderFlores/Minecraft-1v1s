@@ -16,6 +16,7 @@ import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameStartEvent;
 import ostb.gameapi.games.uhc.HealthHandler;
+import ostb.gameapi.games.uhc.events.PlayerTimeOutEvent;
 import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -145,8 +146,8 @@ public class BestPVE extends Scenario {
         add(event.getPlayer());
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onPlayerTimeOut(PlayerTimeOutEvent event) {
         bestPVE.remove(event.getPlayer());
-    }*/
+    }
 }

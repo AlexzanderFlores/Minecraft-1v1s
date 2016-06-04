@@ -22,6 +22,7 @@ import org.bukkit.scoreboard.Team;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
+import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame.GameStates;
@@ -412,5 +413,20 @@ public class TeamHandler implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+    
+    @EventHandler
+    public void onGameDeath(GameDeathEvent event) {
+    	Player player = event.getPlayer();
+    	if(teams.containsKey(player.getName())) {
+    		Team team = teams.get(player.getName());
+    		if(team != null) {
+    			team.removePlayer(player);
+    			if(team.getSize() == 0) {
+    				team.unregister();
+    			}
+    		}
+    		teams.remove(player.getName());
+    	}
     }
 }

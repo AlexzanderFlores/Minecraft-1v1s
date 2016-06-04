@@ -2,7 +2,6 @@ package ostb.gameapi;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +16,6 @@ import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.util.CountDownUtil;
-import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 
 public class GracePeriod extends CountDownUtil implements Listener {
@@ -57,7 +55,6 @@ public class GracePeriod extends CountDownUtil implements Listener {
 				for(Player player : ProPlugin.getPlayers()) {
 					new TitleDisplayer(player, "&cPVP Enabled").setFadeIn(5).setStay(30).setFadeOut(5).display();
 				}
-				EffectUtil.playSound(Sound.ENDERDRAGON_GROWL);
 				Bukkit.getPluginManager().callEvent(new GracePeriodEndEvent());
 			} else {
 				if(getCounter() <= 3) {

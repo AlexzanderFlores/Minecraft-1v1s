@@ -80,16 +80,20 @@ public class Tweeter {
 		}
 		return replies;
 	}
-	
-	/*public static long getID() {
-		return status == null ? -1 : status.getId();
-	}*/
-	
+
 	public static long tweet(String text) {
-		return tweet(text, null);
+		return tweet(text, null, -1);
 	}
 	
 	public static long tweet(String text, String media) {
+		return tweet(text, media, -1);
+	}
+	
+	public static long tweet(String text, long replyID) {
+		return tweet(text, null, replyID);
+	}
+	
+	public static long tweet(String text, String media, long replyID) {
 		long id = -1;
 		if(consumerKey == null || consumerSecret == null || accessToken == null || accessSecret == null) {
 			return -1;
@@ -104,6 +108,9 @@ public class Tweeter {
 		 try {
 			 text = ChatColor.stripColor(text);
 			 StatusUpdate update = new StatusUpdate(text);
+			 if(replyID != -1) {
+				 update.setInReplyToStatusId(replyID);
+			 }
 			 if(media != null) {
 				 try {
 					 update.media(new File(Bukkit.getWorldContainer().getPath() + "/../resources/" + media));
