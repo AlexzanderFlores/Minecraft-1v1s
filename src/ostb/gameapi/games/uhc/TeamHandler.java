@@ -30,6 +30,7 @@ import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
+import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
@@ -205,8 +206,8 @@ public class TeamHandler implements Listener {
                                     }
                                     invites.put(targetPlayer.getName(), player.getName());
                                     MessageHandler.sendMessage(player, "You sent a team request to " + AccountHandler.getPrefix(targetPlayer));
-                                    MessageHandler.sendMessage(targetPlayer, AccountHandler.getPrefix(player) + " &6&lhas sent you a team request");
-                                    MessageHandler.sendMessage(targetPlayer, "Accept: &b/team " + player.getName() + " &aDeny: &b/team deny");
+                                    MessageHandler.sendMessage(targetPlayer, "");
+                                    ChatClickHandler.sendMessageToRunCommand(targetPlayer, new String [] {" &bClick &bto &bAccept", " &cClick &cto &cDeny"}, new String [] {"Click to Accept", "Click to Deny"}, new String [] {"/team " + player.getName(), "/team deny"}, AccountHandler.getPrefix(player) + " &esent you a team request:");
                                 }
                             }
                         }

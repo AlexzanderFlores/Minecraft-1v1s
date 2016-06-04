@@ -239,9 +239,6 @@ commands:
   sinfo:
     usage: /sinfo
         
-  tele:
-    usage: /tele <name> [name]
-        
   wl:
     usage: /wl
         
@@ -256,15 +253,7 @@ commands:
         
   teamChat:
     usage: /teamChat
-        
-  rules:
-    usage: /rules
-
-  lateScatter:
-    usage: /lateScatter
-
-  forceStart:
-    usage: /forceStart
+    aliases: [tc]
 
   addUHCGame:
     usage: /addUHCGame <day> <hour> <started> <options> <scenarios>

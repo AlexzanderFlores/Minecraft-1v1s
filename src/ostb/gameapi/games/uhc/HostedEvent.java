@@ -38,14 +38,6 @@ public class HostedEvent implements Listener {
         new CommandBase("toggleEvent") {
             @Override
             public boolean execute(CommandSender sender, String[] arguments) {
-                if(sender instanceof Player) {
-                    Player player = (Player) sender;
-                    Player main = HostHandler.getMainHost();
-                    if(main == null || main.getUniqueId() != player.getUniqueId()) {
-                        MessageHandler.sendMessage(player, "&cYou must be the main UHC host to use this command");
-                        return true;
-                    }
-                }
                 if(isEvent) {
                     disable(sender);
                 } else {
@@ -53,7 +45,7 @@ public class HostedEvent implements Listener {
                 }
                 return true;
             }
-        };
+        }.setRequiredRank(Ranks.OWNER);
         //enable(Bukkit.getConsoleSender());
     }
     

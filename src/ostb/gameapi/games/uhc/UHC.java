@@ -36,7 +36,6 @@ public class UHC extends MiniGame {
 
     public UHC() {
         super("UHC");
-        OSTB.setSidebar(new SidebarScoreboardUtil(" &aUHC "));
         setRequiredPlayers(30);
         setVotingCounter(-1);
         setStartingCounter(60 * 3 + 30);
@@ -48,7 +47,6 @@ public class UHC extends MiniGame {
         setDoDaylightCycle(true);
         setUseCoinBoosters(false);
         new Events();
-        new HostHandler();
         new WhitelistHandler();
         new ScenarioManager();
         new TeamHandler();
