@@ -24,7 +24,7 @@ import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
 
 public class TweetHandler implements Listener {
-    private static int opensIn = 1;
+    private static int opensIn = 10;
     private static CountDownUtil countDown = null;
     private static boolean hasTweeted = false;
     private static boolean hasTweetedEnd = false;
