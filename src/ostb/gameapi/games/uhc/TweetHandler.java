@@ -1,6 +1,5 @@
 package ostb.gameapi.games.uhc;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import ostb.server.Tweeter;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.EventUtil;
-import ostb.server.util.FileHandler;
 
 public class TweetHandler implements Listener {
     private static int opensIn = 1;
@@ -94,10 +92,7 @@ public class TweetHandler implements Listener {
     		}
     	}
         message += " for winning this UHC with X kills!";
-        String path = Bukkit.getWorldContainer().getPath() + "/../resources/winner.png";
-        FileHandler.delete(new File(path));
-        FileHandler.downloadImage("http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=340&wt=20&abg=240&abd=130&ajg=330&ajd=30&ratio=15&format=png&login=" + player + "&headOnly=false&displayHairs=true&randomness=186", path);
-        long id = Tweeter.tweet(message, path, TweetHandler.id);
+        long id = Tweeter.tweet(message, TweetHandler.id);
         if(id == -1) {
             Bukkit.getLogger().info("Failed to send tweet. Possible duplicate tweet.");
         } else {
