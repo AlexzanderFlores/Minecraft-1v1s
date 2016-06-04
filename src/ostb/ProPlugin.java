@@ -1086,7 +1086,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 				} catch(Exception e) {
 					
 				}
-				if(importedWorlds.contains(world.getName())) {
+				if(importedWorlds != null && importedWorlds.contains(world.getName())) {
 					FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world));
 				}
 			}

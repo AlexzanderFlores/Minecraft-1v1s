@@ -306,8 +306,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item, Plugins.UHC);
-		//inventory.setItem(16, item);
-		inventory.setItem(16, comingSoon);
+		inventory.setItem(16, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",

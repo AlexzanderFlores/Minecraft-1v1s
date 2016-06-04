@@ -102,7 +102,7 @@ public class LobbyHandler implements Listener {
     }
 
     public static Inventory getKitSelectorInventory(Player player, String name, boolean showUsers) {
-        Inventory inventory = Bukkit.createInventory(player, 18, name);
+        Inventory inventory = Bukkit.createInventory(player, 9, name);
         List<OneVsOneKit> kits = OneVsOneKit.getKits();
         for(int a = 0; a < kits.size(); ++a) {
             OneVsOneKit kit = kits.get(a);

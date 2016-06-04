@@ -14,13 +14,10 @@ import ostb.gameapi.competitive.EloHandler;
 import ostb.gameapi.competitive.EloRanking;
 import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.onevsones.kits.Archer;
-import ostb.gameapi.games.onevsones.kits.Chain;
 import ostb.gameapi.games.onevsones.kits.Diamond;
 import ostb.gameapi.games.onevsones.kits.Gapple;
-import ostb.gameapi.games.onevsones.kits.Gold;
 import ostb.gameapi.games.onevsones.kits.Iron;
 import ostb.gameapi.games.onevsones.kits.Kohi;
-import ostb.gameapi.games.onevsones.kits.Leather;
 import ostb.gameapi.games.onevsones.kits.NoDebuff;
 import ostb.gameapi.games.onevsones.kits.SurvivalGames;
 import ostb.gameapi.games.onevsones.kits.Swordsman;
@@ -67,9 +64,6 @@ public class OnevsOnes extends ProPlugin {
         frames.clear();
         frames = null;
         // Kits
-        new Leather();
-        new Gold();
-        new Chain();
         new Iron();
         new Diamond();
         new SurvivalGames();
