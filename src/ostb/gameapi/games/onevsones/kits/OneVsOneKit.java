@@ -17,7 +17,6 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import ostb.ProPlugin;
-import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ConfigurationUtil;
@@ -151,7 +150,6 @@ public class OneVsOneKit {
                         File file = new File(path);
                     	if(file.exists()) {
                     		hotbarSetup = true;
-                    		new TitleDisplayer(player, "&eLoading Saved Hotbar Setup").display();
                             ConfigurationUtil config = new ConfigurationUtil(path);
                             for(String key : config.getConfig().getKeys(false)) {
                                 String item = config.getConfig().getString(key);
@@ -182,7 +180,6 @@ public class OneVsOneKit {
                     	}
                     }
                     if(!hotbarSetup) {
-                    	new TitleDisplayer(player, "&cNo Hotbar Setup Found", "&a/hotbar").display();
                         for(int slot : items.keySet()) {
                             player.getInventory().setItem(slot, items.get(slot));
                         }
