@@ -1,6 +1,7 @@
 package ostb.gameapi.games.onevsones;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class HotbarEditor implements Listener {
 
     public HotbarEditor() {
         kits = new HashMap<String, OneVsOneKit>();
-        path = Bukkit.getWorldContainer().getPath() + "/../resources/1v1/hotbars/%/%%.yml";
+        path = Bukkit.getWorldContainer().getAbsolutePath().replace(".", "") + "/../resources/1v1/hotbars/%/";
         EventUtil.register(this);
     }
 
@@ -40,6 +41,10 @@ public class HotbarEditor implements Listener {
         }
     	PrivateBattleHandler.removeAllInvitesFromPlayer(player);
     	kits.put(player.getName(), kit);
+    }
+    
+    public static String getPath() {
+    	return path;
     }
 
     private String getItemName(ItemStack item) {
@@ -69,14 +74,22 @@ public class HotbarEditor implements Listener {
     	if(kits.containsKey(player.getName())) {
     		if(event.getItem().getType() == Material.BARRIER) {
     			String name = kits.get(player.getName()).getName();
-    			//String kit = kits.get(name).getName().replace(" ", "_");
-                File file = new File(path.replace("%%", name).replace("%", player.getName()));
+        		File dir = new File(path.replace("%", player.getName()));
+        		dir.mkdirs();
+    			dir.mkdir();
+                File file = new File(dir, name.replace(" ", "") + ".yml");
                 if(file.exists()) {
                     MessageHandler.sendMessage(player, "&cDeleting your old hot bar set up");
                     file.delete();
                 }
-                Bukkit.getLogger().info("Saving to " + file.getAbsolutePath());
-                ConfigurationUtil config = new ConfigurationUtil(file.getName());
+                try {
+                	file.createNewFile();
+                } catch(IOException e) {
+                	e.printStackTrace();
+                	MessageHandler.sendMessage(player, "&cError: &7" + e.getMessage());
+                	return;
+                }
+                ConfigurationUtil config = new ConfigurationUtil(file.getAbsolutePath());
                 Inventory inventory = event.getInventory();
                 for(int a = 0; a < inventory.getSize() - 10; ++a) {
                     ItemStack item = inventory.getContents()[a];
@@ -86,7 +99,7 @@ public class HotbarEditor implements Listener {
                 }
                 config.save();
                 MessageHandler.sendMessage(player, "Saving your hot bar set up for kit \"&e" + kits.get(player.getName()).getName() + "&a\"");
-    			event.setCancelled(true);
+                event.setCancelled(true);
         		player.closeInventory();
     		}
     	}

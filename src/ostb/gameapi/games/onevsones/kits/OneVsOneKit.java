@@ -17,6 +17,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import ostb.ProPlugin;
+import ostb.gameapi.games.onevsones.HotbarEditor;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ConfigurationUtil;
@@ -152,8 +153,8 @@ public class OneVsOneKit {
                     player.getInventory().clear();
                     boolean hotbarSetup = false;
                     if(Ranks.PREMIUM.hasRank(player)) {
-                    	String path = Bukkit.getWorldContainer().getPath() + "/../resources/hot_bars/" + name + "/" + kitName + ".yml";
-                        File file = new File(path);
+                    	String path = HotbarEditor.getPath().replace("%", name);
+                        File file = new File(path, kitName);
                     	if(file.exists()) {
                     		hotbarSetup = true;
                             ConfigurationUtil config = new ConfigurationUtil(path);

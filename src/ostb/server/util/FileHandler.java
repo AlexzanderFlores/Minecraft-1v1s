@@ -19,7 +19,7 @@ public class FileHandler {
 	public static void checkForUpdates() {
 		String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
 		for(String plugin : new String [] {"OSTB.jar", "NPC_OSTB.jar", "AntiCheat.jar", "EffectLib.jar", "ViaVersion.jar", "ProtocolLib.jar"}) {
-			File file = new File(path + plugin);
+			File file = new File(path, plugin);
 			if(file.exists()) {
 				File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
 				if(update.exists()) {
