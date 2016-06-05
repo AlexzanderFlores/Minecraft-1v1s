@@ -20,7 +20,6 @@ import ostb.gameapi.games.onevsones.kits.Iron;
 import ostb.gameapi.games.onevsones.kits.Kohi;
 import ostb.gameapi.games.onevsones.kits.NoDebuff;
 import ostb.gameapi.games.onevsones.kits.SurvivalGames;
-import ostb.gameapi.games.onevsones.kits.Swordsman;
 import ostb.gameapi.games.onevsones.kits.UHC;
 import ostb.gameapi.games.skywars.kits.Pyro;
 import ostb.player.TeamScoreboardHandler;
@@ -69,7 +68,6 @@ public class OnevsOnes extends ProPlugin {
         new SurvivalGames();
         new Archer();
         new UHC();
-        new Swordsman();
         new Pyro();
         new Gapple();
         new Kohi();

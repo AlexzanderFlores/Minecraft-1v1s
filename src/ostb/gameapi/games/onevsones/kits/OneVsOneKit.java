@@ -6,17 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-import ostb.OSTB;
 import ostb.ProPlugin;
-import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.ConfigurationUtil;
@@ -36,7 +37,11 @@ public class OneVsOneKit {
 
     public OneVsOneKit(String name, ItemStack icon) {
         this.name = name;
-        this.icon = new ItemCreator(icon).setAmount(0).setName("&a" + name).getItemStack();
+        ItemCreator itemCreator = new ItemCreator(icon).setAmount(0).setName("&a" + name).setLores(new String [] {"", "&7Middle Click to Preview Kit"});
+        if(!icon.getType().toString().contains("SWORD")) {
+        	itemCreator.addLore("");
+        }
+        this.icon = itemCreator.getItemStack();
         items = new HashMap<Integer, ItemStack>();
         if(kits == null) {
             kits = new ArrayList<OneVsOneKit>();
@@ -118,6 +123,14 @@ public class OneVsOneKit {
     public void setItem(int slot, ItemStack item) {
         items.put(slot, item);
     }
+    
+    public void preview(Player player) {
+    	Inventory inventory = Bukkit.createInventory(player, 9 * 6, "Preview of " + getName());
+    	for(int slot : items.keySet()) {
+            inventory.setItem(slot, items.get(slot));
+        }
+    	player.openInventory(inventory);
+    }
 
     public void give(Player player) {
         give(player, true);
@@ -132,39 +145,44 @@ public class OneVsOneKit {
                 Player player = ProPlugin.getPlayer(name);
                 if(player != null) {
                     player.getInventory().clear();
-                    String path = OSTB.getInstance().getDataFolder().getPath() + "/hot_bars/" + name + "/" + kitName + ".yml";
-                    File file = new File(path);
-                    if(Ranks.PREMIUM.hasRank(player) && file.exists()) {
-                        MessageHandler.sendMessage(player, "Loading saved hot bar set up");
-                        ConfigurationUtil config = new ConfigurationUtil(path);
-                        for(String key : config.getConfig().getKeys(false)) {
-                            String item = config.getConfig().getString(key);
-                            String[] itemData = item.split(":");
-                            int id = Integer.valueOf(itemData[0]);
-                            byte data = Byte.valueOf(itemData[1]);
-                            int amount = Integer.valueOf(itemData[2]);
-                            String typeName = itemData[3];
-                            if(typeName.equals("NULL")) {
-                                ItemStack itemStack = new ItemStack(id, amount, data);
-                                if(itemData.length > 6) {
-                                    for(int a = 6; a < itemData.length; ++a) {
-                                        if(a % 2 == 0) {
-                                            Enchantment enchant = Enchantment.getByName(itemData[a]);
-                                            int level = Integer.valueOf(itemData[a + 1]);
-                                            itemStack.addEnchantment(enchant, level);
+                    boolean hotbarSetup = false;
+                    if(Ranks.PREMIUM.hasRank(player)) {
+                    	String path = Bukkit.getWorldContainer().getPath() + "/../resources/hot_bars/" + name + "/" + kitName + ".yml";
+                        File file = new File(path);
+                    	if(file.exists()) {
+                    		hotbarSetup = true;
+                    		new TitleDisplayer(player, "&eLoading Saved Hotbar Setup").display();
+                            ConfigurationUtil config = new ConfigurationUtil(path);
+                            for(String key : config.getConfig().getKeys(false)) {
+                                String item = config.getConfig().getString(key);
+                                String [] itemData = item.split(":");
+                                int id = Integer.valueOf(itemData[0]);
+                                byte data = Byte.valueOf(itemData[1]);
+                                int amount = Integer.valueOf(itemData[2]);
+                                String typeName = itemData[3];
+                                if(typeName.equals("NULL")) {
+                                    ItemStack itemStack = new ItemStack(id, amount, data);
+                                    if(itemData.length > 6) {
+                                        for(int a = 6; a < itemData.length; ++a) {
+                                            if(a % 2 == 0) {
+                                                Enchantment enchant = Enchantment.getByName(itemData[a]);
+                                                int level = Integer.valueOf(itemData[a + 1]);
+                                                itemStack.addEnchantment(enchant, level);
+                                            }
                                         }
                                     }
+                                    player.getInventory().setItem(Integer.valueOf(key), itemStack);
+                                } else {
+                                    PotionType type = PotionType.valueOf(typeName);
+                                    int level = Integer.valueOf(itemData[4]);
+                                    boolean splash = itemData[5].equals("1");
+                                    player.getInventory().setItem(Integer.valueOf(key), new Potion(type, level, splash).toItemStack(amount));
                                 }
-                                player.getInventory().setItem(Integer.valueOf(key), itemStack);
-                            } else {
-                                PotionType type = PotionType.valueOf(typeName);
-                                int level = Integer.valueOf(itemData[4]);
-                                boolean splash = itemData[5].equals("1");
-                                player.getInventory().setItem(Integer.valueOf(key), new Potion(type, level, splash).toItemStack(amount));
                             }
-                        }
-                    } else {
-                        MessageHandler.sendMessage(player, "&cLoading default hot bar set up. To save your edit and save your hot bar click the name tag item in the lobby");
+                    	}
+                    }
+                    if(!hotbarSetup) {
+                    	new TitleDisplayer(player, "&cNo Hotbar Setup Found", "&a/hotbar").display();
                         for(int slot : items.keySet()) {
                             player.getInventory().setItem(slot, items.get(slot));
                         }

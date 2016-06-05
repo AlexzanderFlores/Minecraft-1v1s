@@ -1,13 +1,10 @@
 package ostb.gameapi.games.onevsones;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -51,15 +49,11 @@ public class LobbyHandler implements Listener {
     private static ItemStack kitSelector = null;
     private static List<String> disabledRequests = null;
     private static List<String> watching = null;
-    private static Map<String, OneVsOneKit> kitSelecting = null;
-    private String invName = null;
 
     public LobbyHandler() {
         kitSelector = new ItemCreator(Material.ARROW).setName("&aKit Selector").getItemStack();
         disabledRequests = new ArrayList<String>();
         watching = new ArrayList<String>();
-        kitSelecting = new HashMap<String, OneVsOneKit>();
-        invName = "Select Type";
         EventUtil.register(this);
     }
 
@@ -165,23 +159,16 @@ public class LobbyHandler implements Listener {
     public void onInventoryItemClick(InventoryItemClickEvent event) {
     	Player player = event.getPlayer();
         if(event.getTitle().equals("Kit Selection") && !PrivateBattleHandler.choosingMapType(event.getPlayer())) {
+            event.setCancelled(true);
             player.closeInventory();
             OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
             if(kit == null) {
                 MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
+            } else if(event.getClickType() == ClickType.MIDDLE) {
+            	kit.preview(player);
             } else {
-            	String kitName = ChatColor.stripColor(kit.getName().toLowerCase().replace(" ", ""));
-        		if(kitName.equals("pyro") || kitName.equals("ender") || kitName.equals("tnt") || kitName.equals("onehitwonder") || kitName.equals("quickshot")) {
-        			run(kit, player);
-        		} else {
-        			Inventory inventory = Bukkit.createInventory(player, 9 * 3, invName);
-        			inventory.setItem(11, new ItemCreator(Material.STAINED_GLASS, 14).setName("&aRanked").setLores(new String [] {"", "&aMatches: &e" + RankedMatches.getMatches(player), ""}).getItemStack());
-        			inventory.setItem(15, new ItemCreator(Material.STAINED_GLASS, 5).setName("&aUnranked").getItemStack());
-        			player.openInventory(inventory);
-        			kitSelecting.put(player.getName(), kit);
-        		}
+            	run(kit, player);
             }
-            event.setCancelled(true);
         } else if(event.getTitle().equals("Request a Battle")) {
             final String name = event.getItem().getItemMeta().getDisplayName();
             new DelayedTask(new Runnable() {
@@ -195,23 +182,6 @@ public class LobbyHandler implements Listener {
             });
             player.closeInventory();
             event.setCancelled(true);
-        } else if(event.getTitle().equals(invName)) {
-        	if(event.getSlot() == 11) {
-        		int matches = RankedMatches.getMatches(player);
-        		if(matches > 0) {
-        			RankedMatches.setPlayingRanked(player);
-        			player.getInventory().clear();
-                    OneVsOneKit kit = kitSelecting.get(player.getName());
-                    run(kit, player);
-        		} else {
-        			MessageHandler.sendMessage(player, "&cYou do not have any ranked matches, get some with &e/vote");
-        		}
-        	} else if(event.getSlot() == 15) {
-                OneVsOneKit kit = kitSelecting.get(player.getName());
-                run(kit, player);
-        	}
-        	player.closeInventory();
-        	event.setCancelled(true);
         }
     }
     
