@@ -97,7 +97,7 @@ public class InventoryItemClickEvent extends Event implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
     	if(event.getWhoClicked() instanceof Player && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getInventory().getTitle() != null) {
-    		Player player = (Player) event.getWhoClicked();
+        	Player player = (Player) event.getWhoClicked();
     		InventoryItemClickEvent itemClickEvent = new InventoryItemClickEvent(player, event.getCurrentItem(), event.getInventory().getTitle(), event.getClick(), event.getSlot(), event.getInventory(), event.getSlotType());
     		Bukkit.getPluginManager().callEvent(itemClickEvent);
     		if(itemClickEvent.isCancelled()) {

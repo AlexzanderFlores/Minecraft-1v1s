@@ -7,7 +7,9 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
 
+import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.competitive.EloHandler;
@@ -22,8 +24,9 @@ import ostb.gameapi.games.onevsones.kits.NoDebuff;
 import ostb.gameapi.games.onevsones.kits.SurvivalGames;
 import ostb.gameapi.games.onevsones.kits.UHC;
 import ostb.gameapi.games.skywars.kits.Pyro;
-import ostb.player.TeamScoreboardHandler;
+import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
+import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
 import ostb.server.util.FileHandler;
@@ -31,7 +34,7 @@ import ostb.server.util.ImageMap;
 
 public class OnevsOnes extends ProPlugin {
 	public OnevsOnes() {
-		super("1v1s");
+		super("1v1");
 		setAllowEntityDamage(true);
         setAllowEntityDamageByEntities(true);
         setAllowPlayerInteraction(true);
@@ -44,7 +47,6 @@ public class OnevsOnes extends ProPlugin {
         World world = Bukkit.getWorlds().get(0);
         new SpectatorHandler();
 		new ServerLogger();
-		new TeamScoreboardHandler();
 		new StatsHandler(DB.PLAYERS_STATS_ONE_VS_ONE, DB.PLAYERS_STATS_ONE_VS_ONE_MONTHLY, DB.PLAYERS_STATS_ONE_VS_ONE_WEEKLY);
 		new LobbyHandler();
         new QueueHandler();
@@ -62,6 +64,34 @@ public class OnevsOnes extends ProPlugin {
         new EloRanking(frames, DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         frames.clear();
         frames = null;
+        OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
+        	@Override
+        	public void update(Player player) {
+        		if(ServerLogger.updatePlayerCount()) {
+					removeScore(8);
+					removeScore(5);
+				}
+				int size = ProPlugin.getPlayers().size();
+				setText(new String [] {
+					" ",
+					"&e&lPlaying",
+					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
+					"  ",
+					"&e&lQueue Times",
+					Ranks.PLAYER.getColor() + "Default: &b5s",
+					Ranks.PREMIUM.getColor() + "Premium: &b1s /buy",
+					"   ",
+					"&e&lPlayers Qualified",
+					"&e&lFor Tournament:",
+					"&b0 /tourney",
+					"    ",
+					"&a&lOutsideTheBlock.org",
+					"&e&lServer &b&l1V1" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"     "
+				});
+				super.update(player);
+        	}
+        });
         // Kits
         new Iron();
         new Diamond();

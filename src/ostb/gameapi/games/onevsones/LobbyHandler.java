@@ -2,6 +2,7 @@ package ostb.gameapi.games.onevsones;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
@@ -77,6 +79,7 @@ public class LobbyHandler implements Listener {
                 giveItems(player);
             }
         }
+        OSTB.getSidebar().update(player);
         return location;
     }
 
@@ -164,7 +167,7 @@ public class LobbyHandler implements Listener {
             OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
             if(kit == null) {
                 MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
-            } else if(event.getClickType() == ClickType.MIDDLE) {
+            } else if(event.getClickType() == ClickType.RIGHT) {
             	kit.preview(player);
             } else {
             	run(kit, player);
@@ -182,12 +185,35 @@ public class LobbyHandler implements Listener {
             });
             player.closeInventory();
             event.setCancelled(true);
+        } else if(event.getTitle().startsWith("Preview of")) {
+        	Material type = event.getItem().getType();
+        	if(type == Material.WOOD_DOOR) {
+        		openKitSelection(player);
+        		event.setCancelled(true);
+        	} else if(type == Material.NAME_TAG) {
+        		event.setCancelled(true);
+        		OneVsOneKit kit = OneVsOneKit.getKit(event.getTitle().replace("Preview of ", ""));
+                if(kit == null) {
+                	MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
+                } else {
+                	Inventory inventory = Bukkit.createInventory(player, 9 * 5, event.getTitle().replace("Preview of", "Edit kit"));
+                	Map<Integer, ItemStack> items = kit.getItems();
+                	for(int slot : items.keySet()) {
+                		if(slot <= 9 * 4) {
+                			inventory.setItem(slot, items.get(slot));
+                		}
+                    }
+                	inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&eSave Kit Change").getItemStack());
+            		player.openInventory(inventory);
+            		items.clear();
+            		items = null;
+            		HotbarEditor.open(player, kit);
+                }
+        	}
         }
     }
     
     private void run(OneVsOneKit kit, Player player) {
-        player.getInventory().clear();
-    	kit.give(player);
         QueueHandler.add(player, kit);
         EffectUtil.playSound(player, Sound.NOTE_PLING);
     }

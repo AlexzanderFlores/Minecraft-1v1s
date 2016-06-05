@@ -18,6 +18,7 @@ import ostb.customevents.player.PlayerStaffModeEvent;
 import ostb.customevents.player.PlayerStaffModeEvent.StaffModeEventType;
 import ostb.gameapi.games.onevsones.kits.OneVsOneKit;
 import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -37,11 +38,8 @@ public class QueueHandler implements Listener {
     public static void add(Player player, OneVsOneKit kit) {
         remove(player);
         PrivateBattleHandler.removeAllInvitesFromPlayer(player);
-        new QueueData(player, null, kit, RankedMatches.isPlayingRanked(player));
-        MessageHandler.sendMessage(player, "Looking for a game to join with kit " + kit.getName() + "...");
-        if(!Ranks.PREMIUM.hasRank(player)) {
-            MessageHandler.sendMessage(player, "&cNote: " + Ranks.PREMIUM.getPrefix() + "&eand above get &c5x &efaster queuing time! &b/buy");
-        }
+        new QueueData(player, null, kit);
+        new TitleDisplayer(player, "&e" + kit.getName(), "&cRanked Queue").display();
     }
 
     public static void remove(Player player) {
@@ -87,7 +85,7 @@ public class QueueHandler implements Listener {
                             Bukkit.getLogger().info("skipping " + comparingData.getPlayer() + " due not being in queue for only " + comparingData.getCounter() + "s");
                             continue;
                         }
-                        if((data.isPrioirty() == priority || comparingData.isPrioirty() == priority) && data.canJoin(comparingData) && data.isRanked() == comparingData.isRanked()) {
+                        if((data.isPrioirty() == priority || comparingData.isPrioirty() == priority) && data.canJoin(comparingData)) {
                         	final Player playerOne;
                             final Player playerTwo;
                             if(data.getForcedPlayer() != null && comparingData.getForcedPlayer() != null) {
@@ -166,9 +164,8 @@ public class QueueHandler implements Listener {
         private String forcedPlayer = null;
         private OneVsOneKit kit = null;
         private int counter = 0;
-        private boolean ranked = false;
 
-        public QueueData(Player player, Player playerTwo, OneVsOneKit kit, boolean ranked) {
+        public QueueData(Player player, Player playerTwo, OneVsOneKit kit) {
             if(Ranks.PREMIUM.hasRank(player) || Ranks.PREMIUM.hasRank(playerTwo)) {
                 priority = true;
             }
@@ -177,7 +174,6 @@ public class QueueHandler implements Listener {
                 this.forcedPlayer = playerTwo.getName();
             }
             this.kit = kit;
-            this.ranked = ranked;
             queueData.add(this);
         }
 
@@ -208,10 +204,6 @@ public class QueueHandler implements Listener {
 
         public OneVsOneKit getKit() {
             return this.kit;
-        }
-        
-        public boolean isRanked() {
-        	return this.ranked;
         }
 
         public int getCounter() {

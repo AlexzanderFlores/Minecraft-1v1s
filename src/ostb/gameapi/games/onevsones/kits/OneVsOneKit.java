@@ -36,7 +36,7 @@ public class OneVsOneKit {
 
     public OneVsOneKit(String name, ItemStack icon) {
         this.name = name;
-        ItemCreator itemCreator = new ItemCreator(icon).setAmount(0).setName("&a" + name).setLores(new String [] {"", "&7Middle Click to Preview Kit"});
+        ItemCreator itemCreator = new ItemCreator(icon).setAmount(0).setName("&e" + name).setLores(new String [] {"", "&7Left Click to &aPlay", "&7Right Click to &aPreview &7or &aEdit &7Kit"});
         if(!icon.getType().toString().contains("SWORD")) {
         	itemCreator.addLore("");
         }
@@ -82,6 +82,10 @@ public class OneVsOneKit {
     public ItemStack getIcon() {
         return icon;
     }
+    
+    public Map<Integer, ItemStack> getItems() {
+    	return items;
+    }
 
     public int getUsers() {
         int counter = 0;
@@ -124,10 +128,12 @@ public class OneVsOneKit {
     }
     
     public void preview(Player player) {
-    	Inventory inventory = Bukkit.createInventory(player, 9 * 6, "Preview of " + getName());
+    	Inventory inventory = Bukkit.createInventory(player, 9 * 5, "Preview of " + getName());
     	for(int slot : items.keySet()) {
             inventory.setItem(slot, items.get(slot));
         }
+    	inventory.setItem(inventory.getSize() - 1, new ItemCreator(Material.WOOD_DOOR).setGlow(true).setName("&bBack").getItemStack());
+    	inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.NAME_TAG).setGlow(true).setName("&aEdit Kit").setLores(new String [] {"", "&7Edit your hotbar layout", ""}).getItemStack());
     	player.openInventory(inventory);
     }
 
