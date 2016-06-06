@@ -372,7 +372,7 @@ public class SpectatorHandler implements Listener {
 		if(contains(player)) {
 			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getUseSpectatorChatChannel()) {
 				for(Player online : Bukkit.getOnlinePlayers()) {
-					if(!Ranks.isStaff(player)) {
+					if(!contains(online) && !Ranks.isStaff(online)) {
 						event.getRecipients().remove(online);
 					}
 				}

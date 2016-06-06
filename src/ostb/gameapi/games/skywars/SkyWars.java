@@ -6,6 +6,7 @@ import ostb.gameapi.MiniGame;
 import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.skywars.mapeffects.Frozen;
 import ostb.gameapi.shops.SkyWarsShop;
+import ostb.gameapi.uhc.scenarios.scenarios.CutClean;
 import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.DB;
@@ -35,5 +36,6 @@ public class SkyWars extends MiniGame {
 		}
 		// Map effects
 		new Frozen();
+		new CutClean().enable(false);
 	}
 }

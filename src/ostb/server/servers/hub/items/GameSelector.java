@@ -44,9 +44,10 @@ public class GameSelector extends HubItemBase {
 	private static Map<Plugins, Integer> players = null;
 	private static List<Integer> slots = null;
 	private static final int size = 9 * 5;
+	private static final String name = "Game Selector";
 	
 	public GameSelector() {
-		super(new ItemCreator(Material.COMPASS).setName("&eGame Selector"), 0);
+		super(new ItemCreator(Material.COMPASS).setName("&e" + name), 0);
 		items = new HashMap<ItemStack, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		players = new HashMap<Plugins, Integer>();
@@ -135,6 +136,16 @@ public class GameSelector extends HubItemBase {
 					if(watching.get(name) == plugin) {
 						update(plugin);
 						break;
+					}
+				}
+			}
+			for(Player player : ProPlugin.getPlayers()) {
+				InventoryView view = player.getOpenInventory();
+				if(view.getTitle().equals(name)) {
+					if(view.getItem(14).getType() == Material.GRASS) {
+						view.getItem(14).setType(Material.GOLDEN_APPLE);
+					} else {
+						view.getItem(14).setType(Material.GRASS);
 					}
 				}
 			}
@@ -284,16 +295,18 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item, Plugins.SW);
 		inventory.setItem(12, item);
-		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SWT.getDisplay()).setAmount(2).setLores(new String [] {
-			"&7Well known game",
+		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.UHCSW.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of Sky Wars",
 			"",
-			"&eBe the last team standing!",
+			"&eUHC meets Sky Wars!",
+			"&eNatural regeneration is &cOFF",
+			"&eBe the last player standing!",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.SWT),
-			"&7Team size: &a2",
+			"&7Playing: &a" + getPlayers(Plugins.UHCSW),
+			"&7Team size: &a1",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SWT);
+		items.put(item, Plugins.UHCSW);
 		inventory.setItem(14, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
@@ -335,6 +348,8 @@ public class GameSelector extends HubItemBase {
 			"&eBattle &cRED &evs &bBLUE &ein Kit PVP",
 			"",
 			"&7Playing: &a" + getPlayers(Plugins.KITPVP),
+			"&7Team size: &aUp to 20",
+			""
 		}).getItemStack();
 		items.put(item, Plugins.KITPVP);
 		inventory.setItem(33, item);

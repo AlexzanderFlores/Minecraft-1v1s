@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 
 import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
+import ostb.customevents.game.GameWinEvent;
 import ostb.gameapi.MiniGame;
 import ostb.player.MessageHandler;
 import ostb.server.ChatClickHandler;
@@ -26,13 +27,11 @@ public class StatRanking implements Listener {
 		EventUtil.register(this);
 	}
 	
-	@EventHandler
-	public void onGameDeath(GameDeathEvent event) {
+	private void display(Player player) {
 		MiniGame miniGame = OSTB.getMiniGame();
-		if(miniGame == null || !miniGame.getPlayersHaveOneLife()) {
+		if(player == null || miniGame == null || !miniGame.getPlayersHaveOneLife()) {
 			return;
 		}
-		final Player player = event.getPlayer();
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -63,5 +62,15 @@ public class StatRanking implements Listener {
 				ChatClickHandler.sendMessageToRunCommand(player, " &a&lClick Here", "Click to Play Again", "/autoJoin", "&ePlay again to try and get to rank &b#" + nextRank);
 			}
 		}, 20);
+	}
+	
+	@EventHandler
+	public void onGameDeath(GameDeathEvent event) {
+		display(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onGameWin(GameWinEvent event) {
+		display(event.getPlayer());
 	}
 }

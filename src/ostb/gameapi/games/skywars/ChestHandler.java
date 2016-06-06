@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -20,16 +21,17 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
+import ostb.customevents.player.PlayerOpenNewChestEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.server.util.EventUtil;
 
 public class ChestHandler implements Listener {
 	private static List<Block> oppenedChests = null;
-	private Map<ItemStack, Rarity> possibleItems = null;
+	private static Map<ItemStack, Rarity> possibleItems = null;
 	private List<Material> giveOnce = null;
 	private Map<String, Integer> chestsOpened = null;
 	private Map<String, List<Material>> alreadyGotten = null;
-	private enum Rarity {COMMON, UNCOMMON, RARE}
+	public enum Rarity {COMMON, UNCOMMON, RARE}
 	private enum ArmorSlot {HELMET, CHESTPLATE, LEGGINGS, BOOTS}
 	
 	public ChestHandler() {
@@ -96,19 +98,19 @@ public class ChestHandler implements Listener {
 		oppenedChests.remove(block);
 	}
 	
-	private void addItem(Material material, Rarity rarity) {
+	public static void addItem(Material material, Rarity rarity) {
 		addItem(material, 1, rarity);
 	}
 	
-	private void addItem(Material material, int amount, Rarity rarity) {
+	public static void addItem(Material material, int amount, Rarity rarity) {
 		addItem(material, amount, 0, rarity);
 	}
 	
-	private void addItem(Material material, int amount, int data, Rarity rarity) {
+	public static void addItem(Material material, int amount, int data, Rarity rarity) {
 		addItem(new ItemStack(material, amount, (byte) data), rarity);
 	}
 	
-	private void addItem(ItemStack itemStack, Rarity rarity) {
+	public static void addItem(ItemStack itemStack, Rarity rarity) {
 		possibleItems.put(itemStack, rarity);
 	}
 	
@@ -136,9 +138,9 @@ public class ChestHandler implements Listener {
 		if(oppenedChests != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && !SpectatorHandler.contains(event.getPlayer())) {
 			Block block = event.getClickedBlock();
 			if((block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) && !oppenedChests.contains(block)) {
-				oppenedChests.add(block);
 				Player player = event.getPlayer();
 				Chest chest = (Chest) block.getState();
+				oppenedChests.add(block);
 				chest.getInventory().clear();
 				Random random = new Random();
 				int numberOfTimes = random.nextInt(5) + 2;
@@ -186,9 +188,12 @@ public class ChestHandler implements Listener {
 							break;
 						}
 					} while(true);
-					if(type == Material.ARROW || type.isEdible()) {
+					if(itemStack.getAmount() == 1 && (type == Material.ARROW || type.isEdible())) {
 						if(type == Material.ARROW) {
 							itemStack = new ItemStack(type, random.nextInt(10) + 10);
+							if(!chest.getInventory().contains(Material.BOW)) {
+								chest.getInventory().setItem(random.nextInt(chest.getInventory().getSize()), new ItemStack(Material.BOW));
+							}
 						} else if(type != Material.GOLDEN_APPLE) {
 							itemStack = new ItemStack(type, random.nextInt(5) + 5);
 						}
@@ -196,7 +201,14 @@ public class ChestHandler implements Listener {
 						itemStack = new ItemStack(type, random.nextInt(3) + 1);
 					}
 					gotten.add(type);
-					chest.getInventory().setItem(random.nextInt(chest.getInventory().getSize()), itemStack);
+					if(itemStack.getType() == Material.BOW && !chest.getInventory().contains(Material.ARROW)) {
+						chest.getInventory().setItem(random.nextInt(chest.getInventory().getSize()), new ItemStack(Material.ARROW, random.nextInt(10) + 10));
+					}
+					int slot = 0;
+					do {
+						slot = random.nextInt(chest.getInventory().getSize());
+					} while(chest.getInventory().getItem(slot) != null);
+					chest.getInventory().setItem(slot, itemStack);
 				}
 				items.clear();
 				items = null;
@@ -215,6 +227,7 @@ public class ChestHandler implements Listener {
 				} else if(counter == 3) {
 					chest.getInventory().setItem(random.nextInt(chest.getInventory().getSize()), new ItemStack(Material.SNOW_BALL, 16));
 				}
+				Bukkit.getPluginManager().callEvent(new PlayerOpenNewChestEvent(player, chest));
 			}
 		}
 	}
