@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,8 +19,10 @@ public class DefaultKit implements Listener {
 	private static Map<String, KitBase> defaultKits = null;
 	
 	public DefaultKit() {
-		defaultKits = new HashMap<String, KitBase>();
-		EventUtil.register(this);
+		if(OSTB.getPlugin() != Plugins.HUB) {
+			defaultKits = new HashMap<String, KitBase>();
+			EventUtil.register(this);
+		}
 	}
 	
 	public static void setDefaultKit(Player player, KitBase kit) {
@@ -30,24 +31,19 @@ public class DefaultKit implements Listener {
 	
 	@EventHandler
 	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB) {
-			AsyncPostPlayerJoinEvent.getHandlerList().unregister(this);
-		} else {
-			Player player = event.getPlayer();
-			UUID uuid = player.getUniqueId();
-			for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
-				KitBase kit = null;
-				for(KitBase kitBase : KitBase.getKits()) {
-					if(kitBase.getName().equals(kitName)) {
-						kit = kitBase;
-						break;
-					}
-				}
-				if(kit != null) {
-					kit.use(player, true);
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
+			KitBase kit = null;
+			for(KitBase kitBase : KitBase.getKits()) {
+				if(kitBase.getName().equals(kitName)) {
+					kit = kitBase;
+					break;
 				}
 			}
-			Bukkit.getLogger().info("Loading default kits");
+			if(kit != null) {
+				kit.use(player, true);
+			}
 		}
 	}
 	
@@ -65,7 +61,6 @@ public class DefaultKit implements Listener {
 			} else {
 				DB.PLAYERS_DEFAULT_KITS.insert("'" + uuid.toString() + "', '" + game + "', '" + kit.getKitType() + "', '" + kit.getName() + "'");
 			}
-			Bukkit.getLogger().info("Set " + kit.getName() + " as default kit for " + name);
 			defaultKits.remove(name);
 		}
 	}

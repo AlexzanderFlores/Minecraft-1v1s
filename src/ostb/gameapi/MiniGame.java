@@ -97,6 +97,7 @@ public abstract class MiniGame extends ProPlugin {
 		new VotingHandler();
 		new EndingLobby();
 		new CoinBoosters();
+		new AutoJoinHandler();
 		teamHandler = new TeamHandler();
 		new DelayedTask(new Runnable() {
 			@Override

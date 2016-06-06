@@ -166,9 +166,9 @@ public abstract class KitBase implements Listener {
 				}
 				if(!defaultKit) {
 					DefaultKit.setDefaultKit(player, this);
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
 				}
-				MessageHandler.sendMessage(player, "Selected &e" + getName());
-				EffectUtil.playSound(player, Sound.LEVEL_UP);
+				MessageHandler.sendMessage(player, "Selected &b" + getName());
 				return true;
 			}
 		} else if(price > 0) {
@@ -203,7 +203,7 @@ public abstract class KitBase implements Listener {
 				}
 			});
 			unlocked.put(player.getName(), true);
-			MessageHandler.sendMessage(player, "You unlocked &e" + getName());
+			MessageHandler.sendMessage(player, "You unlocked &b" + getName());
 			new TitleDisplayer(player, "&bYou unlocked", "&e" + getName()).display();
 			Bukkit.getPluginManager().callEvent(new PlayerPostKitPurchaseEvent(player, this));
 		}
@@ -295,7 +295,9 @@ public abstract class KitBase implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		if(OSTB.getPlugin() != Plugins.HUB) {
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			AsyncPlayerJoinEvent.getHandlerList().unregister(this);
+		} else {
 			owns(event.getPlayer());
 		}
 	}

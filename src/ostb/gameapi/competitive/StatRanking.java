@@ -12,6 +12,7 @@ import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.gameapi.MiniGame;
 import ostb.player.MessageHandler;
+import ostb.server.ChatClickHandler;
 import ostb.server.DB;
 import ostb.server.DB.Databases;
 import ostb.server.tasks.AsyncDelayedTask;
@@ -36,6 +37,7 @@ public class StatRanking implements Listener {
 			@Override
 			public void run() {
 				int rank = -1;
+				int nextRank = -1;
 				int kills = 0;
 				DB db = DB.PLAYERS_STATS_SKY_WARS;
 				ResultSet resultSet = null;
@@ -43,10 +45,11 @@ public class StatRanking implements Listener {
 					Connection connection = Databases.PLAYERS.getConnection();
 					connection.prepareStatement("SET @uuid = '" + player.getUniqueId().toString() + "'").executeQuery();
 					connection.prepareStatement("SET @kills = (SELECT kills FROM " + db.getName() + " WHERE uuid = @uuid)").executeQuery();
-					resultSet = connection.prepareStatement("SELECT kills,(SELECT COUNT(*) FROM " + db.getName() + " WHERE kills >= @kills) AS rank FROM " + db.getName() + " WHERE uuid = @uuid").executeQuery();
+					resultSet = connection.prepareStatement("SELECT kills,(SELECT COUNT(*) FROM " + db.getName() + " WHERE kills >= @kills) AS rank, (SELECT COUNT(*) FROM " + db.getName() + " WHERE kills >= (@kills + 1)) AS next FROM " + db.getName() + " WHERE uuid = @uuid").executeQuery();
 					while(resultSet.next()) {
 						kills = resultSet.getInt("kills");
 						rank = resultSet.getInt("rank");
+						nextRank = resultSet.getInt("next");
 					}
 					connection.prepareStatement("SET @uuid = NULL, @kills = NULL").executeQuery();
 				} catch(SQLException e) {
@@ -54,7 +57,10 @@ public class StatRanking implements Listener {
 				} finally {
 					DB.close(resultSet);
 				}
+				MessageHandler.sendMessage(player, "");
 				MessageHandler.sendMessage(player, "&a&lRanking: &xYou now have &b" + kills + " &xkill" + (kills == 1 ? "" : "s") + " bringing you to rank &b#" + rank);
+				MessageHandler.sendMessage(player, "&a&lRanking: &xGetting &b1 &xmore kill will bring you to rank &b#" + nextRank);
+				ChatClickHandler.sendMessageToRunCommand(player, " &a&lClick Here", "Click to Play Again", "/autoJoin", "&ePlay again to try and get to rank &b#" + nextRank);
 			}
 		}, 20);
 	}

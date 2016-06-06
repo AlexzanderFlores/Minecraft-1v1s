@@ -5,6 +5,9 @@ softdepend: [NPC_OSTB, Votifier, EffectLib]
 authors: [Leet_Gamer]
 commands:
 # Global Commands
+  autoJoin:
+    usage: /autoJoin
+
   defaultChatColor:
     usage: /defaultChatColor
 
