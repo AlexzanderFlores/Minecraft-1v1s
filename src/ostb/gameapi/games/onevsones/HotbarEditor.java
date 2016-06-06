@@ -22,6 +22,7 @@ import ostb.gameapi.games.onevsones.kits.OneVsOneKit;
 import ostb.player.MessageHandler;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.EventUtil;
+import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class HotbarEditor implements Listener {
@@ -40,7 +41,18 @@ public class HotbarEditor implements Listener {
             MessageHandler.sendMessage(player, "&cYou have been removed from the queue");
         }
     	PrivateBattleHandler.removeAllInvitesFromPlayer(player);
-    	kits.put(player.getName(), kit);
+    	Inventory inventory = Bukkit.createInventory(player, 9 * 5, "Edit kit " + kit.getName());
+    	Map<Integer, ItemStack> items = new HashMap<Integer, ItemStack>(kit.getItems());
+    	for(int slot : items.keySet()) {
+    		if(slot < 9 * 4) {
+    			inventory.setItem(slot, items.get(slot));
+    		}
+        }
+    	inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&eSave Kit Change").getItemStack());
+		player.openInventory(inventory);
+		items.clear();
+		items = null;
+		kits.put(player.getName(), kit);
     }
     
     public static String getPath() {

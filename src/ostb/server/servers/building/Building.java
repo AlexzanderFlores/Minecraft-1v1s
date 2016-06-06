@@ -28,7 +28,6 @@ import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
-import ostb.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class Building extends ProPlugin {
@@ -247,19 +246,6 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("test", -1, true) {
-			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
-				Player player = (Player) sender;
-				if(arguments.length == 0) {
-					Block block = getRegionBlock(player);
-					MessageHandler.sendMessage(player, block.getType() + ":" + block.getData());
-				} else if(arguments.length == 2) {
-					player.getInventory().addItem(new ItemCreator(Material.valueOf(arguments[0]), Byte.valueOf(arguments[1])).setGlow(true).getItemStack());
-				}
-				return true;
-			}
-		};
 	}
 	
 	@Override

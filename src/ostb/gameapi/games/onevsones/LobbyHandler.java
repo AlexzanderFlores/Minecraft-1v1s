@@ -2,7 +2,6 @@ package ostb.gameapi.games.onevsones;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -196,17 +195,6 @@ public class LobbyHandler implements Listener {
                 if(kit == null) {
                 	MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
                 } else {
-                	Inventory inventory = Bukkit.createInventory(player, 9 * 5, event.getTitle().replace("Preview of", "Edit kit"));
-                	Map<Integer, ItemStack> items = kit.getItems();
-                	for(int slot : items.keySet()) {
-                		if(slot <= 9 * 4) {
-                			inventory.setItem(slot, items.get(slot));
-                		}
-                    }
-                	inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&eSave Kit Change").getItemStack());
-            		player.openInventory(inventory);
-            		items.clear();
-            		items = null;
             		HotbarEditor.open(player, kit);
                 }
         	}

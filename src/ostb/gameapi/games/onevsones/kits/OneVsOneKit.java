@@ -131,7 +131,7 @@ public class OneVsOneKit {
     public void preview(Player player) {
     	Inventory inventory = Bukkit.createInventory(player, 9 * 5, "Preview of " + getName());
     	for(int slot : items.keySet()) {
-            inventory.setItem(slot, items.get(slot));
+    		inventory.setItem(slot, items.get(slot));
         }
     	inventory.setItem(inventory.getSize() - 1, new ItemCreator(Material.WOOD_DOOR).setGlow(true).setName("&bBack").getItemStack());
     	inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.NAME_TAG).setGlow(true).setName("&aEdit Kit").setLores(new String [] {"", "&7Edit your hotbar layout", ""}).getItemStack());

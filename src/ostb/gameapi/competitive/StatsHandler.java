@@ -275,6 +275,7 @@ public class StatsHandler implements Listener {
 					return true;
 				}
 			}.setRequiredRank(Ranks.PREMIUM);
+			new StatRanking();
 			EventUtil.register(this);
 		}
 	}
@@ -292,6 +293,10 @@ public class StatsHandler implements Listener {
 	
 	public static DB getEloDB() {
 		return elo;
+	}
+	
+	public static DB getStatsDB() {
+		return table;
 	}
 	
 	public static boolean getSaveOnQuit() {
