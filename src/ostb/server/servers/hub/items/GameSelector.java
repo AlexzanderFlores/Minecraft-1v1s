@@ -39,7 +39,7 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
 
 public class GameSelector extends HubItemBase {
-	private static Map<ItemStack, Plugins> items = null;
+	private static Map<String, Plugins> items = null;
 	private static Map<String, Plugins> watching = null;
 	private static Map<Plugins, Integer> players = null;
 	private static List<Integer> slots = null;
@@ -48,7 +48,7 @@ public class GameSelector extends HubItemBase {
 	
 	public GameSelector() {
 		super(new ItemCreator(Material.COMPASS).setName("&e" + name), 0);
-		items = new HashMap<ItemStack, Plugins>();
+		items = new HashMap<String, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		players = new HashMap<Plugins, Integer>();
 		slots = new ArrayList<Integer>();
@@ -98,8 +98,9 @@ public class GameSelector extends HubItemBase {
 		ItemStack item = event.getItem();
 		String title = event.getTitle();
 		if(title.equals(ChatColor.stripColor(getName()))) {
-			if(items.containsKey(item)) {
-				Plugins plugin = items.get(item);
+			String name = item.getItemMeta().getDisplayName();
+			if(items.containsKey(name)) {
+				Plugins plugin = items.get(name);
 				open(player, plugin);
 			}
 			event.setCancelled(true);
@@ -282,7 +283,7 @@ public class GameSelector extends HubItemBase {
 			"&7Team size: &a12 vs 12",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.DOM);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.DOM);
 		inventory.setItem(10, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SW.getDisplay()).setLores(new String [] {
 			"&7Well known game",
@@ -293,7 +294,7 @@ public class GameSelector extends HubItemBase {
 			"&7Team size: &aSolo",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SW);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.SW);
 		inventory.setItem(12, item);
 		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.UHCSW.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Sky Wars",
@@ -306,7 +307,7 @@ public class GameSelector extends HubItemBase {
 			"&7Team size: &a1",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.UHCSW);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.UHCSW);
 		inventory.setItem(14, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
@@ -318,7 +319,7 @@ public class GameSelector extends HubItemBase {
 			"&7Playing: &a" + getPlayers(Plugins.UHC),
 			""
 		}).getItemStack();
-		items.put(item, Plugins.UHC);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.UHC);
 		inventory.setItem(16, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
@@ -328,7 +329,7 @@ public class GameSelector extends HubItemBase {
 			"&7Playing: &a" + getPlayers(Plugins.SUHC),
 			""
 		}).getItemStack();
-		items.put(item, Plugins.SUHC);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.SUHC);
 		inventory.setItem(29, item);
 		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + Plugins.ONEVSONE.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of 1v1s",
@@ -339,7 +340,7 @@ public class GameSelector extends HubItemBase {
 			"&7Playing: &a" + getPlayers(Plugins.ONEVSONE),
 			""
 		}).getItemStack();
-		items.put(item, Plugins.ONEVSONE);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.ONEVSONE);
 		//inventory.setItem(31, item);
 		inventory.setItem(31, comingSoon);
 		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + Plugins.KITPVP.getDisplay()).setLores(new String [] {
@@ -351,7 +352,7 @@ public class GameSelector extends HubItemBase {
 			"&7Team size: &aUp to 20",
 			""
 		}).getItemStack();
-		items.put(item, Plugins.KITPVP);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.KITPVP);
 		inventory.setItem(33, item);
 		int data = new Random().nextInt(15);
 		for(int slot : slots) {
