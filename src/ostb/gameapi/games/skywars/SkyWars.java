@@ -12,7 +12,11 @@ import ostb.server.DB;
 
 public class SkyWars extends MiniGame {
 	public SkyWars() {
-		super("Sky Wars");
+		this("Sky Wars");
+	}
+	
+	public SkyWars(String name) {
+		super(name);
 		setVotingCounter(45);
 		setStartingCounter(10);
 		setFlintAndSteelUses(4);

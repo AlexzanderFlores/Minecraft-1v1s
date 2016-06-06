@@ -27,6 +27,7 @@ import ostb.gameapi.games.onevsones.OnevsOnes;
 import ostb.gameapi.games.skywars.SkyWars;
 import ostb.gameapi.games.speeduhc.SpeedUHC;
 import ostb.gameapi.games.uhc.UHC;
+import ostb.gameapi.games.uhcskywars.UHCSkyWars;
 import ostb.gameapi.kit.DefaultKit;
 import ostb.player.ChatLogger;
 import ostb.player.DefaultChatColor;
@@ -65,6 +66,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		HUB("HUB", "hub", "Hub"),
 		DOM("DOM", "domination", "Domination"),
 		SW("SW", "sky_wars", "Solo Sky Wars"),
+		UHCSW("UHCSW", "sky_wars", "UHC Sky Wars"),
 		SWT("SWT", "sky_wars", "Team Sky Wars"),
 		SUHC("SUHC", "speed_uhc", "Speed UHC"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
@@ -149,6 +151,8 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 				proPlugin = new Domination();
 			} else if(plugin == Plugins.SW || plugin == Plugins.SWT) {
 				proPlugin = new SkyWars();
+			} else if(plugin == Plugins.UHCSW) {
+				proPlugin = new UHCSkyWars();
 			} else if(plugin == Plugins.SUHC) {
 				proPlugin = new SpeedUHC();
 			} else if(plugin == Plugins.KITPVP) {
