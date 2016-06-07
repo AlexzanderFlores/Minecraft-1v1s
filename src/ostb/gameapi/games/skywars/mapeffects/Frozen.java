@@ -14,9 +14,18 @@ public class Frozen extends MapEffectsBase {
 	@Override
 	public void execute(World world) {
 		for(Location location : new Location [] {
-				new Location(world, -69, 123, 162), new Location(world, -42, 123, 135), new Location(world, -18, 123, 103), new Location(world, -42, 123, 71),
-				new Location(world, -69, 123, 44), new Location(world, -101, 123, 20), new Location(world, -133, 123, 44), new Location(world, -160, 123, 71),
-				new Location(world, -184, 123, 103), new Location(world, -160, 123, 135), new Location(world, -133, 123, 162), new Location(world, -101, 123, 186)
+				new Location(world, -81, 123, 156),
+				new Location(world, -101, 123, 176),
+				new Location(world, -121, 123, 156),
+				new Location(world, -154, 123, 123),
+				new Location(world, -174, 123, 103),
+				new Location(world, -154, 123, 83),
+				new Location(world, -121, 123, 50),
+				new Location(world, -101, 123, 30),
+				new Location(world, -81, 123, 50),
+				new Location(world, -48, 123, 83),
+				new Location(world, -28, 123, 103),
+				new Location(world, -48, 123, 123)
 			}) {
 			new Campfire(location.add(0.5, 0, 0.5));
 		}
