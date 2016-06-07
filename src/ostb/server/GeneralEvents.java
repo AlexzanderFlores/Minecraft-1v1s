@@ -22,9 +22,9 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
-import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -83,16 +83,6 @@ public class GeneralEvents implements Listener {
 			IChatBaseComponent footer = ChatSerializer.a(TextConverter.convert(StringUtil.color(bottom)));
 			craftPlayer.getHandle().playerConnection.sendPacket(new PacketTabHeader(header, footer));
 		}*/
-	}
-	
-	@EventHandler
-	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		MessageHandler.sendMessage(player, "");
-		MessageHandler.sendMessage(player, "&4&lTHIS IS BETA");
-		MessageHandler.sendMessage(player, "Expect lag and bugs. Please report any problems here:");
-		MessageHandler.sendMessage(player, "&a&lhttps://twitter.com/OSTBNetwork");
-		MessageHandler.sendMessage(player, "");
 	}
 	
 	@EventHandler
@@ -199,6 +189,15 @@ public class GeneralEvents implements Listener {
 			for(Databases database : Databases.values()) {
 				database.connect();
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onGameDeath(GameDeathEvent event) {
+		Player player = event.getPlayer();
+		Player killer = event.getKiller();
+		if(killer != null) {
+			MessageHandler.sendMessage(player, AccountHandler.getPrefix(killer) + " &xhad &c" + ((int) (killer.getHealth() / 2)) + " " + UnicodeUtil.getHeart());
 		}
 	}
 	

@@ -121,6 +121,11 @@ public class HaloParticles extends FeatureBase {
 		}
 		
 		public boolean owns(Player player) {
+			if(Ranks.PREMIUM.hasRank(player)) {
+				if(this == FIREWORKS_SPARK) {
+					return true;
+				}
+			}
 			InventoryView inventoryView = opened(player);
 			if(inventoryView != null) {
 				return store && inventoryView.getItem(getSlot()).getType() != Material.INK_SACK;

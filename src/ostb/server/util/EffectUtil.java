@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 import ostb.gameapi.SpectatorHandler;
 
-
 @SuppressWarnings("deprecation")
 public class EffectUtil {
 	public static void launchFireworks() {

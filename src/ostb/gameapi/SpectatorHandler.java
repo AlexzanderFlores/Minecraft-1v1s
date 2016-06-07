@@ -60,22 +60,26 @@ public class SpectatorHandler implements Listener {
 	private static List<String> spectators = null;
 	private static List<String> beenTold = null;
 	private static ItemStack teleporter = null;
+	private static ItemStack settings = null;
 	private static ItemStack exit = null;
 	private static ItemStack nextGame = null;
 	private static boolean enabled = false;
 	private static final double range = 10;
+	private static String settingsName = null;
 	
 	public SpectatorHandler() {
 		spectators = new ArrayList<String>();
 		beenTold = new ArrayList<String>();
 		teleporter = new ItemCreator(Material.WATCH).setName("&aTeleport to Player").getItemStack();
+		settings = new ItemCreator(Material.REDSTONE_COMPARATOR).setName("&aSpectator Settings").getItemStack();
+		nextGame = new ItemCreator(Material.DIAMOND_SWORD).setName("&aJoin Next Game").getItemStack();
 		if(OSTB.getMiniGame() == null) {
 			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aExit Spectating").getItemStack();
 		} else {
 			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aReturn to Hub").getItemStack();
 		}
-		nextGame = new ItemCreator(Material.DIAMOND_SWORD).setName("&aJoin Next Game").getItemStack();
 		enabled = true;
+		settingsName = "Spectator Settings";
 		new CommandBase("toggleSpectator", 0, 1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -163,6 +167,7 @@ public class SpectatorHandler implements Listener {
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
 				player.getInventory().setItem(0, teleporter);
+				player.getInventory().setItem(1, settings);
 				if(OSTB.getMiniGame() == null) {
 					player.getInventory().setItem(8, exit);
 				} else {
@@ -176,7 +181,6 @@ public class SpectatorHandler implements Listener {
 					}
 				}
 				player.setGameMode(GameMode.CREATIVE);
-				player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
 				player.setAllowFlight(true);
 				player.setFlying(true);
 				playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.ADDED);
@@ -324,6 +328,14 @@ public class SpectatorHandler implements Listener {
 					}
 				} else if(item.getType() == Material.DIAMOND_SWORD) {
 					AutoJoinHandler.send(player);
+				} else if(item.getType() == Material.REDSTONE_COMPARATOR) {
+					Inventory inventory = Bukkit.createInventory(player, 9 * 3, settingsName);
+					int [] slot = new int [] {10, 12, 14};
+					for(int a = 0; a < slot.length; ++a) {
+						inventory.setItem(slot[a], new ItemCreator(Material.FEATHER).setAmount(a + 1).setName("&eFly Speed " + (a + 1)).getItemStack());
+					}
+					inventory.setItem(16, new ItemCreator(Material.TORCH).setName("&eToggle Night Vision").getItemStack());
+					player.openInventory(inventory);
 				}
 			}
 			event.setCancelled(true);
@@ -345,6 +357,25 @@ public class SpectatorHandler implements Listener {
 							player.teleport(target);
 							MessageHandler.sendMessage(player, "&eNote: &aYou can also teleport with &c/spectate <player name>");
 						}
+					} else if(event.getInventory().getTitle().equals(settingsName)) {
+						if(item.getType() == Material.FEATHER) {
+							if(Ranks.PREMIUM.hasRank(player)) {
+								player.setFlySpeed((float) (item.getAmount() * 0.10));
+							} else {
+								MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+							}
+						} else if(item.getType() == Material.TORCH) {
+							if(Ranks.PREMIUM.hasRank(player)) {
+								if(player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+									player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+								} else {
+									player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 100));
+								}
+							} else {
+								MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+							}
+						}
+						player.closeInventory();
 					}
 				}
 				event.setCancelled(true);
