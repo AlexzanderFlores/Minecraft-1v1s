@@ -16,7 +16,6 @@ import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.server.util.EventUtil;
-import ostb.server.util.FileHandler;
 import ostb.server.util.ImageMap;
 
 public class EndingLobby implements Listener {
@@ -37,26 +36,6 @@ public class EndingLobby implements Listener {
 		bestPlayer = name;
 	}
 	
-	private String loadImage(String ign, int index) {
-		String url = "";
-		switch(index) {
-		case 0:
-			url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=340&wt=20&abg=240&abd=130&ajg=330&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=186";
-			break;
-		case 1:
-			url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=0&w=330&wt=30&abg=310&abd=50&ajg=340&ajd=30&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=727";
-			break;
-		case 2:
-			url = "http://www.minecraft-skin-viewer.net/3d.php?layers=true&aa=true&a=10&w=330&wt=30&abg=330&abd=110&ajg=350&ajd=10&ratio=15&format=png&login=" + ign + "&headOnly=false&displayHairs=true&randomness=761";
-			break;
-		default:
-			return null;
-		}
-		String path = Bukkit.getWorldContainer().getPath() + "/" + OSTB.getMiniGame().getLobby().getName() + "/" + index + ".png";
-		FileHandler.downloadImage(url, path);
-		return path;
-	}
-	
 	@EventHandler
 	public void onGameEnding(GameEndingEvent event) {
 		Random random = new Random();
@@ -68,11 +47,11 @@ public class EndingLobby implements Listener {
 				SpectatorHandler.remove(player);
 			}
 			if(player.getName().equals(firstPlace)) {
-				player.teleport(new Location(world, 0.5, 12, 309.5, -180.0f, 0.0f));
+				player.teleport(new Location(world, 0.5, 9, 309.5, -180.0f, 0.0f));
 			} else if(player.getName().equals(secondPlace)) {
-				player.teleport(new Location(world, 3.5, 11, 310.5, -180.0f, 0.0f));
+				player.teleport(new Location(world, 3.5, 8, 310.5, -180.0f, 0.0f));
 			} else if(player.getName().equals(thirdPlace)) {
-				player.teleport(new Location(world, -2.5, 10, 310.5, -180.0f, 0.0f));
+				player.teleport(new Location(world, -2.5, 7, 310.5, -180.0f, 0.0f));
 			} else if(player.getName().equals(bestPlayer)) {
 				player.teleport(new Location(world, 0.5, 8, 288.5, -360.0f, 0.0f));
 			} else {
@@ -81,15 +60,10 @@ public class EndingLobby implements Listener {
 				player.teleport(spawn.clone().add(x, 0, z));
 			}
 		}
-		if(firstPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, 1, 10, 307), "First Place", loadImage(firstPlace, 0), 3, 4);
-		}
-		if(secondPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, 4, 9, 308), "Second Place", loadImage(secondPlace, 1), 3, 4);
-		}
-		if(thirdPlace != null) {
-			new ImageMap(ImageMap.getItemFrame(world, -2, 8, 308), "Third Place", loadImage(thirdPlace, 2), 3, 4);
-		}
+		String path = Bukkit.getWorldContainer().getAbsolutePath().replace("/.", "") + "/../resources/";
+		new ImageMap(ImageMap.getItemFrame(world, 0, 8, 307), "First Place", path += "first.png", 1, 2);
+		new ImageMap(ImageMap.getItemFrame(world, 3, 7, 308), "Second Place", path += "second.png", 1, 2);
+		new ImageMap(ImageMap.getItemFrame(world, -3, 6, 308), "Third Place", path += "third.png", 1, 2);
 	}
 	
 	@EventHandler

@@ -20,11 +20,9 @@ import com.sk89q.worldedit.regions.Region;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
-import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
-import ostb.server.DB;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.ConfigurationUtil;
 import ostb.server.util.FileHandler;
@@ -39,7 +37,7 @@ public class Building extends ProPlugin {
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
 		new ArmorStandHelper();
-		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
+		new SkyWarsMapEditor();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -274,7 +272,7 @@ public class Building extends ProPlugin {
 		return null;
 	}
 	
-	private Region getRegion(Player player) {
+	public static Region getRegion(Player player) {
 		WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 		if(worldEdit == null || !worldEdit.isEnabled()) {
 			MessageHandler.sendMessage(player, "&cWorld Edit is not enabled");

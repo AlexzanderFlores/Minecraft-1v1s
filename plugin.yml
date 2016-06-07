@@ -224,6 +224,9 @@ commands:
   kitpvp:
     usage: /kitpvp <additional arguments>
 
+  editSkyWarsMap:
+    usage: /editSkyWarsMap <Y> <N> <S> <E> <W> <Start Radius>
+
 # Worker commands
   purchase:
     usage: /purchase <name> <package name>
