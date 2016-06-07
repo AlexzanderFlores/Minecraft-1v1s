@@ -857,7 +857,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 			if(entity.getPassenger() != null) {
 				entity.eject();
 			}
-			entity.teleport(event.getEntity().getWorld().getSpawnLocation());
+			//entity.teleport(event.getEntity().getWorld().getSpawnLocation());
 			if(entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				event.setDamage(livingEntity.getHealth());
