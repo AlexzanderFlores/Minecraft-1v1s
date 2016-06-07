@@ -35,6 +35,7 @@ public class StatRanking implements Listener {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
+				StatsHandler.save(player);
 				int rank = -1;
 				int nextRank = -1;
 				int kills = 0;

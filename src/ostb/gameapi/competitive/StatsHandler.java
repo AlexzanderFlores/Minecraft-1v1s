@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
+import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameWinEvent;
@@ -30,6 +31,7 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.DoubleUtil;
 import ostb.server.util.EventUtil;
@@ -437,6 +439,24 @@ public class StatsHandler implements Listener {
 		gameStats.get(player.getName()).removeDeath();
 	}
 	
+	public static void save(Player player) {
+		GameStats stats = gameStats.get(player.getName());
+		String uuid = player.getUniqueId().toString();
+		table.updateInt("wins", stats.getWins(), "uuid", uuid);
+		table.updateInt("losses", stats.getLosses(), "uuid", uuid);
+		table.updateInt("kills", stats.getKills(), "uuid", uuid);
+		table.updateInt("deaths", stats.getDeaths(), "uuid", uuid);
+		if(monthly != null) {
+			String [] keys = new String [] {"uuid", "date"};
+			String [] values = new String [] {uuid, TimeUtil.getTime().substring(0, 7)};
+			monthly.updateInt("wins", stats.getMonthlyWins(), keys, values);
+			monthly.updateInt("losses", stats.getMonthlyLosses(), keys, values);
+			monthly.updateInt("kills", stats.getMonthlyKills(), keys, values);
+			monthly.updateInt("deaths", stats.getMonthlyDeaths(), keys, values);
+		}
+		gameStats.remove(player.getName());
+	}
+	
 	@EventHandler
 	public void onGameWin(GameWinEvent event) {
 		if(event.getPlayer() != null) {
@@ -459,6 +479,18 @@ public class StatsHandler implements Listener {
 	@EventHandler
 	public void onGameDeath(GameDeathEvent event) {
 		addDeath(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onGameEnding(GameEndingEvent event) {
+		new AsyncDelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					save(player);
+				}
+			}
+		});
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -516,20 +548,7 @@ public class StatsHandler implements Listener {
 		}
 		if(gameStats != null && gameStats.containsKey(player.getName())) {
 			if(saveOnQuit) {
-				GameStats stats = gameStats.get(player.getName());
-				String uuid = player.getUniqueId().toString();
-				table.updateInt("wins", stats.getWins(), "uuid", uuid);
-				table.updateInt("losses", stats.getLosses(), "uuid", uuid);
-				table.updateInt("kills", stats.getKills(), "uuid", uuid);
-				table.updateInt("deaths", stats.getDeaths(), "uuid", uuid);
-				if(monthly != null) {
-					String [] keys = new String [] {"uuid", "date"};
-					String [] values = new String [] {uuid, TimeUtil.getTime().substring(0, 7)};
-					monthly.updateInt("wins", stats.getMonthlyWins(), keys, values);
-					monthly.updateInt("losses", stats.getMonthlyLosses(), keys, values);
-					monthly.updateInt("kills", stats.getMonthlyKills(), keys, values);
-					monthly.updateInt("deaths", stats.getMonthlyDeaths(), keys, values);
-				}
+				save(player);
 			}
 			gameStats.remove(player.getName());
 		}
