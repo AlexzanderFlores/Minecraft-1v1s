@@ -15,6 +15,7 @@ import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ImageMap;
 
@@ -60,10 +61,15 @@ public class EndingLobby implements Listener {
 				player.teleport(spawn.clone().add(x, 0, z));
 			}
 		}
-		String path = Bukkit.getWorldContainer().getAbsolutePath().replace("/.", "") + "/../resources/";
-		new ImageMap(ImageMap.getItemFrame(world, 0, 8, 307), "First Place", path += "first.png", 1, 2);
-		new ImageMap(ImageMap.getItemFrame(world, 3, 7, 308), "Second Place", path += "second.png", 1, 2);
-		new ImageMap(ImageMap.getItemFrame(world, -3, 6, 308), "Third Place", path += "third.png", 1, 2);
+		new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				String path = Bukkit.getWorldContainer().getAbsolutePath().replace("/.", "") + "/../resources/";
+				new ImageMap(ImageMap.getItemFrame(world, 0, 8, 307), "First Place", path + "first.png", 1, 2);
+				new ImageMap(ImageMap.getItemFrame(world, 3, 7, 308), "Second Place", path + "second.png", 1, 2);
+				new ImageMap(ImageMap.getItemFrame(world, -3, 6, 308), "Third Place", path + "third.png", 1, 2);
+			}
+		}, 20 * 2);
 	}
 	
 	@EventHandler
