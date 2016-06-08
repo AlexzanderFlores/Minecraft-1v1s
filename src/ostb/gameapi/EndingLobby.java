@@ -14,16 +14,20 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
+import ostb.player.account.AccountHandler;
+import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ImageMap;
 import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
+import ostb.server.util.StringUtil;
 
 public class EndingLobby implements Listener {
 	private List<String> topPlayers = null;
@@ -46,11 +50,13 @@ public class EndingLobby implements Listener {
 		World world = OSTB.getMiniGame().getLobby();
 		String bestKiller = null;
 		int mostKills = 0;
+		ItemStack [] armor = null;
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			int kills = KillLogger.getKills(player);
 			if(bestKiller == null || kills > mostKills) {
 				bestKiller = player.getName();
 				mostKills = kills;
+				armor = player.getInventory().getArmorContents();
 			}
 			ProPlugin.resetPlayer(player);
 			if(SpectatorHandler.isEnabled()) {
@@ -68,12 +74,25 @@ public class EndingLobby implements Listener {
 				player.teleport(spawn.clone().add(x, 0, z));
 			}
 		}
-		Location bestKillerLocation = new Location(world, 0.5, 8, 288.5, -360.0f, 0.0f);;
+		Location bestKillerLocation = new Location(world, 0.5, 7, 288.5, -360.0f, 0.0f);;
 		Player killer = ProPlugin.getPlayer(bestKiller);
-		if(!(killer == null || killer.getLocation().getY() >= 7)) {
+		if(!(killer == null || isTop3(killer))) {
 			killer.teleport(bestKillerLocation);
 		}
 		final String finalBestKiller = bestKiller;
+		if(armor[3] == null || armor[3].getType() == Material.AIR) {
+			armor[3] = new ItemStack(Material.IRON_HELMET);
+		}
+		if(armor[2] == null || armor[2].getType() == Material.AIR) {
+			armor[2] = new ItemStack(Material.IRON_CHESTPLATE);
+		}
+		if(armor[1] == null || armor[1].getType() == Material.AIR) {
+			armor[1] = new ItemStack(Material.IRON_LEGGINGS);
+		}
+		if(armor[0] == null || armor[0].getType() == Material.AIR) {
+			armor[0] = new ItemStack(Material.IRON_BOOTS);
+		}
+		final ItemStack [] finalArmor = armor;
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -82,21 +101,33 @@ public class EndingLobby implements Listener {
 				new ImageMap(ImageMap.getItemFrame(world, 3, 7, 308), "Second Place", path + "second.png", 1, 2);
 				new ImageMap(ImageMap.getItemFrame(world, -3, 6, 308), "Third Place", path + "third.png", 1, 2);
 				ItemFrame itemFrame = ImageMap.getItemFrame(world, 0, 6, 290);
-				itemFrame.setItem(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&a+1 Key Fragment").setGlow(true).getItemStack());
-				if(killer == null || killer.getLocation().getY() >= 7) {
+				if(itemFrame != null) {
+					itemFrame.setItem(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&a+1 Key Fragment").setGlow(true).getItemStack());
+				}
+				//if(killer == null) {
 					ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation, EntityType.ARMOR_STAND);
-					armorStand.setHelmet(ItemUtil.getSkull(finalBestKiller));
 					armorStand.setCustomNameVisible(true);
 					armorStand.setCustomName(finalBestKiller);
 					armorStand.setBasePlate(false);
-				}
-				ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation.add(0, 1, 0), EntityType.ARMOR_STAND);
+					armorStand.setArms(true);
+					armorStand.setHelmet(ItemUtil.getSkull(finalBestKiller));
+					armorStand.setChestplate(finalArmor[2]);
+					armorStand.setLeggings(finalArmor[1]);
+					armorStand.setBoots(finalArmor[0]);
+				//}
+				/*ArmorStand */armorStand = (ArmorStand) world.spawnEntity(armorStand.getLocation().add(0, 0.35, 0), EntityType.ARMOR_STAND);
 				armorStand.setGravity(false);
 				armorStand.setVisible(false);
 				armorStand.setCustomNameVisible(true);
-				armorStand.setCustomName("&e&nBest Killer");
+				armorStand.setCustomName(StringUtil.color("&e&nBest Killer"));
+				KeyFragments.give(AccountHandler.getUUID(finalBestKiller), 1);
 			}
 		}, 20 * 2);
+	}
+	
+	private boolean isTop3(Player player) {
+		String name = player.getName();
+		return name.equals(firstPlace) || name.equals(secondPlace) || name.equals(thirdPlace);
 	}
 	
 	@EventHandler
