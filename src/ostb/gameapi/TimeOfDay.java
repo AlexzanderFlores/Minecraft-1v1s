@@ -35,14 +35,17 @@ public class TimeOfDay implements Listener {
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
 		Player player = event.getPlayer();
-		if(Ranks.PLAYER.hasRank(player)) {
-			Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-			inventory.setItem(11, new ItemCreator(Material.WOOL, 1).setName("&bMorning").setLores(new String [] {"", "&7Ticks: &a23250", ""}).getItemStack());
-			inventory.setItem(13, new ItemCreator(Material.WOOL, 4).setName("&bDay").setLores(new String [] {"", "&7Ticks: &a6000", ""}).getItemStack());
-			inventory.setItem(15, new ItemCreator(Material.WOOL, 15).setName("&bNight").setLores(new String [] {"", "&7Ticks: &a18000", ""}).getItemStack());
-			player.openInventory(inventory);
-		} else {
-			MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+		ItemStack item = player.getItemInHand();
+		if(item != null && item.equals(this.item)) {
+			if(Ranks.PLAYER.hasRank(player)) {
+				Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
+				inventory.setItem(11, new ItemCreator(Material.WOOL, 1).setName("&bMorning").setLores(new String [] {"", "&7Ticks: &a23250", ""}).getItemStack());
+				inventory.setItem(13, new ItemCreator(Material.WOOL, 4).setName("&bDay").setLores(new String [] {"", "&7Ticks: &a6000", ""}).getItemStack());
+				inventory.setItem(15, new ItemCreator(Material.WOOL, 15).setName("&bNight").setLores(new String [] {"", "&7Ticks: &a18000", ""}).getItemStack());
+				player.openInventory(inventory);
+			} else {
+				MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+			}
 		}
 	}
 	
