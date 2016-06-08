@@ -99,6 +99,7 @@ public abstract class MiniGame extends ProPlugin {
 		new CoinBoosters();
 		new AutoJoinHandler();
 		new TimeOfDay();
+		new KillLogger();
 		teamHandler = new TeamHandler();
 		new DelayedTask(new Runnable() {
 			@Override

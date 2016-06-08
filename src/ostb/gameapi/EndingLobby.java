@@ -6,7 +6,11 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +22,8 @@ import ostb.customevents.game.GameEndingEvent;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ImageMap;
+import ostb.server.util.ItemCreator;
+import ostb.server.util.ItemUtil;
 
 public class EndingLobby implements Listener {
 	private List<String> topPlayers = null;
@@ -25,16 +31,12 @@ public class EndingLobby implements Listener {
 	private String thirdPlace = null;
 	private String secondPlace = null;
 	private String firstPlace = null;
-	private static String bestPlayer = null;
 	
 	public EndingLobby() {
 		topPlayers = new ArrayList<String>();
-		spawn = new Location(OSTB.getMiniGame().getLobby(), 0.5, 5, 299.5, 0.0f, 0.0f);
+		World world = OSTB.getMiniGame().getLobby();
+		spawn = new Location(world, 0.5, 5, 299.5, 0.0f, 0.0f);
 		EventUtil.register(this);
-	}
-	
-	public void setBestPlayer(String name) {
-		bestPlayer = name;
 	}
 	
 	@EventHandler
@@ -42,7 +44,14 @@ public class EndingLobby implements Listener {
 		Random random = new Random();
 		int range = 4;
 		World world = OSTB.getMiniGame().getLobby();
+		String bestKiller = null;
+		int mostKills = 0;
 		for(Player player : Bukkit.getOnlinePlayers()) {
+			int kills = KillLogger.getKills(player);
+			if(bestKiller == null || kills > mostKills) {
+				bestKiller = player.getName();
+				mostKills = kills;
+			}
 			ProPlugin.resetPlayer(player);
 			if(SpectatorHandler.isEnabled()) {
 				SpectatorHandler.remove(player);
@@ -53,14 +62,18 @@ public class EndingLobby implements Listener {
 				player.teleport(new Location(world, 3.5, 8, 310.5, -180.0f, 0.0f));
 			} else if(player.getName().equals(thirdPlace)) {
 				player.teleport(new Location(world, -2.5, 7, 310.5, -180.0f, 0.0f));
-			} else if(player.getName().equals(bestPlayer)) {
-				player.teleport(new Location(world, 0.5, 8, 288.5, -360.0f, 0.0f));
 			} else {
 				int x = random.nextBoolean() ? random.nextInt(range) * -1 : random.nextInt(range);
 				int z = random.nextBoolean() ? random.nextInt(range) * -1 : random.nextInt(range);
 				player.teleport(spawn.clone().add(x, 0, z));
 			}
 		}
+		Location bestKillerLocation = new Location(world, 0.5, 8, 288.5, -360.0f, 0.0f);;
+		Player killer = ProPlugin.getPlayer(bestKiller);
+		if(!(killer == null || killer.getLocation().getY() >= 7)) {
+			killer.teleport(bestKillerLocation);
+		}
+		final String finalBestKiller = bestKiller;
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -68,6 +81,20 @@ public class EndingLobby implements Listener {
 				new ImageMap(ImageMap.getItemFrame(world, 0, 8, 307), "First Place", path + "first.png", 1, 2);
 				new ImageMap(ImageMap.getItemFrame(world, 3, 7, 308), "Second Place", path + "second.png", 1, 2);
 				new ImageMap(ImageMap.getItemFrame(world, -3, 6, 308), "Third Place", path + "third.png", 1, 2);
+				ItemFrame itemFrame = ImageMap.getItemFrame(world, 0, 6, 290);
+				itemFrame.setItem(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&a+1 Key Fragment").setGlow(true).getItemStack());
+				if(killer == null || killer.getLocation().getY() >= 7) {
+					ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation, EntityType.ARMOR_STAND);
+					armorStand.setHelmet(ItemUtil.getSkull(finalBestKiller));
+					armorStand.setCustomNameVisible(true);
+					armorStand.setCustomName(finalBestKiller);
+					armorStand.setBasePlate(false);
+				}
+				ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation.add(0, 1, 0), EntityType.ARMOR_STAND);
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setCustomNameVisible(true);
+				armorStand.setCustomName("&e&nBest Killer");
 			}
 		}, 20 * 2);
 	}

@@ -14,6 +14,7 @@ import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
+import ostb.gameapi.KillLogger;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.uhc.scenarios.Scenario;
 import ostb.player.MessageHandler;

@@ -1,4 +1,4 @@
-package ostb.gameapi.games.uhc;
+package ostb.gameapi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
+import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.util.EventUtil;
 
 public class KillLogger implements Listener {
@@ -20,7 +22,7 @@ public class KillLogger implements Listener {
 	}
 	
 	public static int getKills(Player player) {
-		return kills.containsKey(player.getUniqueId()) ? kills.get(player.getUniqueId()) : 0;
+		return kills != null && kills.containsKey(player.getUniqueId()) ? kills.get(player.getUniqueId()) : 0;
 	}
 	
 	@EventHandler
@@ -32,6 +34,13 @@ public class KillLogger implements Listener {
 				kill = kills.get(killer.getUniqueId());
 			}
 			kills.put(killer.getUniqueId(), ++kill);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerLeaveEvent event) {
+		if(OSTB.getMiniGame() == null) {
+			kills.remove(event.getPlayer().getUniqueId());
 		}
 	}
 }

@@ -440,7 +440,13 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void save(Player player) {
+		if(table == null) {
+			return;
+		}
 		GameStats stats = gameStats.get(player.getName());
+		if(stats == null) {
+			return;
+		}
 		String uuid = player.getUniqueId().toString();
 		table.updateInt("wins", stats.getWins(), "uuid", uuid);
 		table.updateInt("losses", stats.getLosses(), "uuid", uuid);
