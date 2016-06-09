@@ -94,21 +94,21 @@ public class DailyRewards implements Listener {
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
 					// Coins
-					inventory.setItem(10, new ItemCreator(Material.GOLD_INGOT).setName("&bPVP Battles Coins").setLores(new String [] {
+					inventory.setItem(10, new ItemCreator(Material.GOLD_INGOT).setName("&bDomination Coins").setLores(new String [] {
 						"",
-						"&e+" + coins + " &aPVP Battles Coins",
-						"",
-						"&7Capture the Flag & Domination",
+						"&e+" + coins + " &aDomination Coins",
 						""
 					}).getItemStack());
 					inventory.setItem(12, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
 						"",
 						"&e+" + coins + " &aSky Wars Coins",
+						"",
+						"&7Used for Sky Wars & UHC Sky Wars",
 						""
 					}).getItemStack());
-					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bSpeed UHC Coins").setLores(new String [] {
+					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bKit PVP Coins").setLores(new String [] {
 						"",
-						"&e+" + coins + " &aSpeed UHC Coins",
+						"&e+" + coins + " &aKit PVP Coins",
 						""
 					}).getItemStack());
 					
@@ -124,48 +124,43 @@ public class DailyRewards implements Listener {
 					}).getItemStack());
 					
 					// Crate keys
-					inventory.setItem(19, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key").setLores(new String [] {
+					inventory.setItem(20, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Voting crate",
 						""
 					}).getItemStack()));
-					inventory.setItem(21, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key Fragment").setLores(new String [] {
+					inventory.setItem(22, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bVoting Crate Key Fragment").setLores(new String [] {
 						"",
 						"&e+1 &aKey Fragment to the Voting crate",
 						"",
 						"&7Collect 3 of these for a full Key",
 						""
 					}).getItemStack()));
-					inventory.setItem(23, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
+					inventory.setItem(24, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
 						"",
 						"&e+1 &aKey to the Sky Wars crate",
 						"",
 						"&7Open in the Sky Wars shop",
-						""
-					}).getItemStack()));
-					inventory.setItem(25, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSpeed UHC Crate Key").setLores(new String [] {
-						"",
-						"&e+1 &aKey to the Speed UHC crate",
-						"",
-						"&7Open in the Speed UHC shop",
+						"&7Used for Sky Wars & UHC Sky Wars",
 						""
 					}).getItemStack()));
 					
 					// Other
-					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bPVP Battles Auto Respawn").setLores(new String [] {
+					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bDomination Auto Respawn").setLores(new String [] {
 						"",
-						"&e+15 &aPVP Battles Auto Respawn",
+						"&e+15 &aDomination Auto Respawn",
 						"",
-						"&7Capture the Flag & Domination",
 						"&7Respawn instantly instead of a 5 second delay",
 						""
 					}).getItemStack());
-					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bSpeed UHC Rescatter Passes").setLores(new String [] {
+					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bUHC Rescatter Passes").setLores(new String [] {
 						"",
-						"&e+1 &aSpeed UHC Rescatter",
+						"&e+1 &aRescatter Pass",
 						"",
 						"&7Rescatter yourself with /rescatter",
 						"&7Only works for the first 20 seconds",
+						"",
+						"&7Works for Speed UHC & Twitter UHCs",
 						""
 					}).getItemStack());
 					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {

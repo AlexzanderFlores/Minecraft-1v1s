@@ -148,9 +148,9 @@ public class Beacon implements Listener {
 		final String [] values = new String [] {player.getUniqueId().toString(), type};
 		if(DB.HUB_CRATE_KEYS.getInt(keys, values, "amount") <= 0) {
 			if(type.equals("voting")) {
-				ChatClickHandler.sendMessageToRunCommand(player, "&6click here", "Click to vote", "/vote", "&cYou do not have any &2Voting Keys&c! Get some by voting, ");
+				ChatClickHandler.sendMessageToRunCommand(player, "&aClick here", "Click to vote", "/vote", "&cYou don't have any &bVoting Keys&c! Get some by voting ");
 			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have any &2Super Keys&c! Get some on Buycraft: &bhttp://store.outsidetheblock.org/category/679824");
+				MessageHandler.sendMessage(player, "&cYou do not have any &bSuper Keys&c! Get some on Buycraft: &ahttp://store.outsidetheblock.org/category/679824");
 			}
 			return;
 		}
