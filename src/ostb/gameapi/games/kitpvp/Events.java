@@ -50,7 +50,7 @@ public class Events implements Listener {
 			}
 			if(!paused && OSTB.getProPlugin().getCounter() >= 0) {
 				OSTB.getProPlugin().decrementCounter();
-				if(OSTB.getProPlugin().getCounter() == 0) {
+				if(OSTB.getProPlugin().getCounter() <= 0) {
 					KitTeam winner = null;
 					for(KitTeam kitTeam : KitTeam.values()) {
 						if(winner == null) {

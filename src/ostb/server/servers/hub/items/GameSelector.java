@@ -143,10 +143,10 @@ public class GameSelector extends HubItemBase {
 			for(Player player : ProPlugin.getPlayers()) {
 				InventoryView view = player.getOpenInventory();
 				if(view.getTitle().equals(name)) {
-					if(view.getItem(14).getType() == Material.GRASS) {
-						view.getItem(14).setType(Material.GOLDEN_APPLE);
+					if(view.getItem(11).getType() == Material.GRASS) {
+						view.getItem(11).setType(Material.GOLDEN_APPLE);
 					} else {
-						view.getItem(14).setType(Material.GRASS);
+						view.getItem(11).setType(Material.GRASS);
 					}
 				}
 			}
@@ -273,7 +273,7 @@ public class GameSelector extends HubItemBase {
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, size, ChatColor.stripColor(getName()));
 		ItemStack comingSoon = new ItemCreator(Material.INK_SACK, 8).setName("&7Coming Soon").getItemStack();
-		ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
+		/*ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Domination",
 			"",
 			"&eHelp your team capture the command posts!",
@@ -295,8 +295,8 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.SW);
-		inventory.setItem(12, item);
-		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.UHCSW.getDisplay()).setLores(new String [] {
+		inventory.setItem(12, item);*/
+		ItemStack item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.UHCSW.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Sky Wars",
 			"",
 			"&eUHC meets Sky Wars!",
@@ -308,7 +308,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.UHCSW);
-		inventory.setItem(14, item);
+		inventory.setItem(11, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
@@ -320,7 +320,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.UHC);
-		inventory.setItem(16, item);
+		inventory.setItem(13, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
@@ -330,7 +330,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.SUHC);
-		inventory.setItem(29, item);
+		inventory.setItem(30, item);
 		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + Plugins.ONEVSONE.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of 1v1s",
 			"",
@@ -341,8 +341,8 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.ONEVSONE);
-		//inventory.setItem(31, item);
-		inventory.setItem(31, comingSoon);
+		//inventory.setItem(32, item);
+		inventory.setItem(32, comingSoon);
 		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + Plugins.KITPVP.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Kit PVP",
 			"",
@@ -353,7 +353,7 @@ public class GameSelector extends HubItemBase {
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.KITPVP);
-		inventory.setItem(33, item);
+		inventory.setItem(15, item);
 		int data = new Random().nextInt(15);
 		for(int slot : slots) {
 			inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).setName(" ").getItemStack());
