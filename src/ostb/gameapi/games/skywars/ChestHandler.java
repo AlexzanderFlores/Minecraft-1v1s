@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -19,10 +20,15 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import anticheat.events.TimeEvent;
+import ostb.OSTB;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerOpenNewChestEvent;
+import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.TitleDisplayer;
+import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 
 public class ChestHandler implements Listener {
@@ -33,6 +39,7 @@ public class ChestHandler implements Listener {
 	private Map<String, List<Material>> alreadyGotten = null;
 	public enum Rarity {COMMON, UNCOMMON, RARE}
 	private enum ArmorSlot {HELMET, CHESTPLATE, LEGGINGS, BOOTS}
+	private static int restockCounter = 60 * 5;
 	
 	public ChestHandler() {
 		oppenedChests = new ArrayList<Block>();
@@ -131,6 +138,25 @@ public class ChestHandler implements Listener {
 	private Material getArmor(ArmorSlot armorSlot, Material type) {
 		String typeName = type.toString().split("_")[0];
 		return Material.valueOf(typeName + "_" + armorSlot);
+	}
+	
+	public static int getRestockCounter() {
+		return restockCounter;
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 && OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+			if(--restockCounter <= 0) {
+				TimeEvent.getHandlerList().unregister(this);
+				oppenedChests.clear();
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					new TitleDisplayer(player, "&eChests Restocked").display();
+					EffectUtil.playSound(player, Sound.CHEST_OPEN);
+				}
+			}
+		}
 	}
 	
 	@EventHandler
