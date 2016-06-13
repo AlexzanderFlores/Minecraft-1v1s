@@ -2,6 +2,7 @@ package ostb.gameapi.games.skywars.cages;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -51,7 +52,11 @@ public class BigCage extends Cage {
 				for(int y = y1; y <= y2; ++y) {
 					for(int z = z1; z <= z2; ++z) {
 						if(x == x1 || x == x2 || y == y1 || z == z1 || z == z2) {
-							placeBlock(world.getBlockAt(x, y, z));
+							Block block = world.getBlockAt(x, y, z);
+							if(block.getType() != Material.AIR) {
+								block.setType(Material.AIR);
+							}
+							placeBlock(block);
 						}
 					}
 				}
