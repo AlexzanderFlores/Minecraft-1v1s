@@ -93,6 +93,7 @@ public class EndingLobby implements Listener {
 			armor[0] = new ItemStack(Material.IRON_BOOTS);
 		}
 		final ItemStack [] finalArmor = armor;
+		final int finalMostKills = mostKills;
 		new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -104,18 +105,21 @@ public class EndingLobby implements Listener {
 				if(itemFrame != null) {
 					itemFrame.setItem(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&a+1 Key Fragment").setGlow(true).getItemStack());
 				}
-				//if(killer == null) {
-					ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation, EntityType.ARMOR_STAND);
-					armorStand.setCustomNameVisible(true);
-					armorStand.setCustomName(finalBestKiller);
-					armorStand.setBasePlate(false);
-					armorStand.setArms(true);
-					armorStand.setHelmet(ItemUtil.getSkull(finalBestKiller));
-					armorStand.setChestplate(finalArmor[2]);
-					armorStand.setLeggings(finalArmor[1]);
-					armorStand.setBoots(finalArmor[0]);
-				//}
-				/*ArmorStand */armorStand = (ArmorStand) world.spawnEntity(armorStand.getLocation().add(0, 0.35, 0), EntityType.ARMOR_STAND);
+				ArmorStand armorStand = (ArmorStand) world.spawnEntity(bestKillerLocation, EntityType.ARMOR_STAND);
+				armorStand.setCustomNameVisible(true);
+				armorStand.setCustomName(finalBestKiller);
+				armorStand.setBasePlate(false);
+				armorStand.setArms(true);
+				armorStand.setHelmet(ItemUtil.getSkull(finalBestKiller));
+				armorStand.setChestplate(finalArmor[2]);
+				armorStand.setLeggings(finalArmor[1]);
+				armorStand.setBoots(finalArmor[0]);
+				armorStand = (ArmorStand) world.spawnEntity(armorStand.getLocation().add(0, 0.35, 0), EntityType.ARMOR_STAND);
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setCustomNameVisible(true);
+				armorStand.setCustomName(StringUtil.color("&b&n" + finalMostKills + " Kills"));
+				armorStand = (ArmorStand) world.spawnEntity(armorStand.getLocation().add(0, 0.35, 0), EntityType.ARMOR_STAND);
 				armorStand.setGravity(false);
 				armorStand.setVisible(false);
 				armorStand.setCustomNameVisible(true);

@@ -94,32 +94,31 @@ public class DailyRewards implements Listener {
 				} else if(event.getClickType() == ClickType.RIGHT) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 6, rewardsName);
 					// Coins
-					inventory.setItem(10, new ItemCreator(Material.GOLD_INGOT).setName("&bDomination Coins").setLores(new String [] {
+					inventory.setItem(10, new ItemCreator(Material.GOLD_INGOT).setName("&bUHC Sky Wars Coins").setLores(new String [] {
 						"",
-						"&e+" + coins + " &aDomination Coins",
+						"&e+" + coins + " &aUHC Sky Wars Coins",
 						""
 					}).getItemStack());
-					inventory.setItem(12, new ItemCreator(Material.GOLD_INGOT).setName("&bSky Wars Coins").setLores(new String [] {
-						"",
-						"&e+" + coins + " &aSky Wars Coins",
-						"",
-						"&7Used for Sky Wars & UHC Sky Wars",
-						""
-					}).getItemStack());
-					inventory.setItem(14, new ItemCreator(Material.GOLD_INGOT).setName("&bKit PVP Coins").setLores(new String [] {
+					inventory.setItem(12, new ItemCreator(Material.GOLD_INGOT).setName("&bKit PVP Coins").setLores(new String [] {
 						"",
 						"&e+" + coins + " &aKit PVP Coins",
 						""
 					}).getItemStack());
 					
 					// Other
-					inventory.setItem(16, new ItemCreator(Material.CHEST).setName("&bSky Wars Looter Passes").setLores(new String [] {
+					inventory.setItem(14, new ItemCreator(Material.CHEST).setName("&bUHC Sky Wars Looter Passes").setLores(new String [] {
 						"",
-						"&e+3 &aSky Wars Looter Passes",
+						"&e+3 &aUHC Sky Wars Looter Passes",
 						"",
 						"&7Break a chest to restock its contents",
 						"&7Does not load if the Looter kit is selected",
 						"&7Max of 1 use per game",
+						""
+					}).getItemStack());
+					inventory.setItem(16, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
+						"",
+						"&e+250 &aNetwork Experience",
+						"&c(Coming soon)",
 						""
 					}).getItemStack());
 					
@@ -134,26 +133,24 @@ public class DailyRewards implements Listener {
 						"&e+1 &aKey Fragment to the Voting crate",
 						"",
 						"&7Collect 3 of these for a full Key",
+						"&7Click the Villager NPC near the crates",
 						""
 					}).getItemStack()));
-					inventory.setItem(24, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bSky Wars Crate Key").setLores(new String [] {
+					inventory.setItem(24, Glow.addGlow(new ItemCreator(Material.TRIPWIRE_HOOK).setName("&bUHC Sky Wars Crate Key").setLores(new String [] {
 						"",
-						"&e+1 &aKey to the Sky Wars crate",
+						"&e+1 &aKey to the UHC Sky Wars crate",
 						"",
-						"&7Open in the Sky Wars shop",
-						"&7Used for Sky Wars & UHC Sky Wars",
+						"&7Open in the UHC Sky Wars shop",
 						""
 					}).getItemStack()));
 					
 					// Other
-					inventory.setItem(28, new ItemCreator(Material.SKULL_ITEM).setName("&bDomination Auto Respawn").setLores(new String [] {
+					inventory.setItem(30, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
 						"",
-						"&e+15 &aDomination Auto Respawn",
-						"",
-						"&7Respawn instantly instead of a 5 second delay",
+						"&e+10 &aHub Parkour Checkpoints",
 						""
 					}).getItemStack());
-					inventory.setItem(30, new ItemCreator(Material.GOLDEN_APPLE).setName("&bUHC Rescatter Passes").setLores(new String [] {
+					inventory.setItem(32, new ItemCreator(Material.GOLDEN_APPLE).setName("&bUHC Rescatter Passes").setLores(new String [] {
 						"",
 						"&e+1 &aRescatter Pass",
 						"",
@@ -161,17 +158,6 @@ public class DailyRewards implements Listener {
 						"&7Only works for the first 20 seconds",
 						"",
 						"&7Works for Speed UHC & Twitter UHCs",
-						""
-					}).getItemStack());
-					inventory.setItem(32, new ItemCreator(Material.LEATHER_BOOTS).setName("&bHub Parkour Checkpoints").setLores(new String [] {
-						"",
-						"&e+10 &aHub Parkour Checkpoints",
-						""
-					}).getItemStack());
-					inventory.setItem(34, new ItemCreator(Material.EXP_BOTTLE).setName("&bNetwork Experience").setLores(new String [] {
-						"",
-						"&e+250 &aNetwork Experience",
-						"&c(Coming soon)",
 						""
 					}).getItemStack());
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
