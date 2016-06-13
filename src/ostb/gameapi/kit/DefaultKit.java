@@ -31,6 +31,9 @@ public class DefaultKit implements Listener {
 	
 	@EventHandler
 	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
+		if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getJoiningPreGame()) {
+			return;
+		}
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
