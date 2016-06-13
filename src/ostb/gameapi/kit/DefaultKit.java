@@ -12,6 +12,7 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
+import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.util.EventUtil;
 
@@ -36,7 +37,9 @@ public class DefaultKit implements Listener {
 		}
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
+		boolean selected = false;
 		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
+			selected = true;
 			KitBase kit = null;
 			for(KitBase kitBase : KitBase.getKits()) {
 				if(kitBase.getName().equals(kitName)) {
@@ -47,6 +50,9 @@ public class DefaultKit implements Listener {
 			if(kit != null) {
 				kit.use(player, true);
 			}
+		}
+		if(!selected) {
+			MessageHandler.sendMessage(player, "&cNo default kit selected, get them in the &bshop");
 		}
 	}
 	

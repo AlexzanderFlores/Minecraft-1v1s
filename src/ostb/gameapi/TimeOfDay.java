@@ -31,7 +31,7 @@ public class TimeOfDay implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(OSTB.getMiniGame().getJoiningPreGame()) {
-			event.getPlayer().getInventory().addItem(item);
+			event.getPlayer().getInventory().setItem(7, item);
 		}
 	}
 	
