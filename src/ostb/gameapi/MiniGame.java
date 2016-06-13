@@ -22,6 +22,7 @@ import ostb.customevents.game.GameWaitingEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.game.PostGameStartEvent;
 import ostb.customevents.game.PostGameStartingEvent;
+import ostb.gameapi.competitive.StatDisplayer;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
@@ -105,6 +106,7 @@ public abstract class MiniGame extends ProPlugin {
 			@Override
 			public void run() {
 				new ServerLogger();
+				new StatDisplayer();
 			}
 		});
 		setGameState(GameStates.WAITING);

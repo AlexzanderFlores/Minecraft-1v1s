@@ -1,8 +1,13 @@
 package ostb.gameapi.competitive;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -22,10 +27,10 @@ import ostb.customevents.game.GameLossEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerSpectatorEvent;
-import ostb.customevents.player.StatsChangeEvent;
 import ostb.customevents.player.PlayerSpectatorEvent.SpectatorState;
-import ostb.gameapi.SpectatorHandler;
+import ostb.customevents.player.StatsChangeEvent;
 import ostb.gameapi.MiniGame.GameStates;
+import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -55,135 +60,95 @@ public class StatsHandler implements Listener {
 		public GameStats(Player player) {
 			String uuid = player.getUniqueId().toString();
 			String [] keys = new String [] {"uuid", "date"};
-			if(table.isUUIDSet(player.getUniqueId())) {
-				wins = table.getInt("uuid", uuid, "wins");
-				losses = table.getInt("uuid", uuid, "losses");
-				kills = table.getInt("uuid", uuid, "kills");
-				deaths = table.getInt("uuid", uuid, "deaths");
+			if(StatTimes.LIFETIME.getDB().isUUIDSet(player.getUniqueId())) {
+				wins = StatTimes.LIFETIME.getDB().getInt("uuid", uuid, "wins");
+				losses = StatTimes.LIFETIME.getDB().getInt("uuid", uuid, "losses");
+				kills = StatTimes.LIFETIME.getDB().getInt("uuid", uuid, "kills");
+				deaths = StatTimes.LIFETIME.getDB().getInt("uuid", uuid, "deaths");
 			} else {
-				table.insert("'" + player.getUniqueId().toString() + "', '0', '0', '0', '0'");
+				StatTimes.LIFETIME.getDB().insert("'" + player.getUniqueId().toString() + "', '0', '0', '0', '0'");
 			}
-			if(monthly != null) {
+			if(StatTimes.MONTHLY.getDB() != null) {
 				String [] values = new String [] {uuid, TimeUtil.getTime().substring(0, 7)};
-				if(monthly.isKeySet(keys, values)) {
-					monthlyWins = monthly.getInt(keys, values, "wins");
-					monthlyLosses = monthly.getInt(keys, values, "losses");
-					monthlyKills = monthly.getInt(keys, values, "kills");
-					monthlyDeaths = monthly.getInt(keys, values, "deaths");
+				if(StatTimes.MONTHLY.getDB().isKeySet(keys, values)) {
+					monthlyWins = StatTimes.MONTHLY.getDB().getInt(keys, values, "wins");
+					monthlyLosses = StatTimes.MONTHLY.getDB().getInt(keys, values, "losses");
+					monthlyKills = StatTimes.MONTHLY.getDB().getInt(keys, values, "kills");
+					monthlyDeaths = StatTimes.MONTHLY.getDB().getInt(keys, values, "deaths");
 				} else {
 					String date = TimeUtil.getTime().substring(0, 7);
-					monthly.insert("'" + uuid + "', '" + date + "', '0', '0', '0', '0'");
+					StatTimes.MONTHLY.getDB().insert("'" + uuid + "', '" + date + "', '0', '0', '0', '0'");
 				}
 			}
-			if(weekly != null) {
-				String week = String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
-				String [] values = new String [] {uuid, week};
-				if(weekly.isKeySet(keys, values)) {
-					weeklyWins = weekly.getInt(keys, values, "wins");
-					weeklyLosses = weekly.getInt(keys, values, "losses");
-					weeklyKills = weekly.getInt(keys, values, "kills");
-					weeklyDeaths = weekly.getInt(keys, values, "deaths");
+			if(StatTimes.WEEKLY.getDB() != null) {
+				String date = Calendar.getInstance().get(Calendar.YEAR) + "/" + Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+				String [] values = new String [] {uuid, date};
+				if(StatTimes.WEEKLY.getDB().isKeySet(keys, values)) {
+					weeklyWins = StatTimes.WEEKLY.getDB().getInt(keys, values, "wins");
+					weeklyLosses = StatTimes.WEEKLY.getDB().getInt(keys, values, "losses");
+					weeklyKills = StatTimes.WEEKLY.getDB().getInt(keys, values, "kills");
+					weeklyDeaths = StatTimes.WEEKLY.getDB().getInt(keys, values, "deaths");
 				} else {
-					weekly.insert("'" + uuid + "', '" + week + "', '0', '0', '0', '0'");
+					StatTimes.WEEKLY.getDB().insert("'" + uuid + "', '" + date + "', '0', '0', '0', '0'");
 				}
 			}
 			gameStats.put(player.getName(), this);
 		}
 		
-		public int getWins() {
-			return this.wins;
+		public int getWins(StatTimes time) {
+			return time == StatTimes.MONTHLY ? monthlyWins : time == StatTimes.WEEKLY ? weeklyWins : wins;
 		}
 		
-		public void addWins() {
-			++wins;
+		public void addWins(StatTimes time) {
+			if(time == StatTimes.LIFETIME) {
+				++wins;
+			} else if(time == StatTimes.MONTHLY) {
+				++monthlyWins;
+			} else if(time == StatTimes.WEEKLY) {
+				++weeklyWins;
+			}
 		}
 		
-		public int getMonthlyWins() {
-			return this.monthlyWins;
+		public int getLosses(StatTimes time) {
+			return time == StatTimes.MONTHLY ? monthlyLosses : time == StatTimes.WEEKLY ? weeklyLosses : losses;
 		}
 		
-		public void addMonthlyWins() {
-			++monthlyWins;
+		public void addLosses(StatTimes time) {
+			if(time == StatTimes.LIFETIME) {
+				++losses;
+			} else if(time == StatTimes.MONTHLY) {
+				++monthlyLosses;
+			} else if(time == StatTimes.WEEKLY) {
+				++weeklyLosses;
+			}
 		}
 		
-		public int getWeeklyWins() {
-			return this.weeklyWins;
+		public int getKills(StatTimes time) {
+			return time == StatTimes.MONTHLY ? monthlyKills : time == StatTimes.WEEKLY ? weeklyKills : kills;
 		}
 		
-		public void addWeeklyWins() {
-			++weeklyWins;
+		public void addKills(StatTimes time) {
+			if(time == StatTimes.LIFETIME) {
+				++kills;
+			} else if(time == StatTimes.MONTHLY) {
+				++monthlyKills;
+			} else if(time == StatTimes.WEEKLY) {
+				++weeklyKills;
+			}
 		}
 		
-		public int getLosses() {
-			return this.losses;
+		public int getDeaths(StatTimes time) {
+			return time == StatTimes.MONTHLY ? monthlyDeaths : time == StatTimes.WEEKLY ? weeklyDeaths : deaths;
 		}
 		
-		public void addLosses() {
-			++losses;
-		}
-		
-		public int getMonthlyLosses() {
-			return this.monthlyLosses;
-		}
-		
-		public void addMonthlyLosses() {
-			++monthlyLosses;
-		}
-		
-		public int getWeeklyLosses() {
-			return this.weeklyLosses;
-		}
-		
-		public void addWeeklyLosses() {
-			++weeklyLosses;
-		}
-		
-		public int getKills() {
-			return this.kills;
-		}
-		
-		public void addKills() {
-			++kills;
-		}
-		
-		public int getMonthlyKills() {
-			return this.monthlyKills;
-		}
-		
-		public void addMonthlyKills() {
-			++monthlyKills;
-		}
-		
-		public int getWeeklyKills() {
-			return this.weeklyKills;
-		}
-		
-		public void addWeeklyKills() {
-			++weeklyKills;
-		}
-		
-		public int getDeaths() {
-			return this.deaths;
-		}
-		
-		public void addDeaths() {
-			++deaths;
-		}
-		
-		public int getMonthlyDeaths() {
-			return this.monthlyDeaths;
-		}
-		
-		public void addMonthlyDeaths() {
-			++monthlyDeaths;
-		}
-		
-		public int getWeeklyDeaths() {
-			return this.weeklyDeaths;
-		}
-		
-		public void addWeeklyDeaths() {
-			++weeklyDeaths;
+		public void addDeaths(StatTimes time) {
+			if(time == StatTimes.LIFETIME) {
+				++deaths;
+			} else if(time == StatTimes.MONTHLY) {
+				++monthlyDeaths;
+			} else if(time == StatTimes.WEEKLY) {
+				++weeklyDeaths;
+			}
 		}
 		
 		public void removeDeath() {
@@ -196,9 +161,19 @@ public class StatsHandler implements Listener {
 	private static Map<String, GameStats> gameStats = null;
 	private static Map<String, String> combatTagged = null;
 	public static enum StatTypes {RANK, WINS, LOSSES, KILLS, DEATHS};
-	private static DB table = null;
-	private static DB weekly = null;
-	private static DB monthly = null;
+	public static enum StatTimes {
+		LIFETIME, MONTHLY, WEEKLY;
+		
+		private DB db = null;
+		
+		public DB getDB() {
+			return this.db;
+		}
+		
+		public void setDB(DB db) {
+			this.db = db;
+		}
+	};
 	private static DB elo = null;
 	private static String wins = null;
 	private static String losses = null;
@@ -212,11 +187,11 @@ public class StatsHandler implements Listener {
 		this(table, null, null);
 	}
 	
-	public StatsHandler(DB table, DB monthly, DB weekly) {
-		StatsHandler.table = table;
-		StatsHandler.monthly = monthly;
-		StatsHandler.weekly = weekly;
-		if(table == null) {
+	public StatsHandler(DB lifetime, DB monthly, DB weekly) {
+		StatTimes.LIFETIME.setDB(lifetime);
+		StatTimes.MONTHLY.setDB(monthly);
+		StatTimes.WEEKLY.setDB(weekly);
+		if(lifetime == null) {
 			new CommandBase("stats", -1) {
 				@Override
 				public boolean execute(CommandSender sender, String[] arguments) {
@@ -259,16 +234,16 @@ public class StatsHandler implements Listener {
 							loadStats(player);
 						}
 						GameStats stats = gameStats.get(player.getName());
-						MessageHandler.sendMessage(sender, "&e" + wins + ": &c" + stats.getWins() + " &7/ &b" + stats.getMonthlyWins() + " &7/ &a" + stats.getWeeklyWins());
-						MessageHandler.sendMessage(sender, "&e" + losses + ": &c" + stats.getLosses() + " &7/ &b" + stats.getMonthlyLosses() + " &7/ &a" + stats.getWeeklyLosses());
-						MessageHandler.sendMessage(sender, "&e" + kills + ": &c" + stats.getKills() + " &7/ &b" + stats.getMonthlyKills() + " &7/ &a" + stats.getWeeklyKills());
-						MessageHandler.sendMessage(sender, "&e" + deaths + ": &c" + stats.getDeaths() + " &7/ &b" + stats.getMonthlyDeaths() + " &7/ &a" + stats.getWeeklyDeaths());
-						double kills = (double) gameStats.get(player.getName()).getKills();
-						double deaths = (double) gameStats.get(player.getName()).getDeaths();
-						double monthlyKills = (double) gameStats.get(player.getName()).getMonthlyKills();
-						double monthlyDeaths = (double) gameStats.get(player.getName()).getMonthlyDeaths();
-						double weeklyKills = (double) gameStats.get(player.getName()).getWeeklyKills();
-						double weeklyDeaths = (double) gameStats.get(player.getName()).getWeeklyDeaths();
+						MessageHandler.sendMessage(sender, "&e" + wins + ": &c" + stats.getWins(StatTimes.LIFETIME) + " &7/ &b" + stats.getWins(StatTimes.MONTHLY) + " &7/ &a" + stats.getWins(StatTimes.WEEKLY));
+						MessageHandler.sendMessage(sender, "&e" + losses + ": &c" + stats.getLosses(StatTimes.LIFETIME) + " &7/ &b" + stats.getLosses(StatTimes.MONTHLY) + " &7/ &a" + stats.getLosses(StatTimes.WEEKLY));
+						MessageHandler.sendMessage(sender, "&e" + kills + ": &c" + stats.getKills(StatTimes.LIFETIME) + " &7/ &b" + stats.getKills(StatTimes.MONTHLY) + " &7/ &a" + stats.getKills(StatTimes.WEEKLY));
+						MessageHandler.sendMessage(sender, "&e" + deaths + ": &c" + stats.getDeaths(StatTimes.LIFETIME) + " &7/ &b" + stats.getDeaths(StatTimes.MONTHLY) + " &7/ &a" + stats.getDeaths(StatTimes.WEEKLY));
+						double kills = (double) gameStats.get(player.getName()).getKills(StatTimes.LIFETIME);
+						double deaths = (double) gameStats.get(player.getName()).getDeaths(StatTimes.LIFETIME);
+						double monthlyKills = (double) gameStats.get(player.getName()).getKills(StatTimes.MONTHLY);
+						double monthlyDeaths = (double) gameStats.get(player.getName()).getDeaths(StatTimes.MONTHLY);
+						double weeklyKills = (double) gameStats.get(player.getName()).getKills(StatTimes.WEEKLY);
+						double weeklyDeaths = (double) gameStats.get(player.getName()).getDeaths(StatTimes.WEEKLY);
 						double kdr = (kills == 0 || deaths == 0 ? 0 : DoubleUtil.round(kills / deaths, 2));
 						double monthlyKdr = (monthlyKills == 0 || monthlyDeaths == 0 ? 0 : DoubleUtil.round(monthlyKills / monthlyDeaths, 2));
 						double weeklyKdr = (weeklyKills == 0 || weeklyDeaths == 0 ? 0 : DoubleUtil.round(weeklyKills / weeklyDeaths, 2));
@@ -295,10 +270,6 @@ public class StatsHandler implements Listener {
 	
 	public static DB getEloDB() {
 		return elo;
-	}
-	
-	public static DB getStatsDB() {
-		return table;
 	}
 	
 	public static boolean getSaveOnQuit() {
@@ -342,44 +313,24 @@ public class StatsHandler implements Listener {
 		StatsHandler.deaths = deaths;
 	}
 	
-	public static int getWins(Player player) {
+	public static int getWins(Player player, StatTimes time) {
 		loadStats(player);
-		return gameStats.get(player.getName()).getWins();
+		return gameStats.get(player.getName()).getWins(time);
 	}
 	
-	public static int getMonthlyWins(Player player) {
+	public static int getLosses(Player player, StatTimes time) {
 		loadStats(player);
-		return gameStats.get(player.getName()).getMonthlyWins();
+		return gameStats.get(player.getName()).getLosses(time);
 	}
 	
-	public static int getLosses(Player player) {
+	public static int getKills(Player player, StatTimes time) {
 		loadStats(player);
-		return gameStats.get(player.getName()).getLosses();
+		return gameStats.get(player.getName()).getKills(time);
 	}
 	
-	public static int getMonthlyLosses(Player player) {
+	public static int getDeaths(Player player, StatTimes time) {
 		loadStats(player);
-		return gameStats.get(player.getName()).getMonthlyLosses();
-	}
-	
-	public static int getKills(Player player) {
-		loadStats(player);
-		return gameStats.get(player.getName()).getKills();
-	}
-	
-	public static int getMonthlyKills(Player player) {
-		loadStats(player);
-		return gameStats.get(player.getName()).getMonthlyKills();
-	}
-	
-	public static int getDeaths(Player player) {
-		loadStats(player);
-		return gameStats.get(player.getName()).getDeaths();
-	}
-	
-	public static int getMonthlyDeaths(Player player) {
-		loadStats(player);
-		return gameStats.get(player.getName()).getMonthlyDeaths();
+		return gameStats.get(player.getName()).getDeaths(time);
 	}
 	
 	private static boolean canEditStats(Player player) {
@@ -396,9 +347,9 @@ public class StatsHandler implements Listener {
 			return;
 		}
 		loadStats(player);
-		gameStats.get(player.getName()).addWins();
-		gameStats.get(player.getName()).addMonthlyWins();
-		gameStats.get(player.getName()).addWeeklyWins();
+		for(StatTimes time : StatTimes.values()) {
+			gameStats.get(player.getName()).addWins(time);
+		}
 	}
 	
 	public static void addLoss(Player player) {
@@ -406,9 +357,9 @@ public class StatsHandler implements Listener {
 			return;
 		}
 		loadStats(player);
-		gameStats.get(player.getName()).addLosses();
-		gameStats.get(player.getName()).addMonthlyLosses();
-		gameStats.get(player.getName()).addWeeklyLosses();
+		for(StatTimes time : StatTimes.values()) {
+			gameStats.get(player.getName()).addLosses(time);
+		}
 	}
 	
 	public static void addKill(Player player) {
@@ -416,9 +367,9 @@ public class StatsHandler implements Listener {
 			return;
 		}
 		loadStats(player);
-		gameStats.get(player.getName()).addKills();
-		gameStats.get(player.getName()).addMonthlyKills();
-		gameStats.get(player.getName()).addWeeklyKills();
+		for(StatTimes time : StatTimes.values()) {
+			gameStats.get(player.getName()).addKills(time);
+		}
 	}
 	
 	public static void addDeath(Player player) {
@@ -426,9 +377,9 @@ public class StatsHandler implements Listener {
 			return;
 		}
 		loadStats(player);
-		gameStats.get(player.getName()).addDeaths();
-		gameStats.get(player.getName()).addMonthlyDeaths();
-		gameStats.get(player.getName()).addWeeklyDeaths();
+		for(StatTimes time : StatTimes.values()) {
+			gameStats.get(player.getName()).addDeaths(time);
+		}
 	}
 	
 	public static void removeDeath(Player player) {
@@ -440,27 +391,56 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void save(Player player) {
-		if(table == null) {
-			return;
-		}
 		GameStats stats = gameStats.get(player.getName());
 		if(stats == null) {
 			return;
 		}
 		String uuid = player.getUniqueId().toString();
-		table.updateInt("wins", stats.getWins(), "uuid", uuid);
-		table.updateInt("losses", stats.getLosses(), "uuid", uuid);
-		table.updateInt("kills", stats.getKills(), "uuid", uuid);
-		table.updateInt("deaths", stats.getDeaths(), "uuid", uuid);
-		if(monthly != null) {
-			String [] keys = new String [] {"uuid", "date"};
-			String [] values = new String [] {uuid, TimeUtil.getTime().substring(0, 7)};
-			monthly.updateInt("wins", stats.getMonthlyWins(), keys, values);
-			monthly.updateInt("losses", stats.getMonthlyLosses(), keys, values);
-			monthly.updateInt("kills", stats.getMonthlyKills(), keys, values);
-			monthly.updateInt("deaths", stats.getMonthlyDeaths(), keys, values);
+		for(StatTimes time : StatTimes.values()) {
+			if(time == StatTimes.LIFETIME && time.getDB() != null) {
+				time.getDB().updateInt("wins", stats.getWins(StatTimes.LIFETIME), "uuid", uuid);
+				time.getDB().updateInt("losses", stats.getLosses(StatTimes.LIFETIME), "uuid", uuid);
+				time.getDB().updateInt("kills", stats.getKills(StatTimes.LIFETIME), "uuid", uuid);
+				time.getDB().updateInt("deaths", stats.getDeaths(StatTimes.LIFETIME), "uuid", uuid);
+			} else if(time == StatTimes.MONTHLY && time.getDB() != null) {
+				String [] keys = new String [] {"uuid", "date"};
+				String [] values = new String [] {uuid, TimeUtil.getTime().substring(0, 7)};
+				time.getDB().updateInt("wins", stats.getWins(StatTimes.MONTHLY), keys, values);
+				time.getDB().updateInt("losses", stats.getLosses(StatTimes.MONTHLY), keys, values);
+				time.getDB().updateInt("kills", stats.getKills(StatTimes.MONTHLY), keys, values);
+				time.getDB().updateInt("deaths", stats.getDeaths(StatTimes.MONTHLY), keys, values);
+			} else if(time == StatTimes.WEEKLY && time.getDB() != null) {
+				String [] keys = new String [] {"uuid", "date"};
+				String [] values = new String [] {uuid, Calendar.getInstance().get(Calendar.YEAR) + "/" + Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)};
+				time.getDB().updateInt("wins", stats.getWins(StatTimes.WEEKLY), keys, values);
+				time.getDB().updateInt("losses", stats.getLosses(StatTimes.WEEKLY), keys, values);
+				time.getDB().updateInt("kills", stats.getKills(StatTimes.WEEKLY), keys, values);
+				time.getDB().updateInt("deaths", stats.getDeaths(StatTimes.WEEKLY), keys, values);
+			}
 		}
 		gameStats.remove(player.getName());
+	}
+	
+	public static List<String> getTop10(StatTimes time) {
+		if(time.getDB() == null) {
+			return new ArrayList<String>();
+		}
+		List<String> stats = new ArrayList<String>();
+		ResultSet resultSet = null;
+		try {
+			resultSet = time.getDB().getConnection().prepareStatement("SELECT uuid, kills FROM " + time.getDB().getName() + " ORDER BY kills DESC LIMIT 10").executeQuery();
+			int counter = 0;
+			while(resultSet.next()) {
+				String name = AccountHandler.getName(UUID.fromString(resultSet.getString("uuid")));
+				int kills = resultSet.getInt("kills");
+				stats.add("&e" + ++counter + ". &b" + name + " &c" + kills + " kill" + (kills == 1 ? "" : "s"));
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(resultSet);
+		}
+		return stats;
 	}
 	
 	@EventHandler
