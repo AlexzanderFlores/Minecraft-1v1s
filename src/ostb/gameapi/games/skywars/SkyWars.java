@@ -29,6 +29,7 @@ public class SkyWars extends MiniGame {
 		setVotingCounter(45);
 		setStartingCounter(10);
 		setFlintAndSteelUses(4);
+		setCanJoinWhileStarting(false);
 		new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW.getData());
 		CoinsHandler.setKillCoins(2);
 		CoinsHandler.setWinCoins(10);
