@@ -94,7 +94,12 @@ public class BanHandler extends Punishment implements Listener {
 								if(!uuidString.equals(uuid.toString())) {
 									Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
 									if(player != null) {
-										player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
+										new DelayedTask(new Runnable() {
+											@Override
+											public void run() {
+												player.kickPlayer(ChatColor.RED + "You have been banned due to sharing the IP of " + arguments[0]);
+											}
+										});
 									}
 									keys = new String [] {"uuid", "active"};
 									values = new String [] {uuidString, "1"};
