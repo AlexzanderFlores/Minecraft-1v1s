@@ -107,6 +107,23 @@ public class SpectatorHandler implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("spec", 1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				if(contains(player)) {
+					Player target = ProPlugin.getPlayer(arguments[0]);
+					if(target == null) {
+						MessageHandler.sendMessage(player, "&c" + arguments[0] + " is not online");
+					} else {
+						player.teleport(target);
+					}
+				} else {
+					MessageHandler.sendMessage(player, "&cYou must be a spectator to run this command");
+				}
+				return false;
+			}
+		}.setRequiredRank(Ranks.PREMIUM);
 		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -355,7 +372,7 @@ public class SpectatorHandler implements Listener {
 							MessageHandler.sendMessage(player, "&cThat player is no longer playing");
 						} else {
 							player.teleport(target);
-							MessageHandler.sendMessage(player, "&eNote: &aYou can also teleport with &c/spectate <player name>");
+							MessageHandler.sendMessage(player, "&eNote: &aYou can also teleport with &c/spec <player name>");
 						}
 					} else if(event.getInventory().getTitle().equals(settingsName)) {
 						if(item.getType() == Material.FEATHER) {

@@ -97,7 +97,7 @@ public abstract class MiniGame extends ProPlugin {
 		new MapRating();
 		new VotingHandler();
 		new EndingLobby();
-		new CoinBoosters();
+		//new CoinBoosters();
 		new AutoJoinHandler();
 		new TimeOfDay();
 		new KillLogger();
