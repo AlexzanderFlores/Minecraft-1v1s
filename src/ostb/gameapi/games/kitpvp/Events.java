@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import anticheat.events.TimeEvent;
-import anticheat.util.AsyncDelayedTask;
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
@@ -25,7 +24,6 @@ import ostb.gameapi.games.kitpvp.events.TeamSelectEvent;
 import ostb.player.CoinsHandler;
 import ostb.player.LevelGiver;
 import ostb.player.MessageHandler;
-import ostb.server.DB;
 import ostb.server.util.EventUtil;
 
 public class Events implements Listener {
@@ -41,61 +39,52 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onTime(TimeEvent event) {
-		try {
-			long ticks = event.getTicks();
-			if(ticks == 20) {
-				paused = false;
-				for(KitTeam kitTeam : KitTeam.values()) {
-					if(kitTeam.getSize() == 0) {
-						paused = true;
-						break;
-					}
+		long ticks = event.getTicks();
+		if(ticks == 20) {
+			paused = false;
+			for(KitTeam kitTeam : KitTeam.values()) {
+				if(kitTeam.getSize() == 0) {
+					paused = true;
+					break;
 				}
-				if(!paused && OSTB.getProPlugin().getCounter() >= 0) {
-					OSTB.getProPlugin().decrementCounter();
-					if(OSTB.getProPlugin().getCounter() <= 0) {
-						KitTeam winner = null;
-						for(KitTeam kitTeam : KitTeam.values()) {
-							if(winner == null) {
-								winner = kitTeam;
-							} else if(kitTeam.getScore() == winner.getScore()) {
-								winner = null;
-							} else if(kitTeam.getScore() > winner.getScore()) {
-								winner = kitTeam;
-							}
-						}
-						MessageHandler.alertLine();
-						MessageHandler.alert("");
-						MessageHandler.alert("&lRound over:");
-						MessageHandler.alert("");
-						MessageHandler.alert("&cRed: " + KitTeam.RED.getScore());
-						MessageHandler.alert("&bBlue: " + KitTeam.BLUE.getScore());
-						MessageHandler.alert("");
-						MessageHandler.alert(winner == null ? "The game was a tie!" : "Winner: " + winner.getTeam().getPrefix());
-						MessageHandler.alert("Scores reset for next round");
-						MessageHandler.alert("");
-						MessageHandler.alertLine();
-						CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
-						for(Player player : ProPlugin.getPlayers()) {
-							if(winner.isOnTeam(player)) {
-								coinsHandler.addCoins(player, CoinsHandler.getWinCoins(), "&7(Win)");
-							}
-						}
-						for(KitTeam kitTeam : KitTeam.values()) {
-							kitTeam.clearScore();
-						}
-						OSTB.getProPlugin().setCounter(60 * 10);
-					}
-				}
-				OSTB.getSidebar().update();
 			}
-		} catch(final Exception e) {
-			new AsyncDelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					DB.NETWORK_ERROR_LOGS.insert("'" + e.getMessage() + " " + e.getStackTrace()[0].getLineNumber() + "'");
+			if(!paused && OSTB.getProPlugin().getCounter() >= 0) {
+				OSTB.getProPlugin().decrementCounter();
+				if(OSTB.getProPlugin().getCounter() <= 0) {
+					KitTeam winner = null;
+					for(KitTeam kitTeam : KitTeam.values()) {
+						if(winner == null) {
+							winner = kitTeam;
+						} else if(kitTeam.getScore() == winner.getScore()) {
+							winner = null;
+						} else if(kitTeam.getScore() > winner.getScore()) {
+							winner = kitTeam;
+						}
+					}
+					MessageHandler.alertLine();
+					MessageHandler.alert("");
+					MessageHandler.alert("&lRound over:");
+					MessageHandler.alert("");
+					MessageHandler.alert("&cRed: " + KitTeam.RED.getScore());
+					MessageHandler.alert("&bBlue: " + KitTeam.BLUE.getScore());
+					MessageHandler.alert("");
+					MessageHandler.alert(winner == null ? "The game was a tie!" : "Winner: " + winner.getTeam().getPrefix());
+					MessageHandler.alert("Scores reset for next round");
+					MessageHandler.alert("");
+					MessageHandler.alertLine();
+					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData());
+					for(Player player : ProPlugin.getPlayers()) {
+						if(winner != null && winner.isOnTeam(player)) {
+							coinsHandler.addCoins(player, CoinsHandler.getWinCoins(), "&7(Win)");
+						}
+					}
+					for(KitTeam kitTeam : KitTeam.values()) {
+						kitTeam.clearScore();
+					}
+					OSTB.getProPlugin().setCounter(60 * 10);
 				}
-			});
+			}
+			OSTB.getSidebar().update();
 		}
 	}
 	
