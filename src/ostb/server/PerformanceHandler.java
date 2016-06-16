@@ -104,6 +104,7 @@ public class PerformanceHandler implements Listener {
 		counters.add(20 * 10);
 		counters.add(20 * 60);
 		counters.add(20 * 60 * 5);
+		counters.add(20 * 60 * 10);
 		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
 			@Override
 			public void run() {

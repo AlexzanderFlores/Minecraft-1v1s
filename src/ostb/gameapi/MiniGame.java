@@ -11,7 +11,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import anticheat.util.DelayedTask;
 import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
@@ -27,6 +26,7 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.CommandBase;
 import ostb.server.ServerLogger;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
