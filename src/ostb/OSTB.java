@@ -26,6 +26,7 @@ import ostb.gameapi.games.kitpvp.KitPVP;
 import ostb.gameapi.games.onevsones.OnevsOnes;
 import ostb.gameapi.games.skywars.SkyWars;
 import ostb.gameapi.games.speeduhc.SpeedUHC;
+import ostb.gameapi.games.survivalgames.SurvivalGames;
 import ostb.gameapi.games.uhc.UHC;
 import ostb.gameapi.games.uhcskywars.UHCSkyWars;
 import ostb.gameapi.kit.DefaultKit;
@@ -50,7 +51,6 @@ import ostb.server.GeneralEvents;
 import ostb.server.GlobalCommands;
 import ostb.server.PerformanceHandler;
 import ostb.server.RestarterHandler;
-import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.pregenerator.Pregenerator;
 import ostb.server.servers.slave.Slave;
@@ -64,6 +64,7 @@ import ostb.staff.Punishment;
 public class OSTB extends JavaPlugin implements PluginMessageListener {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
+		SG("SG", "survival_games", "Survival Games"),
 		DOM("DOM", "domination", "Domination"),
 		SW("SW", "sky_wars", "Solo Sky Wars"),
 		UHCSW("UHCSW", "sky_wars", "UHC Sky Wars"),
@@ -145,30 +146,47 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getLogger().info(serverName);
 		plugin = Plugins.valueOf(serverName.replaceAll("[\\d]", ""));
 		try {
-			if(plugin == Plugins.HUB) {
+			switch(plugin) {
+			case HUB:
 				proPlugin = new MainHub();
-			} else if(plugin == Plugins.DOM) {
+				break;
+			case SG:
+				proPlugin = new SurvivalGames();
+				break;
+			case DOM:
 				proPlugin = new Domination();
-			} else if(plugin == Plugins.SW || plugin == Plugins.SWT) {
+				break;
+			case SW:
+			case SWT:
 				proPlugin = new SkyWars();
-			} else if(plugin == Plugins.UHCSW) {
+				break;
+			case UHCSW:
 				proPlugin = new UHCSkyWars();
-			} else if(plugin == Plugins.SUHC) {
+				break;
+			case SUHC:
 				proPlugin = new SpeedUHC();
-			} else if(plugin == Plugins.KITPVP) {
+				break;
+			case KITPVP:
 				proPlugin = new KitPVP();
-			} else if(plugin == Plugins.ONEVSONE) {
+				break;
+			case ONEVSONE:
 				proPlugin = new OnevsOnes();
-			} else if(plugin == Plugins.UHC) {
+				break;
+			case UHC:
 				proPlugin = new UHC();
-			} else if(plugin == Plugins.PREGEN) {
+				break;
+			case PREGEN:
 				proPlugin = new Pregenerator();
-			} else if(plugin == Plugins.BUILDING) {
-				proPlugin = new Building();
-			} else if(plugin == Plugins.WORKER) {
+				break;
+			case WORKER:
 				proPlugin = new Worker();
-			} else if(plugin == Plugins.SLAVE) {
+				break;
+			case SLAVE:
 				proPlugin = new Slave();
+				break;
+			default:
+				
+				break;
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
