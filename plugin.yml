@@ -104,6 +104,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  shadowMute:
+    usage: /shadowMute <name>
+
   addCoins:
     usage: /addCoins <name> <game> <amount>
 

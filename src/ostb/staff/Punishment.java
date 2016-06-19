@@ -17,6 +17,7 @@ import ostb.server.util.EventUtil;
 import ostb.staff.ban.BanHandler;
 import ostb.staff.ban.UnBanHandler;
 import ostb.staff.mute.MuteHandler;
+import ostb.staff.mute.ShadowMuteHandler;
 import ostb.staff.mute.UnMuteHandler;
 
 public class Punishment implements Listener {
@@ -76,6 +77,7 @@ public class Punishment implements Listener {
 		new ViolationPrevention();
 		new CommandLogger();
 		new StaffMode();
+		new ShadowMuteHandler();
 	}
 	
 	public Punishment(String name) {

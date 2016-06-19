@@ -9,7 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,7 +37,6 @@ import ostb.gameapi.SpawnPointHandler;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.mapeffects.MapEffectHandler;
 import ostb.player.MessageHandler;
-import ostb.player.Particles.ParticleTypes;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -67,15 +65,9 @@ public class Events implements Listener {
         if (ticks == 20) {
             MiniGame miniGame = OSTB.getMiniGame();
             GameStates gameState = miniGame.getGameState();
-            if (gameState == GameStates.WAITING) {
-                ParticleTypes.HAPPY_VILLAGER.display(new Location(OSTB.getMiniGame().getLobby(), -6, 27.5, -42));
-            } else if (gameState == GameStates.STARTING) {
+            if (gameState == GameStates.STARTING) {
                 if (miniGame.getCounter() == 15) {
                     new MapEffectHandler(arena);
-                } else if (miniGame.getCounter() == 5) {
-                    for (Player player : ProPlugin.getPlayers()) {
-                        player.getInventory().remove(Material.SNOW_BALL);
-                    }
                 }
             } else if (gameState == GameStates.STARTED) {
                 if (miniGame.getCounter() <= 0) {

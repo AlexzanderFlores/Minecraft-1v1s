@@ -139,6 +139,7 @@ public enum DB {
 	STAFF_CHAT("id INT NOT NULL AUTO_INCREMENT, command VARCHAR(250), PRIMARY KEY(id)"),
 	STAFF_MUTES("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unmuted VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unmute_date VARCHAR(10), unmute_time VARCHAR(25), expires VARCHAR(25), active INT, PRIMARY KEY(id)"),
 	STAFF_MUTE_PROOF("id INT NOT NULL AUTO_INCREMENT, mute_id INT, proof VARCHAR(100), PRIMARY KEY(id)"),
+	STAFF_SHADOW_MUTES("uuid VARCHAR(40), PRIMARY KEY(uuid)"),
 	STAFF_BAN("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), attached_uuid VARCHAR(40), staff_uuid VARCHAR(40), who_unbanned VARCHAR(40), reason VARCHAR(100), date VARCHAR(10), time VARCHAR(25), unban_date VARCHAR(10), unban_time VARCHAR(25), day INT, active INT, PRIMARY KEY(id)"),
 	STAFF_BAN_PROOF("id INT NOT NULL AUTO_INCREMENT, ban_id INT, proof VARCHAR(100), PRIMARY KEY(id)"),
 	STAFF_REPORTS("id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(40), reported_uuid VARCHAR(40), staff_uuid VARCHAR(40), reason VARCHAR(100), reason_closed VARCHAR(30), comments VARCHAR(100), playtime VARCHAR(40), proof VARCHAR(100), time_opened VARCHAR(25), date_closed VARCHAR(10), time_closed VARCHAR(25), opened BOOL, PRIMARY KEY(id)"),
