@@ -49,7 +49,13 @@ public class SpawnPointHandler {
 				double x = Double.valueOf(location[0]);
 				double y = Double.valueOf(location[1]);
 				double z = Double.valueOf(location[2]);
-				spawns.add(new Location(world, x, y, z));
+				float yaw = 90.0f;
+				float pitch = 0.0f;
+				if(location.length == 5) {
+					yaw = Float.valueOf(location[3]);
+					pitch = Float.valueOf(location[4]);
+				}
+				spawns.add(new Location(world, x, y, z, yaw, pitch));
 			}
 		}
 		return spawns;

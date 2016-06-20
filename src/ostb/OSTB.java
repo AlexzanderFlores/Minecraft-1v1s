@@ -51,6 +51,7 @@ import ostb.server.GeneralEvents;
 import ostb.server.GlobalCommands;
 import ostb.server.PerformanceHandler;
 import ostb.server.RestarterHandler;
+import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.pregenerator.Pregenerator;
 import ostb.server.servers.slave.Slave;
@@ -177,6 +178,9 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 				break;
 			case PREGEN:
 				proPlugin = new Pregenerator();
+				break;
+			case BUILDING:
+				proPlugin = new Building();
 				break;
 			case WORKER:
 				proPlugin = new Worker();

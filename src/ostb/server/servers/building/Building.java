@@ -37,7 +37,6 @@ public class Building extends ProPlugin {
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
 		new ArmorStandHelper();
-		new SkyWarsMapEditor();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
@@ -54,7 +53,7 @@ public class Building extends ProPlugin {
 						return false;
 					}
 				}
-				String loc = (location.getBlockX() + ".5,") + (location.getBlockY() + 1) + "," + (location.getBlockZ() + ".5,");
+				String loc = (location.getBlockX() + ".5,") + (location.getBlockY() + 1) + "," + (location.getBlockZ() + ".5," + location.getYaw() + ",0.0");
 				config.getConfig().set(index + "", loc);
 				config.save();
 				MessageHandler.sendMessage(player, "Set spawn " + index);
