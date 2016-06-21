@@ -309,7 +309,7 @@ public class GameSelector extends HubItemBase {
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.UHCSW);
 		inventory.setItem(11, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
+		/*item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
 			"",
 			"&eNatural regeneration is &cOFF",
@@ -319,7 +319,18 @@ public class GameSelector extends HubItemBase {
 			"&7Playing: &a" + getPlayers(Plugins.UHC),
 			""
 		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.UHC);
+		items.put(item.getItemMeta().getDisplayName(), Plugins.UHC);*/
+		item = new ItemCreator(Material.CHEST).setName("&b" + Plugins.SG.getDisplay()).setLores(new String [] {
+			"&7Well known game",
+			"",
+			"&eFight against &b23 &eother players",
+			"&eComplete as many",
+			"&echallenges as you can!",
+			"",
+			"&7Playing: &a" + getPlayers(Plugins.SG),
+			""
+		}).getItemStack();
+		items.put(item.getItemMeta().getDisplayName(), Plugins.SG);
 		inventory.setItem(13, item);
 		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
 			"&7Well known game",
