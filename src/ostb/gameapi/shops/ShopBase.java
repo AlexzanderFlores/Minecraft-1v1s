@@ -3,8 +3,10 @@ package ostb.gameapi.shops;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +27,7 @@ import ostb.player.CoinsHandler;
 import ostb.server.DB;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
+import ostb.server.util.Hologram;
 import ostb.server.util.ItemCreator;
 
 public abstract class ShopBase implements Listener {
@@ -73,6 +76,23 @@ public abstract class ShopBase implements Listener {
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
 		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").getItemStack();
+		if(OSTB.getMiniGame() != null) {
+			World lobby = OSTB.getMiniGame().getLobby();
+			String topText = "&e&nKits / Shop";
+			String bottomText = "&b&nClick the Chest";
+			new Hologram(new Location(lobby, 11, 5, 0, 270.0f, 0.0f), topText) {
+				@Override
+				public void interact(Player player) {
+					
+				}
+			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
+			new Hologram(new Location(lobby, -1111, 5, 0, 90.0f, 0.0f), bottomText) {
+				@Override
+				public void interact(Player player) {
+					
+				}
+			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
+		}
 		EventUtil.register(this);
 	}
 	
