@@ -79,19 +79,22 @@ public abstract class ShopBase implements Listener {
 		if(OSTB.getMiniGame() != null) {
 			World lobby = OSTB.getMiniGame().getLobby();
 			String topText = "&e&nKits / Shop";
-			String bottomText = "&b&nClick the Chest";
 			new Hologram(new Location(lobby, 11, 5, 0, 270.0f, 0.0f), topText) {
 				@Override
 				public void interact(Player player) {
+					player.getInventory().setHeldItemSlot(0);
 					
 				}
 			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
-			new Hologram(new Location(lobby, -1111, 5, 0, 90.0f, 0.0f), bottomText) {
+			new Hologram(new Location(lobby, -11, 5, 0, 90.0f, 0.0f), topText) {
 				@Override
 				public void interact(Player player) {
+					player.getInventory().setHeldItemSlot(0);
 					
 				}
 			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
+			String bottomText = "&b&nClick the Chest";
+			
 		}
 		EventUtil.register(this);
 	}
