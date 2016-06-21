@@ -75,28 +75,43 @@ public abstract class ShopBase implements Listener {
 		this.plugin = plugin;
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
-		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").getItemStack();
+		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").setGlow(true).getItemStack();
 		if(OSTB.getMiniGame() != null) {
 			World lobby = OSTB.getMiniGame().getLobby();
 			String topText = "&e&nKits / Shop";
-			new Hologram(new Location(lobby, 11, 5, 0, 270.0f, 0.0f), topText) {
+			new Hologram(new Location(lobby, 11, 5, 0, 90.0f, 0.0f), topText) {
 				@Override
 				public void interact(Player player) {
-					player.getInventory().setHeldItemSlot(0);
-					
+					hologramClick(player);
 				}
-			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
-			new Hologram(new Location(lobby, -11, 5, 0, 90.0f, 0.0f), topText) {
+			};
+			new Hologram(new Location(lobby, -11, 5, 0, 270.0f, 0.0f), topText) {
 				@Override
 				public void interact(Player player) {
-					player.getInventory().setHeldItemSlot(0);
-					
+					hologramClick(player);
 				}
-			}.getArmorStand().getEquipment().setHelmet(new ItemStack(Material.CHEST));
+			};
 			String bottomText = "&b&nClick the Chest";
-			
+			new Hologram(new Location(lobby, 11, 4.65, 0, 90.0f, 0.0f), bottomText) {
+				@Override
+				public void interact(Player player) {
+					hologramClick(player);
+				}
+			}.getArmorStand().getEquipment().setHelmet(new ItemCreator(Material.CHEST).setGlow(true).getItemStack());
+			new Hologram(new Location(lobby, -11, 4.65, 0, 270.0f, 0.0f), bottomText) {
+				@Override
+				public void interact(Player player) {
+					hologramClick(player);
+				}
+			}.getArmorStand().getEquipment().setHelmet(new ItemCreator(Material.CHEST).setGlow(true).getItemStack());
 		}
 		EventUtil.register(this);
+	}
+	
+	private void hologramClick(Player player) {
+		player.getInventory().setHeldItemSlot(0);
+		EffectUtil.playSound(player, Sound.CHEST_OPEN);
+		openShop(player);
 	}
 	
 	public String getName() {
