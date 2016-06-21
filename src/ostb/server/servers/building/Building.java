@@ -53,7 +53,8 @@ public class Building extends ProPlugin {
 						return false;
 					}
 				}
-				String loc = (location.getBlockX() + ".5,") + (location.getBlockY() + 1) + "," + (location.getBlockZ() + ".5," + location.getYaw() + ",0.0");
+				Bukkit.getLogger().info(location.toString());
+				String loc = (((int) location.getX()) + ".5,") + (location.getBlockY() + 1) + "," + (((int) location.getZ()) + ".5," + location.getYaw() + ",0.0");
 				config.getConfig().set(index + "", loc);
 				config.save();
 				MessageHandler.sendMessage(player, "Set spawn " + index);
