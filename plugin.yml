@@ -215,6 +215,9 @@ commands:
     usage: /spec <name>
 
 # Building Commands
+  setsgspawn:
+    usage: /setsgspawn
+
   setGameSpawn:
     usage: /setGameSpawn [number]
 
