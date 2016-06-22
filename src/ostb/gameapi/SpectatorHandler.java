@@ -121,7 +121,7 @@ public class SpectatorHandler implements Listener {
 				} else {
 					MessageHandler.sendMessage(player, "&cYou must be a spectator to run this command");
 				}
-				return false;
+				return true;
 			}
 		}.setRequiredRank(Ranks.PREMIUM);
 		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {

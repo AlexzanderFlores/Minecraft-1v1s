@@ -254,7 +254,7 @@ public class GlobalCommands {
 								++online;
 							}
 						}
-						MessageHandler.sendMessage(sender, "Spectators (&e" + online + "&x): " + spectators.substring(0, spectators.length() - 2));
+						MessageHandler.sendMessage(sender, online + " Spectators: " + spectators.substring(0, spectators.length() - 2));
 					}
 				}
 				return true;

@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -41,28 +42,29 @@ import ostb.server.util.ItemUtil;
 public class GameSelector extends HubItemBase {
 	private static Map<String, Plugins> items = null;
 	private static Map<String, Plugins> watching = null;
-	private static Map<Plugins, Integer> players = null;
+	private static Map<Plugins, Integer> itemSlots = null;
 	private static List<Integer> slots = null;
-	private static final int size = 9 * 5;
+	private static final int rows = 4;
+	private static final int size = 9 * rows;
 	private static final String name = "Game Selector";
 	
 	public GameSelector() {
 		super(new ItemCreator(Material.COMPASS).setName("&e" + name), 0);
 		items = new HashMap<String, Plugins>();
 		watching = new HashMap<String, Plugins>();
-		players = new HashMap<Plugins, Integer>();
+		itemSlots = new HashMap<Plugins, Integer>();
 		slots = new ArrayList<Integer>();
 		for(int a = 0; a < 8; ++a) {
 			if(!slots.contains(a)) {
 				slots.add(a);
 			}
 		}
-		for(int a = 8, counter = 0; a <= 8 * 5; a += 8, ++counter) {
+		for(int a = 8, counter = 0; a <= 8 * rows; a += 8, ++counter) {
 			if(!slots.contains(a + counter)) {
 				slots.add(a + counter);
 			}
 		}
-		for(int a = 9; a < 9 * 5; a += 9) {
+		for(int a = 9; a < size; a += 9) {
 			if(!slots.contains(a)) {
 				slots.add(a);
 			}
@@ -102,6 +104,9 @@ public class GameSelector extends HubItemBase {
 			if(items.containsKey(name)) {
 				Plugins plugin = items.get(name);
 				open(player, plugin);
+			} else if(item.getType() == Material.DIAMOND_BOOTS) {
+				player.closeInventory();
+				player.teleport(new Location(player.getWorld(), 1675.5, 5, -1289.5, -222.0f, 0.0f));
 			}
 			event.setCancelled(true);
 		} else if(watching.containsKey(player.getName())) {
@@ -140,13 +145,16 @@ public class GameSelector extends HubItemBase {
 					}
 				}
 			}
-			for(Player player : ProPlugin.getPlayers()) {
-				InventoryView view = player.getOpenInventory();
-				if(view.getTitle().equals(name)) {
-					if(view.getItem(11).getType() == Material.GRASS) {
-						view.getItem(11).setType(Material.GOLDEN_APPLE);
-					} else {
-						view.getItem(11).setType(Material.GRASS);
+			if(itemSlots.containsKey(Plugins.UHCSW)) {
+				int slot = itemSlots.get(Plugins.UHCSW);
+				for(Player player : ProPlugin.getPlayers()) {
+					InventoryView view = player.getOpenInventory();
+					if(view.getTitle().equals(name)) {
+						if(view.getItem(slot).getType() == Material.GRASS) {
+							view.getItem(slot).setType(Material.GOLDEN_APPLE);
+						} else {
+							view.getItem(slot).setType(Material.GRASS);
+						}
 					}
 				}
 			}
@@ -182,17 +190,14 @@ public class GameSelector extends HubItemBase {
 					List<Integer> maxPlayers = new ArrayList<Integer>();
 					int limit = 9 * 4;
 					resultSet = Databases.NETWORK.getConnection().prepareStatement("SELECT * FROM server_status WHERE game_name = '" + plugin.toString() + "' ORDER BY listed_priority, players DESC, server_number LIMIT " + limit).executeQuery();
-					int playing = 0;
 					while(resultSet.next()) {
 						priorities.add(resultSet.getInt("listed_priority"));
 						serverNumbers.add(resultSet.getInt("server_number"));
 						lores.add(resultSet.getString("lore"));
 						int playerCount = resultSet.getInt("players");
 						playerCounts.add(playerCount);
-						playing += playerCount;
 						maxPlayers.add(resultSet.getInt("max_players"));
 					}
-					players.put(plugin, playing);
 					for(String name : watching.keySet()) {
 						if(watching.get(name) == plugin) {
 							Player player = ProPlugin.getPlayer(name);
@@ -273,29 +278,6 @@ public class GameSelector extends HubItemBase {
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, size, ChatColor.stripColor(getName()));
 		ItemStack comingSoon = new ItemCreator(Material.INK_SACK, 8).setName("&7Coming Soon").getItemStack();
-		/*ItemStack item = new ItemCreator(Material.BANNER, 1).setName("&b" + Plugins.DOM.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of Domination",
-			"",
-			"&eHelp your team capture the command posts!",
-			"&eFirst team to &a1000 &epoints wins",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.DOM),
-			"&7Team size: &a12 vs 12",
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.DOM);
-		inventory.setItem(10, item);
-		item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.SW.getDisplay()).setLores(new String [] {
-			"&7Well known game",
-			"",
-			"&eBe the last player standing!",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.SW),
-			"&7Team size: &aSolo",
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.SW);
-		inventory.setItem(12, item);*/
 		ItemStack item = new ItemCreator(Material.GRASS).setName("&b" + Plugins.UHCSW.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Sky Wars",
 			"",
@@ -303,81 +285,64 @@ public class GameSelector extends HubItemBase {
 			"&eNatural regeneration is &cOFF",
 			"&eBe the last player standing!",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.UHCSW),
 			"&7Team size: &a1",
 			""
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.UHCSW);
 		inventory.setItem(11, item);
-		/*item = new ItemCreator(Material.GOLDEN_APPLE, 1).setName("&b" + Plugins.UHC.getDisplay()).setLores(new String [] {
-			"&7Well known game",
-			"",
-			"&eNatural regeneration is &cOFF",
-			"&eTwitter-based UHC events",
-			"&eCheck for games: &b@OSTBUHC",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.UHC),
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.UHC);*/
-		item = new ItemCreator(Material.CHEST).setName("&b" + Plugins.SG.getDisplay()).setLores(new String [] {
-			"&7Well known game",
-			"",
-			"&eFight against &b23 &eother players",
-			"&eComplete as many",
-			"&echallenges as you can!",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.SG),
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.SG);
-		inventory.setItem(13, item);
-		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
-			"&7Well known game",
-			"",
-			"&eNatural regeneration is &cOFF",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.SUHC),
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.SUHC);
-		inventory.setItem(30, item);
-		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + Plugins.ONEVSONE.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of 1v1s",
-			"",
-			"&eTest your competitive PVP skills",
-			"&eagainst other players",
-			"",
-			"&7Playing: &a" + getPlayers(Plugins.ONEVSONE),
-			""
-		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.ONEVSONE);
-		//inventory.setItem(32, item);
-		inventory.setItem(32, comingSoon);
+		itemSlots.put(Plugins.UHCSW, 11);
 		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + Plugins.KITPVP.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Kit PVP",
 			"",
 			"&eBattle &cRED &evs &bBLUE &ein Kit PVP",
 			"",
-			"&7Playing: &a" + getPlayers(Plugins.KITPVP),
-			"&7Team size: &aUp to 20",
-			""
+			"&7Team size: &aUp to 20"
 		}).getItemStack();
 		items.put(item.getItemMeta().getDisplayName(), Plugins.KITPVP);
-		inventory.setItem(15, item);
+		inventory.setItem(13, item);
+		itemSlots.put(Plugins.KITPVP, 13);
+		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + Plugins.ONEVSONE.getDisplay()).setLores(new String [] {
+			"&7Unique spin-off of 1v1s",
+			"",
+			"&eTest your competitive PVP skills",
+			"&eagainst other players",
+			""
+		}).getItemStack();
+		items.put(item.getItemMeta().getDisplayName(), Plugins.ONEVSONE);
+		//inventory.setItem(15, item);
+		//itemSlots.put(Plugins.ONEVSONE, 15);
+		inventory.setItem(15, comingSoon);
+		item = new ItemCreator(Material.GOLDEN_APPLE).setName("&b" + Plugins.SUHC.getDisplay()).setLores(new String [] {
+			"&7Well known game",
+			"",
+			"&eNatural regeneration is &cOFF",
+			""
+		}).getItemStack();
+		items.put(item.getItemMeta().getDisplayName(), Plugins.SUHC);
+		inventory.setItem(21, item);
+		itemSlots.put(Plugins.SUHC, 21);
+		item = new ItemCreator(Material.DIAMOND_BOOTS).setName("&bParkour").setLores(new String [] {
+			"&7Our Unique Parkour Course",
+			"",
+			"&a&lEndless Parkour",
+			"&eParkour forever, try to",
+			"&ebeat your high score!",
+			"",
+			"&a&lParkour Course",
+			"&eParkour on our custom course",
+			"&eWatch out for obstacles though",
+			""
+		}).getItemStack();
+		inventory.setItem(23, item);
 		int data = new Random().nextInt(15);
 		for(int slot : slots) {
-			inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).setName(" ").getItemStack());
+			try {
+				inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).setName(" ").getItemStack());
+			} catch(IndexOutOfBoundsException e) {
+				e.printStackTrace();
+			}
 		}
 		player.openInventory(inventory);
-	}
-	
-	private int getPlayers(Plugins plugin) {
-		if(players.containsKey(plugin)) {
-			return players.get(plugin);
-		} else {
-			return 0;
-		}
 	}
 	
 	private static byte getWoolColor(int priority) {

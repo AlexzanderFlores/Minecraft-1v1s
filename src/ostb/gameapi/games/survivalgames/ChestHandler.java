@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -22,22 +24,30 @@ import ostb.OSTB;
 import ostb.customevents.TimeEvent;
 import ostb.gameapi.MiniGame.GameStates;
 import ostb.gameapi.SpectatorHandler;
-import ostb.player.MessageHandler;
+import ostb.player.TitleDisplayer;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 
 public class ChestHandler implements Listener {
     private List<Block> oppenedChests = null;
     private List<Material> possibleItems = null;
+    private static int restockCounter = 60 * 10;
+    private enum Rarity {
+        COMMON, UNCOMMON, RARE
+    }
 
     public ChestHandler() {
         oppenedChests = new ArrayList<Block>();
         possibleItems = new ArrayList<Material>();
+        addItem(Material.LEATHER_HELMET, Rarity.COMMON);
+        addItem(Material.LEATHER_CHESTPLATE, Rarity.COMMON);
+        addItem(Material.LEATHER_LEGGINGS, Rarity.COMMON);
+        addItem(Material.LEATHER_BOOTS, Rarity.COMMON);
         addItem(Material.GOLD_HELMET, Rarity.COMMON);
         addItem(Material.GOLD_CHESTPLATE, Rarity.COMMON);
         addItem(Material.GOLD_LEGGINGS, Rarity.COMMON);
         addItem(Material.GOLD_BOOTS, Rarity.COMMON);
-        addItem(Material.MELON_BLOCK, Rarity.COMMON);
+        addItem(Material.WOOD_AXE, Rarity.COMMON);
         addItem(Material.WOOD_SWORD, Rarity.COMMON);
         addItem(Material.GOLD_AXE, Rarity.COMMON);
         addItem(Material.GOLD_SWORD, Rarity.COMMON);
@@ -69,7 +79,6 @@ public class ChestHandler implements Listener {
         addItem(Material.CHAINMAIL_BOOTS, Rarity.UNCOMMON);
         addItem(Material.IRON_AXE, Rarity.UNCOMMON);
         addItem(Material.WEB, Rarity.UNCOMMON);
-        addItem(Material.TNT, Rarity.UNCOMMON);
         addItem(Material.BOW, Rarity.RARE);
         addItem(Material.STONE_SWORD, Rarity.RARE);
         addItem(Material.FLINT_AND_STEEL, Rarity.RARE);
@@ -87,23 +96,32 @@ public class ChestHandler implements Listener {
         }
     }
 
-    @EventHandler
-    public void onTime(TimeEvent event) {
-        long ticks = event.getTicks();
-        if(ticks == 20) {
-            if(OSTB.getMiniGame().getCounter() == (60 * 10)) {
-                oppenedChests.clear();
-                EffectUtil.playSound(Sound.CHEST_OPEN);
-                MessageHandler.alert("All chests have been refilled");
-            }
-        }
-    }
+    public static int getRestockCounter() {
+		return restockCounter;
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 && OSTB.getMiniGame().getGameState() == GameStates.STARTED) {
+			if(--restockCounter <= 0) {
+				TimeEvent.getHandlerList().unregister(this);
+				oppenedChests.clear();
+				for(Player player : Bukkit.getOnlinePlayers()) {
+					new TitleDisplayer(player, "&eChests Restocked").display();
+					EffectUtil.playSound(player, Sound.CHEST_OPEN);
+				}
+			}
+		}
+	}
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         InventoryType type = event.getInventory().getType();
         if(type != InventoryType.CHEST && type != InventoryType.WORKBENCH && type != InventoryType.ENCHANTING) {
             event.setCancelled(true);
+        } else if(type == InventoryType.ENCHANTING) {
+        	event.getInventory().setItem(1, new ItemStack(Material.INK_SACK, 3, (byte) 4));
         }
     }
 
@@ -140,9 +158,5 @@ public class ChestHandler implements Listener {
                 }
             }
         }
-    }
-
-    private enum Rarity {
-        COMMON, UNCOMMON, RARE
     }
 }

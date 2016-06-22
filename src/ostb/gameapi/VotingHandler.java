@@ -35,6 +35,7 @@ import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
+import ostb.server.util.Hologram;
 import ostb.server.util.ImageMap;
 import ostb.server.util.StringUtil;
 
@@ -106,16 +107,15 @@ public class VotingHandler implements Listener {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		ArmorStand armorStand = (ArmorStand) lobby.spawnEntity(new Location(lobby, 0.5, 5, 2.5), EntityType.ARMOR_STAND);
-		armorStand.setGravity(false);
-		armorStand.setVisible(false);
-		armorStand.setCustomName(StringUtil.color("&e&nVote by clicking the map image"));
-		armorStand.setCustomNameVisible(true);
+		new Hologram(new Location(lobby, 0.5, 5, 2.5), "&e&nVote by clicking the map image") {
+			@Override
+			public void interact(Player player) {}
+		};
 		EventUtil.register(this);
 	}
 	
 	private void updateHologram(String map) {
-		holograms.get(map).setCustomName(StringUtil.color("&a" + map + "&b (" + mapVotes.get(map) + " Votes)"));
+		holograms.get(map).setCustomName(StringUtil.color("&a" + map.replace("_", " ") + "&b (" + mapVotes.get(map) + " Votes)"));
 	}
 	
 	private void vote(Player player, String map) {

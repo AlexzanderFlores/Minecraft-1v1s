@@ -79,6 +79,9 @@ public abstract class ShopBase implements Listener {
 		if(OSTB.getMiniGame() != null) {
 			World lobby = OSTB.getMiniGame().getLobby();
 			String topText = "&e&nKits / Shop";
+			if(plugin == Plugins.SW || plugin == Plugins.SWT || plugin == Plugins.UHCSW) {
+				topText = "&e&nKits / Cages";
+			}
 			new Hologram(new Location(lobby, 11, 5, 0, 90.0f, 0.0f), topText) {
 				@Override
 				public void interact(Player player) {
