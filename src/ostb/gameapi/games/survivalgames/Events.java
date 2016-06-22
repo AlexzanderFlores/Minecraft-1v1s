@@ -92,6 +92,7 @@ public class Events implements Listener {
         miniGame.setAllowEntityDamage(true);
         miniGame.setAllowEntityDamageByEntities(true);
         miniGame.setAllowItemSpawning(true);
+        miniGame.setAllowBowShooting(true);
         miniGame.setCounter(60 * 20);
     }
 
