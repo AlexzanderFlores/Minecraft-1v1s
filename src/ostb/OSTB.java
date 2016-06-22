@@ -50,6 +50,7 @@ import ostb.server.DB.Databases;
 import ostb.server.GeneralEvents;
 import ostb.server.GlobalCommands;
 import ostb.server.PerformanceHandler;
+import ostb.server.RankAds;
 import ostb.server.RestarterHandler;
 import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
@@ -221,6 +222,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		new DefaultKit();
 		new LanguageLogger();
 		new AntiCheat();
+		new RankAds();
 		Glow.register();
 	}
 	
