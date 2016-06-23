@@ -16,7 +16,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.kit.KitBase;
@@ -36,7 +35,7 @@ import ostb.server.util.StringUtil;
 public class SkyWarsCrate implements Listener {
 	private static List<String> delayed = null;
 	private static List<FeatureItem> features = null;
-	private static final int cost = 50;
+	private static final int cost = 25;
 	
 	public SkyWarsCrate() {
 		delayed = new ArrayList<String>();
@@ -52,35 +51,31 @@ public class SkyWarsCrate implements Listener {
 				int month = Calendar.getInstance().get(Calendar.MONTH);
 				int week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
 				String [] lores = null;
-				if(OSTB.getPlugin() == Plugins.HUB) {
-					lores = new String [] {
-						"",
-						"&eGet random kits, cages and more!",
-						"",
-						"&7Coins:&a " + cost,
-						"&7Get one &aFREE &7through &a/vote",
-						"",
-						"&7Left click to open a crate",
-						"&7Middle click to view possible items",
-						"&7Right click to purchase a key",
-						"",
-						"&eKeys owned: &a" + getKeys(player),
-						"&7Lifetime Sky Wars crates opened: &a" + DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED.getInt("uuid", uuid, "amount"),
-						"&7Monthly Sky Wars crates opened: &a" + DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
-						"&7Weekly Sky Wars crates opened: &a" + DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
-						""
-					};
-				} else {
-					lores = new String [] {
-						"",
-						"&eGet random kits, cages and more!",
-						"",
-						"&4&nThis can only be used in the hub",
-						""
-					};
-				}
-				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + getName()).setLores(lores);
+				lores = new String [] {
+					"",
+					"&eGet random kits, cages and more!",
+					"",
+					"&7Coins:&a " + cost,
+					"&7Get one &aFREE &7through &a/vote",
+					"",
+					"&7Left click to open a crate",
+					"&7Right click to purchase a key",
+					"",
+					"&eKeys owned: &a" + getKeys(player),
+					""
+				};
+				ItemCreator itemCreator = new ItemCreator(Material.CHEST).setName("&b" + getName()).setLores(lores).setGlow(true);
 				inventory.setItem(4, itemCreator.getItemStack());
+				ItemStack stats = new ItemCreator(Material.PAPER).setName("&bCrate Stats").setLores(new String [] {
+					"",
+					"&eSky Wars Crate Stats:",
+					"&7Lifetime Sky Wars crates opened: &a" + DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED.getInt("uuid", uuid, "amount"),
+					"&7Monthly Sky Wars crates opened: &a" + DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "month"}, new String [] {uuid, month + ""}, "amount"),
+					"&7Weekly Sky Wars crates opened: &a" + DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED.getInt(new String [] {"uuid", "week"}, new String [] {uuid, week + ""}, "amount"),
+					""
+				}).getItemStack();
+				inventory.setItem(1, stats);
+				inventory.setItem(7, stats);
 			}
 		});
 	}
@@ -151,41 +146,39 @@ public class SkyWarsCrate implements Listener {
 	@EventHandler
 	public void onInventoryItemClick(InventoryItemClickEvent event) {
 		Player player = event.getPlayer();
-		if(ChatColor.stripColor(event.getItemTitle()).equals(getName())) {
-			if(OSTB.getPlugin() == Plugins.HUB) {
-				if(event.getClickType() == ClickType.LEFT) {
-					if(delayed.contains(player.getName())) {
-						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
-					} else {
-						final String name = player.getName();
-						delayed.add(name);
-						new DelayedTask(new Runnable() {
-							@Override
-							public void run() {
-								delayed.remove(name);								
-							}
-						}, 20 * 2);
-						if(getKeys(player) > 0) {
-							populateFeatures();
-							new CrateBase(player, Plugins.SW, SkyWarsCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED);
-						} else {
-							EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
-						}
-					}
-				} else if(event.getClickType() == ClickType.MIDDLE) {
-					//TODO: Display item options and rarities
-					populateFeatures();
+		if(event.getItemTitle() != null && ChatColor.stripColor(event.getItemTitle()).equals(getName())) {
+			if(event.getClickType() == ClickType.LEFT) {
+				if(delayed.contains(player.getName())) {
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
-				} else if(event.getClickType() == ClickType.RIGHT) {
-					CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SW.getData());
-					int coins = coinsHandler.getCoins(player);
-					if(coins >= cost) {
-						coinsHandler.addCoins(player, cost * -1);
-						giveKey(player.getUniqueId(), 1);
-						EffectUtil.playSound(player, Sound.LEVEL_UP);
+				} else {
+					final String name = player.getName();
+					delayed.add(name);
+					new DelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							delayed.remove(name);								
+						}
+					}, 20 * 2);
+					if(getKeys(player) > 0) {
+						populateFeatures();
+						new CrateBase(player, Plugins.SW, SkyWarsCrate.getName(), features).setLifetime(DB.HUB_LIFETIME_SKY_WARS_CRATES_OPENED).setMonthly(DB.HUB_MONTHLY_SKY_WARS_CRATES_OPENED).setWeekly(DB.HUB_WEEKLY_SKY_WARS_CRATES_OPENED);
 					} else {
 						EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 					}
+				}
+			} else if(event.getClickType() == ClickType.MIDDLE) {
+				//TODO: Display item options and rarities
+				populateFeatures();
+				EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
+			} else if(event.getClickType() == ClickType.RIGHT) {
+				CoinsHandler coinsHandler = CoinsHandler.getCoinsHandler(Plugins.SW.getData());
+				int coins = coinsHandler.getCoins(player);
+				if(coins >= cost) {
+					coinsHandler.addCoins(player, cost * -1);
+					giveKey(player.getUniqueId(), 1);
+					EffectUtil.playSound(player, Sound.LEVEL_UP);
+				} else {
+					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				}
 			}
 			event.setCancelled(true);

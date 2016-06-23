@@ -1,8 +1,11 @@
 package ostb.gameapi.shops;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.OSTB;
 import ostb.OSTB.Plugins;
+import ostb.customevents.TimeEvent;
 import ostb.customevents.player.CoinUpdateEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
@@ -37,6 +41,9 @@ public abstract class ShopBase implements Listener {
 	protected Map<String, Integer> pages = null;
 	private int maxPages = 1;
 	private ItemStack itemStack = null;
+	private List<Hologram> holograms = null;
+	private String [] colors = null;
+	private int counter = 0;
 	
 	public class KitData {
 		private String title = null;
@@ -77,23 +84,25 @@ public abstract class ShopBase implements Listener {
 		pages = new HashMap<String, Integer>();
 		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").setGlow(true).getItemStack();
 		if(OSTB.getMiniGame() != null) {
+			holograms = new ArrayList<Hologram>();
+			colors = new String [] {
+				ChatColor.YELLOW + "",
+				ChatColor.RED + "",
+				ChatColor.GREEN + "",
+			};
 			World lobby = OSTB.getMiniGame().getLobby();
-			String topText = "&e&nKits / Shop";
-			if(plugin == Plugins.SW || plugin == Plugins.SWT || plugin == Plugins.UHCSW) {
-				topText = "&e&nKits / Cages";
-			}
-			new Hologram(new Location(lobby, 11, 5, 0, 90.0f, 0.0f), topText) {
+			holograms.add(new Hologram(new Location(lobby, 11, 5, 0, 90.0f, 0.0f), "") {
 				@Override
 				public void interact(Player player) {
 					hologramClick(player);
 				}
-			};
-			new Hologram(new Location(lobby, -11, 5, 0, 270.0f, 0.0f), topText) {
+			});
+			holograms.add(new Hologram(new Location(lobby, -11, 5, 0, 270.0f, 0.0f), "") {
 				@Override
 				public void interact(Player player) {
 					hologramClick(player);
 				}
-			};
+			});
 			String bottomText = "&b&nClick the Chest";
 			new Hologram(new Location(lobby, 11, 4.65, 0, 90.0f, 0.0f), bottomText) {
 				@Override
@@ -112,7 +121,6 @@ public abstract class ShopBase implements Listener {
 	}
 	
 	private void hologramClick(Player player) {
-		player.getInventory().setHeldItemSlot(0);
 		EffectUtil.playSound(player, Sound.CHEST_OPEN);
 		openShop(player);
 	}
@@ -140,8 +148,7 @@ public abstract class ShopBase implements Listener {
 	}
 	
 	public void updateCoinsItem(Player player, Inventory inventory) {
-		int offset = OSTB.getPlugin() == Plugins.HUB ? 4 : 5;
-		inventory.setItem(inventory.getSize() - offset, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
+		inventory.setItem(inventory.getSize() - 4, CoinsHandler.getCoinsHandler(plugin.getData()).getItemStack(player));
 	}
 	
 	public void openShop(Player player) {
@@ -170,7 +177,9 @@ public abstract class ShopBase implements Listener {
 		setBackItem(player, inventory);
 		setNextItem(player, inventory);
 		updateInfoItem(player, inventory);
-		inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
+		if(OSTB.getPlugin() == Plugins.HUB) {
+			inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
+		}
 		updateCoinsItem(player, inventory);
 	}
 	
@@ -178,6 +187,27 @@ public abstract class ShopBase implements Listener {
 	public abstract void updateInfoItem(Player player);
 	public abstract void updateInfoItem(Player player, Inventory inventory);
 	public abstract void onInventoryItemClick(InventoryItemClickEvent event);
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 5) {
+			if(holograms != null) {
+				String topText = "Kits / Shop";
+				if(plugin == Plugins.SW || plugin == Plugins.SWT || plugin == Plugins.UHCSW) {
+					topText = "Kits / Cages";
+				}
+				for(Hologram hologram : holograms) {
+					hologram.setText(colors[counter] + "&n" + topText);
+				}
+				if(++counter >= colors.length) {
+					counter = 0;
+				}
+			} else if(OSTB.getMiniGame() == null) {
+				TimeEvent.getHandlerList().unregister(this);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {

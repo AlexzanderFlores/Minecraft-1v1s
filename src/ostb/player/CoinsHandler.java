@@ -204,6 +204,7 @@ public class CoinsHandler implements Listener {
 	public ItemStack getItemStack(Player player) {
 		return new ItemCreator(Material.GOLD_INGOT).setName("&7Coins: &a" + getCoins(player)).setLores(new String [] {
 			"",
+			"&eRanks get &cx2 &ecoins &b/buy",
 			"&eGet more coins daily through &a/vote",
 			""
 		}).getItemStack();
