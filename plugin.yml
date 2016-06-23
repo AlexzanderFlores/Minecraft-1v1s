@@ -60,6 +60,9 @@ commands:
   r:
     usage: /r <message>
 
+  shop:
+    usage: /shop
+
   seen:
     usage: /seen <name>
 

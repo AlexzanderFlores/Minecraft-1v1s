@@ -16,11 +16,15 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
+import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.kit.KitBase;
 import ostb.gameapi.shops.SkyWarsShop;
 import ostb.player.CoinsHandler;
+import ostb.player.MessageHandler;
+import ostb.server.ChatClickHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
@@ -35,7 +39,7 @@ import ostb.server.util.StringUtil;
 public class SkyWarsCrate implements Listener {
 	private static List<String> delayed = null;
 	private static List<FeatureItem> features = null;
-	private static final int cost = 25;
+	private static final int cost = 40;
 	
 	public SkyWarsCrate() {
 		delayed = new ArrayList<String>();
@@ -140,6 +144,25 @@ public class SkyWarsCrate implements Listener {
 			features.add(new FeatureItem("60 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SKY_WARS));
 			features.add(new FeatureItem("80 Coins", new ItemStack(Material.GOLD_INGOT), Rarity.RARE, FeatureType.SKY_WARS));
 			features.add(new FeatureItem("Crate Key x3", new ItemCreator(Material.TRIPWIRE_HOOK).setGlow(true).getItemStack(), Rarity.RARE, FeatureType.SKY_WARS));
+		}
+	}
+	
+	@EventHandler
+	public void onPostPlayerJoin(PostPlayerJoinEvent event) {
+		if(OSTB.getMiniGame() == null) {
+			PostPlayerJoinEvent.getHandlerList().unregister(this);
+		} else {
+			Player player = event.getPlayer();
+			if(CoinsHandler.getCoinsHandler(Plugins.SW.getData()).getCoins(player) >= cost) {
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						EffectUtil.playSound(player, Sound.LEVEL_UP);
+						MessageHandler.sendMessage(player, "&a&l[TIP] &xYou have enough coins to buy a &bSky Wars Crate");
+						ChatClickHandler.sendMessageToRunCommand(player, " &b&nChest", "Click to Open Shop", "/shop", "&bSky Wars Crates &eare found in the shop, click the");
+					}
+				}, 20 * 2);
+			}
 		}
 	}
 	

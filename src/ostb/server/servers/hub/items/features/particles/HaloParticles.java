@@ -123,6 +123,13 @@ public class HaloParticles extends FeatureBase {
 		public boolean owns(Player player) {
 			if(Ranks.PREMIUM.hasRank(player)) {
 				if(this == FIREWORKS_SPARK) {
+					String [] keys = new String [] {"uuid", "name"};
+					String [] values = new String [] {player.getUniqueId().toString(), toString()};
+					if(!DB.HUB_HALO_PARTICLES.isKeySet(keys, values)) {
+						String time = TimeUtil.getTime().substring(0, 10);
+						Bukkit.getLogger().info("halo particles: give");
+						DB.HUB_HALO_PARTICLES.insert("'" + player.getUniqueId().toString() + "', '" + toString() + "', '0', '1', '" + time + "'");
+					}
 					return true;
 				}
 			}
@@ -319,6 +326,7 @@ public class HaloParticles extends FeatureBase {
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
+					Bukkit.getLogger().info(type.toString());
 					DB.HUB_HALO_PARTICLES.updateInt("active", 0, "uuid", uuid.toString());
 					DB.HUB_HALO_PARTICLES.updateInt("active", 1, new String [] {"uuid", "name"}, new String [] {uuid.toString(), type.toString()});
 					Bukkit.getLogger().info("halo particles: selected");
@@ -454,8 +462,10 @@ public class HaloParticles extends FeatureBase {
 								Bukkit.getLogger().info("halo particles: " + player.getName() + " queue");
 								HaloParticleTypes type = HaloParticleTypes.valueOf(haloName);
 								if(type == null) {
+									Bukkit.getLogger().info("1");
 									DB.HUB_HALO_PARTICLES.delete(new String [] {"uuid", "name"}, new String [] {uuid.toString(), haloName});
 								} else {
+									Bukkit.getLogger().info("2");
 									enable(player, type);
 								}
 							}

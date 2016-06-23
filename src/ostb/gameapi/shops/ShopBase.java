@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,7 @@ import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
 import ostb.gameapi.kit.KitBase;
 import ostb.player.CoinsHandler;
+import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
@@ -116,6 +118,14 @@ public abstract class ShopBase implements Listener {
 					hologramClick(player);
 				}
 			}.getArmorStand().getEquipment().setHelmet(new ItemCreator(Material.CHEST).setGlow(true).getItemStack());
+			new CommandBase("shop", true) {
+				@Override
+				public boolean execute(CommandSender sender, String [] arguments) {
+					Player player = (Player) sender;
+					openShop(player);
+					return true;
+				}
+			};
 		}
 		EventUtil.register(this);
 	}
