@@ -27,6 +27,7 @@ import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 import ostb.server.DB;
+import ostb.server.RankAds;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
@@ -179,7 +180,7 @@ public class CoinsHandler implements Listener {
 		}
 		MessageHandler.sendMessage(player, msg);
 		if(!Ranks.PREMIUM.hasRank(player)) {
-			MessageHandler.sendMessage(player, "&cGet more coins with ranks: &b/buy");
+			MessageHandler.sendMessage(player, RankAds.getAlerts()[0]);
 		}
 		if(coins.containsKey(player.getName())) {
 			amount += coins.get(player.getName());

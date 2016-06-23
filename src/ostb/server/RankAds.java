@@ -11,18 +11,23 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.util.EventUtil;
 
 public class RankAds implements Listener {
-	private String [] alerts = null;
+	private static String [] alerts = null;
 	private int counter = 0;
 	
 	public RankAds() {
 		alerts = new String [] {
-			"Ranks give you &cx2 &xcoins!",
-			"Ranks allow you to fly in hubs",
-			"Ranks bypass all rank ads",
-			"Ranks allow you to join full servers",
-			"Ranks display your skin on all hubs"
+			"Ranks give you &cx2 &xcoins &b/buy",
+			"Ranks allow you to fly in hubs &b/buy",
+			"Ranks bypass all rank ads &b/buy",
+			"Ranks allow you to join full servers &b/buy",
+			"Ranks display your skin on all hubs &b/buy",
+			"Ranks get &cx2 &xvotes &b/buy"
 		};
 		EventUtil.register(this);
+	}
+	
+	public static String [] getAlerts() {
+		return alerts;
 	}
 	
 	@EventHandler
@@ -31,7 +36,7 @@ public class RankAds implements Listener {
 		if(ticks == 20 * 60) {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				if(!Ranks.PREMIUM.hasRank(player)) {
-					MessageHandler.sendMessage(player, "&a&l[TIP] &x" + alerts[counter] + " &b/buy");
+					MessageHandler.sendMessage(player, "&a&l[TIP] &x" + alerts[counter]);
 				}
 			}
 			if(++counter >= alerts.length) {

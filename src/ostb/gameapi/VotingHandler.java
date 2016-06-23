@@ -32,6 +32,7 @@ import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
+import ostb.server.RankAds;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
@@ -134,6 +135,9 @@ public class VotingHandler implements Listener {
 			mapVotes.put(map, votes);
 		}
 		MessageHandler.sendMessage(player, "+" + votes + " Votes for &a" + map);
+		if(!Ranks.PREMIUM.hasRank(player)) {
+			MessageHandler.sendMessage(player, RankAds.getAlerts()[5]);
+		}
 		updateHologram(map);
 	}
 	
