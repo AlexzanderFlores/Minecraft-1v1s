@@ -40,7 +40,6 @@ import ostb.server.util.ItemCreator;
 import ostb.server.util.ItemUtil;
 
 public class GameSelector extends HubItemBase {
-	private static Map<String, Plugins> items = null;
 	private static Map<String, Plugins> watching = null;
 	private static Map<Plugins, Integer> itemSlots = null;
 	private static List<Integer> slots = null;
@@ -50,7 +49,6 @@ public class GameSelector extends HubItemBase {
 	
 	public GameSelector() {
 		super(new ItemCreator(Material.COMPASS).setName("&e" + name), 0);
-		items = new HashMap<String, Plugins>();
 		watching = new HashMap<String, Plugins>();
 		itemSlots = new HashMap<Plugins, Integer>();
 		slots = new ArrayList<Integer>();
@@ -100,13 +98,16 @@ public class GameSelector extends HubItemBase {
 		ItemStack item = event.getItem();
 		String title = event.getTitle();
 		if(title.equals(ChatColor.stripColor(getName()))) {
-			String name = item.getItemMeta().getDisplayName();
-			if(items.containsKey(name)) {
-				Plugins plugin = items.get(name);
-				open(player, plugin);
-			} else if(item.getType() == Material.DIAMOND_BOOTS) {
+			if(item.getType() == Material.DIAMOND_BOOTS) {
 				player.closeInventory();
 				player.teleport(new Location(player.getWorld(), 1675.5, 5, -1289.5, -222.0f, 0.0f));
+			} else {
+				for(Plugins plugin : Plugins.values()) {
+					if(itemSlots.get(plugin) == event.getSlot()) {
+						open(player, plugin);
+						break;
+					}
+				}
 			}
 			event.setCancelled(true);
 		} else if(watching.containsKey(player.getName())) {
@@ -288,7 +289,6 @@ public class GameSelector extends HubItemBase {
 			"&7Team size: &a1",
 			""
 		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.UHCSW);
 		inventory.setItem(11, item);
 		itemSlots.put(Plugins.UHCSW, 11);
 		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + Plugins.KITPVP.getDisplay()).setLores(new String [] {
@@ -298,7 +298,6 @@ public class GameSelector extends HubItemBase {
 			"",
 			"&7Team size: &aUp to 20"
 		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.KITPVP);
 		inventory.setItem(13, item);
 		itemSlots.put(Plugins.KITPVP, 13);
 		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + Plugins.ONEVSONE.getDisplay()).setLores(new String [] {
@@ -308,7 +307,6 @@ public class GameSelector extends HubItemBase {
 			"&eagainst other players",
 			""
 		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.ONEVSONE);
 		//inventory.setItem(15, item);
 		//itemSlots.put(Plugins.ONEVSONE, 15);
 		inventory.setItem(15, comingSoon);
@@ -318,7 +316,6 @@ public class GameSelector extends HubItemBase {
 			"&eNatural regeneration is &cOFF",
 			""
 		}).getItemStack();
-		items.put(item.getItemMeta().getDisplayName(), Plugins.SUHC);
 		inventory.setItem(21, item);
 		itemSlots.put(Plugins.SUHC, 21);
 		item = new ItemCreator(Material.DIAMOND_BOOTS).setName("&bParkour").setLores(new String [] {
