@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,6 +47,7 @@ public abstract class ShopBase implements Listener {
 	private List<Hologram> holograms = null;
 	private String [] colors = null;
 	private int counter = 0;
+	private int [] slots = null;
 	
 	public class KitData {
 		private String title = null;
@@ -85,6 +87,7 @@ public abstract class ShopBase implements Listener {
 		this.maxPages = maxPages;
 		pages = new HashMap<String, Integer>();
 		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").setGlow(true).getItemStack();
+		slots = new int [] {3, 5};
 		if(OSTB.getMiniGame() != null) {
 			holograms = new ArrayList<Hologram>();
 			colors = new String [] {
@@ -213,8 +216,19 @@ public abstract class ShopBase implements Listener {
 				if(++counter >= colors.length) {
 					counter = 0;
 				}
-			} else if(OSTB.getMiniGame() == null) {
-				TimeEvent.getHandlerList().unregister(this);
+			}
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				InventoryView view = player.getOpenInventory();
+				if(view != null && view.getTitle().startsWith("Shop - ")) {
+					for(int slot : slots) {
+						ItemStack item = view.getItem(slot);
+						if(item == null || item.getType() == Material.AIR) {
+							view.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, 14).setName(" ").setGlow(true).getItemStack());
+						} else {
+							view.setItem(slot, new ItemStack(Material.AIR));
+						}
+					}
+				}
 			}
 		}
 	}

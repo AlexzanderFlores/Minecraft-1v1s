@@ -220,11 +220,11 @@ public class CrateBase implements Listener {
 				placeItems(false);
 			}
 			if(ticks == 20) {
-				if(counter == 5) {
+				if(counter == 3) {
 					tickSpeed = 7;
-				} else if(counter == 8) {
+				} else if(counter == 5) {
 					tickSpeed = 14;
-				} else if(counter > 10) {
+				} else if(counter > 7) {
 					placeItems(true);
 					InventoryView inventoryView = player.getOpenInventory();
 					inventoryView.setItem(13, new ItemStack(Material.AIR));
