@@ -12,6 +12,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -273,5 +275,12 @@ public class MiniGameEvents implements Listener {
 	@EventHandler
 	public void onAutoRestart(AutoRestartEvent event) {
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if(getMiniGame().getJoiningPreGame() && event.getCause() == DamageCause.VOID) {
+			event.getEntity().teleport(event.getEntity().getWorld().getSpawnLocation());
+		}
 	}
 }

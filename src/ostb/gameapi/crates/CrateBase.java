@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import ostb.OSTB.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
-import ostb.player.MessageHandler;
 import ostb.server.DB;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.FeatureItem;
@@ -46,6 +44,7 @@ public class CrateBase implements Listener {
 	private DB lifetime = null;
 	private DB monthly = null;
 	private DB weekly = null;
+	private FeatureItem item = null;
 	
 	public CrateBase(Player player, Plugins plugin, String title, List<FeatureItem> features) {
 		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
@@ -142,6 +141,7 @@ public class CrateBase implements Listener {
 					do {
 						feature = features.get(random.nextInt(features.size()));
 					} while(feature.getRarity() != rarity);
+					item = feature;
 				} else {
 					feature = features.get(random.nextInt(features.size()));
 				}
@@ -151,61 +151,48 @@ public class CrateBase implements Listener {
 	}
 	
 	private void win(InventoryView inventoryView) {
-		FeatureItem featureWon = null;
-		String wonName = ChatColor.stripColor(inventoryView.getItem(22).getItemMeta().getDisplayName());
-		for(FeatureItem feature : features) {
-			String name = feature.getName();
-			if(name.equals(wonName)) {
-				featureWon = feature;
-				break;
-			}
-		}
-		if(featureWon == null) {
-			MessageHandler.sendMessage(player, "&cThere was an error in giving you your reward, please report this (&e\"" + wonName + "&e\"&c)");
+		Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin, item));
+		if(lifetime == null || monthly == null || weekly == null) {
+			remove();
 		} else {
-			Bukkit.getPluginManager().callEvent(new CrateFinishedEvent(player, plugin, featureWon));
-			if(lifetime == null || monthly == null || weekly == null) {
-				remove();
-			} else {
-				final UUID uuid = player.getUniqueId();
-				new AsyncDelayedTask(new Runnable() {
-					@Override
-					public void run() {
-						if(lifetime != null) {
-							if(lifetime.isUUIDSet(uuid)) {
-								int amount = lifetime.getInt("uuid", uuid.toString(), "amount") + 1;
-								lifetime.updateInt("amount", amount, "uuid", uuid.toString());
-							} else {
-								lifetime.insert("'" + uuid.toString() + "', '1'");
-							}
+			final UUID uuid = player.getUniqueId();
+			new AsyncDelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					if(lifetime != null) {
+						if(lifetime.isUUIDSet(uuid)) {
+							int amount = lifetime.getInt("uuid", uuid.toString(), "amount") + 1;
+							lifetime.updateInt("amount", amount, "uuid", uuid.toString());
+						} else {
+							lifetime.insert("'" + uuid.toString() + "', '1'");
 						}
-						Calendar calendar = Calendar.getInstance();
-						if(monthly != null) {
-							int month = calendar.get(Calendar.MONTH);
-							String [] keys = new String [] {"uuid", "month"};
-							String [] values = new String [] {uuid.toString(), month + ""};
-							if(monthly.isKeySet(keys, values)) {
-								int amount = monthly.getInt(keys, values, "amount") + 1;
-								monthly.updateInt("amount", amount, keys, values);
-							} else {
-								monthly.insert("'" + uuid.toString() + "', '1', '" + month + "'");
-							}
-						}
-						if(weekly != null) {
-							int week = calendar.get(Calendar.WEEK_OF_YEAR);
-							String [] keys = new String [] {"uuid", "week"};
-							String [] values = new String [] {uuid.toString(), week + ""};
-							if(weekly.isKeySet(keys, values)) {
-								int amount = weekly.getInt(keys, values, "amount") + 1;
-								weekly.updateInt("amount", amount, keys, values);
-							} else {
-								weekly.insert("'" + uuid.toString() + "', '1', '" + week + "'");
-							}
-						}
-						remove();
 					}
-				});
-			}
+					Calendar calendar = Calendar.getInstance();
+					if(monthly != null) {
+						int month = calendar.get(Calendar.MONTH);
+						String [] keys = new String [] {"uuid", "month"};
+						String [] values = new String [] {uuid.toString(), month + ""};
+						if(monthly.isKeySet(keys, values)) {
+							int amount = monthly.getInt(keys, values, "amount") + 1;
+							monthly.updateInt("amount", amount, keys, values);
+						} else {
+							monthly.insert("'" + uuid.toString() + "', '1', '" + month + "'");
+						}
+					}
+					if(weekly != null) {
+						int week = calendar.get(Calendar.WEEK_OF_YEAR);
+						String [] keys = new String [] {"uuid", "week"};
+						String [] values = new String [] {uuid.toString(), week + ""};
+						if(weekly.isKeySet(keys, values)) {
+							int amount = weekly.getInt(keys, values, "amount") + 1;
+							weekly.updateInt("amount", amount, keys, values);
+						} else {
+							weekly.insert("'" + uuid.toString() + "', '1', '" + week + "'");
+						}
+					}
+					remove();
+				}
+			});
 		}
 	}
 	
