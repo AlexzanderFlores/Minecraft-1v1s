@@ -26,9 +26,11 @@ public class SkullPikeUtil implements Listener {
         Block block = location.getBlock().getRelative(0, 1, 0);
         block.setType(Material.SKULL);
         block.setData((byte) 1);
-        Skull skull = (Skull) block.getState();
-        skull.setSkullType(SkullType.PLAYER);
-        skull.setOwner(player.getName());
-        skull.update();
+        if(block.getType() == Material.SKULL) {
+        	Skull skull = (Skull) block.getState();
+            skull.setSkullType(SkullType.PLAYER);
+            skull.setOwner(player.getName());
+            skull.update();
+        }
 	}
 }

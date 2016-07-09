@@ -428,7 +428,15 @@ public class StatsHandler implements Listener {
 		List<String> stats = new ArrayList<String>();
 		ResultSet resultSet = null;
 		try {
-			resultSet = time.getDB().getConnection().prepareStatement("SELECT uuid, kills FROM " + time.getDB().getName() + " ORDER BY kills DESC LIMIT 10").executeQuery();
+			String query = "SELECT uuid, kills FROM " + time.getDB().getName() + " ";
+			if(time == StatTimes.MONTHLY) {
+				String month = TimeUtil.getTime().substring(0, 7);
+				query += "WHERE date = '" + month + "' ";
+			} else if(time == StatTimes.WEEKLY) {
+				query += "WHERE date = '" + Calendar.getInstance().get(Calendar.YEAR) + "/" + Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) + "' ";
+			}
+			query += "ORDER BY kills DESC LIMIT 10";
+			resultSet = time.getDB().getConnection().prepareStatement(query).executeQuery();
 			int counter = 0;
 			while(resultSet.next()) {
 				String name = AccountHandler.getName(UUID.fromString(resultSet.getString("uuid")));
