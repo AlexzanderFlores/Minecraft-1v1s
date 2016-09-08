@@ -19,7 +19,6 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import ostb.customevents.TimeEvent;
 import ostb.server.util.EventUtil;
 
-
 public class PlayerAFKEvent extends Event implements Listener {
 	private static final HandlerList handlers = new HandlerList();
 	private static Map<String, Integer> counters = null;

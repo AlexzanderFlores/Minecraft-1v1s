@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import ostb.server.util.EventUtil;
 
-
 public class MouseClickEvent extends Event implements Listener {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;

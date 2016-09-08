@@ -44,7 +44,7 @@ public class Armor extends FeatureBase {
 		CHAIN_HELMET(2, "Chain Helmet", Rarity.UNCOMMON, Material.CHAINMAIL_HELMET),
 		GOLD_HELMET(3, "Gold Helmet", Rarity.UNCOMMON, Material.GOLD_HELMET),
 		LEATHER_HELMET(4, "Leather Helmet", Rarity.COMMON, Material.LEATHER_HELMET),
-		NO_HELMET(8, "&cRemove Helmet", Rarity.COMMON, Material.BARRIER, false),
+		NO_HELMET(8, "&cRemove Helmet", Rarity.COMMON, Material.WEB, false),
 		
 		// Chestplates
 		DIAMOND_CHESTPLATE(9, "Diamond Chestplate", Rarity.RARE, Material.DIAMOND_CHESTPLATE),
@@ -52,7 +52,7 @@ public class Armor extends FeatureBase {
 		CHAIN_CHESTPLATE(11, "Chain Chestplate", Rarity.UNCOMMON, Material.CHAINMAIL_CHESTPLATE),
 		GOLD_CHESTPLATE(12, "Gold Chestplate", Rarity.UNCOMMON, Material.GOLD_CHESTPLATE),
 		LEATHER_CHESTPLATE(13, "Leather Chestplate", Rarity.COMMON, Material.LEATHER_CHESTPLATE),
-		NO_CHESTPLATE(17, "&cRemove Chestplate", Rarity.COMMON, Material.BARRIER, false),
+		NO_CHESTPLATE(17, "&cRemove Chestplate", Rarity.COMMON, Material.WEB, false),
 		
 		// Leggings
 		DIAMOND_LEGGINGS(18, "Diamond Leggings", Rarity.RARE, Material.DIAMOND_LEGGINGS),
@@ -60,7 +60,7 @@ public class Armor extends FeatureBase {
 		CHAIN_LEGGINGS(20, "Chain Leggings", Rarity.UNCOMMON, Material.CHAINMAIL_LEGGINGS),
 		GOLD_LEGGINGS(21, "Gold Leggings", Rarity.UNCOMMON, Material.GOLD_LEGGINGS),
 		LEATHER_LEGGINGS(22, "Leather Leggings", Rarity.COMMON, Material.LEATHER_LEGGINGS),
-		NO_LEGGINGS(26, "&cRemove Leggings", Rarity.COMMON, Material.BARRIER, false),
+		NO_LEGGINGS(26, "&cRemove Leggings", Rarity.COMMON, Material.WEB, false),
 		
 		// Boots
 		DIAMOND_BOOTS(27, "Diamond Boots", Rarity.RARE, Material.DIAMOND_BOOTS),
@@ -68,7 +68,7 @@ public class Armor extends FeatureBase {
 		CHAIN_BOOTS(29, "Chain Boots", Rarity.UNCOMMON, Material.CHAINMAIL_BOOTS),
 		GOLD_BOOTS(30, "Gold Boots", Rarity.UNCOMMON, Material.GOLD_BOOTS),
 		LEATHER_BOOTS(31, "Leather Boots", Rarity.COMMON, Material.LEATHER_BOOTS),
-		NO_BOOTS(35, "&cRemove Boots", Rarity.COMMON, Material.BARRIER, false),
+		NO_BOOTS(35, "&cRemove Boots", Rarity.COMMON, Material.WEB, false),
 		
 		;
 		
@@ -379,7 +379,7 @@ public class Armor extends FeatureBase {
 			} else {
 				String type = item.getType().toString().toUpperCase();
 				String name = ChatColor.stripColor(event.getItemTitle());
-				if(item.getType() == Material.BARRIER) {
+				if(item.getType() == Material.WEB) {
 					boolean update = false;
 					if(name.contains("Helmet")) {
 						if(player.getInventory().getHelmet() != null && player.getInventory().getHelmet().getType() != Material.AIR) {

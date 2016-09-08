@@ -146,8 +146,8 @@ public class GameSelector extends HubItemBase {
 					}
 				}
 			}
-			if(itemSlots.containsKey(Plugins.UHCSW)) {
-				int slot = itemSlots.get(Plugins.UHCSW);
+			if(itemSlots.containsKey(Plugins.ONEVSONE)) {
+				int slot = itemSlots.get(Plugins.ONEVSONE);
 				for(Player player : ProPlugin.getPlayers()) {
 					InventoryView view = player.getOpenInventory();
 					if(view.getTitle().equals(name)) {
@@ -279,7 +279,7 @@ public class GameSelector extends HubItemBase {
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, size, ChatColor.stripColor(getName()));
 		ItemStack comingSoon = new ItemCreator(Material.INK_SACK, 8).setName("&7Coming Soon").getItemStack();
-		Plugins plugin = Plugins.UHCSW;
+		Plugins plugin = Plugins.ONEVSONE;
 		ItemStack item = new ItemCreator(Material.GRASS).setName("&b" + plugin.getDisplay()).setLores(new String [] {
 			"&7Unique spin-off of Sky Wars",
 			"",

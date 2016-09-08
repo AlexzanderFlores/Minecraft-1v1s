@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +17,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntityLiving;
 import ostb.ProPlugin;
 import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
 import ostb.server.servers.hub.items.features.pets.entities.ChickenPet;

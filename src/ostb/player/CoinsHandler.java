@@ -31,7 +31,6 @@ import ostb.server.RankAds;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
-@SuppressWarnings("deprecation")
 public class CoinsHandler implements Listener {
 	private static Map<String, CoinsHandler> handlers = new HashMap<String, CoinsHandler>();
 	private static int killCoins = 0;

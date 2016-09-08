@@ -21,14 +21,8 @@ import ostb.customevents.player.PlayerAFKEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PostPlayerJoinEvent;
 import ostb.gameapi.MiniGame;
-import ostb.gameapi.games.domination.Domination;
 import ostb.gameapi.games.kitpvp.KitPVP;
 import ostb.gameapi.games.onevsones.OnevsOnes;
-import ostb.gameapi.games.skywars.SkyWars;
-import ostb.gameapi.games.speeduhc.SpeedUHC;
-import ostb.gameapi.games.survivalgames.SurvivalGames;
-import ostb.gameapi.games.uhc.UHC;
-import ostb.gameapi.games.uhcskywars.UHCSkyWars;
 import ostb.gameapi.kit.DefaultKit;
 import ostb.player.ChatLogger;
 import ostb.player.DefaultChatColor;
@@ -54,8 +48,6 @@ import ostb.server.RankAds;
 import ostb.server.RestarterHandler;
 import ostb.server.servers.building.Building;
 import ostb.server.servers.hub.main.MainHub;
-import ostb.server.servers.pregenerator.Pregenerator;
-import ostb.server.servers.slave.Slave;
 import ostb.server.servers.worker.Worker;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.FileHandler;
@@ -66,19 +58,10 @@ import ostb.staff.Punishment;
 public class OSTB extends JavaPlugin implements PluginMessageListener {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
-		SG("SG", "survival_games", "Survival Games"),
-		DOM("DOM", "domination", "Domination"),
-		SW("SW", "sky_wars", "Solo Sky Wars"),
-		UHCSW("UHCSW", "sky_wars", "UHC Sky Wars"),
-		SWT("SWT", "sky_wars", "Team Sky Wars"),
-		SUHC("SUHC", "speed_uhc", "Speed UHC"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
 		ONEVSONE("1v1s", "1v1", "1v1s"),
-		UHC("UHC", "uhc", "UHC"),
-		PREGEN("Pregenerator", "pregenerator"),
 		BUILDING("Building", "building"),
-		WORKER("Worker", "worker"),
-		SLAVE("Slave", "slave");
+		WORKER("Worker", "worker");
 		
 		private String server = null;
 		private String data = null;
@@ -152,42 +135,17 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 			case HUB:
 				proPlugin = new MainHub();
 				break;
-			case SG:
-				proPlugin = new SurvivalGames();
-				break;
-			case DOM:
-				proPlugin = new Domination();
-				break;
-			case SW:
-			case SWT:
-				proPlugin = new SkyWars();
-				break;
-			case UHCSW:
-				proPlugin = new UHCSkyWars();
-				break;
-			case SUHC:
-				proPlugin = new SpeedUHC();
-				break;
 			case KITPVP:
 				proPlugin = new KitPVP();
 				break;
 			case ONEVSONE:
 				proPlugin = new OnevsOnes();
 				break;
-			case UHC:
-				proPlugin = new UHC();
-				break;
-			case PREGEN:
-				proPlugin = new Pregenerator();
-				break;
 			case BUILDING:
 				proPlugin = new Building();
 				break;
 			case WORKER:
 				proPlugin = new Worker();
-				break;
-			case SLAVE:
-				proPlugin = new Slave();
 				break;
 			default:
 				

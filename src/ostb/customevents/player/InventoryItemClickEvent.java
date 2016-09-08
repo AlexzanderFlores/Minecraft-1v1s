@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.server.util.EventUtil;
 
-
 public class InventoryItemClickEvent extends Event implements Listener {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;

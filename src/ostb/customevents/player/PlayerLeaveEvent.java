@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import ostb.server.util.EventUtil;
 
-
 public class PlayerLeaveEvent extends Event implements Listener {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;

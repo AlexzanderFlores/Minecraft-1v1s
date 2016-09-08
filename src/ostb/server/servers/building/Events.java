@@ -3,13 +3,11 @@ package ostb.server.servers.building;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -96,13 +94,6 @@ public class Events implements Listener {
 	public void onBlockGrow(BlockSpreadEvent event) {
 		if(event.getNewState().getType() == Material.VINE) {
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onCreatureSpawn(CreatureSpawnEvent event) {
-		if(event.getEntityType() == EntityType.ARMOR_STAND) {
-			event.setCancelled(false);
 		}
 	}
 	

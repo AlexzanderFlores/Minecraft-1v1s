@@ -48,7 +48,7 @@ public class HotbarEditor implements Listener {
     			inventory.setItem(slot, items.get(slot));
     		}
         }
-    	inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.BARRIER).setName("&eSave Kit Change").getItemStack());
+    	inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WEB).setName("&eSave Kit Change").getItemStack());
 		player.openInventory(inventory);
 		items.clear();
 		items = null;
@@ -84,7 +84,7 @@ public class HotbarEditor implements Listener {
     public void onInventoryItemClick(InventoryItemClickEvent event) {
     	Player player = event.getPlayer();
     	if(kits.containsKey(player.getName())) {
-    		if(event.getItem().getType() == Material.BARRIER) {
+    		if(event.getItem().getType() == Material.WEB) {
     			String name = kits.get(player.getName()).getName();
         		File dir = new File(path.replace("%", player.getName()));
         		dir.mkdirs();

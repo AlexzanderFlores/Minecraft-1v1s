@@ -73,7 +73,7 @@ public class ArrowTrails extends FeatureBase {
 		SLIME(23, "Slime Arrow Trail", Rarity.COMMON, Material.SLIME_BALL),
 		HEART(24, "Heart Arrow Trail", Rarity.UNCOMMON, Material.RED_ROSE),
 		RANDOM(25, "Random Arrow Trail", Rarity.RARE, Material.ARROW),
-		NONE(33, "&cSet No Arrow Trail", Rarity.COMMON, Material.BARRIER, false)
+		NONE(33, "&cSet No Arrow Trail", Rarity.COMMON, Material.WEB, false)
 		
 		;
 		
@@ -421,7 +421,7 @@ public class ArrowTrails extends FeatureBase {
 				if(!settingsChanged.contains(player.getName())) {
 					settingsChanged.add(player.getName());
 				}
-			} else if(item.getType() == Material.BARRIER) {
+			} else if(item.getType() == Material.WEB) {
 				String name = event.getItemTitle();
 				if(selected.containsKey(player.getName())) {
 					final UUID uuid = player.getUniqueId();

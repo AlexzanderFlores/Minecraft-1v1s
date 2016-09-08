@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntityLiving;
 import ostb.player.MessageHandler;
 import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
 import ostb.server.util.ItemCreator;

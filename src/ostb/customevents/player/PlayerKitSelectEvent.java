@@ -6,7 +6,6 @@ import org.bukkit.event.HandlerList;
 
 import ostb.gameapi.kit.KitBase;
 
-
 public class PlayerKitSelectEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;

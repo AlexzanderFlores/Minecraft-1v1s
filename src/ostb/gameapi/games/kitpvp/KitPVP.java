@@ -6,13 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import ostb.OSTB;
-import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
+import ostb.gameapi.TeamHandler;
 import ostb.gameapi.TemporaryFireUtil;
 import ostb.gameapi.competitive.StatsHandler;
-import ostb.gameapi.games.kitpvp.TeamHandler.KitTeam;
-import ostb.player.CoinsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
 import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
@@ -21,7 +19,6 @@ import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
 public class KitPVP extends ProPlugin {
-	private static TeamHandler teamHandler = null;
 	private String oldScore = "";
 	private String oldCount = "";
 	
@@ -37,9 +34,6 @@ public class KitPVP extends ProPlugin {
 		new ServerLogger();
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
-		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
-		CoinsHandler.setKillCoins(5);
-		CoinsHandler.setWinCoins(25);
 		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {

@@ -6,7 +6,6 @@ import org.bukkit.event.HandlerList;
 
 import ostb.player.account.AccountHandler.Ranks;
 
-
 public class PlayerRankChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player = null;

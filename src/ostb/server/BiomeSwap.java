@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.server.v1_8_R3.BiomeBase;
+import net.minecraft.server.v1_7_R4.BiomeBase;
 
 public class BiomeSwap {
 	public enum Biome {

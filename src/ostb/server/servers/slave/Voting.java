@@ -36,9 +36,6 @@ public class Voting implements Listener {
 			}
 		};
 		handlers = new ArrayList<CoinsHandler>();
-		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_DOMINATION, Plugins.DOM.getData()));
-		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SKY_WARS, Plugins.SW.getData()));
-		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_SPEED_UHC, Plugins.SUHC.getData()));
 		handlers.add(new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData()));
 		EventUtil.register(this);
 	}

@@ -18,7 +18,6 @@ import ostb.server.CommandBase;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EventUtil;
 
-@SuppressWarnings("deprecation")
 public class TeamScoreboardHandler implements Listener {
 	public TeamScoreboardHandler() {
 		new DelayedTask(new Runnable() {

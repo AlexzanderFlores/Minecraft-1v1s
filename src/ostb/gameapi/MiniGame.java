@@ -6,8 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -83,11 +81,6 @@ public abstract class MiniGame extends ProPlugin {
 		addGroup("mini-game");
 		setLobby(Bukkit.getWorlds().get(0));
 		lobby.setTime(12250);
-		for(Entity entity : lobby.getEntities()) {
-			if(entity instanceof ArmorStand) {
-				entity.remove();
-			}
-		}
 		new MiniGameEvents();
 		new SpectatorHandler();
 		new PerformanceLogger();

@@ -112,7 +112,7 @@ public class Shop implements Listener {
 				inventory.setItem(43, new ItemCreator(Material.ENDER_CHEST).setName("&bSave your Items").setLores(new String [] {"", "&7Save your items", ""}).getItemStack());
 				
 				inventory.setItem(inventory.getSize() - 6, CoinsHandler.getCoinsHandler(Plugins.KITPVP.getData()).getItemStack(player));
-				inventory.setItem(inventory.getSize() - 4, new ItemCreator(Material.BARRIER).setName("&cTrash").setLores(new String [] {"", "&7Opens a blank inventory for", "&7you to dispose of unwanted items", ""}).getItemStack());
+				inventory.setItem(inventory.getSize() - 4, new ItemCreator(Material.WEB).setName("&cTrash").setLores(new String [] {"", "&7Opens a blank inventory for", "&7you to dispose of unwanted items", ""}).getItemStack());
 				player.openInventory(inventory);
 			}
 		};
@@ -152,7 +152,7 @@ public class Shop implements Listener {
 				saveYourItems.open(player);
 				return;
 			}
-			if(item.getType() == Material.BARRIER) {
+			if(item.getType() == Material.WEB) {
 				player.openInventory(Bukkit.createInventory(player, 9 * 6, "Trash"));
 				return;
 			}

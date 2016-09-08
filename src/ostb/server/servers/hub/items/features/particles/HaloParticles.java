@@ -71,7 +71,7 @@ public class HaloParticles extends FeatureBase {
 		SLIME(23, "Slime Halo Particles", Rarity.COMMON, Material.SLIME_BALL),
 		HEART(24, "Heart Halo Particles", Rarity.UNCOMMON, Material.RED_ROSE),
 		FIREWORKS_SPARK(25, "Firework Spark Halo Particles", Rarity.RARE, Material.FIREWORK),
-		NONE(33, "&cSet No Halo Particles", Rarity.COMMON, Material.BARRIER, false)
+		NONE(33, "&cSet No Halo Particles", Rarity.COMMON, Material.WEB, false)
 		
 		;
 		
@@ -401,7 +401,7 @@ public class HaloParticles extends FeatureBase {
 				} else {
 					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
 				}
-			} else if(item.getType() == Material.BARRIER) {
+			} else if(item.getType() == Material.WEB) {
 				String name = event.getItemTitle();
 				if(selected.containsKey(player.getName())) {
 					final UUID uuid = player.getUniqueId();

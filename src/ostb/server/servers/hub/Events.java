@@ -17,7 +17,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
@@ -189,11 +188,6 @@ public class Events implements Listener {
 		} else {
 			event.setCancelled(true);
 		}
-	}
-	
-	@EventHandler
-	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-		event.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
