@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,7 +29,6 @@ public class Building extends ProPlugin {
 		removeFlags();
 		setAllowLeavesDecay(false);
 		setAllowDefaultMobSpawning(false);
-		new ArmorStandHelper();
 		new CommandBase("setGameSpawn", 0, 1, true) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

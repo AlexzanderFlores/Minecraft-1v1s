@@ -1,6 +1,7 @@
 package ostb.server.servers.hub.items.features.pets.entities;
 
-import net.minecraft.server.v1_7_R4.*;
+import java.lang.reflect.Field;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,16 +14,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-import promcgames.player.MessageHandler;
-import promcgames.player.account.AccountHandler.Ranks;
-import promcgames.server.nms.PathfinderGoalWalkToOwner;
-import promcgames.server.servers.hub.items.cosmetic.pro.pets.EntityPet;
-import promcgames.server.util.ItemCreator;
-import promcgames.server.util.ReflectionUtil;
-import promcgames.server.util.StringUtil;
 
-import java.lang.reflect.Field;
+import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_7_R4.EntityHorse;
+import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.World;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.PathfinderGoalWalkToOwner;
+import ostb.server.util.ItemCreator;
+import ostb.server.util.ReflectionUtil;
+import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class HorsePet extends EntityHorse implements EntityPet {
@@ -86,13 +90,13 @@ public class HorsePet extends EntityHorse implements EntityPet {
 
     @Override
     public void clickedOnCustomOption(Player player, ItemStack clicked) {
-        if (Ranks.PRO_PLUS.hasRank(player)) {
+        if (Ranks.PREMIUM_PLUS.hasRank(player)) {
             Horse horse = (Horse) getBukkitEntity();
             if (clicked.getType() == Material.SADDLE) {
                 horse.removePotionEffect(PotionEffectType.SLOW);
                 getBukkitEntity().setPassenger(player);
             } else if (clicked.getType() == Material.SKULL_ITEM) {
-                if (Ranks.ELITE.hasRank(player)) {
+                if (Ranks.PREMIUM_PLUS.hasRank(player)) {
                     if (clicked.getData().getData() == (byte) 3) {
                         horse.setVariant(Variant.HORSE);
                         setTame(true);
@@ -107,7 +111,7 @@ public class HorsePet extends EntityHorse implements EntityPet {
                         MessageHandler.sendMessage(player, "&aYou have changed your horse into a Zombie Horse");
                     }
                 } else {
-                    MessageHandler.sendMessage(player, Ranks.ELITE.getNoPermission());
+                    MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
                 }
             } else {
                 String name = ChatColor.stripColor(clicked.getItemMeta().getDisplayName());
@@ -124,18 +128,8 @@ public class HorsePet extends EntityHorse implements EntityPet {
                 }
             }
         } else {
-            MessageHandler.sendMessage(player, Ranks.PRO_PLUS.getNoPermission());
+            MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
         }
-    }
-
-    @Override
-    public void wornBy(Player player) {
-
-    }
-
-    @Override
-    public Vector tossedBy(Player player) {
-        return player.getLocation().getDirection();
     }
 
     @Override

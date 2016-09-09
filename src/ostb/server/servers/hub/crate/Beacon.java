@@ -11,21 +11,16 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
-import ostb.player.Particles.ParticleTypes;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
 import ostb.server.ChatClickHandler;
@@ -37,16 +32,16 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
-import ostb.server.util.StringUtil;
+import ostb.server.util.Hologram;
 import ostb.server.util.TimeUtil;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class Beacon implements Listener {
 	private Random random = null;
 	private Block glass = null;
 	private final String originalName;
 	private String type = null;
-	private ArmorStand armorStand = null;
+	private Hologram armorStand = null;
 	private int counter = 0;
 	private boolean running = false;
 	private boolean displaying = false;
@@ -66,11 +61,11 @@ public class Beacon implements Listener {
 		Location standLoc = glass.getLocation().add(standOffset);
 		standLoc.setYaw(-90.0f);
 		standLoc.setPitch(0.0f);
-		armorStand = (ArmorStand) Bukkit.getWorlds().get(0).spawnEntity(standLoc, EntityType.ARMOR_STAND);
+		/*armorStand = (ArmorStand) Bukkit.getWorlds().get(0).spawnEntity(standLoc, EntityType.ARMOR_STAND);
 		armorStand.setGravity(false);
 		armorStand.setVisible(false);
 		armorStand.setCustomName(getName());
-		armorStand.setCustomNameVisible(true);
+		armorStand.setCustomNameVisible(true);*/
 		delayed = new ArrayList<String>();
 		setWood();
 		keyFragmentName = "Key Fragment";
@@ -229,10 +224,10 @@ public class Beacon implements Listener {
 					@Override
 					public void run() {
 						counter = 0;
-						armorStand.setCustomName(getName());
+						/*armorStand.setCustomName(getName());
 						if(armorStand.getPassenger() != null) {
 							armorStand.getPassenger().remove();
-						}
+						}*/
 						running = false;
 						displaying = false;
 					}
@@ -241,19 +236,19 @@ public class Beacon implements Listener {
 		}, 20 * 7 + 10);
 	}
 	
-	private String getName() {
+	/*private String getName() {
 		if(counter > 0) {
 			return StringUtil.color("&e&n" + originalName.substring(counter, originalName.length() - counter)).replace("&", "");
 		}
 		return StringUtil.color("&e&n" + originalName);
-	}
+	}*/
 	
 	private void setItem() {
 		setItem(null);
 	}
 	
 	private void setItem(FeatureItem featureItem) {
-		if(armorStand.getPassenger() == null) {
+		/*if(armorStand.getPassenger() == null) {
 			if(featureItem == null) {
 				featureItem = items.get(random.nextInt(items.size()));
 			}
@@ -272,7 +267,7 @@ public class Beacon implements Listener {
 			}
 			item.setItemStack(itemStack);
 		}
-		armorStand.setCustomName(StringUtil.color("&b&n" + featureItem.getName()));
+		armorStand.setCustomName(StringUtil.color("&b&n" + featureItem.getName()));*/
 	}
 	
 	@EventHandler
@@ -281,7 +276,7 @@ public class Beacon implements Listener {
 		if(ticks == 2) {
 			if(running && !displaying) {
 				if(counter <= 12) {
-					armorStand.setCustomName(getName());
+					//armorStand.setCustomName(getName());
 					++counter;
 				}
 			}
@@ -289,9 +284,9 @@ public class Beacon implements Listener {
 			if(running && !displaying) {
 				glass.setData((byte) random.nextInt(15));
 				EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, glass.getLocation());
-				ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
+				//ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
 				if(counter <= 12) {
-					armorStand.setCustomName(getName());
+					//armorStand.setCustomName(getName());
 					++counter;
 				}
 				if(counter > 12) {
@@ -317,13 +312,6 @@ public class Beacon implements Listener {
 		if(event.getDamager() instanceof Player && event.getEntity().equals(armorStand) && !running) {
 			Player player = (Player) event.getDamager();
 			activate(player);
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-		if(event.getRightClicked().equals(armorStand) && !running) {
-			activate(event.getPlayer());
 		}
 	}
 }

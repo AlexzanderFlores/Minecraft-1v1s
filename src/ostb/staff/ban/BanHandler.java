@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-import npc.util.DelayedTask;
 import ostb.ProPlugin;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
@@ -23,6 +22,7 @@ import ostb.server.ChatClickHandler;
 import ostb.server.CommandBase;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.tasks.DelayedTask;
 import ostb.server.util.TimeUtil;
 import ostb.staff.Punishment;
 
@@ -92,7 +92,7 @@ public class BanHandler extends Punishment implements Listener {
 							int counter = 0;
 							for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
 								if(!uuidString.equals(uuid.toString())) {
-									Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
+									final Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
 									if(player != null) {
 										new DelayedTask(new Runnable() {
 											@Override
@@ -132,7 +132,7 @@ public class BanHandler extends Punishment implements Listener {
 		}.setRequiredRank(Ranks.STAFF);
 		new CommandBase("banData", 1) {
 			@Override
-			public boolean execute(CommandSender sender, String [] arguments) {
+			public boolean execute(final CommandSender sender, final String [] arguments) {
 				new AsyncDelayedTask(new Runnable() {
                     @Override
                     public void run() {

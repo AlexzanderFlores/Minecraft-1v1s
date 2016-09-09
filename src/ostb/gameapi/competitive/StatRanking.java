@@ -27,7 +27,7 @@ public class StatRanking implements Listener {
 		EventUtil.register(this);
 	}
 	
-	private void display(Player player) {
+	private void display(final Player player) {
 		MiniGame miniGame = OSTB.getMiniGame();
 		if(player == null || miniGame == null || !miniGame.getPlayersHaveOneLife()) {
 			return;

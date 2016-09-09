@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -24,8 +23,6 @@ import ostb.server.servers.hub.items.HubSelector;
 import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
 import ostb.server.servers.hub.items.Shop;
-import ostb.server.servers.hub.parkous.EndlessParkour;
-import ostb.server.servers.hub.parkous.Parkour;
 import ostb.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {
@@ -41,7 +38,7 @@ public class HubBase extends ProPlugin {
 			world.setGameRuleValue("doDaylightCycle", "false");
 			world.setTime(12250);
 			for(Entity entity : world.getEntities()) {
-				if((entity instanceof Item || entity instanceof LivingEntity || entity instanceof ArmorStand) && !(entity instanceof Player)) {
+				if((entity instanceof Item || entity instanceof LivingEntity) && !(entity instanceof Player)) {
 					entity.remove();
 				}
 			}
@@ -49,7 +46,6 @@ public class HubBase extends ProPlugin {
 		hubNumber = Integer.valueOf(OSTB.getServerName().replaceAll("[^\\d.]", ""));
 		LevelHandler.enable();
 		new Events();
-		new Flag();
 		new Crate();
 		new KeyExchange();
 		new KeyFragments();
@@ -61,9 +57,6 @@ public class HubBase extends ProPlugin {
 		new HubSelector();
 		new ServerLogger();
 		new DailyRewards();
-		new ParkourNPC();
-		new Parkour();
-		new EndlessParkour();
 		new RecentSupporters();
 		new TeamScoreboardHandler();
 	}

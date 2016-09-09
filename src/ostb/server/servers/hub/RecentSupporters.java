@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,18 +19,19 @@ import ostb.server.DB.Databases;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EventUtil;
 import ostb.server.util.FileHandler;
+import ostb.server.util.Hologram;
 import ostb.server.util.ImageMap;
 import ostb.server.util.StringUtil;
 
 public class RecentSupporters implements Listener {
 	private List<ItemFrame> itemFrames = null;
-	private List<ArmorStand> nameStands = null;
-	private List<ArmorStand> packageStands = null;
+	private List<Hologram> nameStands = null;
+	private List<Hologram> packageStands = null;
 	
 	public RecentSupporters() {
 		itemFrames = new ArrayList<ItemFrame>();
-		nameStands = new ArrayList<ArmorStand>();
-		packageStands = new ArrayList<ArmorStand>();
+		nameStands = new ArrayList<Hologram>();
+		packageStands = new ArrayList<Hologram>();
 		
 		World world = Bukkit.getWorlds().get(0);
 		
@@ -39,19 +39,27 @@ public class RecentSupporters implements Listener {
 		itemFrames.add(ImageMap.getItemFrame(world, 1683, 14, -1301));
 		itemFrames.add(ImageMap.getItemFrame(world, 1687, 14, -1301));
 		
-		nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(0).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
+		nameStands.add(new Hologram("", itemFrames.get(0).getLocation().clone().add(1, -6.5, 0)));
+		nameStands.add(new Hologram("", itemFrames.get(1).getLocation().clone().add(1, -6.5, 0)));
+		nameStands.add(new Hologram("", itemFrames.get(2).getLocation().clone().add(1, -6.5, 0)));
+		
+		/*nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(0).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
 		nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(1).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
 		nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(2).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
 		for(ArmorStand armorStand : nameStands) {
 			setUpArmorStand(armorStand);
-		}
+		}*/
 		
-		packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(0).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));
+		packageStands.add(new Hologram("", nameStands.get(0).getLocation().clone().add(0, -.35, 0)));
+		packageStands.add(new Hologram("", nameStands.get(1).getLocation().clone().add(0, -.35, 0)));
+		packageStands.add(new Hologram("", nameStands.get(2).getLocation().clone().add(0, -.35, 0)));
+		
+		/*packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(0).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));
 		packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(1).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));
 		packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(2).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));
 		for(ArmorStand armorStand : packageStands) {
 			setUpArmorStand(armorStand);
-		}
+		}*/
 		
 		update();
 		EventUtil.register(this);
@@ -91,8 +99,8 @@ public class RecentSupporters implements Listener {
 				}
 				for(int a = 0; a < 3; ++a) {
 					new ImageMap(itemFrames.get(a), "Supporter " + a, loadImage(names.get(a), a), 3, 4);
-					nameStands.get(a).setCustomName(StringUtil.color("&a&l" + names.get(a)));
-					packageStands.get(a).setCustomName(StringUtil.color("&b&l" + packageNames.get(a)));
+					nameStands.get(a).setText(StringUtil.color("&a&l" + names.get(a)));
+					packageStands.get(a).setText(StringUtil.color("&b&l" + packageNames.get(a)));
 				}
 				
 				uuids.clear();
@@ -103,12 +111,6 @@ public class RecentSupporters implements Listener {
 				names = null;
 			}
 		}, 20 * 3);
-	}
-	
-	private void setUpArmorStand(ArmorStand armorStand) {
-		armorStand.setGravity(false);
-		armorStand.setVisible(false);
-		armorStand.setCustomNameVisible(true);
 	}
 	
 	private String loadImage(String ign, int index) {

@@ -24,6 +24,7 @@ import ostb.customevents.player.PlayerKitSelectEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerPostKitPurchaseEvent;
 import ostb.gameapi.SpectatorHandler;
+import ostb.player.CoinsHandler;
 import ostb.player.MessageHandler;
 import ostb.player.TitleDisplayer;
 import ostb.player.account.AccountHandler;
@@ -271,7 +272,7 @@ public abstract class KitBase implements Listener {
 		return lastSlot;
 	}
 	
-	public void executeArt(ArmorStand armorStand, boolean all, Player player) {
+	/*public void executeArt(ArmorStand armorStand, boolean all, Player player) {
 		armorStand.setHelmet(getHelmet());
 		armorStand.setChestplate(getChestplate());
 		armorStand.setLeggings(getLeggings());
@@ -285,7 +286,7 @@ public abstract class KitBase implements Listener {
 		armorStand.setLeggings(new ItemStack(Material.AIR));
 		armorStand.setBoots(new ItemStack(Material.AIR));
 		armorStand.setItemInHand(new ItemStack(Material.AIR));
-	}
+	}*/
 	
 	public abstract String getPermission();
 	public abstract void execute();

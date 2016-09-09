@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,14 +29,15 @@ import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
+import ostb.server.util.Hologram;
 import ostb.server.util.ItemCreator;
-import ostb.server.util.ItemUtil;
 import ostb.server.util.StringUtil;
 
+@SuppressWarnings("unused")
 public class MainHubTop5 implements Listener {
-	private static List<ArmorStand> stands = null;
-	private static ArmorStand display = null;
-	private static ArmorStand bar = null;
+	private static List<Hologram> stands = null;
+	private static Hologram display = null;
+	private static Hologram bar = null;
 	private static int counter = 0;
 	private static int infoCounter = 0;
 	private static final int delay = 5;
@@ -187,7 +187,7 @@ public class MainHubTop5 implements Listener {
 	}
 	
 	public MainHubTop5() {
-		stands = new ArrayList<ArmorStand>();
+		stands = new ArrayList<Hologram>();
 		World world = Bukkit.getWorlds().get(0);
 		double x = 1714.5;
 		double [] y = new double [] {7, 6, 6, 5, 5};
@@ -196,7 +196,7 @@ public class MainHubTop5 implements Listener {
 		Color [] colors = new Color [] {Color.fromRGB(20, 90, 150), Color.fromRGB(227, 50, 50), Color.fromRGB(255, 255, 255), Color.fromRGB(225, 220, 25), Color.fromRGB(20, 150, 60)};
 		for(int a = 0; a < y.length; ++a) {
 			Location location = new Location(world, x, y[a], z[a], -270.0f, 0.0f);
-			ArmorStand armorStand = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
+			/*ArmorStand armorStand = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
 			armorStand.setBasePlate(false);
 			armorStand.setHelmet(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_HELMET), colors[a]));
 			armorStand.setChestplate(ItemUtil.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), colors[a]));
@@ -207,15 +207,15 @@ public class MainHubTop5 implements Listener {
 			armorStand.setGravity(false);
 			armorStand.setVisible(false);
 			armorStand.setCustomName(StringUtil.color(places[a]));
-			armorStand.setCustomNameVisible(true);
+			armorStand.setCustomNameVisible(true);*/
 		}
 		Location location = new Location(world, 1711.5, 4, -1280.5, -270.0f, 0.0f);
-		display = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
+		/*display = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
 		display.setGravity(false);
 		display.setVisible(false);
 		bar = (ArmorStand) world.spawnEntity(location.add(0, -0.35, 0), EntityType.ARMOR_STAND);
 		bar.setGravity(false);
-		bar.setVisible(false);
+		bar.setVisible(false);*/
 		setNext();
 		name = "Select Top 5 Type";
 		new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(world, 1712.5, 5, -1283.5)) {
@@ -241,8 +241,8 @@ public class MainHubTop5 implements Listener {
 	}
 	
 	public static void setDisplay(String name) {
-		display.setCustomName(StringUtil.color(name));
-		display.setCustomNameVisible(true);
+		/*display.setCustomName(StringUtil.color(name));
+		display.setCustomNameVisible(true);*/
 	}
 	
 	public static void setNames(String [] names) {
@@ -262,9 +262,9 @@ public class MainHubTop5 implements Listener {
 			}
 		}
 		for(int a = 0; a < 5 && a < names.size(); ++a) {
-			stands.get(a).setCustomName(StringUtil.color(names.get(a)));
+			/*stands.get(a).setCustomName(StringUtil.color(names.get(a)));
 			stands.get(a).setCustomNameVisible(true);
-			stands.get(a).setHelmet(ItemUtil.getSkull(names.get(a)));
+			stands.get(a).setHelmet(ItemUtil.getSkull(names.get(a)));*/
 		}
 	}
 	
@@ -285,8 +285,8 @@ public class MainHubTop5 implements Listener {
 				for(; size < 10; ++size) {
 					text += "|";
 				}
-				bar.setCustomName(StringUtil.color(text));
-				bar.setCustomNameVisible(true);
+				/*bar.setCustomName(StringUtil.color(text));
+				bar.setCustomNameVisible(true);*/
 				++counter;
 			}
 		}

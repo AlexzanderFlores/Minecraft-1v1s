@@ -7,16 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.server.servers.hub.crate.Beacon;
 import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features.Rarity;
 import ostb.server.servers.hub.items.features.Armor.PlayerArmor;
-import ostb.server.servers.hub.items.features.blocks.SpinningBlocks.SpinBlock;
 import ostb.server.servers.hub.items.features.particles.ArrowTrails.ArrowTrailParticleTypes;
 import ostb.server.servers.hub.items.features.particles.HaloParticles.HaloParticleTypes;
 import ostb.server.servers.hub.items.features.pets.Pets.PetTypes;
-import ostb.server.servers.hub.items.features.wineffects.WinEffects.WinEffect;
 import ostb.server.util.ItemCreator;
 
 public class FeatureItem {
@@ -87,7 +84,7 @@ public class FeatureItem {
 			return;
 		}
 		if(getName().equals(Beacon.getSkyWarsCrateKey())) {
-			SkyWarsCrate.giveKey(player.getUniqueId(), 1);
+			//SkyWarsCrate.giveKey(player.getUniqueId(), 1);
 			return;
 		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
@@ -114,7 +111,7 @@ public class FeatureItem {
 				return;
 			}
 		}
-		for(WinEffect effect : WinEffect.values()) {
+		/*for(WinEffect effect : WinEffect.values()) {
 			if(effect.getName().equals(getName())) {
 				effect.give(player);
 				return;
@@ -125,6 +122,6 @@ public class FeatureItem {
 				block.give(player);
 				return;
 			}
-		}
+		}*/
 	}
 }

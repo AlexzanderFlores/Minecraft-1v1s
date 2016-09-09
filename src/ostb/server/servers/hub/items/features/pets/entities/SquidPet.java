@@ -1,6 +1,9 @@
 package ostb.server.servers.hub.items.features.pets.entities;
 
-import net.minecraft.server.v1_7_R4.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.util.UnsafeList;
@@ -8,14 +11,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Squid;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-import promcgames.server.servers.hub.items.cosmetic.pro.pets.EntityPet;
-import promcgames.server.util.ItemCreator;
-import promcgames.server.util.ReflectionUtil;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntitySquid;
+import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.MathHelper;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.World;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
+import ostb.server.util.ItemCreator;
+import ostb.server.util.ReflectionUtil;
 
 public class SquidPet extends EntitySquid implements EntityPet {
     public static List<Squid> flyingSquids = null;
@@ -62,16 +68,6 @@ public class SquidPet extends EntitySquid implements EntityPet {
         if (clicked.getType() == Material.SADDLE) {
             getBukkitEntity().setPassenger(player);
         }
-    }
-
-    @Override
-    public void wornBy(Player player) {
-
-    }
-
-    @Override
-    public Vector tossedBy(Player player) {
-        return player.getLocation().getDirection();
     }
 
     @Override

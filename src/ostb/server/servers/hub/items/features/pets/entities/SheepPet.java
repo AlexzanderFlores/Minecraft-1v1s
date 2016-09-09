@@ -1,6 +1,9 @@
 package ostb.server.servers.hub.items.features.pets.entities;
 
-import net.minecraft.server.v1_7_R4.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -9,18 +12,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-import promcgames.player.MessageHandler;
-import promcgames.player.account.AccountHandler.Ranks;
-import promcgames.server.nms.PathfinderGoalWalkToOwner;
-import promcgames.server.servers.hub.items.cosmetic.pro.pets.EntityPet;
-import promcgames.server.util.ItemCreator;
-import promcgames.server.util.ReflectionUtil;
-import promcgames.server.util.StringUtil;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntitySheep;
+import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.MathHelper;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.World;
+import ostb.player.MessageHandler;
+import ostb.player.account.AccountHandler.Ranks;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.PathfinderGoalWalkToOwner;
+import ostb.server.util.ItemCreator;
+import ostb.server.util.ReflectionUtil;
+import ostb.server.util.StringUtil;
 
 @SuppressWarnings("deprecation")
 public class SheepPet extends EntitySheep implements EntityPet {
@@ -70,13 +76,13 @@ public class SheepPet extends EntitySheep implements EntityPet {
     @Override
     public void clickedOnCustomOption(Player player, ItemStack clicked) {
         if (clicked.getType() == Material.WOOL) {
-            if (Ranks.PRO.hasRank(player)) {
+            if (Ranks.PREMIUM.hasRank(player)) {
                 setColor(clicked.getData().getData());
             } else {
-                MessageHandler.sendMessage(player, Ranks.PRO.getNoPermission());
+                MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
             }
         } else if (clicked.getType() == Material.EMERALD) {
-            if (Ranks.PRO_PLUS.hasRank(player)) {
+            if (Ranks.PREMIUM_PLUS.hasRank(player)) {
                 Sheep sheep = (Sheep) getBukkitEntity();
                 if (rainbowSheep != null && rainbowSheep.contains(sheep)) {
                     rainbowSheep.remove(sheep);
@@ -89,19 +95,9 @@ public class SheepPet extends EntitySheep implements EntityPet {
                     MessageHandler.sendMessage(player, rainbow + "&a mode &eenabled");
                 }
             } else {
-                MessageHandler.sendMessage(player, Ranks.PRO_PLUS.getNoPermission());
+                MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
             }
         }
-    }
-
-    @Override
-    public void wornBy(Player player) {
-
-    }
-
-    @Override
-    public Vector tossedBy(Player player) {
-        return player.getLocation().getDirection();
     }
 
     @Override

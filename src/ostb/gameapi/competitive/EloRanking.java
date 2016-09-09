@@ -15,7 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import npc.util.EventUtil;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
@@ -25,6 +24,7 @@ import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.util.EffectUtil;
+import ostb.server.util.EventUtil;
 import ostb.server.util.ImageMap;
 import ostb.server.util.StringUtil;
 

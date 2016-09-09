@@ -71,7 +71,6 @@ import com.google.common.io.ByteStreams;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.EnumClientCommand;
 import net.minecraft.server.v1_7_R4.PacketPlayInClientCommand;
-import npc.NPCRegistrationHandler.NPCs;
 import ostb.customevents.DeleteImportedWorldEvent;
 import ostb.customevents.ServerRestartEvent;
 import ostb.customevents.TimeEvent;
@@ -146,13 +145,13 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	}
 	
 	public void disable() {
-		try {
+		/*try {
 			for(NPCs npc : NPCs.values()) {
 				npc.unregister();
 			}
 		} catch(NullPointerException e) {
 			
-		}
+		}*/
 	}
 	
 	public void resetFlags() {

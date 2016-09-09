@@ -24,11 +24,9 @@ import ostb.server.servers.hub.HubItemBase;
 import ostb.server.servers.hub.items.features.Armor;
 import ostb.server.servers.hub.items.features.FeatureBase;
 import ostb.server.servers.hub.items.features.Gadgets;
-import ostb.server.servers.hub.items.features.blocks.SpinningBlocks;
 import ostb.server.servers.hub.items.features.particles.ArrowTrails;
 import ostb.server.servers.hub.items.features.particles.HaloParticles;
 import ostb.server.servers.hub.items.features.pets.Pets;
-import ostb.server.servers.hub.items.features.wineffects.WinEffects;
 import ostb.server.tasks.AsyncDelayedTask;
 import ostb.server.tasks.DelayedTask;
 import ostb.server.util.EffectUtil;
@@ -62,15 +60,11 @@ public class Features extends HubItemBase {
 		opened = new ArrayList<String>();
 		delayed = new ArrayList<String>();
 		name = getName();
-		new WinEffects();
 		new Pets();
-		new SpinningBlocks();
 		new HaloParticles();
 		new ArrowTrails();
-		//new Disguises();
 		new Armor();
 		new Gadgets();
-		//new Pokemon();
 		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 17, 26, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 18, 9};
 		colors = new byte [] {3, 4, 5, 6};
 	}

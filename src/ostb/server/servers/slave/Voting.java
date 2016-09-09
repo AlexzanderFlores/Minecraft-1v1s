@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import com.vexsoftware.votifier.model.VotifierEvent;
 
 import ostb.OSTB.Plugins;
-import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
@@ -114,8 +113,6 @@ public class Voting implements Listener {
 					}
 					Bukkit.getLogger().info("voting: giving key fragment");
 					KeyFragments.give(playerUUID, 1 * multiplier);
-					Bukkit.getLogger().info("voting: giving sky wars key");
-					SkyWarsCrate.giveKey(playerUUID, 1 * multiplier);
 					Bukkit.getLogger().info("voting: giving pvp battles auto respawn passes");
 					toAdd = 15 * multiplier;
 					if(DB.PLAYERS_DOMINATION_AUTO_RESPAWN.isUUIDSet(playerUUID)) {

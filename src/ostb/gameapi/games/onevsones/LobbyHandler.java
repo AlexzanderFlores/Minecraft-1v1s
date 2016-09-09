@@ -46,6 +46,7 @@ import ostb.server.util.EffectUtil;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
 
+@SuppressWarnings("deprecation")
 public class LobbyHandler implements Listener {
     private static ItemStack kitSelector = null;
     private static List<String> disabledRequests = null;

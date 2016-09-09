@@ -1,16 +1,22 @@
 package ostb.server.servers.hub.items.features.pets.entities;
 
-import net.minecraft.server.v1_7_R4.*;
+import java.lang.reflect.Field;
+
 import org.bukkit.craftbukkit.v1_7_R4.util.UnsafeList;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-import promcgames.server.nms.PathfinderGoalWalkToOwner;
-import promcgames.server.servers.hub.items.cosmetic.pro.pets.EntityPet;
-import promcgames.server.util.ReflectionUtil;
 
-import java.lang.reflect.Field;
+import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntityMushroomCow;
+import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.MathHelper;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.World;
+import ostb.server.servers.hub.items.features.pets.EntityPet;
+import ostb.server.servers.hub.items.features.pets.PathfinderGoalWalkToOwner;
+import ostb.server.util.ReflectionUtil;
 
 public class MushroomCowPet extends EntityMushroomCow implements EntityPet {
     public MushroomCowPet(World world) {
@@ -45,16 +51,6 @@ public class MushroomCowPet extends EntityMushroomCow implements EntityPet {
     @Override
     public void clickedOnCustomOption(Player player, ItemStack clicked) {
 
-    }
-
-    @Override
-    public void wornBy(Player player) {
-
-    }
-
-    @Override
-    public Vector tossedBy(Player player) {
-        return player.getLocation().getDirection();
     }
 
     @Override

@@ -14,7 +14,6 @@ import ostb.OSTB;
 import ostb.OSTB.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.crates.SkyWarsCrate;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -59,8 +58,6 @@ public class GlobalCommands {
 				String type = arguments[2];
 				if(type.equalsIgnoreCase("voting") || type.equalsIgnoreCase("super")) {
 					Beacon.giveKey(uuid, amount, arguments[2]);
-				} else if(type.equalsIgnoreCase("sky_wars")) {
-					SkyWarsCrate.giveKey(uuid, amount);
 				} else {
 					MessageHandler.sendMessage(sender, "Unknown key type, use:");
 					MessageHandler.sendMessage(sender, "voting");

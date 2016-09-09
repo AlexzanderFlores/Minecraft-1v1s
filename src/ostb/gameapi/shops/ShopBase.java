@@ -7,10 +7,8 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -95,7 +93,7 @@ public abstract class ShopBase implements Listener {
 				ChatColor.RED + "",
 				ChatColor.GREEN + "",
 			};
-			World lobby = OSTB.getMiniGame().getLobby();
+			/*World lobby = OSTB.getMiniGame().getLobby();
 			holograms.add(new Hologram(new Location(lobby, 11, 5, 0, 90.0f, 0.0f), "") {
 				@Override
 				public void interact(Player player) {
@@ -120,7 +118,7 @@ public abstract class ShopBase implements Listener {
 				public void interact(Player player) {
 					hologramClick(player);
 				}
-			}.getArmorStand().getEquipment().setHelmet(new ItemCreator(Material.CHEST).setGlow(true).getItemStack());
+			}.getArmorStand().getEquipment().setHelmet(new ItemCreator(Material.CHEST).setGlow(true).getItemStack());*/
 			new CommandBase("shop", true) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
@@ -133,10 +131,10 @@ public abstract class ShopBase implements Listener {
 		EventUtil.register(this);
 	}
 	
-	private void hologramClick(Player player) {
+	/*private void hologramClick(Player player) {
 		EffectUtil.playSound(player, Sound.CHEST_OPEN);
 		openShop(player);
-	}
+	}*/
 	
 	public String getName() {
 		return name;
@@ -207,9 +205,6 @@ public abstract class ShopBase implements Listener {
 		if(ticks == 5) {
 			if(holograms != null) {
 				String topText = "Kits / Shop";
-				if(plugin == Plugins.SW || plugin == Plugins.SWT || plugin == Plugins.UHCSW) {
-					topText = "Kits / Cages";
-				}
 				for(Hologram hologram : holograms) {
 					hologram.setText(colors[counter] + "&n" + topText);
 				}

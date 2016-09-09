@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
-import ostb.gameapi.shops.SkyWarsShop;
 import ostb.server.servers.hub.HubItemBase;
 import ostb.server.util.EffectUtil;
 import ostb.server.util.ItemCreator;
@@ -23,7 +22,6 @@ public class Shop extends HubItemBase {
 	public Shop() {
 		super(new ItemCreator(Material.CHEST).setName("&eShop"), 2);
 		name = ChatColor.stripColor(getName());
-		new SkyWarsShop();
 	}
 
 	@Override
@@ -50,9 +48,9 @@ public class Shop extends HubItemBase {
 		String name = ChatColor.stripColor(event.getItemTitle());
 		if(title.equals(ChatColor.stripColor(getName()))) {
 			EffectUtil.playSound(player, Sound.CHEST_OPEN);
-			if(name.equals("Sky Wars")) {
+			/*if(name.equals("Sky Wars")) {
 				SkyWarsShop.getInstance().openShop(player);
-			}
+			}*/
 			event.setCancelled(true);
 		} else if(title.startsWith("Shop - ")) {
 			if(name.equals("Back")) {

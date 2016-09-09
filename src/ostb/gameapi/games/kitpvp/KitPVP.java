@@ -3,25 +3,17 @@ package ostb.gameapi.games.kitpvp;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
-import ostb.OSTB;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
-import ostb.gameapi.TeamHandler;
 import ostb.gameapi.TemporaryFireUtil;
 import ostb.gameapi.competitive.StatsHandler;
 import ostb.player.scoreboard.BelowNameHealthScoreboardUtil;
-import ostb.player.scoreboard.SidebarScoreboardUtil;
 import ostb.server.DB;
 import ostb.server.ServerLogger;
-import ostb.server.util.CountDownUtil;
 import ostb.server.util.FileHandler;
 
 public class KitPVP extends ProPlugin {
-	private String oldScore = "";
-	private String oldCount = "";
-	
 	public KitPVP() {
 		super("KitPVP");
 		setCounter(60 * 10);
@@ -34,40 +26,6 @@ public class KitPVP extends ProPlugin {
 		new ServerLogger();
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
-		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
-			@Override
-			public void update() {
-				String score = Events.getPaused() ? "&7Paused" : KitTeam.RED.getScoreString() + " &7/ " + KitTeam.BLUE.getScoreString();
-				if(!oldScore.equals(score)) {
-					oldScore = score;
-					removeScore(11);
-				}
-				String count = KitTeam.RED.getSizeString() + " &7/ " + KitTeam.BLUE.getSizeString() + " ";
-				if(!oldCount.equals(count)) {
-					oldCount = count;
-					removeScore(8);
-				}
-				removeScore(5);
-				setText(new String [] {
-					" ",
-					"&e&lScores",
-					score,
-					"  ",
-					"&e&lPlaying",
-					count,
-					"   ",
-					"&e&lScores Reset In",
-					CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA) + (Events.getPaused() ? " &7(Paused)" : ""),
-					"    ",
-					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
-					"     "
-				});
-				super.update();
-			}
-		});
-		teamHandler = new TeamHandler();
-		new SpawnHandler();
 		new Events();
 		new TemporaryFireUtil(20 * 5);
 		new BelowNameHealthScoreboardUtil();
@@ -81,9 +39,5 @@ public class KitPVP extends ProPlugin {
 		Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
 		FileHandler.delete(new File(container + "/" + name));
 		FileHandler.copyFolder(new File(container + "/../resources/maps/" + name), new File(container + "/" + name));
-	}
-	
-	public static TeamHandler getKitPVPTeamHandler() {
-		return teamHandler;
 	}
 }
