@@ -10,18 +10,21 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import org.bukkit.Bukkit;
+
 import net.minecraft.util.org.apache.commons.io.FileUtils;
 import ostb.OSTB;
 
 public class FileHandler {
     public static void checkForUpdates() {
         String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
-        String[] plugins = {"ProMcGames.jar", "EffectLib.jar", "ProtocolLib.jar", "HolographicDisplays.jar", "HolographicDisplaysPatch.jar"};
-        for (String plugin : plugins) {
+        String [] plugins = {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HolographicDisplays.jar", "HolographicDisplaysPatch.jar"};
+        for(String plugin : plugins) {
             File file = new File(path + plugin);
-            if (file.exists()) {
+            Bukkit.getLogger().info(file.getAbsolutePath());
+            if(file.exists()) {
                 File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
-                if (update.exists()) {
+                if(update.exists()) {
                     delete(update);
                 }
                 copyFile(file, update);
@@ -32,9 +35,9 @@ public class FileHandler {
     public static boolean isImage(String url) {
         try {
             return ImageIO.read(new URL(url)) != null;
-        } catch (MalformedURLException e) {
+        } catch(MalformedURLException e) {
 
-        } catch (IOException e) {
+        } catch(IOException e) {
 
         }
         return false;
@@ -49,24 +52,24 @@ public class FileHandler {
             os = new FileOutputStream(path);
             byte[] b = new byte[2048];
             int length = 0;
-            while ((length = is.read(b)) != -1) {
+            while((length = is.read(b)) != -1) {
                 os.write(b, 0, length);
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 is.close();
-            } catch (IOException e) {
+            } catch(IOException e) {
 
-            } catch (NullPointerException e) {
+            } catch(NullPointerException e) {
 
             }
             try {
                 os.close();
-            } catch (IOException e) {
+            } catch(IOException e) {
 
-            } catch (NullPointerException e) {
+            } catch(NullPointerException e) {
 
             }
         }
@@ -81,7 +84,7 @@ public class FileHandler {
             //FileUtil.copy(source, target);
             FileUtils.copyFile(source, target);
             return true;
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -96,24 +99,24 @@ public class FileHandler {
             //FileUtil.copy(source, target);
             FileUtils.copyDirectory(source, target);
             return true;
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     public static void delete(File file) {
-        if (file != null && file.exists()) {
-            if (file.isDirectory()) {
-                if (file.list().length == 0) {
+        if(file != null && file.exists()) {
+            if(file.isDirectory()) {
+                if(file.list().length == 0) {
                     file.delete();
                 } else {
                     String[] files = file.list();
-                    for (String temp : files) {
+                    for(String temp : files) {
                         File fileDelete = new File(file, temp);
                         delete(fileDelete);
                     }
-                    if (file.list().length == 0) {
+                    if(file.list().length == 0) {
                         file.delete();
                     }
                 }

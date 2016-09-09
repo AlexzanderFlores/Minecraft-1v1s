@@ -57,7 +57,7 @@ public class HubBase extends ProPlugin {
 		new HubSelector();
 		new ServerLogger();
 		new DailyRewards();
-		new RecentSupporters();
+		//new RecentSupporters();
 		new TeamScoreboardHandler();
 	}
 	

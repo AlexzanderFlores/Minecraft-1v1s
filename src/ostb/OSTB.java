@@ -124,11 +124,10 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
         } catch(Exception e) {
             e.printStackTrace();
         }
-		Bukkit.getLogger().info(new File(Bukkit.getWorldContainer().getPath() + "/..").getAbsolutePath());
 		serverName = new File(Bukkit.getWorldContainer().getPath() + "/..").getAbsolutePath().replaceAll("/root/", "");
-		Bukkit.getLogger().info(serverName);
+		//Bukkit.getLogger().info(serverName);
 		serverName = serverName.split("/")[0].toUpperCase();
-		Bukkit.getLogger().info(serverName);
+		//Bukkit.getLogger().info(serverName);
 		plugin = Plugins.valueOf(serverName.replaceAll("[\\d]", ""));
 		try {
 			switch(plugin) {
