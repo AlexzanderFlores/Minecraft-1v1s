@@ -109,7 +109,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		sidebar = new SidebarScoreboardUtil("");
 		try {
         	File [] libs = new File [] {
-        		new File(Bukkit.getWorldContainer().getPath() + "/../resources/", "Twitter4j.jar")
+        		new File("root/resources/", "Twitter4j.jar")
         	};
             for(File lib : libs) {
                 if(lib.exists()) {

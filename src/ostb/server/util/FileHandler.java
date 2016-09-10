@@ -17,10 +17,9 @@ import ostb.OSTB;
 
 public class FileHandler {
     public static void checkForUpdates() {
-        String path = OSTB.getInstance().getDataFolder() + "/../../../resources/";
-        String [] plugins = {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HolographicDisplays.jar", "HolographicDisplaysPatch.jar"};
-        for(String plugin : plugins) {
-            File file = new File(path + plugin);
+        String path = "/root/resources/";
+        for(String plugin : new String [] {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HolographicDisplays.jar", "HolographicDisplaysPatch.jar"}) {
+            File file = new File(path, plugin);
             Bukkit.getLogger().info(file.getAbsolutePath());
             if(file.exists()) {
                 File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);

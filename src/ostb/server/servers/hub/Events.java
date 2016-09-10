@@ -60,7 +60,7 @@ public class Events implements Listener {
 			@Override
 			public void update(Player player) {
 				if(oldPlayers != players) {
-					removeScore(7);
+					removeScore(6);
 				}
 				Ranks rank = AccountHandler.getRank(player);
 				String rankString = rank == Ranks.PLAYER ? "&7None &b/buy" : rank.getPrefix();
