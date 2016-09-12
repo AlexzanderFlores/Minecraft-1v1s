@@ -22,10 +22,10 @@ public class FileHandler {
             File file = new File(path, plugin);
             Bukkit.getLogger().info(file.getAbsolutePath());
             if(file.exists()) {
-                File update = new File(OSTB.getInstance().getDataFolder() + "/../" + plugin);
-                if(update.exists()) {
+                File update = new File("/root/" + OSTB.getServerName().toLowerCase() + "/plugins/" + plugin);
+                /*if(update.exists()) {
                     delete(update);
-                }
+                }*/
                 copyFile(file, update);
             }
         }

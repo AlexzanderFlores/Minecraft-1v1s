@@ -60,13 +60,13 @@ public class Events implements Listener {
 			@Override
 			public void update(Player player) {
 				if(oldPlayers != players) {
-					removeScore(6);
+					removeScore(8);
 				}
 				Ranks rank = AccountHandler.getRank(player);
 				String rankString = rank == Ranks.PLAYER ? "&7None &b/buy" : rank.getPrefix();
-				String current = getText(4);
+				String current = getText(5);
 				if(current != null && !ChatColor.stripColor(rankString).equals(ChatColor.stripColor(current))) {
-					removeScore(4);
+					removeScore(5);
 				}
 				setText(new String [] {
 					" ",
