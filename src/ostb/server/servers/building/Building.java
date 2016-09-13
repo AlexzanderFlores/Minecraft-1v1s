@@ -24,6 +24,7 @@ import ostb.server.util.FileHandler;
 public class Building extends ProPlugin {
 	public Building() {
 		super("Building");
+		for(int a = 0; a < 10; ++a) Bukkit.getLogger().info("Building()");
 		addGroup("24/7");
 		new Events();
 		removeFlags();
@@ -113,8 +114,10 @@ public class Building extends ProPlugin {
 	
 	@Override
 	public void disable() {
-		FileHandler.delete(new File(OSTB.getInstance().getDataFolder().getPath() + "/../Multiverse-Core/worlds.yml"));
-		FileHandler.delete(new File(OSTB.getInstance().getDataFolder().getPath() + "/../Essentials/userdata"));
+		for(int a = 0; a < 10; ++a) Bukkit.getLogger().info("disable()");
+		String name = OSTB.getServerName().toLowerCase();
+		FileHandler.delete(new File("/root/" + name + "/plugins/Multiverse-Core/worlds.yml"));
+		FileHandler.delete(new File("/root/" + name + "/plugins/Essentials/userdata"));
 		super.disable();
 	}
 	

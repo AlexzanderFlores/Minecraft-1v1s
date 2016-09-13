@@ -587,10 +587,12 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	
 	public static void restartServer() {
 		restarting = true;
-		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/banned-ips.json"));
-		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/banned-ips.txt.converted"));
-		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/banned-players.json"));
-		FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/banned-players.txt.converted"));
+		String path = Bukkit.getWorldContainer().getPath();
+		path = path.substring(0, path.length() - 2);
+		FileHandler.delete(new File(path + "/banned-ips.json"));
+		FileHandler.delete(new File(path + "/banned-ips.txt.converted"));
+		FileHandler.delete(new File(path + "/banned-players.json"));
+		FileHandler.delete(new File(path + "/banned-players.txt.converted"));
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			sendPlayerToServer(player, "hub");
 		}
@@ -1077,7 +1079,9 @@ public class ProPlugin extends CountDownUtil implements Listener {
 				if(deleteImportedWorldEvent.isCancelled()) {
 					continue;
 				}
-				String path = Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/";
+				String path = Bukkit.getWorldContainer().getPath();
+				path = path.substring(0, path.length() - 2);
+				path += "/" + world.getName() + "/";
 				Bukkit.unloadWorld(world, false);
 				try {
 					FileHandler.delete(new File(path + "playerdata"));
@@ -1086,7 +1090,9 @@ public class ProPlugin extends CountDownUtil implements Listener {
 					
 				}
 				if(importedWorlds != null && importedWorlds.contains(world.getName())) {
-					FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/" + world));
+					path = Bukkit.getWorldContainer().getPath();
+					path = path.substring(0, path.length() - 2);
+					FileHandler.delete(new File(path + "/" + world));
 				}
 			}
 		}
