@@ -13,8 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import anticheat.events.TimeEvent;
 import ostb.ProPlugin;
+import ostb.customevents.TimeEvent;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.CommandBase;
 
