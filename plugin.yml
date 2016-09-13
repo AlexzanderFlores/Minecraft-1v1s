@@ -107,6 +107,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  repeatCommand:
+    usage: /repeatCommand <ticks> <command...>
+
   shadowMute:
     usage: /shadowMute <name>
 

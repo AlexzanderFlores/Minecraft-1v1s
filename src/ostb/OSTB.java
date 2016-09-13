@@ -49,6 +49,7 @@ import ostb.server.servers.hub.items.features.particles.Particles;
 import ostb.server.servers.hub.main.MainHub;
 import ostb.server.servers.worker.Worker;
 import ostb.server.tasks.AsyncDelayedTask;
+import ostb.server.util.CommandRepeater;
 import ostb.server.util.FileHandler;
 import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
@@ -179,6 +180,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		new DefaultKit();
 		new AntiCheat();
 		new RankAds();
+		new CommandRepeater();
 		Glow.register();
 	}
 	
