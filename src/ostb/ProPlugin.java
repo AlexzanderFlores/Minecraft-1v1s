@@ -587,12 +587,10 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	
 	public static void restartServer() {
 		restarting = true;
-		String path = Bukkit.getWorldContainer().getPath();
-		path = path.substring(0, path.length() - 2);
-		FileHandler.delete(new File(path + "/banned-ips.json"));
-		FileHandler.delete(new File(path + "/banned-ips.txt.converted"));
-		FileHandler.delete(new File(path + "/banned-players.json"));
-		FileHandler.delete(new File(path + "/banned-players.txt.converted"));
+		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-ips.json"));
+		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-ips.txt.converted"));
+		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-players.json"));
+		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-players.txt.converted"));
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			sendPlayerToServer(player, "hub");
 		}
@@ -1134,7 +1132,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 			});
 		} else if(ticks == 20 * 60 * 5) {
 			try {
-				FileHandler.delete(new File(Bukkit.getWorldContainer().getPath() + "/logs"));
+				FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/logs"));
 			} catch(Exception e) {
 				
 			}
