@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -110,6 +112,62 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("world", 1, 2) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				if(arguments[0].equalsIgnoreCase("import")) {
+					if(arguments.length != 2) {
+						return false;
+					}
+					File worldFile = new File("/root/" + OSTB.getServerName().toLowerCase() + "/" + arguments[1]);
+					if(worldFile.exists() && worldFile.isDirectory() && new File(worldFile.getAbsolutePath() + "/uid.dat").exists()) {
+						World world = Bukkit.createWorld(new WorldCreator(arguments[1]));
+						if(world == null) {
+							MessageHandler.sendMessage(sender, "&cFailed to import " + arguments[1]);
+						} else {
+							if(sender instanceof Player) {
+								Player player = (Player) sender;
+								player.teleport(world.getSpawnLocation());
+							}
+							MessageHandler.sendMessage(sender, "\"" + arguments[1] + "\" imported");
+						}
+					} else {
+						MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not a known world, these are worlds:");
+						String path = "/root/" + OSTB.getServerName().toLowerCase() + "/";
+						File dir = new File(path);
+						for(String fileName : dir.list()) {
+							File file = new File(fileName);
+							if(file.isDirectory() && new File(file.getAbsolutePath() + "/uid.dat").exists()) {
+								MessageHandler.sendMessage(sender, fileName);
+							}
+						}
+					}
+				} else if(arguments[0].equalsIgnoreCase("tp")) {
+					if(arguments.length != 2) {
+						return false;
+					}
+					if(!(sender instanceof Player)) {
+						MessageHandler.sendUnknownCommand(sender);
+					}
+					String target = arguments[1];
+					World world = Bukkit.getWorld(target);
+					if(world == null) {
+						MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not an imported world, these are imported worlds:");
+						for(World importedWorld : Bukkit.getWorlds()) {
+							MessageHandler.sendMessage(sender, importedWorld.getName());
+						}
+					} else {
+						Player player = (Player) sender;
+						player.teleport(world.getSpawnLocation());
+					}
+				} else if(arguments[0].equalsIgnoreCase("list")) {
+					for(World importedWorld : Bukkit.getWorlds()) {
+						MessageHandler.sendMessage(sender, importedWorld.getName());
+					}
+				}
+				return true;
+			}
+		};
 	}
 	
 	@Override

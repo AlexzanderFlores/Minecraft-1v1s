@@ -221,6 +221,9 @@ commands:
     usage: /spec <name>
 
 # Building Commands
+  world:
+    usage: /world <list | import | tp> [world name]
+
   setsgspawn:
     usage: /setsgspawn
 

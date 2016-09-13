@@ -2,15 +2,12 @@ package ostb.server.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import ostb.ProPlugin;
@@ -30,26 +27,7 @@ public class CommandRepeater implements Listener {
 		
 		private void execute() {
 			Player player = ProPlugin.getPlayer(name);
-			if(player == null) {
-				for(long a : data.keySet()) {
-					List<RepeaterData> list = data.get(a);
-					Iterator<RepeaterData> iterator = list.iterator();
-					while(iterator.hasNext()) {
-						if(iterator.next().name.equals(this.name)) {
-							iterator.remove();
-						}
-					}
-					if(list.isEmpty()) {
-						data.remove(a);
-						if(data.isEmpty()) {
-							registered = false;
-							HandlerList.unregisterAll(instance);
-						}
-					} else {
-						data.put(a, list);
-					}
-				}
-			} else {
+			if(player != null) {
 				player.performCommand(command);
 			}
 		}
@@ -93,13 +71,6 @@ public class CommandRepeater implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20) {
-			int size = 0;
-			for(long a : data.keySet()) {
-				size += data.get(a).size();
-			}
-			Bukkit.getLogger().info("Command repeater: " + size + " logged");
-		}
 		if(data.containsKey(ticks)) {
 			List<RepeaterData> list = data.get(ticks);
 			for(RepeaterData repeaterData : list) {
