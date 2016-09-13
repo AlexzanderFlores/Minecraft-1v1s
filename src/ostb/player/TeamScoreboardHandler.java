@@ -79,7 +79,7 @@ public class TeamScoreboardHandler implements Listener {
 		for(Ranks rank : Ranks.values()) {
 			if(scoreboard.getTeam(getName(rank)) == null) {
 				Team team = scoreboard.registerNewTeam(getName(rank));
-				team.setPrefix(rank.getPrefix());
+				team.setPrefix(rank.getColor() + "");
 			}
 		}
 		set(event.getPlayer());

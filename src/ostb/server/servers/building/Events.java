@@ -2,6 +2,7 @@ package ostb.server.servers.building;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,6 +57,9 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(ChatColor.YELLOW + event.getPlayer().getName() + " joined the server");
+		if(event.getPlayer().isOp()) {
+			event.getPlayer().setGameMode(GameMode.CREATIVE);
+		}
 	}
 	
 	@EventHandler
