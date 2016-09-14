@@ -1,4 +1,4 @@
-name: Core
+name: 1v1s Core
 main: ostb.OSTB
 version: 1.0
 softdepend: [NPC_OSTB, Votifier, EffectLib]
@@ -222,7 +222,7 @@ commands:
 
 # Building Commands
   world:
-    usage: /world <list | import | tp> [world name]
+    usage: /world <list | import | tp | setSpawn | create | delete>
 
   setsgspawn:
     usage: /setsgspawn

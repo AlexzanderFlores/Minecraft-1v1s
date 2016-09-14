@@ -5,7 +5,9 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -112,58 +114,120 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
-		new CommandBase("world", 1, 2) {
+		new CommandBase("world", 1, 3) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				if(arguments[0].equalsIgnoreCase("import")) {
+				if(arguments[0].equalsIgnoreCase("tp")) {
 					if(arguments.length != 2) {
-						return false;
-					}
-					File worldFile = new File("/root/" + OSTB.getServerName().toLowerCase() + "/" + arguments[1]);
-					if(worldFile.exists() && worldFile.isDirectory() && new File(worldFile.getAbsolutePath() + "/uid.dat").exists()) {
-						World world = Bukkit.createWorld(new WorldCreator(arguments[1]));
-						if(world == null) {
-							MessageHandler.sendMessage(sender, "&cFailed to import " + arguments[1]);
-						} else {
-							if(sender instanceof Player) {
-								Player player = (Player) sender;
-								player.teleport(world.getSpawnLocation());
-							}
-							MessageHandler.sendMessage(sender, "\"" + arguments[1] + "\" imported");
-						}
-					} else {
-						MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not a known world, these are worlds:");
-						String path = "/root/" + OSTB.getServerName().toLowerCase() + "/";
-						File dir = new File(path);
-						for(String fileName : dir.list()) {
-							File file = new File(fileName);
-							if(file.isDirectory() && new File(file.getAbsolutePath() + "/uid.dat").exists()) {
-								MessageHandler.sendMessage(sender, fileName);
-							}
-						}
-					}
-				} else if(arguments[0].equalsIgnoreCase("tp")) {
-					if(arguments.length != 2) {
-						return false;
+						MessageHandler.sendMessage(sender, "&f/world tp <world name>");
+						return true;
 					}
 					if(!(sender instanceof Player)) {
 						MessageHandler.sendUnknownCommand(sender);
+						return true;
 					}
 					String target = arguments[1];
 					World world = Bukkit.getWorld(target);
 					if(world == null) {
-						MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not an imported world, these are imported worlds:");
-						for(World importedWorld : Bukkit.getWorlds()) {
-							MessageHandler.sendMessage(sender, importedWorld.getName());
+						File worldFile = new File("/root/" + OSTB.getServerName().toLowerCase() + "/" + arguments[1]);
+						if(worldFile.exists() && worldFile.isDirectory() && new File(worldFile.getAbsolutePath() + "/uid.dat").exists()) {
+							world = Bukkit.createWorld(new WorldCreator(arguments[1]));
+							if(world == null) {
+								MessageHandler.sendMessage(sender, "&cFailed to import " + arguments[1]);
+							} else {
+								if(sender instanceof Player) {
+									Player player = (Player) sender;
+									player.teleport(world.getSpawnLocation());
+								}
+								MessageHandler.sendMessage(sender, "\"" + arguments[1] + "\" imported");
+							}
+						} else {
+							MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not a known world, these are worlds:");
+							String path = "/root/" + OSTB.getServerName().toLowerCase() + "/";
+							File dir = new File(path);
+							for(String fileName : dir.list()) {
+								File file = new File(fileName);
+								if(file.isDirectory() && new File(file.getAbsolutePath() + "/uid.dat").exists()) {
+									MessageHandler.sendMessage(sender, fileName);
+								}
+							}
 						}
-					} else {
+					}
+					if(world != null) {
+						MessageHandler.sendMessage(sender, "Teleporting to \"" + world.getName() + "\"'s spawn...");
 						Player player = (Player) sender;
 						player.teleport(world.getSpawnLocation());
 					}
 				} else if(arguments[0].equalsIgnoreCase("list")) {
+					if(arguments.length != 1) {
+						MessageHandler.sendMessage(sender, "&f/world list");
+						return true;
+					}
 					for(World importedWorld : Bukkit.getWorlds()) {
 						MessageHandler.sendMessage(sender, importedWorld.getName());
 					}
+				} else if(arguments[0].equalsIgnoreCase("setSpawn")) {
+					if(sender instanceof Player) {
+						if(arguments.length != 1) {
+							MessageHandler.sendMessage(sender, "&f/world setSpawn");
+							return true;
+						}
+						Player player = (Player) sender;
+						World world = player.getWorld();
+						Location location = player.getLocation();
+						world.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+						MessageHandler.sendMessage(sender, "Set the spawn point for \"" + world.getName() + "\"");
+					} else {
+						MessageHandler.sendPlayersOnly(sender);
+					}
+				} else if(arguments[0].equalsIgnoreCase("create")) {
+					if(arguments.length != 3) {
+						MessageHandler.sendMessage(sender, "&f/world create <name> <type>");
+						return true;
+					}
+					World world = null;
+					String name = arguments[1];
+					String type = arguments[2].toLowerCase();
+					if(type.equals("normal")) {
+						world = Bukkit.createWorld(new WorldCreator(name));
+					} else if(type.equals("nether")) {
+						world = Bukkit.createWorld(new WorldCreator(name).environment(Environment.NETHER));
+					} else if(type.equals("end")) {
+						world = Bukkit.createWorld(new WorldCreator(name).environment(Environment.THE_END));
+					} else if(type.equals("flat")) {
+						world = Bukkit.createWorld(new WorldCreator(name).type(WorldType.FLAT));
+					} else if(type.equals("void")) {
+						File worldFolder = new File("/root/" + OSTB.getServerName().toLowerCase() + "/void");
+						if(worldFolder.exists() && worldFolder.isDirectory() && !new File(worldFolder.getAbsolutePath() + "/uid.dat").exists()) {
+							String path = worldFolder.getAbsolutePath();
+							FileHandler.copyFolder(worldFolder, new File(path.subSequence(0, path.length() - 4) + name));
+							world = Bukkit.createWorld(new WorldCreator(name));
+						} else {
+							MessageHandler.sendMessage(sender, "&cFailed to create void world: No void world on box (Report this to Leet)");
+						}
+					} else {
+						MessageHandler.sendMessage(sender, "&c\"" + type + "\" is not a known world type, known world types are:");
+						MessageHandler.sendMessage(sender, "normal");
+						MessageHandler.sendMessage(sender, "nether");
+						MessageHandler.sendMessage(sender, "end");
+						MessageHandler.sendMessage(sender, "flat");
+						MessageHandler.sendMessage(sender, "void");
+					}
+					if(world != null) {
+						if(sender instanceof Player) {
+							Player player = (Player) sender;
+							player.teleport(world.getSpawnLocation());
+						}
+						MessageHandler.sendMessage(sender, "Created world \"" + name + "\" (" + type + ")");
+					}
+				} else if(arguments[0].equalsIgnoreCase("delete")) {
+					if(arguments.length != 2) {
+						MessageHandler.sendMessage(sender, "&f/world delete <world name>");
+						return true;
+					}
+					
+				} else {
+					return false;
 				}
 				return true;
 			}
