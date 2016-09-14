@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.util.Vector;
 
 import npc.NPCEntity;
-import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.server.util.EventUtil;
 import ostb.server.util.ItemCreator;
@@ -60,15 +58,6 @@ public class ParkourNPC implements Listener {
 	
 	public static Location getCourseLocation() {
 		return courseLocation;
-	}
-	
-	@EventHandler
-	public void onTime(TimeEvent event) {
-		long ticks = event.getTicks();
-		if(ticks == 10 && livingEntity.getTicksLived() >= (20 * 2)) {
-			Bukkit.getLogger().info("Jumping");
-			livingEntity.setVelocity(new Vector(0, 0.25, 0));
-		}
 	}
 	
 	@EventHandler
