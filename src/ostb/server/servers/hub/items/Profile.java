@@ -35,7 +35,7 @@ public class Profile extends HubItemBase {
 	private static ItemStack finalItem = null;
 	
 	public Profile() {
-		super(new ItemCreator(Material.SKULL_ITEM, 3).setName("&eProfile"), 6);
+		super(new ItemCreator(Material.SKULL_ITEM, 3).setName("&eProfile"), 7);
 		Profile.itemName = this.getName();
 		finalItem = getItem();
 		//new Settings();

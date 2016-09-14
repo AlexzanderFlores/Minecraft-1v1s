@@ -20,9 +20,7 @@ import ostb.server.servers.hub.crate.KeyFragments;
 import ostb.server.servers.hub.items.Features;
 import ostb.server.servers.hub.items.GameSelector;
 import ostb.server.servers.hub.items.HubSelector;
-import ostb.server.servers.hub.items.Notifications;
 import ostb.server.servers.hub.items.Profile;
-import ostb.server.servers.hub.items.Shop;
 import ostb.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {
@@ -51,9 +49,7 @@ public class HubBase extends ProPlugin {
 		new KeyFragments();
 		new GameSelector();
 		new Features();
-		new Shop();
 		new Profile();
-		new Notifications();
 		new HubSelector();
 		new ServerLogger();
 		new DailyRewards();

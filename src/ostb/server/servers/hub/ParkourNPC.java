@@ -44,7 +44,7 @@ public class ParkourNPC implements Listener {
 			public void onInteract(Player player) {
 				player.teleport(Events.getSpawn());
 			}
-		};//.setTargetView(endlessLocation);
+		};
 		new NPCEntity(EntityType.SKELETON, "&e&nTo Spawn", new Location(world, 1597.5, 5, -1296.5), courseLocation) {
 			@Override
 			public void onInteract(Player player) {
@@ -66,6 +66,7 @@ public class ParkourNPC implements Listener {
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 10 && livingEntity.getTicksLived() >= (20 * 2)) {
+			Bukkit.getLogger().info("Jumping");
 			livingEntity.setVelocity(new Vector(0, 0.25, 0));
 		}
 	}

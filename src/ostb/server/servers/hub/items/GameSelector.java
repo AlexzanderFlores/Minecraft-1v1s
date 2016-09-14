@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -146,19 +145,6 @@ public class GameSelector extends HubItemBase {
 					}
 				}
 			}
-			if(itemSlots.containsKey(Plugins.ONEVSONE)) {
-				int slot = itemSlots.get(Plugins.ONEVSONE);
-				for(Player player : ProPlugin.getPlayers()) {
-					InventoryView view = player.getOpenInventory();
-					if(view.getTitle().equals(name)) {
-						if(view.getItem(slot).getType() == Material.GRASS) {
-							view.getItem(slot).setType(Material.GOLDEN_APPLE);
-						} else {
-							view.getItem(slot).setType(Material.GRASS);
-						}
-					}
-				}
-			}
 		}
 	}
 	
@@ -278,41 +264,23 @@ public class GameSelector extends HubItemBase {
 	
 	private void openMenu(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, size, ChatColor.stripColor(getName()));
-		ItemStack comingSoon = new ItemCreator(Material.INK_SACK, 8).setName("&7Coming Soon").getItemStack();
 		Plugins plugin = Plugins.ONEVSONE;
-		ItemStack item = new ItemCreator(Material.GRASS).setName("&b" + plugin.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of Sky Wars",
-			"",
-			"&eUHC meets Sky Wars!",
-			"&eNatural regeneration is &cOFF",
-			"&eBe the last player standing!",
-			"",
-			"&7Team size: &a1",
-			""
-		}).getItemStack();
-		itemSlots.put(plugin, 10);
-		inventory.setItem(itemSlots.get(plugin), item);
-		plugin = Plugins.KITPVP;
-		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + plugin.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of Kit PVP",
-			"",
-			"&eBattle &cRED &evs &bBLUE &ein Kit PVP",
-			"",
-			"&7Team size: &aUp to 20"
-		}).getItemStack();
-		itemSlots.put(plugin, 12);
-		inventory.setItem(itemSlots.get(plugin), item);
-		plugin = Plugins.ONEVSONE;
-		item = new ItemCreator(Material.FISHING_ROD).setName("&b" + plugin.getDisplay()).setLores(new String [] {
-			"&7Unique spin-off of 1v1s",
+		ItemStack item = new ItemCreator(Material.FISHING_ROD).setName("&b" + plugin.getDisplay()).setLores(new String [] {
 			"",
 			"&eTest your competitive PVP skills",
 			"&eagainst other players",
 			""
 		}).getItemStack();
-		//inventory.setItem(15, item);
-		itemSlots.put(plugin, 14);
-		inventory.setItem(itemSlots.get(plugin), comingSoon);
+		itemSlots.put(plugin, 11);
+		inventory.setItem(itemSlots.get(plugin), item);
+		plugin = Plugins.KITPVP;
+		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + plugin.getDisplay()).setLores(new String [] {
+			"",
+			"&eFFA Kit PVP with customizable kits",
+			""
+		}).getItemStack();
+		itemSlots.put(plugin, 13);
+		inventory.setItem(itemSlots.get(plugin), item);
 		item = new ItemCreator(Material.DIAMOND_BOOTS).setName("&bParkour").setLores(new String [] {
 			"&7Our Unique Parkour Course",
 			"",
@@ -325,11 +293,14 @@ public class GameSelector extends HubItemBase {
 			"&eWatch out for obstacles though",
 			""
 		}).getItemStack();
-		inventory.setItem(16, item);
-		int data = new Random().nextInt(15);
+		inventory.setItem(15, item);
 		for(int slot : slots) {
 			try {
-				inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, data).setGlow(true).setName(" ").getItemStack());
+				ItemStack itemStack = inventory.getItem(slot);
+				Material material = itemStack == null ? null : itemStack.getType();
+				if(itemStack == null || material == null || material == Material.AIR) {
+					inventory.setItem(slot, new ItemCreator(Material.STAINED_GLASS_PANE, (byte) 13).setGlow(true).setName(" ").getItemStack());
+				}
 			} catch(IndexOutOfBoundsException e) {
 				e.printStackTrace();
 			}
