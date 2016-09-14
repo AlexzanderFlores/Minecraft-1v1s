@@ -46,7 +46,7 @@ public class Events implements Listener {
 		}
 	}
 	
-	//@EventHandler
+	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
 		if(ticks == 20 * 60) {
@@ -72,7 +72,7 @@ public class Events implements Listener {
 		event.setCancelled(false);
 	}
 	
-	//@EventHandler
+	@EventHandler
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		if(event.getMessage().toLowerCase().contains("/mv import ")) {
 			String worldName = event.getMessage().toLowerCase().replace("/mv import ", "");
