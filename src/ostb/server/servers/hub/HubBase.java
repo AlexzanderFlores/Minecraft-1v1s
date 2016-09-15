@@ -9,7 +9,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.player.LevelHandler;
 import ostb.player.TeamScoreboardHandler;
@@ -41,7 +41,7 @@ public class HubBase extends ProPlugin {
 				}
 			}
 		}
-		hubNumber = Integer.valueOf(OSTB.getServerName().replaceAll("[^\\d.]", ""));
+		hubNumber = Integer.valueOf(Network.getServerName().replaceAll("[^\\d.]", ""));
 		LevelHandler.enable();
 		new Events();
 		new Crate();

@@ -19,8 +19,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerAFKEvent;
@@ -88,20 +88,20 @@ public class StaffMode implements Listener {
 			PlayerStaffModeEvent staffModeEvent = new PlayerStaffModeEvent(player, StaffModeEventType.DISABLE);
 			Bukkit.getPluginManager().callEvent(staffModeEvent);
 			if(!staffModeEvent.isCancelled()) {
-				if(OSTB.getMiniGame() == null && SpectatorHandler.isEnabled()) {
+				if(Network.getMiniGame() == null && SpectatorHandler.isEnabled()) {
 					SpectatorHandler.remove(player);
 				}
 				vanished.remove(player.getName());
 				if(watching != null) {
 					watching.remove(player.getName());
 				}
-				Plugins plugin = OSTB.getPlugin();
+				Plugins plugin = Network.getPlugin();
 				if(plugin == Plugins.HUB) {
 					for(Player online : Bukkit.getOnlinePlayers()) {
 						online.showPlayer(player);
 					}
 				}
-				String location = OSTB.getServerName();
+				String location = Network.getServerName();
 				if(DB.STAFF_ONLINE.isUUIDSet(player.getUniqueId())) {
 					DB.STAFF_ONLINE.updateString("prefix", prefix, "uuid", player.getUniqueId().toString());
 					DB.STAFF_ONLINE.updateString("server", location, "uuid", player.getUniqueId().toString());
@@ -116,7 +116,7 @@ public class StaffMode implements Listener {
 			Bukkit.getPluginManager().callEvent(staffModeEvent);
 			if(!staffModeEvent.isCancelled()) {
 				if(SpectatorHandler.isEnabled() && !SpectatorHandler.contains(player)) {
-					if(OSTB.getMiniGame() == null) {
+					if(Network.getMiniGame() == null) {
 						SpectatorHandler.add(player);
 					} else {
 						MessageHandler.sendMessage(player, "&cYou must be a spectator to do this");
@@ -127,7 +127,7 @@ public class StaffMode implements Listener {
 					vanished = new ArrayList<String>();
 				}
 				vanished.add(player.getName());
-				Plugins plugin = OSTB.getPlugin();
+				Plugins plugin = Network.getPlugin();
 				if(plugin == Plugins.HUB) {
 					for(Player online : Bukkit.getOnlinePlayers()) {
 						online.hidePlayer(player);
@@ -151,10 +151,10 @@ public class StaffMode implements Listener {
 	@EventHandler
 	public void onPlayerAFK(PlayerAFKEvent event) {
 		Player player = event.getPlayer();
-		if(OSTB.getProPlugin().getAutoVanishStaff() && Ranks.isStaff(player)) {
+		if(Network.getProPlugin().getAutoVanishStaff() && Ranks.isStaff(player)) {
 			if(event.getAFK() && !contains(player) && !Ranks.OWNER.hasRank(player)) {
 				toggle(player);
-				if(OSTB.getPlugin() == Plugins.HUB && event.getAFK()) {
+				if(Network.getPlugin() == Plugins.HUB && event.getAFK()) {
 					MessageHandler.alert(AccountHandler.getPrefix(player) + " &ehas been vanished due to being AFK");
 				}
 			}

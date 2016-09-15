@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GracePeriodEndEvent;
@@ -26,8 +26,8 @@ public class GracePeriod extends CountDownUtil implements Listener {
 		super(seconds);
 		instance = this;
 		isRunning = true;
-		OSTB.getProPlugin().setAllowEntityDamage(false);
-		OSTB.getProPlugin().setAllowEntityDamageByEntities(false);
+		Network.getProPlugin().setAllowEntityDamage(false);
+		Network.getProPlugin().setAllowEntityDamageByEntities(false);
 		EventUtil.register(instance);
 		new CommandBase("grace", 1) {
 			@Override
@@ -49,9 +49,9 @@ public class GracePeriod extends CountDownUtil implements Listener {
 			if(getCounter() <= 0) {
 				isRunning = false;
 				HandlerList.unregisterAll(instance);
-				OSTB.getProPlugin().setAllowEntityDamage(true);
-				OSTB.getProPlugin().setAllowEntityDamageByEntities(true);
-				OSTB.getProPlugin().setAllowBowShooting(true);
+				Network.getProPlugin().setAllowEntityDamage(true);
+				Network.getProPlugin().setAllowEntityDamageByEntities(true);
+				Network.getProPlugin().setAllowBowShooting(true);
 				for(Player player : ProPlugin.getPlayers()) {
 					new TitleDisplayer(player, "&cPVP Enabled").setFadeIn(5).setStay(30).setFadeOut(5).display();
 				}

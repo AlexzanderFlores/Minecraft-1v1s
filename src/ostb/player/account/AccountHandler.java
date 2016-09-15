@@ -14,8 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.PlayerRankChangeEvent;
@@ -252,7 +252,7 @@ public class AccountHandler implements Listener {
 		if(DB.PLAYERS_ACCOUNTS.isUUIDSet(player.getUniqueId())) {
 			Ranks rank = Ranks.valueOf(DB.PLAYERS_ACCOUNTS.getString("uuid", player.getUniqueId().toString(), "rank"));
 			setRank(player, rank);
-			if(OSTB.getPlugin() == Plugins.HUB) {
+			if(Network.getPlugin() == Plugins.HUB) {
 				new AsyncDelayedTask(new Runnable() {
 					@Override
 					public void run() {
@@ -266,7 +266,7 @@ public class AccountHandler implements Listener {
 					}
 				});
 			}
-		} else if(OSTB.getPlugin() == Plugins.HUB) {
+		} else if(Network.getPlugin() == Plugins.HUB) {
 			setRank(player, Ranks.PLAYER);
 			new DelayedTask(new Runnable() {
 				@Override

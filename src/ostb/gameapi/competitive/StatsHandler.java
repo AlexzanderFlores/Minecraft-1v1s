@@ -18,7 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameEndingEvent;
@@ -528,7 +528,7 @@ public class StatsHandler implements Listener {
 	public void onPlayerLeave(PlayerLeaveEvent event) {
 		Player player = event.getPlayer();
 		if(!SpectatorHandler.contains(player) && combatTagged != null && combatTagged.containsKey(player.getName())) {
-			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getGameState() != GameStates.STARTED) {
+			if(Network.getMiniGame() != null && Network.getMiniGame().getGameState() != GameStates.STARTED) {
 				return;
 			}
 			Player attacker = ProPlugin.getPlayer(combatTagged.get(player.getName()));

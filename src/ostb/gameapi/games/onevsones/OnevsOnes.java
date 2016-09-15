@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
 import ostb.gameapi.competitive.EloHandler;
@@ -63,7 +63,7 @@ public class OnevsOnes extends ProPlugin {
         new EloRanking(frames, DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         frames.clear();
         frames = null;
-        OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
+        Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
         		if(ServerLogger.updatePlayerCount()) {
@@ -74,7 +74,7 @@ public class OnevsOnes extends ProPlugin {
 				setText(new String [] {
 					" ",
 					"&e&lPlaying",
-					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
+					"&b" + size + " &7/&b " + Network.getMaxPlayers(),
 					"  ",
 					"&e&lQueue Times",
 					Ranks.PLAYER.getColor() + "Default: &b5s",
@@ -85,7 +85,7 @@ public class OnevsOnes extends ProPlugin {
 					"&b0 /tourney",
 					"    ",
 					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l1V1" + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&e&lServer &b&l1V1" + Network.getServerName().replaceAll("[^\\d.]", ""),
 					"     "
 				});
 				super.update(player);

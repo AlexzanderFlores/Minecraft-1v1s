@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GameStartEvent;
@@ -76,7 +76,7 @@ public abstract class MiniGame extends ProPlugin {
 	
 	public MiniGame(String name) {
 		super(name);
-		OSTB.setMiniGame(this);
+		Network.setMiniGame(this);
 		addGroup("mini-game");
 		setLobby(Bukkit.getWorlds().get(0));
 		lobby.setTime(12250);
@@ -130,7 +130,7 @@ public abstract class MiniGame extends ProPlugin {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				Player player = (Player) sender;
-				if(OSTB.getMiniGame() != null) {
+				if(Network.getMiniGame() != null) {
 					Bukkit.getPluginManager().callEvent(new GameWinEvent(player));
 				}
 				return true;
@@ -328,7 +328,7 @@ public abstract class MiniGame extends ProPlugin {
 	}
 	
 	public void setToDefaultSidebar() {
-		OSTB.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
+		Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override
 			public void update() {
 				if(ServerLogger.updatePlayerCount()) {
@@ -346,13 +346,13 @@ public abstract class MiniGame extends ProPlugin {
 				setText(new String [] {
 					" ",
 					"&e&lPlaying",
-					"&b" + size + " &7/&b " + OSTB.getMaxPlayers(),
+					"&b" + size + " &7/&b " + Network.getMaxPlayers(),
 					"  ",
 					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
 					getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA),
 					"   ",
 					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l" + OSTB.getPlugin().getServer().toUpperCase() + OSTB.getServerName().replaceAll("[^\\d.]", ""),
+					"&e&lServer &b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
 					"    "
 				});
 				super.update();

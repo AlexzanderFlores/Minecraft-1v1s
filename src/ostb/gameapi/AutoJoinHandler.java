@@ -9,8 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.server.CommandBase;
 import ostb.server.DB;
@@ -48,7 +48,7 @@ public class AutoJoinHandler implements Listener {
 	}
 	
 	public static void send(Player player) {
-		send(player, OSTB.getPlugin());
+		send(player, Network.getPlugin());
 	}
 	
 	public static void send(final Player player, final Plugins plugin) {

@@ -10,8 +10,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.MessageHandler;
@@ -242,7 +242,7 @@ public class GlobalCommands {
 						}
 					}
 					MessageHandler.sendMessage(sender, online + " Players: " + players.substring(0, players.length() - 2));
-					if(OSTB.getMiniGame() != null && SpectatorHandler.isEnabled() && SpectatorHandler.getNumberOf() > 0) {
+					if(Network.getMiniGame() != null && SpectatorHandler.isEnabled() && SpectatorHandler.getNumberOf() > 0) {
 						String spectators = "";
 						online = 0;
 						for(Player player : SpectatorHandler.getPlayers()) {

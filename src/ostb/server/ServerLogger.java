@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.ServerLoggerEvent;
 import ostb.customevents.ServerRestartEvent;
@@ -34,8 +34,8 @@ public class ServerLogger implements Listener {
 	}
 	
 	public static void updateStatus(boolean delete) {
-		String game = OSTB.getPlugin().toString();
-		String number = OSTB.getServerName().replaceAll("[^\\d.]", "");
+		String game = Network.getPlugin().toString();
+		String number = Network.getServerName().replaceAll("[^\\d.]", "");
 		String [] keys = {"game_name", "server_number"};
 		String [] values = {game, number};
 		if(delete) {
@@ -46,11 +46,11 @@ public class ServerLogger implements Listener {
 			if(!event.isCancelled()) {
 				int current = ProPlugin.getPlayers().size() + (SpectatorHandler.isEnabled() ? SpectatorHandler.getNumberOf() : 0);
 				GameStates gameState = null;
-				MiniGame miniGame = OSTB.getMiniGame();
+				MiniGame miniGame = Network.getMiniGame();
 				if(miniGame != null) {
 					gameState = miniGame.getGameState();
 				}
-				int serverMax = OSTB.getMaxPlayers();
+				int serverMax = Network.getMaxPlayers();
 				if(current != players || gameState != state || serverMax != max) {
 					players = current;
 					max = serverMax;
@@ -72,9 +72,9 @@ public class ServerLogger implements Listener {
 						DB.NETWORK_SERVER_STATUS.updateInt("listed_priority", priority, keys, values);
 						DB.NETWORK_SERVER_STATUS.updateString("lore", lore, keys, values);
 						DB.NETWORK_SERVER_STATUS.updateInt("players", players, keys, values);
-						DB.NETWORK_SERVER_STATUS.updateInt("max_players", OSTB.getMaxPlayers(), keys, values);
+						DB.NETWORK_SERVER_STATUS.updateInt("max_players", Network.getMaxPlayers(), keys, values);
 					} else {
-						DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + OSTB.getMaxPlayers() + "'");
+						DB.NETWORK_SERVER_STATUS.insert("'" + game + "', '" + number + "', '" + priority + "', '" + lore + "', '0', '" + Network.getMaxPlayers() + "'");
 					}
 				}
 			}

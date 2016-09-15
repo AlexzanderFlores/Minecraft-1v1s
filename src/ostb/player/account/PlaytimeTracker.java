@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
@@ -254,7 +254,7 @@ public class PlaytimeTracker implements Listener {
 				if((afk != null && afk.contains(player.getName())) || player.getVehicle() != null || player.getTicksLived() <= 40) {
 					continue;
 				}
-				if(OSTB.getPlugin() == Plugins.HUB && BanHandler.checkForBanned(player)) {
+				if(Network.getPlugin() == Plugins.HUB && BanHandler.checkForBanned(player)) {
 					continue;
 				}
 				if(playtime.containsKey(player.getName())) {

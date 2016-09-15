@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.player.MessageHandler;
@@ -30,7 +30,7 @@ public class TimeOfDay implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if(OSTB.getMiniGame().getJoiningPreGame()) {
+		if(Network.getMiniGame().getJoiningPreGame()) {
 			event.getPlayer().getInventory().setItem(7, item);
 		}
 	}

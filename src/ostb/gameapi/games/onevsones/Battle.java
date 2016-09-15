@@ -27,8 +27,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.customevents.player.StatsChangeEvent;
@@ -180,7 +180,7 @@ public class Battle implements Listener {
         }
         maps.add(targetX);
         MapProvider.openMaps.put(getMapNumber(), maps);
-        if(OSTB.getPlugin() == Plugins.ONEVSONE) {
+        if(Network.getPlugin() == Plugins.ONEVSONE) {
             ProPlugin.resetPlayer(playerOne);
             ProPlugin.resetPlayer(playerTwo);
             if(!tournament) {

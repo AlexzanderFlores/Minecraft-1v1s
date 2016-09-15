@@ -139,7 +139,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	private static boolean restarting = false;
 	
 	public ProPlugin(String name) {
-		OSTB.setProPlugin(this);
+		Network.setProPlugin(this);
 		setName(name);
 		EventUtil.register(this);
 	}
@@ -527,7 +527,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	}
 	
 	public static boolean isServerFull() {
-		return Bukkit.getOnlinePlayers().size() >= OSTB.getMaxPlayers();
+		return Bukkit.getOnlinePlayers().size() >= Network.getMaxPlayers();
 	}
 	
 	public static List<Player> getPlayers() {
@@ -544,7 +544,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Connect");
 		out.writeUTF(server);
-		player.sendPluginMessage(OSTB.getInstance(), "BungeeCord", out.toByteArray());
+		player.sendPluginMessage(Network.getInstance(), "BungeeCord", out.toByteArray());
 	}
 	
 	public static Player getPlayer(String name) {
@@ -587,10 +587,10 @@ public class ProPlugin extends CountDownUtil implements Listener {
 	
 	public static void restartServer() {
 		restarting = true;
-		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-ips.json"));
-		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-ips.txt.converted"));
-		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-players.json"));
-		FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/banned-players.txt.converted"));
+		FileHandler.delete(new File("/root/" + Network.getServerName().toLowerCase() + "/banned-ips.json"));
+		FileHandler.delete(new File("/root/" + Network.getServerName().toLowerCase() + "/banned-ips.txt.converted"));
+		FileHandler.delete(new File("/root/" + Network.getServerName().toLowerCase() + "/banned-players.json"));
+		FileHandler.delete(new File("/root/" + Network.getServerName().toLowerCase() + "/banned-players.txt.converted"));
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			sendPlayerToServer(player, "hub");
 		}
@@ -738,7 +738,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 		if(restarting) {
 			event.setKickMessage("This server is currently restarting");
 			event.setResult(Result.KICK_OTHER);
-		} else if(ProPlugin.isServerFull() && Ranks.PREMIUM.hasRank(player) && OSTB.getMiniGame().getJoiningPreGame()) {
+		} else if(ProPlugin.isServerFull() && Ranks.PREMIUM.hasRank(player) && Network.getMiniGame().getJoiningPreGame()) {
 			for(Player online : Bukkit.getOnlinePlayers()) {
 				if(!Ranks.PREMIUM.hasRank(online)) {
 					MessageHandler.sendMessage(online, "You were moved to the hub to make room for a " + AccountHandler.getRank(player).getPrefix());
@@ -1132,7 +1132,7 @@ public class ProPlugin extends CountDownUtil implements Listener {
 			});
 		} else if(ticks == 20 * 60 * 5) {
 			try {
-				FileHandler.delete(new File("/root/" + OSTB.getServerName().toLowerCase() + "/logs"));
+				FileHandler.delete(new File("/root/" + Network.getServerName().toLowerCase() + "/logs"));
 			} catch(Exception e) {
 				
 			}

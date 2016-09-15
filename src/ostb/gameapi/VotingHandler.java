@@ -22,7 +22,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.game.GameStartingEvent;
 import ostb.customevents.player.PlayerItemFrameInteractEvent;
 import ostb.player.MessageHandler;
@@ -52,7 +52,7 @@ public class VotingHandler implements Listener {
 		walls = new HashMap<Block, String>();
 		maps = new ArrayList<String>();
 		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/";
-		String name = OSTB.getPlugin().getData();
+		String name = Network.getPlugin().getData();
 		name = path + name.replace(" ", "_");
 		File file = new File(name);
 		String [] folders = file.list(new FilenameFilter() {
@@ -79,7 +79,7 @@ public class VotingHandler implements Listener {
 		for(String map : maps) {
 			Bukkit.getLogger().info("Map remaining: " + map);
 		}
-		World lobby = OSTB.getMiniGame().getLobby();
+		World lobby = Network.getMiniGame().getLobby();
 		//Vector [] vectors = new Vector [] {new Vector(10.5, 6.75, 6.5), new Vector(0.5, 6.75, 6.5), new Vector(-10.5, 6.75, 6.5)};
 		for(int a = 0; a < maps.size(); ++a) {
 			String map = maps.get(a);
@@ -164,7 +164,7 @@ public class VotingHandler implements Listener {
 			}
 		}
 		final String worldName = winner.replace(" ", "_");
-		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/" + OSTB.getPlugin().getData() + "/" + worldName;
+		String path = Bukkit.getWorldContainer().getPath() + "/../resources/maps/" + Network.getPlugin().getData() + "/" + worldName;
 		File world = new File(Bukkit.getWorldContainer().getPath() + "/" + worldName);
 		if(world.exists()) {
 			FileHandler.delete(world);
@@ -176,11 +176,11 @@ public class VotingHandler implements Listener {
 				entity.remove();
 			}
 		}
-		OSTB.getMiniGame().setMap(map);
+		Network.getMiniGame().setMap(map);
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				String game = OSTB.getPlugin().toString();
+				String game = Network.getPlugin().toString();
 				String [] keys = new String [] {"game_name", "map"};
 				String [] values = new String [] {game, worldName};
 				if(DB.NETWORK_MAP_VOTES.isKeySet(keys, values)) {

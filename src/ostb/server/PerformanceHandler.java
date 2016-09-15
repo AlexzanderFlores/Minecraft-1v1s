@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.PermissionAttachment;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
@@ -35,7 +35,7 @@ public class PerformanceHandler implements Listener {
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					String perm = "bukkit.command.tps";
-					PermissionAttachment permission = player.addAttachment(OSTB.getInstance());
+					PermissionAttachment permission = player.addAttachment(Network.getInstance());
 					permission.setPermission(perm, true);
 					player.chat("/tps");
 					permission.unsetPermission(perm);
@@ -92,7 +92,7 @@ public class PerformanceHandler implements Listener {
 		counters.add(20 * 60);
 		counters.add(20 * 60 * 5);
 		counters.add(20 * 60 * 10);
-		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
+		Bukkit.getScheduler().runTaskTimer(Network.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				++counter;

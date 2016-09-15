@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.game.GameWinEvent;
 import ostb.gameapi.MiniGame;
@@ -21,14 +21,14 @@ import ostb.server.util.EventUtil;
 
 public class StatRanking implements Listener {
 	public StatRanking() {
-		if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getPlayersHaveOneLife()) {
+		if(Network.getMiniGame() != null && !Network.getMiniGame().getPlayersHaveOneLife()) {
 			return;
 		}
 		EventUtil.register(this);
 	}
 	
 	private void display(final Player player) {
-		MiniGame miniGame = OSTB.getMiniGame();
+		MiniGame miniGame = Network.getMiniGame();
 		if(player == null || miniGame == null || !miniGame.getPlayersHaveOneLife()) {
 			return;
 		}

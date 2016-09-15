@@ -1,6 +1,6 @@
 package ostb.server.servers.hub.main;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.server.servers.hub.HubBase;
 
 public class MainHub extends HubBase {
@@ -11,6 +11,6 @@ public class MainHub extends HubBase {
 	}
 	
 	public static int getHubNumber() {
-		return Integer.valueOf(OSTB.getServerName().toLowerCase().replace("hub", ""));
+		return Integer.valueOf(Network.getServerName().toLowerCase().replace("hub", ""));
 	}
 }

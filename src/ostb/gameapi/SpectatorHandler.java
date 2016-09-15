@@ -40,7 +40,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
@@ -72,7 +72,7 @@ public class SpectatorHandler implements Listener {
 		teleporter = new ItemCreator(Material.WATCH).setName("&aTeleport to Player").getItemStack();
 		settings = new ItemCreator(Material.REDSTONE_COMPARATOR).setName("&aSpectator Settings").getItemStack();
 		nextGame = new ItemCreator(Material.DIAMOND_SWORD).setName("&aJoin Next Game").getItemStack();
-		if(OSTB.getMiniGame() == null) {
+		if(Network.getMiniGame() == null) {
 			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aExit Spectating").getItemStack();
 		} else {
 			exit = new ItemCreator(Material.WOOD_DOOR).setName("&aReturn to Hub").getItemStack();
@@ -123,7 +123,7 @@ public class SpectatorHandler implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.PREMIUM);
-		Bukkit.getScheduler().runTaskTimer(OSTB.getInstance(), new Runnable() {
+		Bukkit.getScheduler().runTaskTimer(Network.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				if(spectators != null && !spectators.isEmpty()) {
@@ -166,7 +166,7 @@ public class SpectatorHandler implements Listener {
 	}
 	
 	public static void giveUtilItems(Player player) {
-		if(OSTB.getMiniGame().getAutoJoin()) {
+		if(Network.getMiniGame().getAutoJoin()) {
 			player.getInventory().setItem(7, exit);
 			player.getInventory().setItem(8, nextGame);
 		} else {
@@ -184,7 +184,7 @@ public class SpectatorHandler implements Listener {
 				player.getInventory().setArmorContents(null);
 				player.getInventory().setItem(0, teleporter);
 				player.getInventory().setItem(1, settings);
-				if(OSTB.getMiniGame() == null) {
+				if(Network.getMiniGame() == null) {
 					player.getInventory().setItem(8, exit);
 				} else {
 					giveUtilItems(player);
@@ -250,7 +250,7 @@ public class SpectatorHandler implements Listener {
 	}
 	
 	public static boolean wouldSpectate() {
-		MiniGame miniGame = OSTB.getMiniGame();
+		MiniGame miniGame = Network.getMiniGame();
 		if(miniGame == null) {
 			return false;
 		} else {
@@ -328,7 +328,7 @@ public class SpectatorHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onMouseClick(MouseClickEvent event) {
 		Player player = event.getPlayer();
-		if(contains(player) || (OSTB.getMiniGame() != null && OSTB.getMiniGame().getGameState() == GameStates.ENDING)) {
+		if(contains(player) || (Network.getMiniGame() != null && Network.getMiniGame().getGameState() == GameStates.ENDING)) {
 			ItemStack item = player.getItemInHand();
 			if(item != null) {
 				if(item.getType() == Material.WATCH) {
@@ -337,7 +337,7 @@ public class SpectatorHandler implements Listener {
 						player.openInventory(inventory);
 					}
 				} else if(item.getType() == Material.WOOD_DOOR) {
-					if(OSTB.getMiniGame() == null) {
+					if(Network.getMiniGame() == null) {
 						remove(player);
 					} else {
 						ProPlugin.sendPlayerToServer(player, "hub");
@@ -417,7 +417,7 @@ public class SpectatorHandler implements Listener {
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		if(contains(player)) {
-			if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getUseSpectatorChatChannel()) {
+			if(Network.getMiniGame() != null && Network.getMiniGame().getUseSpectatorChatChannel()) {
 				for(Player online : Bukkit.getOnlinePlayers()) {
 					if(!contains(online) && !Ranks.isStaff(online)) {
 						event.getRecipients().remove(online);
@@ -474,12 +474,12 @@ public class SpectatorHandler implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getPlayersHaveOneLife()) {
+		if(Network.getMiniGame() != null && Network.getMiniGame().getPlayersHaveOneLife()) {
 			ProPlugin.resetPlayer(event.getPlayer());
 			add(event.getPlayer());
 			Player killer = event.getPlayer().getKiller();
 			if(killer == null) {
-				event.setRespawnLocation(OSTB.getMiniGame().getLobby().getSpawnLocation());
+				event.setRespawnLocation(Network.getMiniGame().getLobby().getSpawnLocation());
 			} else {
 				event.setRespawnLocation(killer.getLocation());
 			}

@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
 import ostb.player.MessageHandler;
@@ -20,7 +20,7 @@ public class DefaultKit implements Listener {
 	private static Map<String, KitBase> defaultKits = null;
 	
 	public DefaultKit() {
-		if(OSTB.getPlugin() != Plugins.HUB) {
+		if(Network.getPlugin() != Plugins.HUB) {
 			defaultKits = new HashMap<String, KitBase>();
 			EventUtil.register(this);
 		}
@@ -32,13 +32,13 @@ public class DefaultKit implements Listener {
 	
 	@EventHandler
 	public void onAsyncPostPlayerJoin(AsyncPostPlayerJoinEvent event) {
-		if(OSTB.getMiniGame() != null && !OSTB.getMiniGame().getJoiningPreGame()) {
+		if(Network.getMiniGame() != null && !Network.getMiniGame().getJoiningPreGame()) {
 			return;
 		}
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		boolean selected = false;
-		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), OSTB.getPlugin().getData()})) {
+		for(String kitName : DB.PLAYERS_DEFAULT_KITS.getAllStrings("kit", new String [] {"uuid", "game"}, new String [] {uuid.toString(), Network.getPlugin().getData()})) {
 			selected = true;
 			KitBase kit = null;
 			for(KitBase kitBase : KitBase.getKits()) {

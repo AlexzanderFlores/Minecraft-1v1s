@@ -18,8 +18,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.game.GameDeathEvent;
@@ -69,7 +69,7 @@ public class GeneralEvents implements Listener {
 		player.setTicksLived(1);
 		colorPlayerTab(player);
 		if(player.isOp() || player.hasPermission("bukkit.command.op.give") || player.hasPermission("bukkit.command.op.take")) {
-			Plugins plugin = OSTB.getPlugin();
+			Plugins plugin = Network.getPlugin();
 			if(plugin != Plugins.BUILDING) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "deop " + player.getName());
 			}

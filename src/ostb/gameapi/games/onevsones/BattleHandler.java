@@ -27,8 +27,8 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.gameapi.competitive.StatsHandler;
 import ostb.gameapi.games.onevsones.events.BattleEndEvent;
@@ -53,7 +53,7 @@ public class BattleHandler implements Listener {
         battles = new ArrayList<Battle>();
         playerBattles = new HashMap<String, Battle>();
         mapCoords = new HashMap<Integer, Integer>();
-        if(OSTB.getPlugin() == Plugins.ONEVSONE) {
+        if(Network.getPlugin() == Plugins.ONEVSONE) {
             new CommandBase("quit", true) {
                 @Override
                 public boolean execute(CommandSender sender, String[] arguments) {
@@ -155,7 +155,7 @@ public class BattleHandler implements Listener {
         Player killer = player.getKiller();
         Bukkit.getPluginManager().callEvent(new BattleEndEvent(killer, player, OneVsOneKit.getPlayersKit(player)));
         if(killer == null) {
-            if(OSTB.getPlugin() == Plugins.ONEVSONE) {
+            if(Network.getPlugin() == Plugins.ONEVSONE) {
                 player.sendMessage(event.getDeathMessage());
             }
         } else {
@@ -165,7 +165,7 @@ public class BattleHandler implements Listener {
                 health = 0.10;
             }
             event.setDeathMessage(event.getDeathMessage() + ChatColor.translateAlternateColorCodes('&', " &fwith &c" + health + " &4" + UnicodeUtil.getHeart()));
-            if(OSTB.getPlugin() == Plugins.ONEVSONE) {
+            if(Network.getPlugin() == Plugins.ONEVSONE) {
                 MessageHandler.sendMessage(player, event.getDeathMessage());
                 MessageHandler.sendMessage(killer, event.getDeathMessage());
             }

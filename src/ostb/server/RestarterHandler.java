@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.ServerRestartAlertEvent;
@@ -34,7 +34,7 @@ public class RestarterHandler extends CountDownUtil implements Listener {
 					if(arguments[0].equalsIgnoreCase("stop")) {
 						if(running) {
 							running = false;
-							MessageHandler.alert("&c" + OSTB.getServerName() + "'s restart has been cancelled");
+							MessageHandler.alert("&c" + Network.getServerName() + "'s restart has been cancelled");
 						} else {
 							MessageHandler.sendMessage(sender, "&cThere is no running update");
 						}

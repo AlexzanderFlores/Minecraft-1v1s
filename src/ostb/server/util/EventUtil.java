@@ -3,10 +3,10 @@ package ostb.server.util;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 
 public class EventUtil {
 	public static void register(Listener listener) {
-		Bukkit.getPluginManager().registerEvents(listener, OSTB.getInstance());
+		Bukkit.getPluginManager().registerEvents(listener, Network.getInstance());
 	}
 }

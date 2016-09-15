@@ -15,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB;
@@ -458,7 +458,7 @@ public class ViolationPrevention implements Listener {
 			List<String> messages = blockedMessages.get(name);
 			if(messages != null && !messages.isEmpty()) {
 				for(String message : messages) {
-					DB.PLAYERS_BLOCKED_MESSAGES.insert("'" + uuid.toString() + "', '" + OSTB.getServerName() + "', '" + message + "'");
+					DB.PLAYERS_BLOCKED_MESSAGES.insert("'" + uuid.toString() + "', '" + Network.getServerName() + "', '" + message + "'");
 				}
 				messages.clear();
 				messages = null;

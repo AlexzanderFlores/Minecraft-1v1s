@@ -55,7 +55,7 @@ import ostb.server.util.Glow;
 import ostb.server.util.JarUtils;
 import ostb.staff.Punishment;
 
-public class OSTB extends JavaPlugin implements PluginMessageListener {
+public class Network extends JavaPlugin implements PluginMessageListener {
 	public enum Plugins {
 		HUB("HUB", "hub", "Hub"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
@@ -92,7 +92,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 		}
 	}
 	
-	private static OSTB instance = null;
+	private static Network instance = null;
 	private static Plugins plugin = null;
 	private static ProPlugin proPlugin = null;
 	private static MiniGame miniGame = null;
@@ -209,7 +209,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
         }
     }
 	
-	public static OSTB getInstance() {
+	public static Network getInstance() {
 		return instance;
 	}
 	
@@ -222,7 +222,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	}
 	
 	public static void setProPlugin(ProPlugin proPlugin) {
-		OSTB.proPlugin = proPlugin;
+		Network.proPlugin = proPlugin;
 	}
 	
 	public static void setMiniGame(MiniGame newMiniGame) {
@@ -242,7 +242,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	}
 	
 	public static void setSidebar(SidebarScoreboardUtil sidebar) {
-		OSTB.sidebar = sidebar;
+		Network.sidebar = sidebar;
 	}
 	
 	public static BelowNameScoreboardUtil getBelowName() {
@@ -250,7 +250,7 @@ public class OSTB extends JavaPlugin implements PluginMessageListener {
 	}
 	
 	public static void setBelowName(BelowNameScoreboardUtil belowName) {
-		OSTB.belowName = belowName;
+		Network.belowName = belowName;
 	}
 	
 	public static Scoreboard getScoreboard() {

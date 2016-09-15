@@ -3,7 +3,7 @@ package ostb.server.tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 
 public class AsyncDelayedTask implements Listener {
 	private int id = -1;
@@ -13,7 +13,7 @@ public class AsyncDelayedTask implements Listener {
 	}
 	
 	public AsyncDelayedTask(Runnable runnable, long delay) {
-		OSTB instance = OSTB.getInstance();
+		Network instance = Network.getInstance();
 		if(instance.isEnabled()) {
 			id = Bukkit.getScheduler().runTaskLaterAsynchronously(instance, runnable, delay).getTaskId();
 		} else {

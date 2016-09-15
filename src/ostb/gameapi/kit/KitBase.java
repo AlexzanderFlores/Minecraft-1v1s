@@ -16,8 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.customevents.player.AsyncPlayerJoinEvent;
 import ostb.customevents.player.PlayerKitPurchaseEvent;
 import ostb.customevents.player.PlayerKitSelectEvent;
@@ -155,7 +155,7 @@ public abstract class KitBase implements Listener {
 			PlayerKitSelectEvent event = new PlayerKitSelectEvent(player, this);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				if(getPluginData().equals(OSTB.getPlugin().getData())) {
+				if(getPluginData().equals(Network.getPlugin().getData())) {
 					for(KitBase kit : kits) {
 						if(kit.getKitType().equals(getKitType())) {
 							kit.remove(player);
@@ -294,7 +294,7 @@ public abstract class KitBase implements Listener {
 	
 	@EventHandler
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
-		if(OSTB.getPlugin() == Plugins.HUB) {
+		if(Network.getPlugin() == Plugins.HUB) {
 			AsyncPlayerJoinEvent.getHandlerList().unregister(this);
 		} else {
 			owns(event.getPlayer());

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.TimeEvent;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -104,7 +104,7 @@ public class AutoAlerts implements Listener {
 	private static Map<String, AutoAlert> alerts = null;
 	
 	public AutoAlerts() {
-		if(OSTB.getServerName().equals("HUB1")) {
+		if(Network.getServerName().equals("HUB1")) {
 			new CommandBase("aa", -1) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {

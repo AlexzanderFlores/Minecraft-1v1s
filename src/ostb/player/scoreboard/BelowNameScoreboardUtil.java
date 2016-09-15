@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import ostb.OSTB;
+import ostb.Network;
 
 public class BelowNameScoreboardUtil extends ScoreboardBase {
 	public BelowNameScoreboardUtil(String name, String type) {
@@ -19,7 +19,7 @@ public class BelowNameScoreboardUtil extends ScoreboardBase {
 		setObjective(getScoreboard().registerNewObjective(ChatColor.translateAlternateColorCodes('&', name), type));
 		getObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
 		getObjective().setDisplayName(ChatColor.translateAlternateColorCodes('&', display));
-		OSTB.setBelowName(this);
+		Network.setBelowName(this);
 	}
 	
 	public BelowNameScoreboardUtil(Scoreboard scoreboard, String name, String type, String display) {
@@ -27,7 +27,7 @@ public class BelowNameScoreboardUtil extends ScoreboardBase {
 		setObjective(getScoreboard().registerNewObjective(ChatColor.translateAlternateColorCodes('&', name), type));
 		getObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
 		getObjective().setDisplayName(ChatColor.translateAlternateColorCodes('&', display));
-		OSTB.setBelowName(this);
+		Network.setBelowName(this);
 	}
 	
 	public int getScore(String text) {

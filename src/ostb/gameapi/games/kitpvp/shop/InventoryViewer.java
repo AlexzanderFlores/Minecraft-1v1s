@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB.Plugins;
+import ostb.Network.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.games.kitpvp.events.InventoryViewClickEvent;
 import ostb.player.CoinsHandler;

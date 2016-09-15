@@ -21,7 +21,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import npc.NPCEntity;
-import ostb.OSTB.Plugins;
+import ostb.Network.Plugins;
 import ostb.customevents.player.InventoryItemClickEvent;
 import ostb.gameapi.SpectatorHandler;
 import ostb.player.CoinsHandler;

@@ -15,8 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB.Plugins;
-import ostb.OSTB;
+import ostb.Network.Plugins;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.game.GameWinEvent;
@@ -83,7 +83,7 @@ public class CoinsHandler implements Listener {
 			new CommandBase("coins", 0, 1) {
 				@Override
 				public boolean execute(CommandSender sender, String [] arguments) {
-					if(OSTB.getPlugin() == Plugins.HUB) {
+					if(Network.getPlugin() == Plugins.HUB) {
 						MessageHandler.sendMessage(sender, "&cYou can only use this command in-game");
 					} else {
 						Player target = null;
@@ -106,7 +106,7 @@ public class CoinsHandler implements Listener {
 								return true;
 							}
 						}
-						Plugins plugin = OSTB.getPlugin();
+						Plugins plugin = Network.getPlugin();
 						CoinsHandler coinsHandler = getCoinsHandler(plugin.getData());
 						if(coinsHandler == null) {
 							MessageHandler.sendMessage(sender, "&cError on loading the coins handler for \"" + plugin.getData() + "\"");

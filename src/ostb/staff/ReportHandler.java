@@ -18,8 +18,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.PlayerBanEvent;
@@ -170,8 +170,8 @@ public class ReportHandler implements Listener {
                                 MessageHandler.sendMessage(player, Ranks.TRIAL.getNoPermission());
                             }
                         } else {
-                        	Plugins plugin = OSTB.getPlugin();
-                            MiniGame game = OSTB.getMiniGame();
+                        	Plugins plugin = Network.getPlugin();
+                            MiniGame game = Network.getMiniGame();
                             if(plugin == Plugins.HUB) {
                                 MessageHandler.sendMessage(player, "&cYou cannot create a report on this server");
                                 return;
@@ -339,7 +339,7 @@ public class ReportHandler implements Listener {
                 }
                 if(openReports != null && !openReports.isEmpty()) {
                     for(Player player : Bukkit.getOnlinePlayers()) {
-                    	if(OSTB.getMiniGame() != null && !SpectatorHandler.contains(player)) {
+                    	if(Network.getMiniGame() != null && !SpectatorHandler.contains(player)) {
                     		continue;
                     	}
                         if(Ranks.isStaff(player)) {

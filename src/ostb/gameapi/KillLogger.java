@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.game.GameDeathEvent;
 import ostb.customevents.player.PlayerLeaveEvent;
 import ostb.server.util.EventUtil;
@@ -39,7 +39,7 @@ public class KillLogger implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerLeaveEvent event) {
-		if(OSTB.getMiniGame() == null) {
+		if(Network.getMiniGame() == null) {
 			kills.remove(event.getPlayer().getUniqueId());
 		}
 	}

@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.bukkit.Bukkit;
 
 import net.minecraft.util.org.apache.commons.io.FileUtils;
-import ostb.OSTB;
+import ostb.Network;
 
 public class FileHandler {
     public static void checkForUpdates() {
@@ -22,7 +22,7 @@ public class FileHandler {
             File file = new File(path, plugin);
             Bukkit.getLogger().info(file.getAbsolutePath());
             if(file.exists()) {
-                File update = new File("/root/" + OSTB.getServerName().toLowerCase() + "/plugins/" + plugin);
+                File update = new File("/root/" + Network.getServerName().toLowerCase() + "/plugins/" + plugin);
                 /*if(update.exists()) {
                     delete(update);
                 }*/

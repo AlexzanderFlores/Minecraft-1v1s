@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.player.MouseClickEvent;
 import ostb.gameapi.MiniGame.GameStates;
@@ -23,7 +23,7 @@ public class LeaveItem implements Listener {
 	}
 	
 	private boolean isWaiting() {
-		GameStates gameState = OSTB.getMiniGame().getGameState();
+		GameStates gameState = Network.getMiniGame().getGameState();
 		return gameState == GameStates.WAITING || gameState == GameStates.VOTING;
 	}
 	

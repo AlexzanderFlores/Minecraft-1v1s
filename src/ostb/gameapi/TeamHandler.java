@@ -22,7 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.game.GameStartEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
@@ -89,7 +89,7 @@ public class TeamHandler implements Listener {
 	}
 	
 	public Team addTeam(String name) {
-		Team team = OSTB.getScoreboard().registerNewTeam(name);
+		Team team = Network.getScoreboard().registerNewTeam(name);
 		teams.add(team);
 		return team;
 	}
@@ -97,7 +97,7 @@ public class TeamHandler implements Listener {
 	public void removeTeam(String team) {
 		if(teams.contains(team)) {
 			teams.remove(team);
-			OSTB.getScoreboard().getTeam(team).unregister();
+			Network.getScoreboard().getTeam(team).unregister();
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class TeamHandler implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if(enableTeamSelectorItem && OSTB.getMiniGame().getJoiningPreGame()) {
+		if(enableTeamSelectorItem && Network.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
 			player.getInventory().addItem(item);
 		}
@@ -184,7 +184,7 @@ public class TeamHandler implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-		MiniGame miniGame = OSTB.getMiniGame();
+		MiniGame miniGame = Network.getMiniGame();
 		if(miniGame != null && miniGame.getGameState() != GameStates.STARTED) {
 			return;
 		}

@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -45,7 +45,7 @@ public class ChatLogger implements Listener {
 		UUID uuid = event.getUUID();
 		String name = event.getName();
 		if(playerMessages.containsKey(name)) {
-			String server = OSTB.getServerName();
+			String server = Network.getServerName();
 			String time = TimeUtil.getTime();
 			Ranks rank = AccountHandler.getRank(uuid);
 			for(String message : playerMessages.get(name)) {

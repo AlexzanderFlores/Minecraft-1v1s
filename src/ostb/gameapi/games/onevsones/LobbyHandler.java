@@ -28,7 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
@@ -79,7 +79,7 @@ public class LobbyHandler implements Listener {
                 giveItems(player);
             }
         }
-        OSTB.getSidebar().update(player);
+        Network.getSidebar().update(player);
         return location;
     }
 

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
@@ -127,7 +127,7 @@ public class PlayerTracker implements Listener {
 						Player player = ProPlugin.getPlayer(name);
 						if(player != null) {
 							UUID uuid = player.getUniqueId();
-							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + OSTB.getServerName() + "'");
+							DB.PLAYERS_LOCATIONS.insert("'" + uuid.toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + Network.getServerName() + "'");
 						}
 						queue.remove(0);
 					}
@@ -144,7 +144,7 @@ public class PlayerTracker implements Listener {
 			if(SpectatorHandler.contains(player)) {
 				location = "VANISHED";
 			} else {
-				location = OSTB.getServerName();
+				location = Network.getServerName();
 			}
 			DB.STAFF_ONLINE.insert("'" + player.getUniqueId().toString() + "', '" + AccountHandler.getPrefix(player) + "', '" + location + "'");
 		} else {

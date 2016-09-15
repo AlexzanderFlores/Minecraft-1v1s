@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import anticheat.util.DelayedTask;
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.game.GameEndingEvent;
 import ostb.customevents.game.GiveMapRatingItemEvent;
 import ostb.customevents.player.AsyncPlayerLeaveEvent;
@@ -106,8 +106,8 @@ public class MapRating implements Listener {
 		String name = event.getName();
 		if(ratings.containsKey(name)) {
 			UUID uuid = event.getUUID();
-			String game = OSTB.getPlugin().getData();
-			MiniGame miniGame = OSTB.getMiniGame();
+			String game = Network.getPlugin().getData();
+			MiniGame miniGame = Network.getMiniGame();
 			String map = miniGame.getMap().getName();
 			int rating = ratings.get(name);
 			String [] keys = new String [] {"uuid", "game", "map"};

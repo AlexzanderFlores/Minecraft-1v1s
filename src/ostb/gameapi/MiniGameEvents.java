@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import anticheat.events.PlayerBanEvent;
 import npc.NPCRegistrationHandler.NPCs;
-import ostb.OSTB;
+import ostb.Network;
 import ostb.ProPlugin;
 import ostb.customevents.AutoRestartEvent;
 import ostb.customevents.TimeEvent;
@@ -47,7 +47,7 @@ public class MiniGameEvents implements Listener {
 	}
 	
 	private MiniGame getMiniGame() {
-		return OSTB.getMiniGame();
+		return Network.getMiniGame();
 	}
 	
 	@EventHandler
@@ -109,7 +109,7 @@ public class MiniGameEvents implements Listener {
 					}
 				}
 			}
-			OSTB.getSidebar().update();
+			Network.getSidebar().update();
 			if(getMiniGame().getCounter() > 0) {
 				CounterDecrementEvent counterDecrementEvent = new CounterDecrementEvent();
 				Bukkit.getPluginManager().callEvent(counterDecrementEvent);
@@ -245,10 +245,10 @@ public class MiniGameEvents implements Listener {
 				@Override
 				public void run() {
 					List<Player> players = ProPlugin.getPlayers();
-					if(players.size() == 1 && OSTB.getMiniGame().getRestartWithOnePlayerLeft()) {
+					if(players.size() == 1 && Network.getMiniGame().getRestartWithOnePlayerLeft()) {
 						Bukkit.getPluginManager().callEvent(new GameWinEvent(players.get(0)));
 					} else if(players.size() == 0) {
-						OSTB.getMiniGame().setGameState(GameStates.ENDING);
+						Network.getMiniGame().setGameState(GameStates.ENDING);
 					}
 					players.clear();
 					players = null;

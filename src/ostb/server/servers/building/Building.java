@@ -15,8 +15,8 @@ import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.ProPlugin;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -129,7 +129,7 @@ public class Building extends ProPlugin {
 					String target = arguments[1];
 					World world = Bukkit.getWorld(target);
 					if(world == null) {
-						File worldFile = new File("/root/" + OSTB.getServerName().toLowerCase() + "/" + arguments[1]);
+						File worldFile = new File("/root/" + Network.getServerName().toLowerCase() + "/" + arguments[1]);
 						if(worldFile.exists() && worldFile.isDirectory() && new File(worldFile.getAbsolutePath() + "/uid.dat").exists()) {
 							world = Bukkit.createWorld(new WorldCreator(arguments[1]));
 							if(world == null) {
@@ -143,7 +143,7 @@ public class Building extends ProPlugin {
 							}
 						} else {
 							MessageHandler.sendMessage(sender, "&c" + arguments[1] + " is not a known world, these are worlds:");
-							String path = "/root/" + OSTB.getServerName().toLowerCase() + "/";
+							String path = "/root/" + Network.getServerName().toLowerCase() + "/";
 							File dir = new File(path);
 							for(String fileName : dir.list()) {
 								File file = new File(fileName);
@@ -197,7 +197,7 @@ public class Building extends ProPlugin {
 					} else if(type.equals("flat")) {
 						world = Bukkit.createWorld(new WorldCreator(name).type(WorldType.FLAT));
 					} else if(type.equals("void")) {
-						File worldFolder = new File("/root/" + OSTB.getServerName().toLowerCase() + "/void");
+						File worldFolder = new File("/root/" + Network.getServerName().toLowerCase() + "/void");
 						if(worldFolder.exists() && worldFolder.isDirectory() && !new File(worldFolder.getAbsolutePath() + "/uid.dat").exists()) {
 							String path = worldFolder.getAbsolutePath();
 							FileHandler.copyFolder(worldFolder, new File(path.subSequence(0, path.length() - 4) + name));
@@ -237,7 +237,7 @@ public class Building extends ProPlugin {
 	@Override
 	public void disable() {
 		for(int a = 0; a < 10; ++a) Bukkit.getLogger().info("disable()");
-		String name = OSTB.getServerName().toLowerCase();
+		String name = Network.getServerName().toLowerCase();
 		FileHandler.delete(new File("/root/" + name + "/plugins/Multiverse-Core/worlds.yml"));
 		FileHandler.delete(new File("/root/" + name + "/plugins/Essentials/userdata"));
 		super.disable();

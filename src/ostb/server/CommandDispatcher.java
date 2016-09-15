@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.customevents.TimeEvent;
 import ostb.player.account.AccountHandler.Ranks;
 import ostb.server.DB.Databases;
@@ -105,7 +105,7 @@ public class CommandDispatcher implements Listener {
 			new AsyncDelayedTask(new Runnable() {
 				@Override
 				public void run() {
-					String server = OSTB.getServerName();
+					String server = Network.getServerName();
 					for(String command : DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.getAllStrings("command", "server", server)) {
 						Bukkit.getLogger().info("Command Dispatcher: Running \"" + command + "\" for \"" + server + "\"");
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);

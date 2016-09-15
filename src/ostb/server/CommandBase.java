@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ostb.OSTB;
+import ostb.Network;
 import ostb.player.MessageHandler;
 import ostb.player.account.AccountHandler;
 import ostb.player.account.AccountHandler.Ranks;
@@ -48,7 +48,7 @@ public abstract class CommandBase implements CommandExecutor {
 		this.maxArguments = maxArguments;
 		this.playerOnly = playerOnly;
 		try {
-			OSTB.getInstance().getCommand(command).setExecutor(this);
+			Network.getInstance().getCommand(command).setExecutor(this);
 		} catch(Exception e) {
 			Bukkit.getLogger().info("");
 			Bukkit.getLogger().info("\t\"" + command + "\" command is not registered");

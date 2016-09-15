@@ -10,8 +10,8 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.customevents.ServerRestartAlertEvent;
 import ostb.customevents.game.GameKillEvent;
 import ostb.customevents.player.AsyncPostPlayerJoinEvent;
@@ -29,7 +29,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		player.setScoreboard(OSTB.getScoreboard());
+		player.setScoreboard(Network.getScoreboard());
 	}
 	
 	@EventHandler

@@ -18,8 +18,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import ostb.OSTB;
-import ostb.OSTB.Plugins;
+import ostb.Network;
+import ostb.Network.Plugins;
 import ostb.customevents.TimeEvent;
 import ostb.customevents.player.CoinUpdateEvent;
 import ostb.customevents.player.InventoryItemClickEvent;
@@ -86,7 +86,7 @@ public abstract class ShopBase implements Listener {
 		pages = new HashMap<String, Integer>();
 		itemStack = new ItemCreator(Material.CHEST).setName("&aShop").setGlow(true).getItemStack();
 		slots = new int [] {3, 5};
-		if(OSTB.getMiniGame() != null) {
+		if(Network.getMiniGame() != null) {
 			holograms = new ArrayList<Hologram>();
 			colors = new String [] {
 				ChatColor.YELLOW + "",
@@ -188,7 +188,7 @@ public abstract class ShopBase implements Listener {
 		setBackItem(player, inventory);
 		setNextItem(player, inventory);
 		updateInfoItem(player, inventory);
-		if(OSTB.getPlugin() == Plugins.HUB) {
+		if(Network.getPlugin() == Plugins.HUB) {
 			inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 		}
 		updateCoinsItem(player, inventory);
@@ -230,7 +230,7 @@ public abstract class ShopBase implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getJoiningPreGame()) {
+		if(Network.getMiniGame() != null && Network.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
 			player.getInventory().remove(itemStack);
 			player.getInventory().addItem(itemStack);
@@ -241,7 +241,7 @@ public abstract class ShopBase implements Listener {
 	
 	@EventHandler
 	public void onMouseClick(MouseClickEvent event) {
-		if(OSTB.getMiniGame() != null && OSTB.getMiniGame().getJoiningPreGame()) {
+		if(Network.getMiniGame() != null && Network.getMiniGame().getJoiningPreGame()) {
 			Player player = event.getPlayer();
 			if(player.getItemInHand().equals(itemStack)) {
 				EffectUtil.playSound(player, Sound.CHEST_OPEN);

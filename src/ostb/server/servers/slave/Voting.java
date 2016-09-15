@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 
-import ostb.OSTB.Plugins;
+import ostb.Network.Plugins;
 import ostb.player.CoinsHandler;
 import ostb.player.account.AccountHandler;
 import ostb.server.CommandBase;
