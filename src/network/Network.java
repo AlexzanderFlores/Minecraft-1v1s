@@ -34,7 +34,6 @@ import network.player.account.PlaytimeTracker;
 import network.player.scoreboard.BelowNameScoreboardUtil;
 import network.player.scoreboard.SidebarScoreboardUtil;
 import network.server.AlertHandler;
-import network.server.AntiCheat;
 import network.server.AutoAlerts;
 import network.server.CommandDispatcher;
 import network.server.DB;
