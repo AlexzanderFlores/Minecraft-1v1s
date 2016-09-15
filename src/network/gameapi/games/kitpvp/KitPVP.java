@@ -9,6 +9,7 @@ import network.ProPlugin;
 import network.gameapi.SpectatorHandler;
 import network.gameapi.TemporaryFireUtil;
 import network.gameapi.competitive.StatsHandler;
+import network.gameapi.games.kitpvp.shop.Shop;
 import network.player.scoreboard.BelowNameHealthScoreboardUtil;
 import network.server.DB;
 import network.server.ServerLogger;
@@ -30,6 +31,8 @@ public class KitPVP extends ProPlugin {
 		new Events();
 		new TemporaryFireUtil(20 * 5);
 		new BelowNameHealthScoreboardUtil();
+		new Shop(Bukkit.getWorlds().get(0));
+		new SpawnHandler();
 		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
 	}
 	

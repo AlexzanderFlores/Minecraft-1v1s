@@ -42,18 +42,13 @@ public class Shop implements Listener {
 	private SaveYourItems saveYourItems = null;
 	private List<String> recentlyDamaged = null;
 	
-	public Shop(World world, Location redSpawn, Location blueSpawn) {
+	public Shop(World world) {
 		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/" + Plugins.KITPVP.getData() + "/shop.yml");
 		for(String key : config.getConfig().getKeys(false)) {
 			double x = config.getConfig().getDouble(key + ".x");
 			double y = config.getConfig().getDouble(key + ".y");
 			double z = config.getConfig().getDouble(key + ".z");
 			Location target = world.getSpawnLocation();
-			if(target.distance(redSpawn) < target.distance(blueSpawn)) {
-				target = redSpawn;
-			} else {
-				target = blueSpawn;
-			}
 			new Shop(new Location(world, x, y, z), target);
 		}
 	}

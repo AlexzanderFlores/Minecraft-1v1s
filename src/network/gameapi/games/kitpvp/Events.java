@@ -1,6 +1,5 @@
 package network.gameapi.games.kitpvp;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,14 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 
 import network.Network;
 import network.Network.Plugins;
 import network.customevents.ServerRestartAlertEvent;
 import network.customevents.game.GameKillEvent;
 import network.customevents.player.AsyncPostPlayerJoinEvent;
-import network.gameapi.games.kitpvp.events.TeamSelectEvent;
 import network.player.CoinsHandler;
 import network.player.LevelGiver;
 import network.player.MessageHandler;
@@ -48,30 +45,6 @@ public class Events implements Listener {
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if(event.getEntity() instanceof Arrow) {
 			event.getEntity().remove();
-		}
-	}
-	
-	@EventHandler
-	public void onTeamSelect(TeamSelectEvent event) {
-		Player player = event.getPlayer();
-		ItemStack helmet = player.getInventory().getHelmet();
-		if(helmet == null || helmet.getType() == Material.AIR) {
-			player.getInventory().setHelmet(new ItemStack(Material.GOLD_HELMET));
-		}
-		ItemStack chestplate = player.getInventory().getChestplate();
-		if(chestplate == null || chestplate.getType() == Material.AIR) {
-			player.getInventory().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
-		}
-		ItemStack leggings = player.getInventory().getLeggings();
-		if(leggings == null || leggings.getType() == Material.AIR) {
-			player.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
-		}
-		ItemStack boots = player.getInventory().getBoots();
-		if(boots == null || boots.getType() == Material.AIR) {
-			player.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
-		}
-		if(!player.getInventory().contains(Material.STONE_SWORD) && !player.getInventory().contains(Material.IRON_SWORD) && !player.getInventory().contains(Material.DIAMOND_SWORD)) {
-			player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 		}
 	}
 	
