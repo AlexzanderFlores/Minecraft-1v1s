@@ -29,7 +29,6 @@ import network.customevents.game.GameStartingEvent;
 import network.customevents.game.GameVotingEvent;
 import network.customevents.game.GameWaitingEvent;
 import network.customevents.game.GameWinEvent;
-import network.customevents.player.PlayerBanEvent;
 import network.customevents.player.PlayerLeaveEvent;
 import network.gameapi.MiniGame.GameStates;
 import network.gameapi.competitive.StatsHandler;
@@ -162,7 +161,7 @@ public class MiniGameEvents implements Listener {
 				for(Player player : ProPlugin.getPlayers()) {
 					UUID uuid = player.getUniqueId();
 					if(DB.NETWORK_ANTI_CHEAT_BAN_QUEUE.isUUIDSet(uuid)) {
-						Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, DB.NETWORK_ANTI_CHEAT_BAN_QUEUE.getString("cheat", "uuid", uuid.toString())));
+						//Bukkit.getPluginManager().callEvent(new PlayerBanEvent(uuid, DB.NETWORK_ANTI_CHEAT_BAN_QUEUE.getString("cheat", "uuid", uuid.toString())));
 					} else {
 						player.getInventory().clear();
 						player.getInventory().setHeldItemSlot(0);
