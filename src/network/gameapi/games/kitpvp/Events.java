@@ -1,11 +1,14 @@
 package network.gameapi.games.kitpvp;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
@@ -21,6 +24,16 @@ import network.server.util.EventUtil;
 public class Events implements Listener {
 	public Events() {
 		EventUtil.register(this);
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		player.getInventory().setHelmet(new ItemStack(Material.GOLD_HELMET));
+		player.getInventory().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
+		player.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
+		player.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
+		player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 	}
 	
 	@EventHandler

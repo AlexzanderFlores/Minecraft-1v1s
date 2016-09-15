@@ -26,6 +26,7 @@ public class KitPVP extends ProPlugin {
 		setAllowBowShooting(true);
 		setAllowInventoryClicking(true);
 		setFlintAndSteelUses(2);
+		setAllowItemSpawning(true);
 		new ServerLogger();
 		new SpectatorHandler();
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
@@ -34,6 +35,7 @@ public class KitPVP extends ProPlugin {
 		new BelowNameHealthScoreboardUtil();
 		new Shop();
 		new SpawnHandler();
+		new KillstreakHandler(1, 45, -2);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(25);

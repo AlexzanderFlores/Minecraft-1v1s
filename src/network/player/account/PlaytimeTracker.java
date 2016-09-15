@@ -17,6 +17,7 @@ import network.ProPlugin;
 import network.Network.Plugins;
 import network.customevents.TimeEvent;
 import network.customevents.player.AsyncPlayerLeaveEvent;
+import network.customevents.player.NewPlayerJoinEvent;
 import network.customevents.player.PlayerAFKEvent;
 import network.customevents.player.PlaytimeLoadedEvent;
 import network.customevents.player.timed.PlayerDayOfPlaytimeEvent;
@@ -74,6 +75,12 @@ public class PlaytimeTracker implements Listener {
 			Player player = Bukkit.getPlayer(uuid);
 			if(player != null) {
 				Bukkit.getPluginManager().callEvent(new PlaytimeLoadedEvent(player));
+				if(Network.getPlugin() != Plugins.HUB && Network.getMiniGame() == null) {
+					int required = 10;
+					if(days == 0 && hours == 0 && minutes <= required) {
+						Bukkit.getPluginManager().callEvent(new NewPlayerJoinEvent(player));
+					}
+				}
 			}
 		}
 		
