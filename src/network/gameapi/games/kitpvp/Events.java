@@ -4,11 +4,11 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-import network.Network;
 import network.Network.Plugins;
 import network.customevents.ServerRestartAlertEvent;
 import network.customevents.game.GameKillEvent;
@@ -21,12 +21,6 @@ import network.server.util.EventUtil;
 public class Events implements Listener {
 	public Events() {
 		EventUtil.register(this);
-	}
-	
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		player.setScoreboard(Network.getScoreboard());
 	}
 	
 	@EventHandler
@@ -45,6 +39,13 @@ public class Events implements Listener {
 	public void onProjectileHit(ProjectileHitEvent event) {
 		if(event.getEntity() instanceof Arrow) {
 			event.getEntity().remove();
+		}
+	}
+	
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if(event.getEntity() instanceof Player && event.getCause() == DamageCause.FALL) {
+			event.setCancelled(true);
 		}
 	}
 	

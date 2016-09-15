@@ -8,12 +8,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -24,10 +22,7 @@ import network.Network.Plugins;
 import network.customevents.player.InventoryItemClickEvent;
 import network.gameapi.SpectatorHandler;
 import network.player.CoinsHandler;
-import network.player.MessageHandler;
 import network.player.TitleDisplayer;
-import network.server.tasks.DelayedTask;
-import network.server.util.ConfigurationUtil;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
@@ -40,30 +35,13 @@ public class Shop implements Listener {
 	private EnchantAnItem enchantAnItem = null;
 	private RepairAnItem repairAnItem = null;
 	private SaveYourItems saveYourItems = null;
-	private List<String> recentlyDamaged = null;
 	
-	public Shop(World world) {
-		ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/" + world.getName() + "/" + Plugins.KITPVP.getData() + "/shop.yml");
-		for(String key : config.getConfig().getKeys(false)) {
-			double x = config.getConfig().getDouble(key + ".x");
-			double y = config.getConfig().getDouble(key + ".y");
-			double z = config.getConfig().getDouble(key + ".z");
-			Location target = world.getSpawnLocation();
-			new Shop(new Location(world, x, y, z), target);
-		}
-	}
-	
-	public Shop(Location location, Location target) {
+	public Shop() {
 		name = "Shop";
-		recentlyDamaged = new ArrayList<String>();
-		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, location, target) {
+		new NPCEntity(EntityType.ZOMBIE, "&e&n" + name, new Location(Bukkit.getWorlds().get(0), -6.5, 45, 1.5)) {
 			@Override
 			public void onInteract(Player player) {
 				if(SpectatorHandler.contains(player)) {
-					return;
-				}
-				if(recentlyDamaged.contains(player.getName()) && !player.isSneaking()) {
-					MessageHandler.sendMessage(player, "&cDue to being recently in combat you must &eSneak Click &cto open the &eShop");
 					return;
 				}
 				
@@ -177,21 +155,6 @@ public class Shop implements Listener {
 				lores.clear();
 				lores = null;
 			}
-		}
-	}
-	
-	@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if(event.getEntity() instanceof Player) {
-			Player player = (Player) event.getEntity();
-			final String name = player.getName();
-			recentlyDamaged.add(name);
-			new DelayedTask(new Runnable() {
-				@Override
-				public void run() {
-					recentlyDamaged.remove(name);
-				}
-			}, 20 * 5);
 		}
 	}
 }

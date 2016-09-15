@@ -5,11 +5,13 @@ import java.io.File;
 import org.bukkit.Bukkit;
 
 import network.Network;
+import network.Network.Plugins;
 import network.ProPlugin;
 import network.gameapi.SpectatorHandler;
 import network.gameapi.TemporaryFireUtil;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.kitpvp.shop.Shop;
+import network.player.CoinsHandler;
 import network.player.scoreboard.BelowNameHealthScoreboardUtil;
 import network.server.DB;
 import network.server.ServerLogger;
@@ -18,7 +20,6 @@ import network.server.util.FileHandler;
 public class KitPVP extends ProPlugin {
 	public KitPVP() {
 		super("KitPVP");
-		setCounter(60 * 10);
 		setAllowEntityDamage(true);
 		setAllowEntityDamageByEntities(true);
 		setAllowPlayerInteraction(true);
@@ -31,8 +32,11 @@ public class KitPVP extends ProPlugin {
 		new Events();
 		new TemporaryFireUtil(20 * 5);
 		new BelowNameHealthScoreboardUtil();
-		new Shop(Bukkit.getWorlds().get(0));
+		new Shop();
 		new SpawnHandler();
+		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
+		CoinsHandler.setKillCoins(5);
+		CoinsHandler.setWinCoins(25);
 		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
 	}
 	

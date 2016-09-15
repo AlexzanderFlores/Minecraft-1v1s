@@ -11,13 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 import network.customevents.player.PlayerSpectatorEvent;
 import network.customevents.player.PlayerSpectatorEvent.SpectatorState;
-import network.gameapi.SpectatorHandler;
-import network.gameapi.kit.KitBase;
-import network.player.MessageHandler;
 import network.server.util.EventUtil;
 
 public class SpawnHandler implements Listener {
@@ -58,25 +54,6 @@ public class SpawnHandler implements Listener {
 	public void onEntityShootBow(EntityShootBowEvent event) {
 		if(isAtSpawn(event.getEntity())) {
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		if(event.getTo().getBlockY() == spawnY - 2 && !SpectatorHandler.contains(player)) {
-			boolean hasKit = false;
-			for(KitBase kit : KitBase.getKits()) {
-				if(kit.has(player)) {
-					hasKit = true;
-					break;
-				}
-			}
-			if(!hasKit) {
-				MessageHandler.sendMessage(player, "&cYou must have a kit before falling down");
-				spawn(player);
-				return;
-			}
 		}
 	}
 	
