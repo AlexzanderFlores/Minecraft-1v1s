@@ -1,7 +1,7 @@
 name: 1v1s Core
-main: ostb.OSTB
+main: network.Network
 version: 1.0
-softdepend: [NPC_OSTB, Votifier, EffectLib]
+softdepend: [NPC, Votifier, EffectLib]
 authors: [Leet_Gamer]
 commands:
 # Global Commands
