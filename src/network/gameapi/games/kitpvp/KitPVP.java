@@ -39,6 +39,7 @@ public class KitPVP extends ProPlugin {
 		new Shop();
 		new SpawnHandler();
 		new KillstreakHandler(1, 45, -2);
+		new AutoRegenHandler(0.5, 45, -7.5);
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(25);
