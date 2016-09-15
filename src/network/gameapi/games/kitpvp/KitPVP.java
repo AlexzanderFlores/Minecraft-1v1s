@@ -3,6 +3,8 @@ package network.gameapi.games.kitpvp;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 import network.Network;
 import network.Network.Plugins;
@@ -27,8 +29,9 @@ public class KitPVP extends ProPlugin {
 		setAllowInventoryClicking(true);
 		setFlintAndSteelUses(2);
 		setAllowItemSpawning(true);
+		World world = Bukkit.getWorlds().get(0);
 		new ServerLogger();
-		new SpectatorHandler();
+		new SpectatorHandler().createNPC(new Location(world, -7.5, 45, -6.5));
 		new StatsHandler(DB.PLAYERS_STATS_KIT_PVP, DB.PLAYERS_STATS_KIT_PVP_MONTHLY, DB.PLAYERS_STATS_KIT_PVP_WEEKLY);
 		new Events();
 		new TemporaryFireUtil(20 * 5);
@@ -39,7 +42,7 @@ public class KitPVP extends ProPlugin {
 		new CoinsHandler(DB.PLAYERS_COINS_KIT_PVP, Plugins.KITPVP.getData());
 		CoinsHandler.setKillCoins(5);
 		CoinsHandler.setWinCoins(25);
-		Bukkit.getWorlds().get(0).setGameRuleValue("keepInventory", "true");
+		world.setGameRuleValue("keepInventory", "true");
 	}
 	
 	@Override

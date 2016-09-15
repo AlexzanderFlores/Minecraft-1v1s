@@ -1,7 +1,9 @@
 package network.gameapi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,10 +11,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -54,8 +54,10 @@ import network.server.CommandBase;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
 import network.server.util.ItemUtil;
+import npc.NPCEntity;
 
 public class SpectatorHandler implements Listener {
+	private static Map<String, Map<Integer, ItemStack>> items = null;
 	private static List<String> spectators = null;
 	private static List<String> beenTold = null;
 	private static ItemStack teleporter = null;
@@ -63,10 +65,11 @@ public class SpectatorHandler implements Listener {
 	private static ItemStack exit = null;
 	private static ItemStack nextGame = null;
 	private static boolean enabled = false;
-	private static final double range = 10;
+	//private static final double range = 10;
 	private static String settingsName = null;
 	
 	public SpectatorHandler() {
+		items = new HashMap<String, Map<Integer, ItemStack>>();
 		spectators = new ArrayList<String>();
 		beenTold = new ArrayList<String>();
 		teleporter = new ItemCreator(Material.WATCH).setName("&aTeleport to Player").getItemStack();
@@ -123,7 +126,7 @@ public class SpectatorHandler implements Listener {
 				return true;
 			}
 		}.setRequiredRank(Ranks.PREMIUM);
-		Bukkit.getScheduler().runTaskTimer(Network.getInstance(), new Runnable() {
+		/*Bukkit.getScheduler().runTaskTimer(Network.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				if(spectators != null && !spectators.isEmpty()) {
@@ -157,8 +160,21 @@ public class SpectatorHandler implements Listener {
 					}
 				}
 			}
-		}, 20, 20);
+		}, 20, 20);*/
 		EventUtil.register(this);
+	}
+	
+	public void createNPC(Location location) {
+		new NPCEntity(EntityType.CREEPER, "&e&nSpectate", location) {
+			@Override
+			public void onInteract(Player player) {
+				if(contains(player)) {
+					SpectatorHandler.remove(player);
+				} else {
+					add(player);
+				}
+			}
+		};
 	}
 	
 	public static boolean isEnabled() {
@@ -179,6 +195,14 @@ public class SpectatorHandler implements Listener {
 			PlayerSpectatorEvent playerSpectateStartEvent = new PlayerSpectatorEvent(player, SpectatorState.STARTING);
 			Bukkit.getPluginManager().callEvent(playerSpectateStartEvent);
 			if(!playerSpectateStartEvent.isCancelled()) {
+				Map<Integer, ItemStack> item = items.get(player.getName());
+				if(item == null) {
+					item = new HashMap<Integer, ItemStack>();
+				}
+				for(int a = 0; a <= 39; ++a) {
+					item.put(a, player.getInventory().getItem(a));
+				}
+				items.put(player.getName(), item);
 				spectators.add(player.getName());
 				player.getInventory().clear();
 				player.getInventory().setArmorContents(null);
@@ -218,6 +242,14 @@ public class SpectatorHandler implements Listener {
 				player.setGameMode(GameMode.SURVIVAL);
 				player.setFlying(false);
 				player.setAllowFlight(false);
+				if(items.containsKey(player.getName())) {
+					Map<Integer, ItemStack> item = items.get(player.getName());
+					for(int a : item.keySet()) {
+						player.getInventory().setItem(a, item.get(a));
+					}
+					items.get(player.getName()).clear();
+					items.remove(player.getName());
+				}
 			}
 		}
 	}
