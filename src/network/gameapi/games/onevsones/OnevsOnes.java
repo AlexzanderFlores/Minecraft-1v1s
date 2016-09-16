@@ -59,6 +59,7 @@ public class OnevsOnes extends ProPlugin {
         new ServerLogger();
         new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         new CPSDetector(new Location(world, -18.5, 8, -23.5), new Location(world, 0.5, 7, -30.5));
+        new MultiplayerNPCs();
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
@@ -76,7 +77,7 @@ public class OnevsOnes extends ProPlugin {
 					Ranks.PREMIUM.getColor() + "VIP: &b1s /buy",
 					"   ",
 					"&e&lServer",
-					"&b&l1V1" + Network.getServerName().replaceAll("[^\\d.]", ""),
+					"&b&l1V1S" + Network.getServerName().replaceAll("[^\\d.]", ""),
 					"    ",
 					"&a&l1v1s.org",
 					"     ",
