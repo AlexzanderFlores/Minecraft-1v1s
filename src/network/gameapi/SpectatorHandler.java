@@ -51,6 +51,7 @@ import network.player.MessageHandler;
 import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
 import network.server.CommandBase;
+import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
 import network.server.util.ItemUtil;
@@ -233,7 +234,7 @@ public class SpectatorHandler implements Listener {
 		}
 	}
 	
-	public static void remove(Player player) {
+	public static void remove(final Player player) {
 		if(contains(player)) {
 			PlayerSpectatorEvent spectateEndEvent = new PlayerSpectatorEvent(player, SpectatorState.END);
 			Bukkit.getPluginManager().callEvent(spectateEndEvent);
@@ -247,12 +248,17 @@ public class SpectatorHandler implements Listener {
 				player.setFlying(false);
 				player.setAllowFlight(false);
 				if(items.containsKey(player.getName())) {
-					Map<Integer, ItemStack> item = items.get(player.getName());
-					for(int a : item.keySet()) {
-						player.getInventory().setItem(a, item.get(a));
-					}
-					items.get(player.getName()).clear();
-					items.remove(player.getName());
+					new DelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							Map<Integer, ItemStack> item = items.get(player.getName());
+							for(int a : item.keySet()) {
+								player.getInventory().setItem(a, item.get(a));
+							}
+							items.get(player.getName()).clear();
+							items.remove(player.getName());
+						}
+					});
 				}
 			}
 		}
