@@ -165,7 +165,11 @@ public class SpectatorHandler implements Listener {
 	}
 	
 	public void createNPC(Location location) {
-		new NPCEntity(EntityType.CREEPER, "&e&nSpectate", location) {
+		createNPC(location, location.getWorld().getSpawnLocation());
+	}
+	
+	public void createNPC(Location location, Location target) {
+		new NPCEntity(EntityType.CREEPER, "&e&nSpectate", location, target) {
 			@Override
 			public void onInteract(Player player) {
 				if(contains(player)) {

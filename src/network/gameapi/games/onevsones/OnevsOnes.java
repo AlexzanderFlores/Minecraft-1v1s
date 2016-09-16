@@ -43,21 +43,21 @@ public class OnevsOnes extends ProPlugin {
         setAllowInventoryClicking(true);
         setAutoVanishStaff(true);
         World world = Bukkit.getWorlds().get(0);
-        new SpectatorHandler();
+        Location target = new Location(world, 0.5, 7, -30.5);
 		new ServerLogger();
 		new StatsHandler(DB.PLAYERS_STATS_ONE_VS_ONE, DB.PLAYERS_STATS_ONE_VS_ONE_MONTHLY, DB.PLAYERS_STATS_ONE_VS_ONE_WEEKLY);
 		new LobbyHandler();
         new QueueHandler();
         new BattleHandler();
         new MapProvider(world);
-        new SpectatorHandler();
+        new SpectatorHandler().createNPC(new Location(world, 13.5, 8, -22.5), target);
         new BelowNameHealthScoreboardUtil();
         new PrivateBattleHandler();
         new HotbarEditor();
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
         new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
-        new CPSDetector(new Location(world, -18.5, 8, -23.5), new Location(world, 0.5, 7, -30.5));
+        new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override

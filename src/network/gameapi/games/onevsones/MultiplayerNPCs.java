@@ -13,12 +13,6 @@ public class MultiplayerNPCs {
 	public MultiplayerNPCs() {
 		World world = Bukkit.getWorlds().get(0);
 		Location target = new Location(world, 0.5, 7, -30.5);
-		new NPCEntity(EntityType.ZOMBIE, "&e&n1v1 Queues", new Location(world, 13.5, 8, -22.5), target) {
-			@Override
-			public void onInteract(Player player) {
-				MessageHandler.sendMessage(player, "&cUse hotbar item for now, NPC coming soon");
-			}
-		};
 		new NPCEntity(EntityType.ZOMBIE, "&e&n2v2 Queues", new Location(world, 15.5, 8, -25.5), target) {
 			@Override
 			public void onInteract(Player player) {
