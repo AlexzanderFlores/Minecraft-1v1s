@@ -77,7 +77,7 @@ public class EloRanking implements Listener {
 		frames = new ArrayList<ItemFrame>();
 		EloRanking.eloDB = eloDB;
 		EloRanking.rankDB = rankDB;
-		String path = Bukkit.getWorldContainer().getPath() + "/../resources/Elo.png";
+		String path = "/root/resources/Elo.png";
 		for(ItemFrame itemFrame : itemFrames) {
 			frames.addAll(new ImageMap(itemFrame, "Elo", path).getItemFrames());
 		}

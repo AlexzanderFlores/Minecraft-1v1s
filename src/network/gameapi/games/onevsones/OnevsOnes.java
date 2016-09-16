@@ -1,12 +1,10 @@
 package network.gameapi.games.onevsones;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
 import network.Network;
@@ -57,12 +55,7 @@ public class OnevsOnes extends ProPlugin {
         new HotbarEditor();
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
-        List<ItemFrame> frames = new ArrayList<ItemFrame>();
-        frames.add(ImageMap.getItemFrame(world, -16, 7, 3));
-        frames.add(ImageMap.getItemFrame(world, 15, 7, -2));
-        new EloRanking(frames, DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
-        frames.clear();
-        frames = null;
+        new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -19, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
@@ -80,10 +73,10 @@ public class OnevsOnes extends ProPlugin {
 					Ranks.PLAYER.getColor() + "Default: &b5s",
 					Ranks.PREMIUM.getColor() + "Premium: &b1s /buy",
 					"   ",
-					"&e&lPlayers Qualified",
-					"&e&lFor Tournament:",
-					"&b0 /tourney",
-					"    ",
+					//"&e&lPlayers Qualified",
+					//"&e&lFor Tournament:",
+					//"&b0 /tourney",
+					//"    ",
 					"&a&lOutsideTheBlock.org",
 					"&e&lServer &b&l1V1" + Network.getServerName().replaceAll("[^\\d.]", ""),
 					"     "
@@ -105,12 +98,12 @@ public class OnevsOnes extends ProPlugin {
 	@Override
     public void disable() {
         super.disable();
-        String container = Bukkit.getWorldContainer().getPath();
+        String container = "/root/" + Network.getServerName().toLowerCase() + "/";
         Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
-        File newWorld = new File(container + "/../resources/maps/onevsone");
+        File newWorld = new File("/root/resources/maps/1v1s");
         if(newWorld.exists() && newWorld.isDirectory()) {
-            FileHandler.delete(new File(container + "/lobby"));
-            FileHandler.copyFolder(newWorld, new File(container + "/lobby"));
+            FileHandler.delete(new File(container + "/1v1s"));
+            FileHandler.copyFolder(newWorld, new File(container + "/1v1s"));
         }
     }
 }

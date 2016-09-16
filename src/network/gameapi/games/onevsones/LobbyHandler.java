@@ -64,9 +64,11 @@ public class LobbyHandler implements Listener {
     }
 
     public static Location spawn(Player player, boolean giveItems) {
-        Location location = new Location(player.getWorld(), 0.5, 5, 0.5, -180.0f, 0.0f);
+        Location location = player.getWorld().getSpawnLocation();
+        location.setYaw(-180f);
+        location.setPitch(0.0f);
         Random random = new Random();
-        int range = 5;
+        int range = 3;
         location.setX(location.getBlockX() + (random.nextInt(range) * (random.nextBoolean() ? 1 : -1)));
         location.setY(location.getY() + 2.5d);
         location.setZ(location.getBlockZ() + (random.nextInt(range) * (random.nextBoolean() ? 1 : -1)));
@@ -218,7 +220,7 @@ public class LobbyHandler implements Listener {
             if(isInLobby(player) && !SpectatorHandler.contains(player)) {
                 int x = to.getBlockX();
                 int z = to.getBlockZ();
-                if(x >= 35 || x <= -35 || z >= 35 || z <= -35) {
+                if(x >= 70 || x <= -70 || z >= 80 || z <= -80) {
                     event.setTo(event.getFrom());
                 }
             }
