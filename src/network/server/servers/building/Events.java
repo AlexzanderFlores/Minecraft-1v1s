@@ -3,6 +3,7 @@ package network.server.servers.building;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,7 +18,9 @@ import org.bukkit.event.world.WorldLoadEvent;
 
 import network.customevents.DeleteImportedWorldEvent;
 import network.customevents.TimeEvent;
+import network.customevents.player.PlayerItemFrameInteractEvent;
 import network.customevents.player.PlayerLeaveEvent;
+import network.player.MessageHandler;
 import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 
@@ -104,5 +107,11 @@ public class Events implements Listener {
 	@EventHandler
 	public void onDeleteImportedWorld(DeleteImportedWorldEvent event) {
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onPlayerItemFrameInteract(PlayerItemFrameInteractEvent event) {
+		Location location = event.getItemFrame().getLocation();
+		MessageHandler.sendMessage(event.getPlayer(), location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
 	}
 }

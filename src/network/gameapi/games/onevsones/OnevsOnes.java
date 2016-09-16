@@ -55,13 +55,12 @@ public class OnevsOnes extends ProPlugin {
         new HotbarEditor();
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
-        new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -19, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
+        new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
         		if(ServerLogger.updatePlayerCount()) {
-					removeScore(8);
-					removeScore(5);
+					removeScore(10);
 				}
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
@@ -71,15 +70,13 @@ public class OnevsOnes extends ProPlugin {
 					"  ",
 					"&e&lQueue Times",
 					Ranks.PLAYER.getColor() + "Default: &b5s",
-					Ranks.PREMIUM.getColor() + "Premium: &b1s /buy",
+					Ranks.PREMIUM.getColor() + "VIP: &b1s /buy",
 					"   ",
-					//"&e&lPlayers Qualified",
-					//"&e&lFor Tournament:",
-					//"&b0 /tourney",
-					//"    ",
-					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l1V1" + Network.getServerName().replaceAll("[^\\d.]", ""),
-					"     "
+					"&e&lServer",
+					"&b&l1V1" + Network.getServerName().replaceAll("[^\\d.]", ""),
+					"    ",
+					"&a&l1v1s.org",
+					"     ",
 				});
 				super.update(player);
         	}
