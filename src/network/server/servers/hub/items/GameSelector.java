@@ -113,7 +113,7 @@ public class GameSelector extends HubItemBase {
 			if(item.getType() == Material.WOOD_DOOR) {
 				openMenu(player);
 			} else if(item.getType() == Material.EYE_OF_ENDER) {
-				if(Ranks.PREMIUM.hasRank(player)) {
+				if(Ranks.VIP.hasRank(player)) {
 					player.closeInventory();
 					new TitleDisplayer(player, "&bSearching...").display();
 					new AsyncDelayedTask(new Runnable() {
@@ -123,7 +123,7 @@ public class GameSelector extends HubItemBase {
 						}
 					}, 20);
 				} else {
-					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+					MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 					EffectUtil.playSound(player, Sound.NOTE_BASS_GUITAR, 1000.0f);
 				}
 			} else {
@@ -154,7 +154,7 @@ public class GameSelector extends HubItemBase {
 			inventory.setItem(inventory.getSize() - 7, new ItemCreator(Material.EYE_OF_ENDER).setName("&bAuto Join").setLores(new String [] {
 				"",
 				"&7Click to join the best available game",
-				"&7Requires " + Ranks.PREMIUM.getPrefix(),
+				"&7Requires " + Ranks.VIP.getPrefix(),
 				""
 			}).getItemStack());
 			inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());

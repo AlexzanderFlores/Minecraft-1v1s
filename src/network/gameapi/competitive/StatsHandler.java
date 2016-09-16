@@ -217,10 +217,10 @@ public class StatsHandler implements Listener {
 							MessageHandler.sendUnknownCommand(sender);
 							return true;
 						}
-					} else if(Ranks.PREMIUM_PLUS.hasRank(sender)) {
+					} else if(Ranks.VIP_PLUS.hasRank(sender)) {
 						name = arguments[0];
 					} else {
-						MessageHandler.sendMessage(sender, Ranks.PREMIUM_PLUS.getNoPermission());
+						MessageHandler.sendMessage(sender, Ranks.VIP_PLUS.getNoPermission());
 						return true;
 					}
 					Player player = ProPlugin.getPlayer(name);
@@ -251,7 +251,7 @@ public class StatsHandler implements Listener {
 					}
 					return true;
 				}
-			}.setRequiredRank(Ranks.PREMIUM);
+			}.setRequiredRank(Ranks.VIP);
 			new StatRanking();
 			EventUtil.register(this);
 		}

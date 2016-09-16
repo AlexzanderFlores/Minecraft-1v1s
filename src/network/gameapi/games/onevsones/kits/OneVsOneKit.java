@@ -152,7 +152,7 @@ public class OneVsOneKit {
                 if(player != null) {
                     player.getInventory().clear();
                     boolean hotbarSetup = false;
-                    if(Ranks.PREMIUM.hasRank(player)) {
+                    if(Ranks.VIP.hasRank(player)) {
                     	String path = HotbarEditor.getPath().replace("%", name);
                         File file = new File(path, kitName);
                     	if(file.exists()) {

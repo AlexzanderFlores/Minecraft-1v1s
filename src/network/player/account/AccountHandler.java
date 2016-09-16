@@ -30,8 +30,8 @@ import network.server.util.TimeUtil;
 public class AccountHandler implements Listener {
 	public enum Ranks {
 		PLAYER(ChatColor.GRAY, ""),
-		PREMIUM(ChatColor.YELLOW, "[Premium]"),
-		PREMIUM_PLUS(ChatColor.GREEN, "[Premium&b+&a]"),
+		VIP(ChatColor.YELLOW, "[VIP]"),
+		VIP_PLUS(ChatColor.GREEN, "[VIP&b+&a]"),
 		YOUTUBER(ChatColor.LIGHT_PURPLE, "[YT]"),
 		TRIAL(ChatColor.DARK_AQUA, "[Trial]"),
 		STAFF(ChatColor.DARK_GREEN, "[Staff]"),

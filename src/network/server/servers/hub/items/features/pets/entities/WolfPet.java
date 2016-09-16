@@ -82,7 +82,7 @@ public class WolfPet extends EntityWolf implements EntityPet {
 
     @Override
     public void clickedOnCustomOption(Player player, ItemStack clicked) {
-        if (Ranks.PREMIUM_PLUS.hasRank(player)) {
+        if (Ranks.VIP.hasRank(player)) {
             Wolf wolf = (Wolf) getBukkitEntity();
             if (clicked.getType() == Material.WOOL) {
                 if (wolf.isAdult()) {
@@ -110,7 +110,7 @@ public class WolfPet extends EntityWolf implements EntityPet {
                 }
             }
         } else {
-            MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
+            MessageHandler.sendMessage(player, Ranks.VIP_PLUS.getNoPermission());
         }
     }
 

@@ -18,7 +18,6 @@ import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.Diamond;
 import network.gameapi.games.onevsones.kits.Gapple;
 import network.gameapi.games.onevsones.kits.Iron;
-import network.gameapi.games.onevsones.kits.Kohi;
 import network.gameapi.games.onevsones.kits.NoDebuff;
 import network.gameapi.games.onevsones.kits.SurvivalGames;
 import network.gameapi.games.onevsones.kits.UHC;
@@ -74,7 +73,7 @@ public class OnevsOnes extends ProPlugin {
 					"  ",
 					"&e&lQueue Times",
 					Ranks.PLAYER.getColor() + "Default: &b5s",
-					Ranks.PREMIUM.getColor() + "VIP: &b1s /buy",
+					Ranks.VIP.getColor() + "VIP: &b1s /buy",
 					"   ",
 					"&e&lServer",
 					"&b&l1V1S" + Network.getServerName().replaceAll("[^\\d.]", ""),
@@ -92,7 +91,6 @@ public class OnevsOnes extends ProPlugin {
         new Archer();
         new UHC();
         new Gapple();
-        new Kohi();
         new NoDebuff();
 	}
 	

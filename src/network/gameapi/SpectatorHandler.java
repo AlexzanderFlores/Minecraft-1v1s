@@ -125,7 +125,7 @@ public class SpectatorHandler implements Listener {
 				}
 				return true;
 			}
-		}.setRequiredRank(Ranks.PREMIUM);
+		}.setRequiredRank(Ranks.VIP);
 		/*Bukkit.getScheduler().runTaskTimer(Network.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -407,20 +407,20 @@ public class SpectatorHandler implements Listener {
 						}
 					} else if(event.getInventory().getTitle().equals(settingsName)) {
 						if(item.getType() == Material.FEATHER) {
-							if(Ranks.PREMIUM.hasRank(player)) {
+							if(Ranks.VIP.hasRank(player)) {
 								player.setFlySpeed((float) (item.getAmount() * 0.10));
 							} else {
-								MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+								MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 							}
 						} else if(item.getType() == Material.TORCH) {
-							if(Ranks.PREMIUM.hasRank(player)) {
+							if(Ranks.VIP.hasRank(player)) {
 								if(player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
 									player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 								} else {
 									player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 100));
 								}
 							} else {
-								MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+								MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 							}
 						}
 						player.closeInventory();

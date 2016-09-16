@@ -121,7 +121,7 @@ public class HaloParticles extends FeatureBase {
 		}
 		
 		public boolean owns(Player player) {
-			if(Ranks.PREMIUM.hasRank(player)) {
+			if(Ranks.VIP.hasRank(player)) {
 				if(this == FIREWORKS_SPARK) {
 					String [] keys = new String [] {"uuid", "name"};
 					String [] values = new String [] {player.getUniqueId().toString(), toString()};
@@ -178,7 +178,7 @@ public class HaloParticles extends FeatureBase {
 						""
 					});
 					if(this == FIREWORKS_SPARK) {
-						item.addLore("&7Requires " + Ranks.PREMIUM.getPrefix());
+						item.addLore("&7Requires " + Ranks.VIP.getPrefix());
 						item.addLore("");
 					}
 					Bukkit.getLogger().info("halo particles: getItem");
@@ -193,7 +193,7 @@ public class HaloParticles extends FeatureBase {
 					"",
 				});
 				if(this == FIREWORKS_SPARK) {
-					item.addLore("&7Requires " + Ranks.PREMIUM.getPrefix());
+					item.addLore("&7Requires " + Ranks.VIP.getPrefix());
 					item.addLore("");
 				}
 			}
@@ -287,7 +287,7 @@ public class HaloParticles extends FeatureBase {
 			"&7This toggles wheather or not your halo",
 			"&7particles will load when you join a hub",
 			"",
-			"&7This is for " + Ranks.PREMIUM.getPrefix() + "&7rank and above only to",
+			"&7This is for " + Ranks.VIP.getPrefix() + "&7rank and above only to",
 			"&7prevent lag and improve server performance",
 			"",
 		});
@@ -390,7 +390,7 @@ public class HaloParticles extends FeatureBase {
 			Player player = event.getPlayer();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.EMERALD_BLOCK || item.getType() == Material.REDSTONE_BLOCK) {
-				if(Ranks.PREMIUM.hasRank(player)) {
+				if(Ranks.VIP.hasRank(player)) {
 					if(event.getSlot() == 29) {
 						int newState = item.getType() == Material.EMERALD_BLOCK ? 0 : 1;
 						player.getOpenInventory().setItem(event.getSlot(), getSettingItem(player, newState));
@@ -399,7 +399,7 @@ public class HaloParticles extends FeatureBase {
 						settingsChanged.add(player.getName());
 					}
 				} else {
-					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+					MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 				}
 			} else if(item.getType() == Material.WEB) {
 				String name = event.getItemTitle();
@@ -424,8 +424,8 @@ public class HaloParticles extends FeatureBase {
 				String name = event.getItemTitle();
 				final HaloParticleTypes type = getParticles(event.getSlot());
 				if(type != null && !(selected.containsKey(player.getName()) && selected.get(player.getName()) == type)) {
-					if(type == HaloParticleTypes.FIREWORKS_SPARK && !Ranks.PREMIUM.hasRank(player)) {
-						MessageHandler.sendMessage(player, "&cThis Halo Particle requires at least " + Ranks.PREMIUM.getPrefix());
+					if(type == HaloParticleTypes.FIREWORKS_SPARK && !Ranks.VIP.hasRank(player)) {
+						MessageHandler.sendMessage(player, "&cThis Halo Particle requires at least " + Ranks.VIP.getPrefix());
 					} else {
 						enable(player, type);
 						MessageHandler.sendMessage(player, "You have enabled &e" + ChatColor.stripColor(name));
@@ -440,7 +440,7 @@ public class HaloParticles extends FeatureBase {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
-		if(Ranks.PREMIUM.hasRank(player) && DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
+		if(Ranks.VIP.hasRank(player) && DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
 			Bukkit.getLogger().info("halo particles: queue");
 			queue.add(uuid);
 		}

@@ -137,7 +137,7 @@ public class GeneralEvents implements Listener {
 		
 		// Chat delay for non premium players
 		if(delayed.contains(player.getName())) {
-			MessageHandler.sendMessage(player, "&cSlow down! Non " + Ranks.PREMIUM.getPrefix() + "&cchat delay of &e" + delay + " &cseconds");
+			MessageHandler.sendMessage(player, "&cSlow down! Non " + Ranks.VIP.getPrefix() + "&cchat delay of &e" + delay + " &cseconds");
 			event.setCancelled(true);
 			return;
 		} else if(AccountHandler.getRank(player) == Ranks.PLAYER) {
@@ -152,7 +152,7 @@ public class GeneralEvents implements Listener {
 		}
 		
 		// Color codes for premium and above
-		if(Ranks.PREMIUM.hasRank(player)) {
+		if(Ranks.VIP.hasRank(player)) {
 			event.setMessage(StringUtil.color(event.getMessage()));
 			event.setMessage(event.getMessage().replace("<3", UnicodeUtil.getHeart()) + ChatColor.WHITE);
 			

@@ -80,7 +80,7 @@ public class TeamHandler implements Listener {
 				}
 				return true;
 			}
-		}.setRequiredRank(Ranks.PREMIUM);
+		}.setRequiredRank(Ranks.VIP);
 		EventUtil.register(this);
 	}
 	
@@ -174,9 +174,9 @@ public class TeamHandler implements Listener {
 	@EventHandler
 	public void onGameStart(GameStartEvent event) {
 		for(Player player : ProPlugin.getPlayers()) {
-			if(Ranks.PREMIUM_PLUS.hasRank(player)) {
+			if(Ranks.VIP_PLUS.hasRank(player)) {
 				shoutUses.put(player.getName(), 2);
-			} else if(Ranks.PREMIUM.hasRank(player)) {
+			} else if(Ranks.VIP.hasRank(player)) {
 				shoutUses.put(player.getName(), 1);
 			}
 		}
@@ -211,7 +211,7 @@ public class TeamHandler implements Listener {
 		Player player = event.getPlayer();
 		ItemStack item = player.getItemInHand();
 		if(item.equals(this.item)) {
-			if(Ranks.PREMIUM.hasRank(player)) {
+			if(Ranks.VIP.hasRank(player)) {
 				if(item != null && item.equals(this.item)) {
 					Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
 					inventory.setItem(11, new ItemCreator(Material.WOOL, DyeColor.RED.getData()).setName("&cRed Team").getItemStack());
@@ -219,7 +219,7 @@ public class TeamHandler implements Listener {
 					player.openInventory(inventory);
 				}
 			} else {
-				MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+				MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 			}
 		}
 	}

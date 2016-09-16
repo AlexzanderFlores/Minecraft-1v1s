@@ -97,7 +97,7 @@ public class QueueHandler implements Listener {
                                 playerOne = ProPlugin.getPlayer(data.getPlayer());
                                 playerTwo = ProPlugin.getPlayer(comparingData.getPlayer());
                             }
-                            String text = Ranks.PREMIUM.getPrefix() + "&cPerk: &e5x faster queuing time &b/buy";
+                            String text = Ranks.VIP.getPrefix() + "&cPerk: &e5x faster queuing time &b/buy";
                             if(AccountHandler.getRank(playerOne) == Ranks.PLAYER) {
                                 MessageHandler.sendMessage(playerOne, text);
                             }
@@ -166,7 +166,7 @@ public class QueueHandler implements Listener {
         private int counter = 0;
 
         public QueueData(Player player, Player playerTwo, OneVsOneKit kit) {
-            if(Ranks.PREMIUM.hasRank(player) || Ranks.PREMIUM.hasRank(playerTwo)) {
+            if(Ranks.VIP.hasRank(player) || Ranks.VIP.hasRank(playerTwo)) {
                 priority = true;
             }
             this.player = player.getName();

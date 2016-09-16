@@ -131,7 +131,7 @@ public class VotingHandler implements Listener {
 			mapVotes.put(map, votes);
 		}
 		MessageHandler.sendMessage(player, "+" + votes + " Votes for &a" + map);
-		if(!Ranks.PREMIUM.hasRank(player)) {
+		if(!Ranks.VIP.hasRank(player)) {
 			MessageHandler.sendMessage(player, RankAds.getAlerts()[5]);
 		}
 		updateHologram(map);

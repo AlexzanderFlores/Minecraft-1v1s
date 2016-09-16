@@ -76,13 +76,13 @@ public class SheepPet extends EntitySheep implements EntityPet {
     @Override
     public void clickedOnCustomOption(Player player, ItemStack clicked) {
         if (clicked.getType() == Material.WOOL) {
-            if (Ranks.PREMIUM.hasRank(player)) {
+            if (Ranks.VIP.hasRank(player)) {
                 setColor(clicked.getData().getData());
             } else {
-                MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+                MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
             }
         } else if (clicked.getType() == Material.EMERALD) {
-            if (Ranks.PREMIUM_PLUS.hasRank(player)) {
+            if (Ranks.VIP_PLUS.hasRank(player)) {
                 Sheep sheep = (Sheep) getBukkitEntity();
                 if (rainbowSheep != null && rainbowSheep.contains(sheep)) {
                     rainbowSheep.remove(sheep);
@@ -95,7 +95,7 @@ public class SheepPet extends EntitySheep implements EntityPet {
                     MessageHandler.sendMessage(player, rainbow + "&a mode &eenabled");
                 }
             } else {
-                MessageHandler.sendMessage(player, Ranks.PREMIUM_PLUS.getNoPermission());
+                MessageHandler.sendMessage(player, Ranks.VIP_PLUS.getNoPermission());
             }
         }
     }

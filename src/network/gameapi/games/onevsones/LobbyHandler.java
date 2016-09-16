@@ -74,7 +74,7 @@ public class LobbyHandler implements Listener {
         location.setZ(location.getBlockZ() + (random.nextInt(range) * (random.nextBoolean() ? 1 : -1)));
         player.teleport(location);
         if(!SpectatorHandler.contains(player)) {
-            if(Ranks.PREMIUM.hasRank(player)) {
+            if(Ranks.VIP.hasRank(player)) {
                 player.setAllowFlight(true);
             }
             if(giveItems) {

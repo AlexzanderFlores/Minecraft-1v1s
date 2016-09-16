@@ -38,10 +38,10 @@ public class EloHandler implements Listener {
 				String target = null;
 				if(arguments.length == 0) {
 					target = sender.getName();
-				} else if(Ranks.PREMIUM_PLUS.hasRank(sender)) {
+				} else if(Ranks.VIP_PLUS.hasRank(sender)) {
 					target = arguments[0];
 				} else {
-					MessageHandler.sendMessage(sender, Ranks.PREMIUM_PLUS.getNoPermission());
+					MessageHandler.sendMessage(sender, Ranks.VIP_PLUS.getNoPermission());
 					return true;
 				}
 				if(elo.containsKey(target)) {
@@ -51,7 +51,7 @@ public class EloHandler implements Listener {
 				}
 				return true;
 			}
-		}.setRequiredRank(Ranks.PREMIUM);
+		}.setRequiredRank(Ranks.VIP);
 		EventUtil.register(this);
 	}
 	

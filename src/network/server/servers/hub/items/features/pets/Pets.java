@@ -263,7 +263,7 @@ public class Pets extends FeatureBase {
 			"&7This toggles wheather or not your",
 			"&7pet will load when you join a hub",
 			"",
-			"&7This is for " + Ranks.PREMIUM.getPrefix() + "&7rank and above only to",
+			"&7This is for " + Ranks.VIP.getPrefix() + "&7rank and above only to",
 			"&7prevent lag and improve server performance",
 			"",
 		});
@@ -363,14 +363,14 @@ public class Pets extends FeatureBase {
 			//final UUID uuid = player.getUniqueId();
 			ItemStack item = event.getItem();
 			if(item.getType() == Material.EMERALD_BLOCK || item.getType() == Material.REDSTONE_BLOCK) {
-				if(Ranks.PREMIUM.hasRank(player)) {
+				if(Ranks.VIP.hasRank(player)) {
 					int newState = item.getType() == Material.EMERALD_BLOCK ? 0 : 1;
 					player.getOpenInventory().setItem(player.getOpenInventory().getTopInventory().getSize() - 7, getSettingItem(player, newState));
 					if(!settingsChanged.contains(player.getName())) {
 						settingsChanged.add(player.getName());
 					}
 				} else {
-					MessageHandler.sendMessage(player, Ranks.PREMIUM.getNoPermission());
+					MessageHandler.sendMessage(player, Ranks.VIP.getNoPermission());
 				}
 			} else if(item.getType() == Material.INK_SACK && item.getData().getData() == 8) {
 				displayLocked(player);
@@ -431,7 +431,7 @@ public class Pets extends FeatureBase {
 	public void onAsyncPlayerJoin(AsyncPlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
-		if(Ranks.PREMIUM.hasRank(player) && DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
+		if(Ranks.VIP.hasRank(player) && DB.PLAYERS_SETTINGS.isKeySet(new String [] {"uuid", "setting", "state"}, new String [] {uuid.toString(), getSetting(), "1"})) {
 			Bukkit.getLogger().info("pets: queue");
 			queue.add(uuid);
 		}
