@@ -23,9 +23,13 @@ public class CPSDetector implements Listener {
 	private List<String> delayed = null;
 	
 	public CPSDetector(Location location) {
+		this(location, location.getWorld().getSpawnLocation());
+	}
+	
+	public CPSDetector(Location location, Location target) {
 		clicks = new HashMap<String, Integer>();
 		delayed = new ArrayList<String>();
-		new NPCEntity(EntityType.SKELETON, "&e&nCPS Detector", location) {
+		new NPCEntity(EntityType.SKELETON, "&e&nCPS Detector", location, target) {
 			@Override
 			public void onInteract(Player player) {
 				int click = 0;

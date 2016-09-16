@@ -58,7 +58,7 @@ public class OnevsOnes extends ProPlugin {
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
         new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
-        new CPSDetector(new Location(world, -18.5, 8, -23.5));
+        new CPSDetector(new Location(world, -18.5, 8, -23.5), new Location(world, 0.5, 7, -30.5));
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
