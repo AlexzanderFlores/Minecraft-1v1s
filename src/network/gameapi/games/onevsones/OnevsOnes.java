@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -24,6 +25,7 @@ import network.gameapi.games.onevsones.kits.UHC;
 import network.player.account.AccountHandler.Ranks;
 import network.player.scoreboard.BelowNameHealthScoreboardUtil;
 import network.player.scoreboard.SidebarScoreboardUtil;
+import network.server.CPSDetector;
 import network.server.DB;
 import network.server.ServerLogger;
 import network.server.util.FileHandler;
@@ -56,11 +58,12 @@ public class OnevsOnes extends ProPlugin {
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
         new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
+        new CPSDetector(new Location(world, -18.5, 8, -23.5));
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
         		if(ServerLogger.updatePlayerCount()) {
-					removeScore(10);
+					removeScore(11);
 				}
 				int size = ProPlugin.getPlayers().size();
 				setText(new String [] {
