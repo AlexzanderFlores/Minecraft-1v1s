@@ -26,7 +26,7 @@ import network.staff.StaffMode;
 
 public class GlobalCommands {
 	public GlobalCommands() {
-		new CommandBase("sudo", 2) {
+		new CommandBase("sudo", 2, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				String name = arguments[0];

@@ -108,7 +108,7 @@ commands:
 
 # Op Only Global Commands
   sudo:
-    usage: /sudo <name> <command>
+    usage: /sudo <name> <command...>
 
   repeatCommand:
     usage: /repeatCommand <ticks> <command...>
