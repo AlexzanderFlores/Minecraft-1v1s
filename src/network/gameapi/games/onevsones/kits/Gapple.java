@@ -20,7 +20,7 @@ public class Gapple extends OneVsOneKit {
         setArmor(chestplate);
         setArmor(leggings);
         setArmor(boots);
-        setItem(0, new ItemCreator(Material.DIAMOND_SWORD).addEnchantment(Enchantment.DAMAGE_ALL, 4).getItemStack());
+        setItem(0, new ItemCreator(Material.DIAMOND_SWORD).addEnchantment(Enchantment.DAMAGE_ALL, 5).addEnchantment(Enchantment.FIRE_ASPECT, 2).getItemStack());
         setItem(1, new ItemCreator(Material.GOLDEN_APPLE, 1).setAmount(16).getItemStack());
         setItem(2, new ItemCreator(new Potion(PotionType.SPEED, 1, true).toItemStack(1)).getItemStack());
         setItem(3, new ItemCreator(new Potion(PotionType.STRENGTH, 1, true).toItemStack(1)).getItemStack());

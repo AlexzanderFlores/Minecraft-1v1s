@@ -10,17 +10,16 @@ import org.bukkit.entity.Player;
 
 import network.Network;
 import network.ProPlugin;
+import network.gameapi.GoldenHead;
 import network.gameapi.SpectatorHandler;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.competitive.EloRanking;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.kits.Archer;
-import network.gameapi.games.onevsones.kits.Diamond;
+import network.gameapi.games.onevsones.kits.BuildUHC;
 import network.gameapi.games.onevsones.kits.Gapple;
-import network.gameapi.games.onevsones.kits.Iron;
 import network.gameapi.games.onevsones.kits.NoDebuff;
 import network.gameapi.games.onevsones.kits.SurvivalGames;
-import network.gameapi.games.onevsones.kits.UHC;
 import network.player.account.AccountHandler.Ranks;
 import network.player.scoreboard.BelowNameHealthScoreboardUtil;
 import network.player.scoreboard.SidebarScoreboardUtil;
@@ -59,6 +58,7 @@ public class OnevsOnes extends ProPlugin {
         new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
+        new GoldenHead();
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
@@ -85,13 +85,11 @@ public class OnevsOnes extends ProPlugin {
         	}
         });
         // Kits
-        new Iron();
-        new Diamond();
         new SurvivalGames();
         new Archer();
-        new UHC();
-        new Gapple();
+        new BuildUHC();
         new NoDebuff();
+        new Gapple();
 	}
 	
 	@Override

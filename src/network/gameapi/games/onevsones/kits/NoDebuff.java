@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionType;
 @SuppressWarnings("deprecation")
 public class NoDebuff extends OneVsOneKit {
     public NoDebuff() {
-        super("NoDebuff", new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1));
+        super("No Debuff", new Potion(PotionType.INSTANT_HEAL, 1, true).toItemStack(1));
         setArmor(new ItemCreator(Material.DIAMOND_HELMET).addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL).addEnchantment(Enchantment.DURABILITY, 3).getItemStack());
         setArmor(new ItemCreator(Material.DIAMOND_CHESTPLATE).addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL).addEnchantment(Enchantment.DURABILITY, 3).getItemStack());
         setArmor(new ItemCreator(Material.DIAMOND_LEGGINGS).addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL).addEnchantment(Enchantment.DURABILITY, 3).getItemStack());
