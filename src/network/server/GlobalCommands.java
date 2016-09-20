@@ -26,6 +26,24 @@ import network.staff.StaffMode;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("sudo", 2) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				String name = arguments[0];
+				Player player = ProPlugin.getPlayer(name);
+				if(player == null) {
+					MessageHandler.sendMessage(sender, "&c" + name + " is not online");
+				} else {
+					String command = "";
+					for(int a = 1; a < arguments.length; ++a) {
+						command += arguments[a] + " ";
+					}
+					player.performCommand(command);
+				}
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		
 		new CommandBase("uhc", 0, 1, true) {
 			@Override
 			public boolean execute(final CommandSender sender, final String [] arguments) {

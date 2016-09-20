@@ -107,6 +107,9 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  sudo:
+    usage: /sudo <name> <command>
+
   repeatCommand:
     usage: /repeatCommand <ticks> <command...>
 
@@ -281,3 +284,11 @@ commands:
 
   uhc:
     usage: /uhc
+
+# 1v1 Commands
+
+  battle:
+    usage: /battle <name of opponent>
+
+  quit:
+    usage: /quit
