@@ -40,6 +40,7 @@ public class OnevsOnes extends ProPlugin {
         setFlintAndSteelUses(2);
         setAllowEntityCombusting(true);
         setAllowInventoryClicking(true);
+        setAllowItemSpawning(true);
         setAutoVanishStaff(true);
         World world = Bukkit.getWorlds().get(0);
         Location target = new Location(world, 0.5, 7, -30.5);

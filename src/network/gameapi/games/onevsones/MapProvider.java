@@ -54,10 +54,6 @@ public class MapProvider implements Listener {
     	int error = -1;
         int map = new Random().nextInt(openMaps.keySet().size());
         Location location = null;
-        Bukkit.getLogger().info("map = " + map);
-        for(int a : openMaps.keySet()) {
-        	Bukkit.getLogger().info(a + "");
-        }
         if(openMaps.containsKey(map)) {
         	List<Location> locations = openMaps.get(map);
         	if(locations != null && !locations.isEmpty()) {

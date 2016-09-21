@@ -67,7 +67,7 @@ public class HubBase extends ProPlugin {
 		String container = Bukkit.getWorldContainer().getPath();
 		Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
 		FileHandler.delete(new File(container + "/spawn"));
-		FileHandler.copyFolder(new File(container + "/../resources/maps/hub"), new File(container + "/spawn"));
+		FileHandler.copyFolder(new File("/root/resources/maps/hub"), new File(container + "/spawn"));
 		super.disable();
 	}
 }

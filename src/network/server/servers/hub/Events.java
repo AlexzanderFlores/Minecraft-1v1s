@@ -71,7 +71,7 @@ public class Events implements Listener {
 				setText(new String [] {
 					" ",
 					"&e&lFollow us!",
-					"&b@OSTBNetwork",
+					"&b@1v1sNetwork",
 					"  ",
 					"&e&lPlayers",
 					"&b" + players,

@@ -8,7 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -19,7 +21,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -31,15 +36,19 @@ import network.Network.Plugins;
 import network.ProPlugin;
 import network.customevents.player.PlayerLeaveEvent;
 import network.customevents.player.StatsChangeEvent;
+import network.gameapi.competitive.EloHandler;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler;
+import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 
 @SuppressWarnings("deprecation")
 public class Battle implements Listener {
     private List<String> sentMessage = null;
+    private List<String> pearlDelay = null;
     private List<Block> placedBlocks = null;
+    private List<Item> items = null;
     private Player playerOne = null;
     private Player playerTwo = null;
     private OneVsOneKit kit = null;
@@ -52,7 +61,9 @@ public class Battle implements Listener {
 
     public Battle(int map, Location targetLocation, Player playerOne, Player playerTwo, boolean tournament, boolean ranked) {
         this.sentMessage = new ArrayList<String>();
+        this.pearlDelay = new ArrayList<String>();
         this.placedBlocks = new ArrayList<Block>();
+        this.items = new ArrayList<Item>();
         this.map = map;
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
@@ -170,7 +181,9 @@ public class Battle implements Listener {
         return this.started;
     }
 
-    public void end() {
+    public void end(Player loser) {
+    	Player winner = getCompetitor(loser);
+    	EloHandler.calculateWin(winner, loser, 2);
         playerOne.setFireTicks(0);
         playerTwo.setFireTicks(0);
         List<Location> maps = MapProvider.openMaps.get(getMapNumber());
@@ -205,12 +218,19 @@ public class Battle implements Listener {
         //TODO: Roll back building
         BattleHandler.removeMapCoord(targetLocation);
         HandlerList.unregisterAll(this);
+        for(Item item : items) {
+        	if(item != null && !item.isDead()) {
+        		item.remove();
+        	}
+        }
+        items.clear();
+        items = null;
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerLeaveEvent event) {
         if(contains(event.getPlayer())) {
-            end();
+            end(event.getPlayer());
         }
     }
 
@@ -230,7 +250,7 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if(contains(event.getPlayer())) {
-            end();
+            end(event.getPlayer());
         }
     }
 
@@ -286,7 +306,39 @@ public class Battle implements Listener {
                     event.setCancelled(true);
                 }
             }
+        } else if(event.getEntity() instanceof EnderPearl) {
+        	EnderPearl enderPearl = (EnderPearl) event.getEntity();
+        	if(enderPearl.getShooter() instanceof Player) {
+        		Player player = (Player) enderPearl.getShooter();
+        		if(contains(player) && getTimer() < 5) {
+        			MessageHandler.sendMessage(player, "&cCannot throw Ender Pearls at this time");
+                    event.setCancelled(true);
+        		} else {
+        			final String name = player.getName();
+            		if(!pearlDelay.contains(name)) {
+            			pearlDelay.add(name);
+            			new DelayedTask(new Runnable() {
+    						@Override
+    						public void run() {
+    							pearlDelay.remove(name);
+    						}
+    					}, 20 * 15);
+            		}
+        		}
+        	}
         }
+    }
+    
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+    	Player player = event.getPlayer();
+    	if(pearlDelay.contains(player.getName())) {
+    		ItemStack itemStack = player.getItemInHand();
+    		if(itemStack != null && itemStack.getType() == Material.ENDER_PEARL) {
+    			MessageHandler.sendMessage(player, "&cYou can only throw an Ender Pearl once every 15s");
+    			event.setCancelled(true);
+    		}
+    	}
     }
 
     @EventHandler
@@ -312,7 +364,7 @@ public class Battle implements Listener {
             if(contains(player)) {
                 if(isStarted()) {
                     Location to = event.getTo();
-                    if(to.getBlockY() > 5 || !player.getLocation().toVector().isInSphere(to.toVector(), 30)) {
+                    if(to.getBlockY() > 7 || !player.getLocation().toVector().isInSphere(to.toVector(), 65)) {
                         player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
                         MessageHandler.sendMessage(player, "&cCannot teleport to that location");
                         event.setCancelled(true);
@@ -324,5 +376,20 @@ public class Battle implements Listener {
                 }
             }
         }
+    }
+    
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+    	if(contains(event.getPlayer())) {
+    		items.add(event.getItemDrop());
+    		event.setCancelled(false);
+    	}
+    }
+    
+    @EventHandler
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+    	if(contains(event.getPlayer())) {
+    		event.setCancelled(false);
+    	}
     }
 }

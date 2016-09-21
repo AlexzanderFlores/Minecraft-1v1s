@@ -77,7 +77,7 @@ public class BattleHandler implements Listener {
                                 StatsHandler.addKill(competitor);
                                 StatsHandler.addDeath(player);
                             }
-                            battle.end();
+                            battle.end(player);
                         }
                     }
                     return true;
