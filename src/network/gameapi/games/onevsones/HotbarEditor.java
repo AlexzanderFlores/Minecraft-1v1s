@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import network.customevents.player.InventoryItemClickEvent;
 import network.customevents.player.PlayerLeaveEvent;
@@ -57,6 +58,50 @@ public class HotbarEditor implements Listener {
 		kits.put(player.getName(), kit);
     }
     
+    public static boolean load(Player player, OneVsOneKit kit) {
+    	File file = new File(path.replace("%", player.getName()) + "/" + kit.getName().replace(" ", "") + ".yml");
+    	if(file.exists()) {
+    		ConfigurationUtil config = new ConfigurationUtil(file.getAbsolutePath());
+        	for(String slot : config.getConfig().getKeys(false)) {
+        		String input = config.getConfig().getString(slot);
+        		if(!input.equals("null")) {
+        			String [] split = input.split(":");
+            		int id = Integer.valueOf(split[0]);
+            		byte data = Byte.valueOf(split[1]);
+            		int amount = Integer.valueOf(split[2]);
+            		String potionName = String.valueOf(split[3]);
+            		int potionLevel = Integer.valueOf(split[4]);
+            		boolean potionSplash = split[5].equals("1") ? true : false;
+            		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+            		if(split.length > 5) {
+            			for(int a = 6; a < split.length; a += 2) {
+            				Enchantment enchantment = Enchantment.getByName(split[a]);
+            				int level = Integer.valueOf(split[a + 1]);
+            				enchants.put(enchantment, level);
+            			}
+            		}
+            		ItemCreator itemCreator = new ItemCreator(Material.getMaterial(id), data).setAmount(amount);
+            		for(Enchantment enchantment : enchants.keySet()) {
+            			itemCreator.addEnchantment(enchantment, enchants.get(enchantment));
+            		}
+            		ItemStack itemStack = itemCreator.getItemStack();
+            		if(!potionName.equals("NULL")) {
+            			Potion potion = new Potion(PotionType.valueOf(potionName), potionLevel, potionSplash);
+            			potion.apply(itemStack);
+            		}
+            		player.getInventory().setItem(Integer.valueOf(slot), itemStack);
+        		}
+        	}
+        	Map<Integer, ItemStack> items = kit.getItems();
+        	for(int a = 36; a <= 39; ++a) {
+        		player.getInventory().setItem(a, items.get(a));
+        	}
+        	return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
     public static String getPath() {
     	return path;
     }
@@ -79,7 +124,7 @@ public class HotbarEditor implements Listener {
             }
             return name;
         }
-        return "0:0";
+        return "null";
     }
     
     @EventHandler

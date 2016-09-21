@@ -50,7 +50,6 @@ public class OnevsOnes extends ProPlugin {
         new BattleHandler();
         new MapProvider(world);
         new SpectatorHandler().createNPC(new Location(world, 13.5, 8, -22.5), target);
-        new BelowNameHealthScoreboardUtil();
         new PrivateBattleHandler();
         new HotbarEditor();
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
@@ -59,7 +58,6 @@ public class OnevsOnes extends ProPlugin {
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         new GoldenHead();
-        new BelowNameHealthScoreboardUtil();
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
@@ -85,6 +83,7 @@ public class OnevsOnes extends ProPlugin {
 				super.update(player);
         	}
         });
+        new BelowNameHealthScoreboardUtil();
         // Kits
         new SurvivalGames();
         new Archer();
