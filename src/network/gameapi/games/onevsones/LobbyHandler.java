@@ -91,9 +91,9 @@ public class LobbyHandler implements Listener {
         player.getInventory().setChestplate(new ItemStack(Material.AIR));
         player.getInventory().setLeggings(new ItemStack(Material.AIR));
         player.getInventory().setBoots(new ItemStack(Material.AIR));
-        player.updateInventory();
         player.getInventory().setHeldItemSlot(0);
         player.getInventory().setItem(0, kitSelector);
+        player.updateInventory();
     }
 
     public static boolean isInLobby(Player player) {
@@ -191,7 +191,6 @@ public class LobbyHandler implements Listener {
         	Material type = event.getItem().getType();
         	if(type == Material.WOOD_DOOR) {
         		openKitSelection(player);
-        		event.setCancelled(true);
         	} else if(type == Material.NAME_TAG) {
         		event.setCancelled(true);
         		OneVsOneKit kit = OneVsOneKit.getKit(event.getTitle().replace("Preview of ", ""));
@@ -201,6 +200,7 @@ public class LobbyHandler implements Listener {
             		HotbarEditor.open(player, kit);
                 }
         	}
+        	event.setCancelled(true);
         }
     }
     

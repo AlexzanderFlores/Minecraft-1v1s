@@ -11,6 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +21,7 @@ import network.customevents.player.InventoryItemClickEvent;
 import network.customevents.player.PlayerLeaveEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
+import network.server.tasks.DelayedTask;
 import network.server.util.ConfigurationUtil;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
@@ -31,7 +33,7 @@ public class HotbarEditor implements Listener {
 
     public HotbarEditor() {
         kits = new HashMap<String, OneVsOneKit>();
-        path = Bukkit.getWorldContainer().getAbsolutePath().replace(".", "") + "/../resources/1v1/hotbars/%/";
+        path = "/root/resources/1v1/hotbars/%/";
         EventUtil.register(this);
     }
 
@@ -110,7 +112,7 @@ public class HotbarEditor implements Listener {
                     }
                 }
                 config.save();
-                MessageHandler.sendMessage(player, "Saving your hot bar set up for kit \"&e" + kits.get(player.getName()).getName() + "&a\"");
+                MessageHandler.sendMessage(player, "Saving your hot bar set up for kit \"&e" + kits.get(player.getName()).getName() + "&x\"");
                 event.setCancelled(true);
         		player.closeInventory();
     		}
@@ -118,8 +120,30 @@ public class HotbarEditor implements Listener {
     }
     
     @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+    	if(event.getWhoClicked() instanceof Player) {
+    		Player player = (Player) event.getWhoClicked();
+    		if(kits.containsKey(player.getName()) && event.getRawSlot() != event.getSlot()) {
+    			MessageHandler.sendMessage(player, "&cYou cannot place items in the bottom inventory");
+    			event.setCancelled(true);
+    		}
+    	}
+    }
+    
+    @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-    	kits.remove(event.getPlayer().getName());
+    	if(event.getPlayer() instanceof Player) {
+    		final Player player = (Player) event.getPlayer();
+    		if(kits.containsKey(player.getName())) {
+    			new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+		    			LobbyHandler.giveItems(player);
+					}
+				});
+    			kits.remove(player.getName());
+    		}
+    	}
     }
 
     @EventHandler
