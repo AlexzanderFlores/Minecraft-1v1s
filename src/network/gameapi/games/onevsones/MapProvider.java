@@ -1,10 +1,13 @@
 package network.gameapi.games.onevsones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -13,62 +16,67 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import network.customevents.TimeEvent;
+import network.player.MessageHandler;
 import network.server.util.EventUtil;
 
-@SuppressWarnings("deprecation")
 public class MapProvider implements Listener {
-    public static Map<Integer, List<Integer>> openMaps = null; // <map number> <target Xs>
+    public static Map<Integer, List<Location>> openMaps = null; // <map number> <target Xs>
     private static int numberOfMaps = 0;
 
     public MapProvider(World world) {
-        openMaps = new HashMap<Integer, List<Integer>>();
-        Block mapCheckBlock = world.getBlockAt(0, 3, 0);
+        openMaps = new HashMap<Integer, List<Location>>();
+        Block mapCheckBlock = null;
+        int counter = 0;
+        int z = 0;
         do {
-            mapCheckBlock = mapCheckBlock.getRelative(100, 0, 0);
-            if(mapCheckBlock.getType() != Material.AIR) {
-                ++numberOfMaps;
-            }
+        	mapCheckBlock = world.getBlockAt(382, 4, z);
+        	do {
+                mapCheckBlock = mapCheckBlock.getRelative(118, 0, 0);
+                if(mapCheckBlock.getType() != Material.AIR) {
+                	List<Location> locations = openMaps.get(counter);
+                	if(locations == null) {
+                		locations = new ArrayList<Location>();
+                	}
+                	locations.add(new Location(world, mapCheckBlock.getX(), 4, z));
+                	openMaps.put(counter, locations);
+                    numberOfMaps++;
+                }
+            } while(mapCheckBlock.getType() != Material.AIR);
+        	++counter;
+        	z += 100;
+        	mapCheckBlock = world.getBlockAt(500, 4, z);
         } while(mapCheckBlock.getType() != Material.AIR);
+        Bukkit.getLogger().info("Maps found: " + numberOfMaps);
         EventUtil.register(this);
     }
 
     public MapProvider(Player playerOne, Player playerTwo, World world, boolean tournament, boolean ranked) {
-        int targetX = 0;
-        Block targetBlock = world.getBlockAt(targetX, 3, 0);
-        int map = new Random().nextInt(numberOfMaps) + 1;
-        //Commented code is to look for an already existing map to use.
+    	int error = -1;
+        int map = new Random().nextInt(openMaps.keySet().size());
+        Location location = null;
+        Bukkit.getLogger().info("map = " + map);
+        for(int a : openMaps.keySet()) {
+        	Bukkit.getLogger().info(a + "");
+        }
         if(openMaps.containsKey(map)) {
-            List<Integer> maps = openMaps.get(map);
-            if(maps != null && !maps.isEmpty()) {
-                targetX = maps.get(0);
-                maps.remove(0);
-                openMaps.put(map, maps);
-                targetBlock = world.getBlockAt(targetX, 3, 0);
-            }
+        	List<Location> locations = openMaps.get(map);
+        	if(locations != null && !locations.isEmpty()) {
+        		location = locations.get(0);
+        		locations.remove(0);
+        		openMaps.put(map, locations);
+                new Battle(map, location, playerOne, playerTwo, tournament, ranked);
+        	} else {
+        		error = 1;
+        	}
+        } else {
+        	error = 2;
         }
-        if(targetX == 0) {
-            int y = 50;
-            int x1 = Integer.valueOf((map - 1) + "70");
-            int z1 = -35;
-            int x2 = Integer.valueOf(map + "32");
-            int z2 = 35;
-            do {
-                targetX -= 100;
-                targetBlock = world.getBlockAt(targetX, 3, 0);
-            } while(targetBlock.getType() != Material.AIR);
-            for(int y1 = 0; y1 < y; ++y1) {
-                for(int x = x1; x <= x2; ++x) {
-                    for(int z = z1; z <= z2; ++z) {
-                        Block block = world.getBlockAt(x, y1, z);
-                        if(block.getType() != Material.AIR) {
-                            world.getBlockAt(targetX + x - (100 * map), y1, z).setType(block.getType());
-                            world.getBlockAt(targetX + x - (100 * map), y1, z).setData(block.getData());
-                        }
-                    }
-                }
-            }
+        if(error > 0) {
+        	String loc = location == null ? "null" : location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ();
+        	String message = "&cThere was an error with map provider, please report this (" + loc + ", " + map + ", " + error + ")";
+        	MessageHandler.sendMessage(playerOne, message);
+        	MessageHandler.sendMessage(playerTwo, message);
         }
-        new Battle(map, targetBlock, playerOne, playerTwo, tournament, ranked);
     }
 
     @EventHandler

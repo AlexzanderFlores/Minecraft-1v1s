@@ -40,6 +40,7 @@ public class QueueHandler implements Listener {
         PrivateBattleHandler.removeAllInvitesFromPlayer(player);
         new QueueData(player, null, kit);
         new TitleDisplayer(player, "&e" + kit.getName(), "&cRanked Queue").display();
+        OneVsOneKit.givePlayersKit(player, kit);
     }
 
     public static void remove(Player player) {

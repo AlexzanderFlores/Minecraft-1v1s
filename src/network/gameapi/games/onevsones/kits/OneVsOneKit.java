@@ -47,6 +47,9 @@ public class OneVsOneKit {
             kits = new ArrayList<OneVsOneKit>();
         }
         kits.add(this);
+        if(playersKits == null) {
+        	playersKits = new HashMap<String, OneVsOneKit>();
+        }
     }
 
     public static List<OneVsOneKit> getKits() {
@@ -66,8 +69,12 @@ public class OneVsOneKit {
         return null;
     }
 
+    public static void givePlayersKit(Player player, OneVsOneKit kit) {
+    	playersKits.put(player.getName(), kit);
+    }
+    
     public static OneVsOneKit getPlayersKit(Player player) {
-        return playersKits == null ? null : playersKits.get(player.getName());
+    	return playersKits == null ? null : playersKits.get(player.getName());
     }
 
     public static void removePlayerKit(Player player) {
@@ -195,9 +202,6 @@ public class OneVsOneKit {
                 }
             }
         });
-        if(playersKits == null) {
-            playersKits = new HashMap<String, OneVsOneKit>();
-        }
         if(setInMemory) {
             playersKits.put(player.getName(), this);
         }

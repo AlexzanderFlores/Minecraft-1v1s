@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -28,8 +27,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import network.Network;
-import network.ProPlugin;
 import network.Network.Plugins;
+import network.ProPlugin;
 import network.customevents.player.PlayerLeaveEvent;
 import network.customevents.player.StatsChangeEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
@@ -45,40 +44,34 @@ public class Battle implements Listener {
     private Player playerTwo = null;
     private OneVsOneKit kit = null;
     private int map = 0;
-    private int targetX = 0;
     private int timer = 0;
+    private Location targetLocation = null;
     private boolean started = false;
     private boolean tournament = false;
     private boolean ranked = true;
 
-    public Battle(int map, Block targetBlock, Player playerOne, Player playerTwo, boolean tournament, boolean ranked) {
+    public Battle(int map, Location targetLocation, Player playerOne, Player playerTwo, boolean tournament, boolean ranked) {
         this.sentMessage = new ArrayList<String>();
         this.placedBlocks = new ArrayList<Block>();
         this.map = map;
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.kit = OneVsOneKit.getPlayersKit(playerOne);
-        this.targetX = targetBlock.getX();
-        this.tournament = tournament;
-        this.ranked = ranked;
-        int radius = 25;
-        for(int x = -radius; x <= radius; ++x) {
-            for(int z = -radius; z <= radius; ++z) {
-                for(int y = 1; y <= 4; ++y) {
-                    Block near = targetBlock.getRelative(x, y, z);
-                    String type = near.getType().toString();
-                    if(type.contains("WATER") || type.contains("LAVA") || type.contains("OBSIDIAN")) {
-                        near.setType(Material.AIR);
-                        near.setData((byte) 0);
-                    }
-                }
+        for(int a = 0; a < 10; ++a) {
+        	if(kit == null) {
+        		Bukkit.getLogger().info("Kit is null");
+            } else {
+            	Bukkit.getLogger().info("Kit is " + kit.getName());
             }
         }
+        this.targetLocation = targetLocation;
+        this.tournament = tournament;
+        this.ranked = ranked;
         BattleHandler.addPlayerBattle(playerOne, this);
         BattleHandler.addPlayerBattle(playerTwo, this);
         playerOne.getInventory().remove(Material.SLIME_BALL);
         playerOne.getInventory().remove(Material.MAGMA_CREAM);
-        Location locationOne = targetBlock.getRelative(17, 1, 0).getLocation();
+        Location locationOne = targetLocation.clone().add(25, 15, 0);
         locationOne.setYaw(-270.0f);
         playerOne.teleport(locationOne);
         for(PotionEffect effect : playerOne.getActivePotionEffects()) {
@@ -86,7 +79,8 @@ public class Battle implements Listener {
         }
         playerOne.setAllowFlight(false);
         playerOne.getLocation().setPitch(0.0f);
-        Location locationTwo = targetBlock.getRelative(-17, 1, 0).getLocation();
+        kit.give(playerOne);
+        Location locationTwo = targetLocation.clone().add(-25, 15, 0);
         locationTwo.setYaw(-90.0f);
         MessageHandler.sendMessage(playerOne, "To quit this battle do &e/quit");
         if(playerTwo == null) {
@@ -101,9 +95,10 @@ public class Battle implements Listener {
             }
             playerTwo.setAllowFlight(false);
             playerTwo.getLocation().setPitch(0.0f);
+            kit.give(playerTwo);
             BattleHandler.addBattle(this);
         }
-        BattleHandler.setTargetX(targetX, map);
+        BattleHandler.setTargetX(targetLocation, map);
         EventUtil.register(this);
     }
 
@@ -131,8 +126,8 @@ public class Battle implements Listener {
         return this.map;
     }
 
-    public int getTargetX() {
-        return this.targetX;
+    public Location getTargetLocation() {
+        return this.targetLocation;
     }
 
     public void incrementTimer() {
@@ -174,11 +169,11 @@ public class Battle implements Listener {
     public void end() {
         playerOne.setFireTicks(0);
         playerTwo.setFireTicks(0);
-        List<Integer> maps = MapProvider.openMaps.get(getMapNumber());
+        List<Location> maps = MapProvider.openMaps.get(getMapNumber());
         if(maps == null) {
-            maps = new ArrayList<Integer>();
+            maps = new ArrayList<Location>();
         }
-        maps.add(targetX);
+        maps.add(targetLocation);
         MapProvider.openMaps.put(getMapNumber(), maps);
         if(Network.getPlugin() == Plugins.ONEVSONE) {
             ProPlugin.resetPlayer(playerOne);
@@ -203,22 +198,8 @@ public class Battle implements Listener {
             placedBlocks = null;
         }
         BattleHandler.removeBattle(this);
-        World world = Bukkit.getWorlds().get(0);
-        int x1 = targetX - 35;
-        int z1 = -35;
-        int x2 = targetX + 35;
-        int z2 = 35;
-        for(int x = x1; x <= x2; ++x) {
-            for(int z = z1; z <= z2; ++z) {
-                Block block = world.getBlockAt(x, 4, z);
-                Material type = block.getType();
-                if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA || type == Material.OBSIDIAN) {
-                    block.setType(Material.AIR);
-                    block.setData((byte) 0);
-                }
-            }
-        }
-        BattleHandler.removeMapCoord(targetX);
+        //TODO: Roll back building
+        BattleHandler.removeMapCoord(targetLocation);
         HandlerList.unregisterAll(this);
     }
 
@@ -307,12 +288,16 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if(contains(event.getPlayer()) && getTimer() < 5) {
-            if(!sentMessage.contains(event.getPlayer().getName())) {
-                sentMessage.add(event.getPlayer().getName());
-                MessageHandler.sendMessage(event.getPlayer(), "&cCannot move for the first 5 seconds of your battle");
-                MessageHandler.sendMessage(event.getPlayer(), "&6Take this time to edit your hot bar!");
-            }
-            event.setTo(event.getFrom());
+        	Location to = event.getTo();
+        	Location from = event.getFrom();
+        	if(to.getBlockX() != from.getBlockX() || to.getBlockZ() != from.getBlockZ()) {
+        		if(!sentMessage.contains(event.getPlayer().getName())) {
+                    sentMessage.add(event.getPlayer().getName());
+                    MessageHandler.sendMessage(event.getPlayer(), "&cCannot move for the first 5 seconds of your battle");
+                    MessageHandler.sendMessage(event.getPlayer(), "&6Take this time to edit your hot bar!");
+                }
+                event.setTo(event.getFrom());
+        	}
         }
     }
 

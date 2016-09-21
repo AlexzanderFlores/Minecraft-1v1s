@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -43,7 +44,7 @@ import network.server.util.UnicodeUtil;
 public class BattleHandler implements Listener {
     private static List<Battle> battles = null;
     private static Map<String, Battle> playerBattles = null;
-    private static Map<Integer, Integer> mapCoords = null; // <target X, map number>
+    private static Map<Location, Integer> mapCoords = null; // <target X, map number>
     private final BlockFace[] faces = new BlockFace[]{
             BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
             BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
@@ -52,7 +53,7 @@ public class BattleHandler implements Listener {
     public BattleHandler() {
         battles = new ArrayList<Battle>();
         playerBattles = new HashMap<String, Battle>();
-        mapCoords = new HashMap<Integer, Integer>();
+        mapCoords = new HashMap<Location, Integer>();
         if(Network.getPlugin() == Plugins.ONEVSONE) {
             new CommandBase("quit", true) {
                 @Override
@@ -140,12 +141,12 @@ public class BattleHandler implements Listener {
         return mapCoords.get(targetX);
     }
 
-    public static void setTargetX(int targetX, int mapNumber) {
-        mapCoords.put(targetX, mapNumber);
+    public static void setTargetX(Location targetLocation, int mapNumber) {
+        mapCoords.put(targetLocation, mapNumber);
     }
 
-    public static void removeMapCoord(int targetX) {
-        mapCoords.remove(targetX);
+    public static void removeMapCoord(Location targetLocation) {
+        mapCoords.remove(targetLocation);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
