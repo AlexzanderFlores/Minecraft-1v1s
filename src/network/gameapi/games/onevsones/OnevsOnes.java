@@ -59,6 +59,7 @@ public class OnevsOnes extends ProPlugin {
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         new GoldenHead();
+        new BelowNameHealthScoreboardUtil();
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
