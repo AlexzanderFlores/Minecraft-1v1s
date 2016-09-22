@@ -2,6 +2,7 @@ package network.gameapi.games.onevsones;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,18 +15,21 @@ import network.gameapi.GoldenHead;
 import network.gameapi.SpectatorHandler;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.competitive.EloRanking;
+import network.gameapi.competitive.StatDisplayer;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.BuildUHC;
 import network.gameapi.games.onevsones.kits.Gapple;
 import network.gameapi.games.onevsones.kits.NoDebuff;
 import network.gameapi.games.onevsones.kits.SurvivalGames;
+import network.player.TeamScoreboardHandler;
 import network.player.account.AccountHandler.Ranks;
 import network.player.scoreboard.BelowNameHealthScoreboardUtil;
 import network.player.scoreboard.SidebarScoreboardUtil;
 import network.server.CPSDetector;
 import network.server.DB;
 import network.server.ServerLogger;
+import network.server.tasks.DelayedTask;
 import network.server.util.FileHandler;
 import network.server.util.ImageMap;
 
@@ -42,7 +46,7 @@ public class OnevsOnes extends ProPlugin {
         setAllowInventoryClicking(true);
         setAllowItemSpawning(true);
         setAutoVanishStaff(true);
-        World world = Bukkit.getWorlds().get(0);
+        final World world = Bukkit.getWorlds().get(0);
         Location target = new Location(world, 0.5, 7, -30.5);
 		new ServerLogger();
 		new StatsHandler(DB.PLAYERS_STATS_ONE_VS_ONE, DB.PLAYERS_STATS_ONE_VS_ONE_MONTHLY, DB.PLAYERS_STATS_ONE_VS_ONE_WEEKLY);
@@ -59,6 +63,17 @@ public class OnevsOnes extends ProPlugin {
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         new GoldenHead();
+        new DelayedTask(new Runnable() {
+			@Override
+			public void run() {
+				List<Location> locations = Arrays.asList(
+					new Location(world, -3.5, 12.5, -48.5),
+					new Location(world, 4.5, 12.5, -48.5),
+					new Location(world, 0.5, 12.5, -49.5)
+				);
+				new StatDisplayer(locations);
+			}
+		}, 20);
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
@@ -85,6 +100,7 @@ public class OnevsOnes extends ProPlugin {
         	}
         });
         new BelowNameHealthScoreboardUtil();
+        new TeamScoreboardHandler();
         // Kits
         new SurvivalGames();
         new Archer();
