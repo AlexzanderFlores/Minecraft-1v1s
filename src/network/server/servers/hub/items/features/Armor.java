@@ -208,7 +208,7 @@ public class Armor extends FeatureBase {
 	}
 	
 	public Armor() {
-		super(getInvName(), 22, new ItemStack(Material.IRON_CHESTPLATE), null, new String [] {
+		super(getInvName(), 14, new ItemStack(Material.IRON_CHESTPLATE), null, new String [] {
 			"",
 			"&7Wear the coolest armor around!",
 			"",

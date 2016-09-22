@@ -23,7 +23,6 @@ import network.customevents.player.PlayerLeaveEvent;
 import network.server.servers.hub.HubItemBase;
 import network.server.servers.hub.items.features.Armor;
 import network.server.servers.hub.items.features.FeatureBase;
-import network.server.servers.hub.items.features.Gadgets;
 import network.server.servers.hub.items.features.particles.ArrowTrails;
 import network.server.servers.hub.items.features.particles.HaloParticles;
 import network.server.servers.hub.items.features.pets.Pets;
@@ -64,8 +63,8 @@ public class Features extends HubItemBase {
 		new HaloParticles();
 		new ArrowTrails();
 		new Armor();
-		new Gadgets();
-		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 17, 26, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 18, 9};
+		//new Gadgets();
+		slots = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
 		colors = new byte [] {3, 4, 5, 6};
 	}
 
@@ -148,7 +147,7 @@ public class Features extends HubItemBase {
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
-				Inventory inventory = Bukkit.createInventory(player, 9 * 4, ChatColor.stripColor(name));
+				Inventory inventory = Bukkit.createInventory(player, 9 * 3, ChatColor.stripColor(name));
 				for(FeatureBase feature : FeatureBase.getFeatures()) {
 					inventory.setItem(feature.getSlot(), feature.getItemStack(player));
 				}
