@@ -48,7 +48,7 @@ public class DailyRewards implements Listener {
 	
 	private void open(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
-		inventory.setItem(11, new ItemCreator(Material.DIAMOND).setName("&bVote").setLores(new String [] {
+		inventory.setItem(12, new ItemCreator(Material.DIAMOND).setName("&bVote").setLores(new String [] {
 			"",
 			"&eVote each day for cool rewards",
 			"",
@@ -56,27 +56,13 @@ public class DailyRewards implements Listener {
 			"&7Right click - &aView voting rewards",
 			""
 		}).getItemStack());
-		inventory.setItem(13, new ItemCreator(Material.DIAMOND).setName("&bVoting Streaks").setLores(new String [] {
+		inventory.setItem(14, new ItemCreator(Material.DIAMOND).setName("&bVoting Streaks").setLores(new String [] {
 			"",
 			"&eVoting each day will create a streak",
 			"&eStreaks multiply your rewards",
 			"",
 			"&7Click - &aView streak information",
 			""
-		}).getItemStack());
-		inventory.setItem(15, new ItemCreator(Material.DIAMOND).setName("&bVoting Milestone Rewards").setLores(new String [] {
-			"",
-			"&eReaching vote streak milestones",
-			"&ewill give you exclusive perks!",
-			"",
-			"&c&l(Coming soon, not done yet)",
-			"",
-			"&76 Streak: &aExclusive random arrow particle trail",
-			"&711 Streak: &aAccess to beta testing servers",
-			"&716 Streak: &aToggle your pet being upside down",
-			"&721 Streak: &aExclusive rainbow sheep hub pet",
-			"&726 Streak: &aExclusive guardian hub pet",
-			"",
 		}).getItemStack());
 		player.openInventory(inventory);
 	}
@@ -86,7 +72,7 @@ public class DailyRewards implements Listener {
 		Player player = event.getPlayer();
 		if(event.getTitle().equals(name)) {
 			int slot = event.getSlot();
-			if(slot == 11) {
+			if(slot == 12) {
 				if(event.getClickType() == ClickType.LEFT) {
 					player.closeInventory();
 					player.performCommand("vote");
@@ -163,7 +149,7 @@ public class DailyRewards implements Listener {
 					inventory.setItem(inventory.getSize() - 5, new ItemCreator(Material.WOOD_DOOR).setName("&bBack").getItemStack());
 					player.openInventory(inventory);
 				}
-			} else if(slot == 13) {
+			} else if(slot == 14) {
 				final Inventory inventory = Bukkit.createInventory(player, 9 * 6, streakName);
 				player.openInventory(inventory);
 				final UUID uuid = player.getUniqueId();
