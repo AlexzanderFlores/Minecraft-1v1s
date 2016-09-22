@@ -39,9 +39,9 @@ import network.server.tasks.DelayedTask;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.Particles.ParticleTypes;
-import npc.NPCEntity;
 import network.server.util.StringUtil;
 import network.server.util.TimeUtil;
+import npc.NPCEntity;
 
 @SuppressWarnings("deprecation")
 public class Beacon implements Listener {
@@ -317,12 +317,4 @@ public class Beacon implements Listener {
 			}
 		}
 	}
-	
-	/*@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if(event.getDamager() instanceof Player && event.getEntity().equals(armorStand) && !running) {
-			Player player = (Player) event.getDamager();
-			activate(player);
-		}
-	}*/
 }

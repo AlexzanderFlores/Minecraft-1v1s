@@ -18,7 +18,7 @@ import network.Network;
 public class FileHandler {
     public static void checkForUpdates() {
         String path = "/root/resources/";
-        for(String plugin : new String [] {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HologramAPI.jar"}) {
+        for(String plugin : new String [] {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HologramAPI.jar", "PacketListenerAPI.jar"}) {
             File file = new File(path, plugin);
             Bukkit.getLogger().info(file.getAbsolutePath());
             if(file.exists()) {
