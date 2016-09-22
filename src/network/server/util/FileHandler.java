@@ -18,14 +18,11 @@ import network.Network;
 public class FileHandler {
     public static void checkForUpdates() {
         String path = "/root/resources/";
-        for(String plugin : new String [] {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HolographicDisplays.jar", "HolographicDisplaysPatch.jar"}) {
+        for(String plugin : new String [] {"Core.jar", "NPC.jar", "EffectLib.jar", "ProtocolLib.jar", "HologramAPI.jar"}) {
             File file = new File(path, plugin);
             Bukkit.getLogger().info(file.getAbsolutePath());
             if(file.exists()) {
                 File update = new File("/root/" + Network.getServerName().toLowerCase() + "/plugins/" + plugin);
-                /*if(update.exists()) {
-                    delete(update);
-                }*/
                 copyFile(file, update);
             }
         }

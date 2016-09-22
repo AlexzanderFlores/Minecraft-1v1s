@@ -11,6 +11,8 @@ import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
 
+import de.inventivegames.hologram.Hologram;
+import de.inventivegames.hologram.HologramAPI;
 import network.Network;
 import network.Network.Plugins;
 import network.ProPlugin;
@@ -109,6 +111,19 @@ public class Building extends ProPlugin {
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("test", 1, -1, true) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				Player player = (Player) sender;
+				String text = "";
+				for(String argument : arguments) {
+					text += argument + " ";
+				}
+				Hologram hologram = HologramAPI.createHologram(player.getLocation(), text);
+				hologram.spawn();
+				return true;
+			}
+		};
 	}
 	
 	@Override
@@ -131,7 +146,7 @@ public class Building extends ProPlugin {
 			try {
 				Region region = worldEdit.getSession(player).getRegion();
 				return region;
-			} catch (IncompleteRegionException e) {
+			} catch(IncompleteRegionException e) {
 				
 			}
 		}
