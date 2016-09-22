@@ -21,6 +21,7 @@ import network.server.servers.hub.items.Features;
 import network.server.servers.hub.items.GameSelector;
 import network.server.servers.hub.items.HubSelector;
 import network.server.servers.hub.items.Profile;
+import network.server.servers.hub.parkours.EndlessParkour;
 import network.server.util.FileHandler;
 
 public class HubBase extends ProPlugin {
@@ -53,9 +54,9 @@ public class HubBase extends ProPlugin {
 		new HubSelector();
 		new ServerLogger();
 		new DailyRewards();
-		//new RecentSupporters();
 		new TeamScoreboardHandler();
 		new ParkourNPC();
+		new EndlessParkour();
 	}
 	
 	public static int getHubNumber() {
