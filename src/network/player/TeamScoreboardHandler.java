@@ -1,7 +1,6 @@
 package network.player;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,28 +13,10 @@ import network.customevents.player.PlayerRankChangeEvent;
 import network.customevents.player.PostPlayerJoinEvent;
 import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
-import network.server.CommandBase;
-import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 
 public class TeamScoreboardHandler implements Listener {
 	public TeamScoreboardHandler() {
-		new DelayedTask(new Runnable() {
-			@Override
-			public void run() {
-				new CommandBase("test", true) {
-					@Override
-					public boolean execute(CommandSender sender, String [] arguments) {
-						Player player = (Player) sender;
-						Scoreboard scoreboard = player.getScoreboard();
-						for(Team team : scoreboard.getTeams()) {
-							MessageHandler.sendMessage(player, team.getName() + " &x: " + team.getPrefix() + " &x : " + team.getSize());
-						}
-						return true;
-					}
-				};
-			}
-		}, 20 * 5);
 		EventUtil.register(this);
 	}
 	

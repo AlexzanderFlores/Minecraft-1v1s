@@ -83,22 +83,6 @@ public class BattleHandler implements Listener {
                     return true;
                 }
             };
-            new CommandBase("test", true) {
-                @Override
-                public boolean execute(CommandSender sender, String[] arguments) {
-                    Player player = (Player) sender;
-                    Block block = player.getLocation().getBlock();
-                    Battle battle = getBattle(player);
-                    if(battle != null && battle.isStarted()) {
-                        if(battle.getPlacedBlocks().contains(block)) {
-                            MessageHandler.sendMessage(player, "&eYES");
-                        } else {
-                            MessageHandler.sendMessage(player, "&cNO");
-                        }
-                    }
-                    return true;
-                }
-            };
         }
         EventUtil.register(this);
     }

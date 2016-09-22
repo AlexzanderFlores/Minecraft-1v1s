@@ -398,19 +398,19 @@ public enum DB {
 		return getAllStrings(colum, "", "");
 	}
 	
-	public List<String> getAllStrings(String colum, String key, String value) {
+	public List<String> getAllStrings(String requested, String key, String value) {
 		List<String> results = new ArrayList<String>();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		try {
-			String query = "SELECT " + colum + " FROM " + getName();
+			String query = "SELECT " + requested + " FROM " + getName();
 			if(key != null && !key.equals("") && value != null && !value.equals("")) {
 				query += " WHERE " + key + " = '" + value + "'";
 			}
 			statement = getConnection().prepareStatement(query);
 			resultSet = statement.executeQuery();
 			while(resultSet.next()) {
-				results.add(resultSet.getString(colum));
+				results.add(resultSet.getString(requested));
 			}
 		} catch(SQLException e) {
 			if(displayErrors) {
@@ -825,7 +825,7 @@ public enum DB {
 		public void connect() {
 			try {
 				if(connection == null || connection.isClosed()) {
-					ConfigurationUtil config = new ConfigurationUtil(Bukkit.getWorldContainer().getPath() + "/../db.yml");
+					ConfigurationUtil config = new ConfigurationUtil("/root/db.yml");
 					String address = config.getConfig().getString("address");
 					int port = config.getConfig().getInt("port");
 					String user = config.getConfig().getString("user");
