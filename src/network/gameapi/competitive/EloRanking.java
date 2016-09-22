@@ -15,6 +15,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import network.Network;
+import network.customevents.TimeEvent;
 import network.customevents.game.GameEndingEvent;
 import network.customevents.player.AsyncPlayerJoinEvent;
 import network.customevents.player.PlayerItemFrameInteractEvent;
@@ -27,6 +29,7 @@ import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.ImageMap;
 import network.server.util.StringUtil;
+import npc.util.DelayedTask;
 
 public class EloRanking implements Listener {
 	public enum EloRank {
@@ -96,6 +99,7 @@ public class EloRanking implements Listener {
 	}
 	
 	public static void loadData() {
+		MessageHandler.alert("Reloading elo ranks...");
 		new AsyncDelayedTask(new Runnable() {
 			@Override
 			public void run() {
@@ -116,19 +120,22 @@ public class EloRanking implements Listener {
 	
 	public static void updateRanks() {
 		for(Player player : Bukkit.getOnlinePlayers()) {
-			int elo = 0;
+			int elo = EloHandler.getElo(player);
 			EloRank [] ranks = EloRank.values();
 			for(int a = ranks.length - 1; a >= 0; --a) {
 				EloRank eloRank = ranks[a];
 				if(elo >= eloRank.getRequired()) {
 					int currentRank = eloRanks.get(player.getUniqueId()).ordinal();
 					int newRank = eloRank.ordinal();
-					EffectUtil.playSound(player, Sound.LEVEL_UP);
 					MessageHandler.sendMessage(player, "");
-					if(newRank > currentRank) {
-						MessageHandler.sendMessage(player, "&aYou have ranked up! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
-					} else if(newRank < currentRank) {
-						MessageHandler.sendMessage(player, "&cYou have ranked down! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+					if(currentRank != newRank) {
+						if(newRank > currentRank) {
+							MessageHandler.sendMessage(player, "&aYou have ranked up! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+						} else if(currentRank > newRank) {
+							MessageHandler.sendMessage(player, "&cYou have ranked down! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+						}
+						EffectUtil.playSound(player, Sound.LEVEL_UP);
+						eloRanks.put(player.getUniqueId(), EloRank.values()[newRank]);
 					} else {
 						MessageHandler.sendMessage(player, "&cYour rank did not change! Rank is still " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
 					}
@@ -185,6 +192,24 @@ public class EloRanking implements Listener {
 		Player player = event.getPlayer();
 		if(eloRanks.containsKey(player.getUniqueId())) {
 			event.setFormat(eloRanks.get(player.getUniqueId()).getPrefix() + " " + event.getFormat());
+		}
+	}
+	
+	@EventHandler
+	public void onTime(TimeEvent event) {
+		long ticks = event.getTicks();
+		if(ticks == 20 * 60 * 5) {
+			if(Network.getMiniGame() == null) {
+				loadData();
+				new DelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						updateRanks();
+					}
+				}, 20);
+			} else {
+				TimeEvent.getHandlerList().unregister(this);
+			}
 		}
 	}
 	

@@ -1,15 +1,19 @@
 package network.gameapi.competitive;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import network.Network;
 import network.customevents.player.AsyncPlayerJoinEvent;
 import network.customevents.player.AsyncPlayerLeaveEvent;
 import network.player.MessageHandler;
@@ -21,6 +25,7 @@ import network.server.util.EventUtil;
 
 public class EloHandler implements Listener {
 	private static Map<String, Integer> elo = null;
+	private static List<UUID> queue = null;
 	private static DB db = null;
 	private static int starting = 0;
 	
@@ -30,6 +35,7 @@ public class EloHandler implements Listener {
 	
 	public EloHandler(DB db, int starting) {
 		elo = new HashMap<String, Integer>();
+		queue = new ArrayList<UUID>();
 		EloHandler.db = db;
 		EloHandler.starting = starting;
 		new CommandBase("elo", 0, 1) {
@@ -53,6 +59,25 @@ public class EloHandler implements Listener {
 			}
 		}.setRequiredRank(Ranks.VIP);
 		EventUtil.register(this);
+		Bukkit.getScheduler().runTaskTimerAsynchronously(Network.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				if(queue != null && !queue.isEmpty()) {
+					UUID uuid = queue.get(0);
+					queue.remove(0);
+					Player player = Bukkit.getPlayer(uuid);
+					if(player != null && elo.containsKey(player.getName())) {
+						DB db = EloHandler.db == null ? StatsHandler.getEloDB() : EloHandler.db;
+						int amount = elo.get(player.getName());
+						if(db.isUUIDSet(uuid)) {
+							db.updateInt("elo", amount, "uuid", uuid.toString());
+						} else {
+							db.insert("'" + uuid.toString() + "', '" + amount + "'");
+						}
+					}
+				}
+			}
+		}, 20, 20);
 	}
 	
 	public static void calculateWin(Player winner, Player loser, int display) {
@@ -65,7 +90,6 @@ public class EloHandler implements Listener {
 		if(amount < 1) {
 			amount = 1;
 		}
-		//int draw = (int) Math.round(K * (0.5 - percentage));
 		int winnerResult = add(winner, amount);
 		int loserResult = add(loser, -amount);
 		if(display > 0) { // 0 = don't display, 1 = display change, 2 = display change + new value
@@ -78,6 +102,8 @@ public class EloHandler implements Listener {
 				MessageHandler.sendLine(player);
 			}
 		}
+		queue.add(winner.getUniqueId());
+		queue.add(loser.getUniqueId());
 	}
 	
 	public static int getElo(Player player) {
