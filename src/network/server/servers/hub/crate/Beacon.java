@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import de.inventivegames.hologram.Hologram;
 import network.customevents.TimeEvent;
 import network.player.MessageHandler;
 import network.player.TitleDisplayer;
@@ -32,7 +33,7 @@ import network.server.tasks.AsyncDelayedTask;
 import network.server.tasks.DelayedTask;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
-import network.server.util.Hologram;
+import network.server.util.Particles.ParticleTypes;
 import network.server.util.TimeUtil;
 
 @SuppressWarnings({"deprecation", "unused"})
@@ -41,7 +42,7 @@ public class Beacon implements Listener {
 	private Block glass = null;
 	private final String originalName;
 	private String type = null;
-	private Hologram armorStand = null;
+	private Hologram hologram = null;
 	private int counter = 0;
 	private boolean running = false;
 	private boolean displaying = false;
@@ -284,7 +285,7 @@ public class Beacon implements Listener {
 			if(running && !displaying) {
 				glass.setData((byte) random.nextInt(15));
 				EffectUtil.playSound(random.nextBoolean() ? Sound.FIREWORK_BLAST : Sound.FIREWORK_BLAST2, glass.getLocation());
-				//ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
+				ParticleTypes.FIREWORK_SPARK.display(glass.getLocation().add(0, 2, 0));
 				if(counter <= 12) {
 					//armorStand.setCustomName(getName());
 					++counter;
@@ -307,11 +308,11 @@ public class Beacon implements Listener {
 		}
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if(event.getDamager() instanceof Player && event.getEntity().equals(armorStand) && !running) {
 			Player player = (Player) event.getDamager();
 			activate(player);
 		}
-	}
+	}*/
 }

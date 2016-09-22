@@ -12,6 +12,8 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import de.inventivegames.hologram.Hologram;
+import de.inventivegames.hologram.HologramAPI;
 import network.customevents.TimeEvent;
 import network.player.account.AccountHandler;
 import network.server.DB;
@@ -19,7 +21,6 @@ import network.server.DB.Databases;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.EventUtil;
 import network.server.util.FileHandler;
-import network.server.util.Hologram;
 import network.server.util.ImageMap;
 import network.server.util.StringUtil;
 
@@ -39,9 +40,9 @@ public class RecentSupporters implements Listener {
 		itemFrames.add(ImageMap.getItemFrame(world, 1683, 14, -1301));
 		itemFrames.add(ImageMap.getItemFrame(world, 1687, 14, -1301));
 		
-		nameStands.add(new Hologram("", itemFrames.get(0).getLocation().clone().add(1, -6.5, 0)));
-		nameStands.add(new Hologram("", itemFrames.get(1).getLocation().clone().add(1, -6.5, 0)));
-		nameStands.add(new Hologram("", itemFrames.get(2).getLocation().clone().add(1, -6.5, 0)));
+		nameStands.add(HologramAPI.createHologram(itemFrames.get(0).getLocation().clone().add(1, -6.5, 0), ""));
+		nameStands.add(HologramAPI.createHologram(itemFrames.get(1).getLocation().clone().add(1, -6.5, 0), ""));
+		nameStands.add(HologramAPI.createHologram(itemFrames.get(2).getLocation().clone().add(1, -6.5, 0), ""));
 		
 		/*nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(0).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
 		nameStands.add((ArmorStand) world.spawnEntity(itemFrames.get(1).getLocation().clone().add(1, -6.5, 0), EntityType.ARMOR_STAND));
@@ -50,9 +51,9 @@ public class RecentSupporters implements Listener {
 			setUpArmorStand(armorStand);
 		}*/
 		
-		packageStands.add(new Hologram("", nameStands.get(0).getLocation().clone().add(0, -.35, 0)));
-		packageStands.add(new Hologram("", nameStands.get(1).getLocation().clone().add(0, -.35, 0)));
-		packageStands.add(new Hologram("", nameStands.get(2).getLocation().clone().add(0, -.35, 0)));
+		packageStands.add(HologramAPI.createHologram(itemFrames.get(0).getLocation().clone().add(0, -.35, 0), ""));
+		packageStands.add(HologramAPI.createHologram(itemFrames.get(1).getLocation().clone().add(0, -.35, 0), ""));
+		packageStands.add(HologramAPI.createHologram(itemFrames.get(2).getLocation().clone().add(0, -.35, 0), ""));
 		
 		/*packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(0).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));
 		packageStands.add((ArmorStand) world.spawnEntity(nameStands.get(1).getLocation().clone().add(0, -.35, 0), EntityType.ARMOR_STAND));

@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.inventivegames.hologram.Hologram;
 import network.customevents.TimeEvent;
 import network.customevents.player.InventoryItemClickEvent;
 import network.player.MessageHandler;
@@ -28,7 +29,6 @@ import network.server.tasks.AsyncDelayedTask;
 import network.server.tasks.DelayedTask;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
-import network.server.util.Hologram;
 import network.server.util.ItemCreator;
 import network.server.util.StringUtil;
 import npc.NPCEntity;

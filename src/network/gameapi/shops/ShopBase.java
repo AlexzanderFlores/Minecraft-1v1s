@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import de.inventivegames.hologram.Hologram;
 import network.Network;
 import network.Network.Plugins;
 import network.customevents.TimeEvent;
@@ -32,7 +33,6 @@ import network.server.CommandBase;
 import network.server.DB;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
-import network.server.util.Hologram;
 import network.server.util.ItemCreator;
 
 public abstract class ShopBase implements Listener {

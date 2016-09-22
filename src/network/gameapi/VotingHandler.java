@@ -22,6 +22,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import de.inventivegames.hologram.Hologram;
 import network.Network;
 import network.customevents.game.GameStartingEvent;
 import network.customevents.player.PlayerItemFrameInteractEvent;
@@ -32,7 +33,6 @@ import network.server.RankAds;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.EventUtil;
 import network.server.util.FileHandler;
-import network.server.util.Hologram;
 import network.server.util.ImageMap;
 import network.server.util.StringUtil;
 
