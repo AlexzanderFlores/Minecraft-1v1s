@@ -83,10 +83,6 @@ public class FeatureItem {
 			Beacon.giveKey(player.getUniqueId(), 3, "voting");
 			return;
 		}
-		if(getName().equals(Beacon.getSkyWarsCrateKey())) {
-			//SkyWarsCrate.giveKey(player.getUniqueId(), 1);
-			return;
-		}
 		for(HaloParticleTypes halo : HaloParticleTypes.values()) {
 			if(halo.getName().equals(getName())) {
 				halo.give(player);

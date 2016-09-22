@@ -10,8 +10,8 @@ public class Crate {
 	
 	public Crate() {
 		World world = Bukkit.getWorlds().get(0);
-		voting = new Beacon("Voting Crate&8 (&7Click&8)", "voting", world.getBlockAt(1651, 6, -1278), new Vector(0.85, 0.75, 0.5));
-		superCrate = new Beacon("Super Crate&8 (&7Click&8)", "super", world.getBlockAt(1651, 6, -1284), new Vector(0.85, 0.75, 0.5));
+		voting = new Beacon("Voting Crate&8 (&7Click&8)", "voting", world.getBlockAt(1651, 6, -1278), new Vector(0.85, 2.5, 0.5));
+		superCrate = new Beacon("Super Crate&8 (&7Click&8)", "super", world.getBlockAt(1651, 6, -1284), new Vector(0.85, 2.5, 0.5));
 	}
 	
 	public static Beacon getVoting() {
