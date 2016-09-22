@@ -3,12 +3,12 @@ package network.gameapi.games.onevsones;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -68,13 +68,6 @@ public class Battle implements Listener {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.kit = OneVsOneKit.getPlayersKit(playerOne);
-        for(int a = 0; a < 10; ++a) {
-        	if(kit == null) {
-        		Bukkit.getLogger().info("Kit is null");
-            } else {
-            	Bukkit.getLogger().info("Kit is " + kit.getName());
-            }
-        }
         this.targetLocation = targetLocation;
         this.tournament = tournament;
         this.ranked = ranked;
@@ -215,7 +208,6 @@ public class Battle implements Listener {
             placedBlocks = null;
         }
         BattleHandler.removeBattle(this);
-        //TODO: Roll back building
         BattleHandler.removeMapCoord(targetLocation);
         HandlerList.unregisterAll(this);
         for(Item item : items) {
@@ -240,7 +232,7 @@ public class Battle implements Listener {
             Player player = (Player) event.getEntity();
             if(contains(player)) {
                 String name = kit.getName();
-                if((name.equals("UHC") || name.equals("One Hit Wonder") || name.equals("Quickshot")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
+                if((name.equals("UHC")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
                     event.setCancelled(true);
                 }
             }
@@ -250,6 +242,11 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if(contains(event.getPlayer())) {
+        	for(Entity entity : event.getPlayer().getNearbyEntities(5, 5, 5)) {
+    			if(entity instanceof Item) {
+    				entity.remove();
+    			}
+    		}
             end(event.getPlayer());
         }
     }
