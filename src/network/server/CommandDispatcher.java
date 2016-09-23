@@ -19,14 +19,25 @@ import network.server.util.EventUtil;
 
 public class CommandDispatcher implements Listener {
 	public CommandDispatcher() {
-		new CommandBase("hubAlert", -1) {
+		new CommandBase("hubAlert", 1, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				String alert = "";
-				for(String arg : arguments) {
-					alert += arg + " ";
+				for(String argument : arguments) {
+					alert += argument + " ";
 				}
 				sendToGame("hub", "say " + alert);
+				return true;
+			}
+		}.setRequiredRank(Ranks.OWNER);
+		new CommandBase("hubCommand", 1, -1) {
+			@Override
+			public boolean execute(CommandSender sender, String [] arguments) {
+				String command = "";
+				for(String argument : arguments) {
+					command += argument + " ";
+				}
+				sendToGame("hub", command);
 				return true;
 			}
 		}.setRequiredRank(Ranks.OWNER);

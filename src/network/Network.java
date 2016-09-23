@@ -40,7 +40,6 @@ import network.server.DB.Databases;
 import network.server.GeneralEvents;
 import network.server.GlobalCommands;
 import network.server.PerformanceHandler;
-import network.server.RankAds;
 import network.server.RestarterHandler;
 import network.server.servers.building.Building;
 import network.server.servers.hub.items.features.particles.Particles;
@@ -180,7 +179,7 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		new AutoAlerts();
 		new CommandDispatcher();
 		new DefaultChatColor();
-		new RankAds();
+		//new RankAds();
 		new CommandRepeater();
 		Glow.register();
 	}

@@ -107,6 +107,12 @@ commands:
     usage: /giveKey <name> <amount> <type>
 
 # Op Only Global Commands
+  hubCommand:
+    usage: /hubCommand <command>
+
+  updateSupporters:
+    usage: /updateSupporters
+
   sudo:
     usage: /sudo <name> <command...>
 

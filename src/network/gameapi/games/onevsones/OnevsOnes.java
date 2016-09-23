@@ -2,7 +2,6 @@ package network.gameapi.games.onevsones;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,7 +14,6 @@ import network.gameapi.GoldenHead;
 import network.gameapi.SpectatorHandler;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.competitive.EloRanking;
-import network.gameapi.competitive.StatDisplayer;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.BuildUHC;
@@ -29,7 +27,6 @@ import network.player.scoreboard.SidebarScoreboardUtil;
 import network.server.CPSDetector;
 import network.server.DB;
 import network.server.ServerLogger;
-import network.server.tasks.DelayedTask;
 import network.server.util.FileHandler;
 import network.server.util.ImageMap;
 
@@ -63,7 +60,7 @@ public class OnevsOnes extends ProPlugin {
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         new GoldenHead();
-        new DelayedTask(new Runnable() {
+        /*new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
 				List<Location> locations = Arrays.asList(
@@ -73,7 +70,7 @@ public class OnevsOnes extends ProPlugin {
 				);
 				new StatDisplayer(locations);
 			}
-		}, 20);
+		}, 20);*/
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
