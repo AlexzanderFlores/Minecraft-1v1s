@@ -45,6 +45,7 @@ import network.server.RestarterHandler;
 import network.server.servers.building.Building;
 import network.server.servers.hub.items.features.particles.Particles;
 import network.server.servers.hub.main.MainHub;
+import network.server.servers.slave.Slave;
 import network.server.servers.worker.Worker;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.CommandRepeater;
@@ -59,6 +60,7 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
 		ONEVSONE("1v1s", "1v1", "1v1s"),
 		BUILDING("Building", "building"),
+		SLAVE("Slave", "slave"),
 		WORKER("Worker", "worker");
 		
 		private String server = null;
@@ -141,6 +143,9 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 				break;
 			case BUILDING:
 				proPlugin = new Building();
+				break;
+			case SLAVE:
+				proPlugin = new Slave();
 				break;
 			case WORKER:
 				proPlugin = new Worker();
