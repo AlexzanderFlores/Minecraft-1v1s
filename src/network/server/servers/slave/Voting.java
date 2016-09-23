@@ -19,7 +19,6 @@ import network.server.CommandBase;
 import network.server.CommandDispatcher;
 import network.server.DB;
 import network.server.servers.hub.crate.Beacon;
-import network.server.servers.hub.crate.KeyFragments;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.EventUtil;
 
@@ -103,7 +102,7 @@ public class Voting implements Listener {
 						Bukkit.getLogger().info("Giving 20 coins for " + handler.getPluginData());
 						handler.addCoins(playerUUID, 20 * multiplier);
 					}
-					Bukkit.getLogger().info("voting: giving 3 sky wars loot passes");
+					/*Bukkit.getLogger().info("voting: giving 3 sky wars loot passes");
 					int toAdd = 3 * multiplier;
 					if(DB.PLAYERS_SKY_WARS_LOOT_PASSES.isUUIDSet(playerUUID)) {
 						int amount = DB.PLAYERS_SKY_WARS_LOOT_PASSES.getInt("uuid", uuid, "amount") + toAdd;
@@ -128,9 +127,9 @@ public class Voting implements Listener {
 						DB.PLAYERS_SPEED_UHC_RESCATTER.updateInt("amount", amount, "uuid", uuid);
 					} else {
 						DB.PLAYERS_SPEED_UHC_RESCATTER.insert("'" + uuid + "', '" + toAdd + "'");
-					}
+					}*/
 					Bukkit.getLogger().info("voting: giving parkour course checkpoints");
-					toAdd = 10 * multiplier;
+					int toAdd = 10 * multiplier;
 					if(DB.HUB_PARKOUR_CHECKPOINTS.isUUIDSet(playerUUID)) {
 						int amount = DB.HUB_PARKOUR_CHECKPOINTS.getInt("uuid", uuid, "amount") + toAdd;
 						DB.HUB_PARKOUR_CHECKPOINTS.updateInt("amount", amount, "uuid", uuid);
