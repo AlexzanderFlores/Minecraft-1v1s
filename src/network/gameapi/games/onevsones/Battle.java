@@ -39,7 +39,6 @@ import network.customevents.player.StatsChangeEvent;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
-import network.player.account.AccountHandler;
 import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 
@@ -54,6 +53,7 @@ public class Battle implements Listener {
     private OneVsOneKit kit = null;
     private int map = 0;
     private int timer = 0;
+    private int startAt = 3;
     private Location targetLocation = null;
     private boolean started = false;
     private boolean tournament = false;
@@ -166,8 +166,6 @@ public class Battle implements Listener {
                 playerTwo.setHealth(1.0d);
             }
         }
-        MessageHandler.sendMessage(playerOne, "&c&lBattle started against " + AccountHandler.getPrefix(playerTwo));
-        MessageHandler.sendMessage(playerTwo, "&c&lBattle started against " + AccountHandler.getPrefix(playerOne));
     }
 
     public boolean isStarted() {
@@ -298,7 +296,7 @@ public class Battle implements Listener {
             Arrow arrow = (Arrow) event.getEntity();
             if(arrow.getShooter() instanceof Player) {
                 Player player = (Player) arrow.getShooter();
-                if(contains(player) && getTimer() < 5) {
+                if(contains(player) && getTimer() < startAt) {
                     MessageHandler.sendMessage(player, "&cCannot shoot your bow at this time");
                     event.setCancelled(true);
                 }
@@ -307,7 +305,7 @@ public class Battle implements Listener {
         	EnderPearl enderPearl = (EnderPearl) event.getEntity();
         	if(enderPearl.getShooter() instanceof Player) {
         		Player player = (Player) enderPearl.getShooter();
-        		if(contains(player) && getTimer() < 5) {
+        		if(contains(player) && getTimer() < startAt) {
         			MessageHandler.sendMessage(player, "&cCannot throw Ender Pearls at this time");
                     event.setCancelled(true);
         		} else {
@@ -340,14 +338,12 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if(contains(event.getPlayer()) && getTimer() < 5) {
+        if(contains(event.getPlayer()) && getTimer() < startAt) {
         	Location to = event.getTo();
         	Location from = event.getFrom();
         	if(to.getBlockX() != from.getBlockX() || to.getBlockZ() != from.getBlockZ()) {
         		if(!sentMessage.contains(event.getPlayer().getName())) {
                     sentMessage.add(event.getPlayer().getName());
-                    MessageHandler.sendMessage(event.getPlayer(), "&cCannot move for the first 5 seconds of your battle");
-                    MessageHandler.sendMessage(event.getPlayer(), "&6Take this time to edit your hot bar!");
                 }
                 event.setTo(event.getFrom());
         	}

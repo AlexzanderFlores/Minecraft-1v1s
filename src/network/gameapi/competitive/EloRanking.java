@@ -127,8 +127,8 @@ public class EloRanking implements Listener {
 				if(elo >= eloRank.getRequired()) {
 					int currentRank = eloRanks.get(player.getUniqueId()).ordinal();
 					int newRank = eloRank.ordinal();
-					MessageHandler.sendMessage(player, "");
 					if(currentRank != newRank) {
+						MessageHandler.sendMessage(player, "");
 						if(newRank > currentRank) {
 							MessageHandler.sendMessage(player, "&aYou have ranked up! New rank is " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
 						} else if(currentRank > newRank) {
@@ -136,10 +136,8 @@ public class EloRanking implements Listener {
 						}
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 						eloRanks.put(player.getUniqueId(), EloRank.values()[newRank]);
-					} else {
-						MessageHandler.sendMessage(player, "&cYour rank did not change! Rank is still " + eloRank.getPrefix() + " &x(Top &c" + eloRank.getDisplayPercentage() + "%&x)");
+						MessageHandler.sendMessage(player, "");
 					}
-					MessageHandler.sendMessage(player, "");
 					break;
 				}
 			}
