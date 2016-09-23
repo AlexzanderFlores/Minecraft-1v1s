@@ -88,7 +88,7 @@ public class MuteHandler extends Punishment {
 				MessageHandler.sendMessage(player, "Muted at &e" + time);
 				MessageHandler.sendMessage(player, "Expires on &e" + expires);
 				MessageHandler.sendMessage(player, "Appeal your mute &e" + appeal);
-				MessageHandler.sendMessage(player, "Purchase unmute pass &ehttp://store.outsidetheblock.org/category/680458");
+				MessageHandler.sendMessage(player, "Purchase unmute pass &ehttp://store.1v1s.org/category/771555");
 				MessageHandler.sendLine(player);
 			}
 		}

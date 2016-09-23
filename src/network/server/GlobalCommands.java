@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import network.Network;
 import network.ProPlugin;
-import network.Network.Plugins;
 import network.gameapi.SpectatorHandler;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler;
@@ -91,8 +90,8 @@ public class GlobalCommands {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				MessageHandler.sendLine(sender, "&6");
-				MessageHandler.sendMessage(sender, "http://minecraftservers.org/server/350324");
-				MessageHandler.sendMessage(sender, "http://minecraft-mp.com/server/121622/vote/");
+				MessageHandler.sendMessage(sender, "http://minecraftservers.org/server/387074");
+				MessageHandler.sendMessage(sender, "http://minecraft-mp.com/server-s134839");
 				MessageHandler.sendLine(sender, "&6");
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
@@ -106,48 +105,6 @@ public class GlobalCommands {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
 				MessageHandler.sendMessage(sender, TimeUtil.getTime());
-				return true;
-			}
-		};
-		
-		new CommandBase("booster", -1) {
-			@Override
-			public boolean execute(final CommandSender sender, final String [] arguments) {
-				if(arguments.length == 3 && Ranks.OWNER.hasRank(sender)) {
-					new AsyncDelayedTask(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								Plugins plugin = Plugins.valueOf(arguments[0].toUpperCase());
-								String name = arguments[1];
-								UUID uuid = AccountHandler.getUUID(name);
-								if(uuid == null) {
-									MessageHandler.sendMessage(sender, "&c" + name + " has never logged in before");
-								} else {
-									try {
-										int toAdd = Integer.valueOf(arguments[2]);
-										String [] keys = new String [] {"uuid", "game_name"};
-										String [] values = new String [] {uuid.toString(), plugin.getData()};
-										int amount = toAdd;
-										if(DB.PLAYERS_COIN_BOOSTERS.isKeySet(keys, values)) {
-											amount = DB.PLAYERS_COIN_BOOSTERS.getInt(keys, values, "amount") + toAdd;
-											DB.PLAYERS_COIN_BOOSTERS.updateInt("amount", amount, keys, values);
-										} else {
-											DB.PLAYERS_COIN_BOOSTERS.insert("'" + uuid.toString() + "', '" + plugin.getData() + "', '" + amount + "'");
-										}
-										MessageHandler.sendMessage(sender, "Gave " + name + " " + toAdd + " boosters for " + plugin.getData() + " (" + amount + " total)");
-									} catch(NumberFormatException e) {
-										MessageHandler.sendMessage(sender, "&cInvalid integer value \"&e" + arguments[2] + "&c\"");
-									}
-								}
-							} catch(IllegalArgumentException e) {
-								MessageHandler.sendMessage(sender, "&cUnknown plugin \"&e" + arguments[0].toUpperCase() + "&c\"");
-							}
-						}
-					});
-				} else {
-					MessageHandler.sendMessage(sender, "&cstore.OutsideTheBlock.org/category/679889");
-				}
 				return true;
 			}
 		};
@@ -194,7 +151,7 @@ public class GlobalCommands {
 		new CommandBase("buy") {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {
-				MessageHandler.sendMessage(sender, "&chttp://store.outsidetheblock.org/");
+				MessageHandler.sendMessage(sender, "&chttp://store.1v1s.org/");
 				return true;
 			}
 		};

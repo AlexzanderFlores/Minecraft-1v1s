@@ -61,7 +61,7 @@ public class EndlessParkour implements Listener {
 		storedScores = new HashMap<String, Integer>();
 		random = new Random();
 		loadTopData();
-		url = "OutsideTheBlock.org/EPK";
+		url = "1v1s.org/EPK";
 		World world = Bukkit.getWorlds().get(0);
 		Hologram hologram = HologramAPI.createHologram(new Location(world, 1592.5, 6.5, -1262.5), StringUtil.color("&e&nWalk Forward"));
 		hologram.spawn();

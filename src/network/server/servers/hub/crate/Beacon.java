@@ -136,7 +136,7 @@ public class Beacon implements Listener {
 			if(type.equals("voting")) {
 				ChatClickHandler.sendMessageToRunCommand(player, "&aClick here", "Click to vote", "/vote", "&cYou don't have any &bVoting Keys&c! Get some by voting ");
 			} else {
-				MessageHandler.sendMessage(player, "&cYou do not have any &bSuper Keys&c! Get some on Buycraft: &ahttp://store.outsidetheblock.org/category/679824");
+				MessageHandler.sendMessage(player, "&cYou do not have any &bSuper Keys&c! Get some on Buycraft: &ahttp://store.1v1s.org/category/767960");
 			}
 			return;
 		}
