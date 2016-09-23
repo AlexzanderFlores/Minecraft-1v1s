@@ -230,7 +230,7 @@ public class Battle implements Listener {
             Player player = (Player) event.getEntity();
             if(contains(player)) {
                 String name = kit.getName();
-                if((name.equals("UHC")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
+                if((name.equals("Build UHC")) && event.getRegainReason() != RegainReason.MAGIC_REGEN) {
                     event.setCancelled(true);
                 }
             }
@@ -258,7 +258,7 @@ public class Battle implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if(contains(event.getPlayer()) && event.getBlock().getY() < 7) {
+        if(contains(event.getPlayer()) && event.getBlock().getY() < 10) {
             if(isStarted()) {
                 Material type = event.getBlock().getType();
                 if(type == Material.TNT) {
@@ -327,12 +327,14 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
     	Player player = event.getPlayer();
+		ItemStack itemStack = player.getItemInHand();
     	if(pearlDelay.contains(player.getName())) {
-    		ItemStack itemStack = player.getItemInHand();
     		if(itemStack != null && itemStack.getType() == Material.ENDER_PEARL) {
     			MessageHandler.sendMessage(player, "&cYou can only throw an Ender Pearl once every 15s");
     			event.setCancelled(true);
     		}
+    	} else if(itemStack.getType() == Material.LAVA_BUCKET || itemStack.getType() == Material.WATER_BUCKET) {
+    		event.setCancelled(false);
     	}
     }
 
