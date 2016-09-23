@@ -218,15 +218,16 @@ public class MainHubTop5 implements Listener {
 		bar.setVisible(false);*/
 		setNext();
 		name = "Select Top 5 Type";
-		new NPCEntity(EntityType.VILLAGER, "&e&n" + name, new Location(world, 1712.5, 5, -1283.5)) {
+		new NPCEntity(EntityType.VILLAGER, "&e&n&k" + name, new Location(world, 1712.5, 5, -1283.5)) {
 			@Override
 			public void onInteract(Player player) {
 				EffectUtil.playSound(player, Sound.VILLAGER_IDLE);
-				Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
+				MessageHandler.sendMessage(player, "&cComing soon");
+				/*Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
 				for(Information info : Information.values()) {
 					inventory.setItem(info.getSlot(), info.getItemStack());
 				}
-				player.openInventory(inventory);
+				player.openInventory(inventory);*/
 			}
 		};
 		EventUtil.register(this);
