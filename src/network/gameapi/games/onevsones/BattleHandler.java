@@ -29,8 +29,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import network.Network;
-import network.ProPlugin;
 import network.Network.Plugins;
+import network.ProPlugin;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.events.BattleEndEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
@@ -41,19 +41,22 @@ import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.UnicodeUtil;
 
+@SuppressWarnings("deprecation")
 public class BattleHandler implements Listener {
     private static List<Battle> battles = null;
     private static Map<String, Battle> playerBattles = null;
     private static Map<Location, Integer> mapCoords = null; // <target X, map number>
-    private final BlockFace[] faces = new BlockFace[]{
-            BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
-            BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    private static Map<String, List<Block>> playersPlaced = null;
+    private final BlockFace [] faces = new BlockFace [] {
+        BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
+        BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
 
     public BattleHandler() {
         battles = new ArrayList<Battle>();
         playerBattles = new HashMap<String, Battle>();
         mapCoords = new HashMap<Location, Integer>();
+        playersPlaced = new HashMap<String, List<Block>>();
         if(Network.getPlugin() == Plugins.ONEVSONE) {
             new CommandBase("quit", true) {
                 @Override
@@ -93,12 +96,6 @@ public class BattleHandler implements Listener {
 
     public static Battle getBattle(Player player) {
         return playerBattles.get(player.getName());
-        /*for(Battle battle : battles) {
-            if(battle.contains(player)) {
-				return battle;
-			}
-		}
-		return null;*/
     }
 
     public static void addPlayerBattle(Player player, Battle battle) {
@@ -138,7 +135,7 @@ public class BattleHandler implements Listener {
         Player player = event.getEntity();
         EffectUtil.playSound(player, Sound.ZOMBIE_DEATH);
         Player killer = player.getKiller();
-        Bukkit.getPluginManager().callEvent(new BattleEndEvent(killer, player, OneVsOneKit.getPlayersKit(player)));
+        Bukkit.getPluginManager().callEvent(new BattleEndEvent(killer, player, OneVsOneKit.getPlayersKit(player), playerBattles.get(player.getName())));
         if(killer == null) {
             if(Network.getPlugin() == Plugins.ONEVSONE) {
                 player.sendMessage(event.getDeathMessage());
@@ -180,32 +177,71 @@ public class BattleHandler implements Listener {
     }
 
     @EventHandler
-    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if(event.getBlockClicked().getLocation().getY() != 3) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if(event.getItemDrop().getItemStack().getType() == Material.POTION) {
             event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
-
+    
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+    	Player player = event.getPlayer();
+    	Battle battle = getBattle(player);
+    	if(battle != null && !event.isCancelled()) {
+    		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+    		List<Block> blocks = playersPlaced.get(player.getName());
+    		if(blocks == null) {
+    			blocks = new ArrayList<Block>();
+    		}
+    		blocks.add(block);
+    		playersPlaced.put(player.getName(), blocks);
+    	}
+    }
+    
     @EventHandler
     public void onBlockFromTo(BlockFromToEvent event) {
-        if(event.getBlock().getY() == 4) {
-            Material type = event.getBlock().getType();
-            if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
-                Block toBlock = event.getToBlock();
-                if(toBlock.getType() == Material.AIR && generatesCobble(type, toBlock)) {
-                    event.setCancelled(true);
-                } else {
-                    event.setCancelled(false);
-                }
+    	Material type = event.getBlock().getType();
+        if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
+            Block toBlock = event.getToBlock();
+            if(toBlock.getType() == Material.AIR && generatesCobble(type, toBlock)) {
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(false);
             }
         }
+    }
+    
+    @EventHandler
+    public void onBattleEnd(BattleEndEvent event) {
+    	for(Player player : new Player [] {event.getWinner(), event.getLoser()}) {
+    		List<Block> blocks = playersPlaced.get(player);
+        	if(blocks != null) {
+        		int range = 8;
+        		for(Block block : blocks) {
+        			int x = block.getX();
+        			int y = block.getY();
+        			int z = block.getZ();
+        			int x1 = x - range;
+        			int x2 = x + range;
+        			int y1 = y - range;
+        			int y2 = y + range;
+        			int z1 = z - range;
+        			int z2 = z + range;
+        			for(; x1 <= x2; ++x1) {
+        				for(; y1 <= y2; ++y1) {
+        					for(; z1 <= z2; ++z1) {
+        						Block nearBlock = player.getWorld().getBlockAt(x1, y1, z1);
+        						Material type = nearBlock.getType();
+        						if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
+        							nearBlock.setType(Material.AIR);
+            						nearBlock.setData((byte) 0);
+        						}
+        					}
+        				}
+        			}
+        		}
+        	}
+    	}
     }
 
     public boolean generatesCobble(Material type, Block block) {

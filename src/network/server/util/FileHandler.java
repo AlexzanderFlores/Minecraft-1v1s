@@ -102,8 +102,7 @@ public class FileHandler {
     }
 
     public static void delete(File file) {
-    	Bukkit.getLogger().info("Deleting \"" + file.getAbsolutePath() + "\"");
-        if(file != null && file.exists()) {
+    	if(file != null && file.exists()) {
             if(file.isDirectory()) {
                 if(file.list().length == 0) {
                     file.delete();

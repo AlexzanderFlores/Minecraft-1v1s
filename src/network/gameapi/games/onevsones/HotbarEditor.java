@@ -20,6 +20,7 @@ import org.bukkit.potion.PotionType;
 
 import network.customevents.player.InventoryItemClickEvent;
 import network.customevents.player.PlayerLeaveEvent;
+import network.gameapi.GoldenHead;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.server.tasks.DelayedTask;
@@ -84,6 +85,10 @@ public class HotbarEditor implements Listener {
             		for(Enchantment enchantment : enchants.keySet()) {
             			itemCreator.addEnchantment(enchantment, enchants.get(enchantment));
             		}
+            		if(data == -1) {
+            			data = 0;
+            			itemCreator.setName(GoldenHead.getName());
+            		}
             		ItemStack itemStack = itemCreator.getItemStack();
             		if(!potionName.equals("NULL")) {
             			Potion potion = new Potion(PotionType.valueOf(potionName), potionLevel, potionSplash);
@@ -110,6 +115,9 @@ public class HotbarEditor implements Listener {
         if(item != null) {
             int id = item.getTypeId();
             byte data = item.getData().getData();
+            if(item.getType() == Material.GOLDEN_APPLE && item.getAmount() == 3) {
+            	data = -1;
+            }
             int amount = item.getAmount();
             String name = id + ":" + data + ":" + amount;
             if(item.getType() == Material.POTION) {
@@ -150,7 +158,7 @@ public class HotbarEditor implements Listener {
                 }
                 ConfigurationUtil config = new ConfigurationUtil(file.getAbsolutePath());
                 Inventory inventory = event.getInventory();
-                for(int a = 0; a < inventory.getSize() - 10; ++a) {
+                for(int a = 0; a < inventory.getSize() - 9; ++a) {
                     ItemStack item = inventory.getContents()[a];
                     if(item != null && item.getType() != Material.AIR) {
                         config.getConfig().set(a + "", getItemName(item));

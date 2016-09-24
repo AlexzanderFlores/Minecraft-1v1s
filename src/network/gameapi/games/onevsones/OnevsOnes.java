@@ -17,7 +17,6 @@ import network.gameapi.competitive.EloRanking;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.BuildUHC;
-import network.gameapi.games.onevsones.kits.Gapple;
 import network.gameapi.games.onevsones.kits.NoDebuff;
 import network.gameapi.games.onevsones.kits.SurvivalGames;
 import network.player.TeamScoreboardHandler;
@@ -108,7 +107,6 @@ public class OnevsOnes extends ProPlugin {
         new Archer();
         new BuildUHC();
         new NoDebuff();
-        new Gapple();
 	}
 	
 	@Override

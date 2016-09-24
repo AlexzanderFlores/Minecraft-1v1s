@@ -31,6 +31,10 @@ public class GoldenHead implements Listener {
 		return new ItemCreator(item).setAmount(amount).getItemStack();
 	}
 	
+	public static String getName() {
+		return name;
+	}
+	
 	@EventHandler
 	public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
 		ItemStack item = event.getItem();

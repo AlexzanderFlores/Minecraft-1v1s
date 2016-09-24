@@ -36,6 +36,7 @@ import network.Network;
 import network.Network.Plugins;
 import network.ProPlugin;
 import network.customevents.player.PlayerLeaveEvent;
+import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.StatsChangeEvent;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
@@ -336,8 +337,6 @@ public class Battle implements Listener {
     			MessageHandler.sendMessage(player, "&cYou can only throw an Ender Pearl once every 15s");
     			event.setCancelled(true);
     		}
-    	} else if(itemStack.getType() == Material.LAVA_BUCKET || itemStack.getType() == Material.WATER_BUCKET) {
-    		event.setCancelled(false);
     	}
     }
     
@@ -393,6 +392,13 @@ public class Battle implements Listener {
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
     	if(contains(event.getPlayer())) {
     		event.setCancelled(false);
+    	}
+    }
+    
+    @EventHandler
+    public void onPlayerStaffMode(PlayerStaffModeEvent event) {
+    	if(contains(event.getPlayer())) {
+    		event.setCancelled(true);
     	}
     }
 }

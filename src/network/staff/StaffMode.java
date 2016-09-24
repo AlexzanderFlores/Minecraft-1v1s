@@ -35,6 +35,7 @@ import network.server.CommandBase;
 import network.server.DB;
 import network.server.PerformanceHandler;
 import network.server.util.EventUtil;
+import npc.util.DelayedTask;
 
 public class StaffMode implements Listener {
 	private static List<String> vanished = null;
@@ -82,14 +83,19 @@ public class StaffMode implements Listener {
 		EventUtil.register(this);
 	}
 	
-	public static void toggle(Player player) {
+	public static void toggle(final Player player) {
 		String prefix = AccountHandler.getPrefix(player);
 		if(contains(player)) {
 			PlayerStaffModeEvent staffModeEvent = new PlayerStaffModeEvent(player, StaffModeEventType.DISABLE);
 			Bukkit.getPluginManager().callEvent(staffModeEvent);
 			if(!staffModeEvent.isCancelled()) {
-				if(Network.getMiniGame() == null && SpectatorHandler.isEnabled()) {
-					SpectatorHandler.remove(player);
+				if(Network.getMiniGame() == null && SpectatorHandler.isEnabled() && SpectatorHandler.contains(player)) {
+					new DelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							SpectatorHandler.remove(player);
+						}
+					});
 				}
 				vanished.remove(player.getName());
 				if(watching != null) {

@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import network.gameapi.games.onevsones.Battle;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 
 public class BattleEndEvent extends Event {
@@ -11,11 +12,13 @@ public class BattleEndEvent extends Event {
     private Player loser = null;
     private Player winner = null;
     private OneVsOneKit kit = null;
+    private Battle battle = null;
 
-    public BattleEndEvent(Player winner, Player loser, OneVsOneKit kit) {
+    public BattleEndEvent(Player winner, Player loser, OneVsOneKit kit, Battle battle) {
         this.winner = winner;
         this.loser = loser;
         this.kit = kit;
+        this.battle = battle;
     }
 
     public static HandlerList getHandlerList() {
@@ -34,6 +37,10 @@ public class BattleEndEvent extends Event {
         return this.kit;
     }
 
+    public Battle getBattle() {
+    	return this.battle;
+    }
+    
     @Override
     public HandlerList getHandlers() {
         return handlers;
