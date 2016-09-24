@@ -39,7 +39,7 @@ public class BanHandler extends Punishment implements Listener {
 					@Override
 					public void run() {
 						// See if they are not attaching proof to the command, if they aren't and they aren't an owner don't run the command
-						if(arguments.length == 2 && AccountHandler.getRank(sender) != Ranks.OWNER) {
+						if(arguments.length == 2 && AccountHandler.getRank(sender) != Ranks.OWNER && AccountHandler.getRank(sender) != Ranks.SENIOR_STAFF) {
 							return;
 						}
 						// Use a try/catch to view if the given reason is valid
