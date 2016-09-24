@@ -174,8 +174,10 @@ public class Battle implements Listener {
     }
 
     public void end(Player loser) {
-    	Player winner = getCompetitor(loser);
-    	EloHandler.calculateWin(winner, loser, 1);
+    	if(ranked) {
+    		Player winner = getCompetitor(loser);
+        	EloHandler.calculateWin(winner, loser, 1);
+    	}
         playerOne.setFireTicks(0);
         playerTwo.setFireTicks(0);
         List<Location> maps = MapProvider.openMaps.get(getMapNumber());
