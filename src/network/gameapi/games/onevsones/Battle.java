@@ -3,6 +3,7 @@ package network.gameapi.games.onevsones;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,6 +40,7 @@ import network.customevents.player.PlayerLeaveEvent;
 import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.StatsChangeEvent;
 import network.gameapi.competitive.EloHandler;
+import network.gameapi.games.onevsones.events.BattleEndEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.server.tasks.DelayedTask;
@@ -175,8 +177,9 @@ public class Battle implements Listener {
     }
 
     public void end(Player loser) {
+    	Player winner = getCompetitor(loser);
+    	Bukkit.getPluginManager().callEvent(new BattleEndEvent(winner, loser, getKit(), this));
     	if(ranked) {
-    		Player winner = getCompetitor(loser);
         	EloHandler.calculateWin(winner, loser, 1);
     	}
         playerOne.setFireTicks(0);

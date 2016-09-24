@@ -190,7 +190,9 @@ public class QueueHandler implements Listener {
             Player playerOne = ProPlugin.getPlayer(player);
             Player playerTwo = ProPlugin.getPlayer(data.getPlayer());
             if(playerOne.getAddress().getAddress().getHostAddress().equals(playerTwo.getAddress().getAddress().getHostAddress())) {
-                return false;
+            	if(AccountHandler.getRank(playerOne) != Ranks.OWNER && AccountHandler.getRank(playerTwo) != Ranks.OWNER) {
+            		return false;
+            	}
             }
             if(forcedPlayer != null && data.getForcedPlayer() != null) {
                 return data.getForcedPlayer().equals(forcedPlayer);

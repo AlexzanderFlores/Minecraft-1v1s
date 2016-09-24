@@ -214,23 +214,14 @@ public class BattleHandler implements Listener {
     @EventHandler
     public void onBattleEnd(BattleEndEvent event) {
     	for(Player player : new Player [] {event.getWinner(), event.getLoser()}) {
-    		List<Block> blocks = playersPlaced.get(player);
+    		List<Block> blocks = playersPlaced.get(player.getName());
         	if(blocks != null) {
-        		int range = 8;
+        		int range = 5;
         		for(Block block : blocks) {
-        			int x = block.getX();
-        			int y = block.getY();
-        			int z = block.getZ();
-        			int x1 = x - range;
-        			int x2 = x + range;
-        			int y1 = y - range;
-        			int y2 = y + range;
-        			int z1 = z - range;
-        			int z2 = z + range;
-        			for(; x1 <= x2; ++x1) {
-        				for(; y1 <= y2; ++y1) {
-        					for(; z1 <= z2; ++z1) {
-        						Block nearBlock = player.getWorld().getBlockAt(x1, y1, z1);
+        			for(int x = -range; x <= range; ++x) {
+        				for(int y = -range; y <= range; ++y) {
+        					for(int z = -range; z <= range; ++z) {
+        						Block nearBlock = block.getRelative(x, y, z);
         						Material type = nearBlock.getType();
         						if(type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
         							nearBlock.setType(Material.AIR);
