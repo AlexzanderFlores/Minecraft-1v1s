@@ -15,6 +15,7 @@ import network.server.ChatClickHandler;
 import network.server.DB;
 import network.server.util.EventUtil;
 import network.staff.ban.BanHandler;
+import network.staff.ban.BanListener;
 import network.staff.ban.UnBanHandler;
 import network.staff.mute.MuteHandler;
 import network.staff.mute.ShadowMuteHandler;
@@ -78,6 +79,7 @@ public class Punishment implements Listener {
 		new CommandLogger();
 		new StaffMode();
 		new ShadowMuteHandler();
+		new BanListener();
 	}
 	
 	public Punishment(String name) {
