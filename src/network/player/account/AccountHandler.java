@@ -237,6 +237,10 @@ public class AccountHandler implements Listener {
 		}
 	}
 	
+	public static UUID getUUIDFromIP(String address) {
+		return UUID.fromString(DB.PLAYERS_ACCOUNTS.getString("address", address, "uuid"));
+	}
+	
 	public static String getName(UUID uuid) {
 		try {
 			return DB.PLAYERS_ACCOUNTS.getString("uuid", uuid.toString(), "name");

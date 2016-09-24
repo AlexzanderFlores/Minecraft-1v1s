@@ -304,7 +304,7 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onPlayerAFK(PlayerAFKEvent event) {
         Player player = event.getPlayer();
-        if(!event.getAFK() && isInLobby(player)) {
+        if(isInLobby(player) && player.getWorld().getSpawnLocation().distance(player.getLocation()) >= 5) {
         	spawn(player);
         }
     }

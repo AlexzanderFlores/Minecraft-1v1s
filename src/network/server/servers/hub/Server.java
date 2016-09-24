@@ -1,4 +1,4 @@
-package network.server.servers.slave;
+package network.server.servers.hub;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -6,9 +6,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
+import network.player.account.AccountHandler;
 import network.server.DB;
 import network.server.tasks.AsyncDelayedTask;
+import network.server.twitter.OAuth;
 
 public class Server {
 	private static boolean running = true;
@@ -29,10 +34,10 @@ public class Server {
 		                connection = socket.accept();
 		                inputStream = new InputStreamReader(connection.getInputStream());
 		                input = new BufferedReader(inputStream);
-		                String command = input.readLine().toLowerCase();
-		                System.out.println("Socket server input: \"" + command + "\"");
+		                String command = input.readLine();
+		                System.out.println("\tSocket server input: \"" + command + "\"");
 		                String reply = runCommand(command);
-		                System.out.println("Socket server ouput: \"" + reply + "\"");
+		                System.out.println("\tSocket server ouput: \"" + reply + "\"");
 		                reply(reply);
 		            }
 		        } catch(Exception e) {
@@ -91,6 +96,19 @@ public class Server {
     		String address = command.replace("gettwitterurl:", "");
     		String result = DB.PLAYERS_TWITTER_AUTH_URLS.getString("address", address, "url");
     		return result == null ? "null" : result;
+    	} else if(command.startsWith("setpin:")) {
+    		String [] split = command.replace("setpin:", "").split(":");
+    		for(String string : split) {
+    			Bukkit.getLogger().info("\t\t" + string);
+    		}
+    		String address = split[0];
+    		String pin = split[1];
+    		UUID uuid = AccountHandler.getUUIDFromIP(address);
+    		if(uuid == null) {
+    			return "nouuid";
+    		} else {
+    			return OAuth.setPin(uuid, pin);
+    		}
     	}
         return "";
     }

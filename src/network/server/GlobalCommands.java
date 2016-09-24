@@ -12,12 +12,15 @@ import org.bukkit.entity.Player;
 
 import network.Network;
 import network.ProPlugin;
+import network.Network.Plugins;
 import network.gameapi.SpectatorHandler;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
+import network.server.servers.hub.HubBase;
 import network.server.servers.hub.crate.Beacon;
 import network.server.tasks.AsyncDelayedTask;
+import network.server.twitter.OAuth;
 import network.server.util.EffectUtil;
 import network.server.util.StringUtil;
 import network.server.util.TimeUtil;
@@ -25,6 +28,40 @@ import network.staff.StaffMode;
 
 public class GlobalCommands {
 	public GlobalCommands() {
+		new CommandBase("linkTwitter", true) {
+			@Override
+			public boolean execute(final CommandSender sender, String [] arguments) {
+				if(Network.getPlugin() == Plugins.HUB && HubBase.getHubNumber() == 1) {
+					new AsyncDelayedTask(new Runnable() {
+						@Override
+						public void run() {
+							Player player = (Player) sender;
+							UUID uuid = player.getUniqueId();
+							if(DB.PLAYERS_TWITTER_API_KEYS.isUUIDSet(uuid)) {
+								MessageHandler.sendMessage(player, "&cYour Twitter is already linked with 1v1s, if there is a problem please contact us on Twitter or our forums");
+							} else {
+								String address = player.getAddress().getAddress().getHostAddress();
+								String url = OAuth.getURL();
+								if(DB.PLAYERS_TWITTER_AUTH_URLS.isKeySet("address", address)) {
+									DB.PLAYERS_TWITTER_AUTH_URLS.updateString("url", url, "address", address);
+								} else {
+									DB.PLAYERS_TWITTER_AUTH_URLS.insert("'" + address + "', '" + url + "'");
+								}
+								MessageHandler.sendMessage(player, "Please confirm the linking of your Twitter account: &a" + url);
+							}
+						}
+					});
+				} else {
+					MessageHandler.sendMessage(sender, "&cYou can only run this command in HUB1");
+					if(sender instanceof Player) {
+						Player player = (Player) sender;
+						ChatClickHandler.sendMessageToRunCommand(player, " &6Click here", "Go to HUB1", "/hub 1", "&aTo go to HUB1");
+					}
+				}
+				return true;
+			}
+		}.enableDelay(2);
+		
 		new CommandBase("sudo", 2, -1) {
 			@Override
 			public boolean execute(CommandSender sender, String [] arguments) {

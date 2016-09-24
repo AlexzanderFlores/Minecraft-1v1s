@@ -1,6 +1,8 @@
 package network;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -97,6 +99,8 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 	private static ProPlugin proPlugin = null;
 	private static MiniGame miniGame = null;
 	private static String serverName = null;
+	private static String consumerKey = "";
+	private static String consumerSecret = "";
 	private static SidebarScoreboardUtil sidebar = null;
 	private static BelowNameScoreboardUtil belowName = null;
 	private static int maxPlayers = -1;
@@ -109,15 +113,19 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getMessenger().registerIncomingPluginChannel(getInstance(), "WDL|CONTROL", this);
 		sidebar = new SidebarScoreboardUtil("");
 		try {
-        	File [] libs = new File [] {
-        		new File("root/resources/", "Twitter4j.jar")
+			String path = "/root/resources";
+			File [] libs = new File [] {
+    			new File(path, "twitter4j-core-4.0.4.jar"),
+    			new File(path, "twitter4j-async-4.0.4.jar"),
+    			new File(path, "twitter4j-media-support-4.0.4.jar"),
+    			new File(path, "twitter4j-stream-4.0.4.jar")
         	};
             for(File lib : libs) {
                 if(lib.exists()) {
                     JarUtils.extractFromJar(lib.getName(), lib.getAbsolutePath());
                 }
             }
-            for(final File lib : libs) {
+            for(File lib : libs) {
                 if(lib.exists()) {
                 	addClassPath(JarUtils.getJarUrl(lib));
                 }
@@ -126,9 +134,7 @@ public class Network extends JavaPlugin implements PluginMessageListener {
             e.printStackTrace();
         }
 		serverName = new File(Bukkit.getWorldContainer().getPath() + "/..").getAbsolutePath().replaceAll("/root/", "");
-		//Bukkit.getLogger().info(serverName);
 		serverName = serverName.split("/")[0].toUpperCase();
-		//Bukkit.getLogger().info(serverName);
 		plugin = Plugins.valueOf(serverName.replaceAll("[\\d]", ""));
 		try {
 			switch(plugin) {
@@ -183,6 +189,36 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		new Alerts();
 		new CommandRepeater();
 		Glow.register();
+		
+		// Init Twitter
+		File file = new File("/root/resources/twitter4j.properties");
+		if(file.exists()) {
+			FileHandler.copyFile(file, new File("/root/" + getServerName().toLowerCase() + "/twitter4j.properties"));
+			String consumerKeyDelimiter = "oauth.consumerKey=";
+			String consumerSecretDelimiter = "oauth.consumerSecret=";
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new FileReader(file));
+				String input = null;
+				while((input = reader.readLine()) != null) {
+					if(input.startsWith(consumerKeyDelimiter)) {
+						consumerKey = input.replace(consumerKeyDelimiter, "");
+					} else if(input.startsWith(consumerSecretDelimiter)) {
+						consumerSecret = input.replace(consumerSecretDelimiter, "");
+					}
+				}
+			} catch(IOException e) {
+				e.printStackTrace();
+			} finally {
+				if(reader != null) {
+					try {
+						reader.close();
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -266,6 +302,14 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		if(max != Bukkit.getMaxPlayers()) {
 			maxPlayers = max;
 		}
+	}
+	
+	public static String getConsumerKey() {
+		return consumerKey;
+	}
+	
+	public static String getConsumerSecret() {
+		return consumerSecret;
 	}
 
 	@Override

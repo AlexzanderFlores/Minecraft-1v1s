@@ -5,6 +5,12 @@ softdepend: [NPC, Votifier, EffectLib]
 authors: [Leet_Gamer]
 commands:
 # Global Commands
+  linkTwitter:
+    usage: /linkTwitter
+
+  tweetRank:
+    usage: /tweetRank
+
   killAura:
     usage: /killaura <name> [tp]
 

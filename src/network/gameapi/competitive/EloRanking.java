@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,8 +25,11 @@ import network.customevents.player.PlayerItemFrameInteractEvent;
 import network.customevents.player.PlayerLeaveEvent;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler.Ranks;
+import network.server.ChatClickHandler;
+import network.server.CommandBase;
 import network.server.DB;
 import network.server.tasks.AsyncDelayedTask;
+import network.server.twitter.Tweeter;
 import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.ImageMap;
@@ -71,12 +76,14 @@ public class EloRanking implements Listener {
 		}
 	};
 	private static Map<UUID, EloRank> eloRanks = null;
+	private static Map<String, EloRank> lastTweeted = null;
 	private static List<ItemFrame> frames = null;
 	private static DB eloDB = null;
 	private static DB rankDB = null;
 	
 	public EloRanking(List<ItemFrame> itemFrames, DB eloDB, DB rankDB) {
 		eloRanks = new HashMap<UUID, EloRank>();
+		lastTweeted = new HashMap<String, EloRank>();
 		frames = new ArrayList<ItemFrame>();
 		EloRanking.eloDB = eloDB;
 		EloRanking.rankDB = rankDB;
@@ -85,6 +92,44 @@ public class EloRanking implements Listener {
 			frames.addAll(new ImageMap(itemFrame, "Elo", path).getItemFrames());
 		}
 		loadData();
+		new CommandBase("tweetRank", true) {
+			@Override
+			public boolean execute(final CommandSender sender, String [] arguments) {
+				new AsyncDelayedTask(new Runnable() {
+					@Override
+					public void run() {
+						Player player = (Player) sender;
+						if(eloRanks.containsKey(player.getUniqueId())) {
+							EloRank eloRank = eloRanks.get(player.getUniqueId());
+							if(lastTweeted.containsKey(player.getName()) && lastTweeted.get(player.getName()) == eloRank) {
+								MessageHandler.sendMessage(sender, "&cYou have recently Tweeted that you have " + eloRank.getPrefix() + ", &crank up before you can Tweet again");
+							} else {
+								UUID uuid = player.getUniqueId();
+								if(DB.PLAYERS_TWITTER_API_KEYS.isUUIDSet(uuid)) {
+									String accessToken = DB.PLAYERS_TWITTER_API_KEYS.getString("uuid", uuid.toString(), "access_token");
+									String accessSecret = DB.PLAYERS_TWITTER_API_KEYS.getString("uuid", uuid.toString(), "access_secret");
+									try {
+										Tweeter tweeter = new Tweeter(Network.getConsumerKey(), Network.getConsumerSecret(), accessToken, accessSecret);
+										lastTweeted.put(player.getName(), eloRank);
+										int elo = EloHandler.getElo(player);
+										tweeter.tweet("I just ranked up on @1v1sNetwork to " + ChatColor.stripColor(eloRank.toString()) + " (Top " + eloRank.getDisplayPercentage() + "%) with " + elo + " elo", "/root/resources/" + eloRank.toString().toLowerCase() + ".png");
+									} catch(Exception e) {
+										DB.PLAYERS_TWITTER_API_KEYS.deleteUUID(uuid);
+										MessageHandler.sendMessage(player, "&cSomething went wrong, relink your Twitter or contact a staff");
+									}
+								} else {
+									MessageHandler.sendMessage(player, "&cYour Twitter account is NOT linked to 1v1s.org");
+									ChatClickHandler.sendMessageToRunCommand(player, " &6Click here", "Click to link Twitter", "/linkTwitter", "&bTo link your Twitter account ");
+								}
+							}
+						} else {
+							MessageHandler.sendMessage(player, "&cSomething went wrong with reading your elo rank, please relog or wait for elo ranks to be reloaded (max of 5m)");
+						}
+					}
+				});
+				return true;
+			}
+		}.enableDelay(5);
 		EventUtil.register(this);
 	}
 	
@@ -136,6 +181,8 @@ public class EloRanking implements Listener {
 						}
 						EffectUtil.playSound(player, Sound.LEVEL_UP);
 						eloRanks.put(player.getUniqueId(), EloRank.values()[newRank]);
+						MessageHandler.sendMessage(player, "");
+						ChatClickHandler.sendMessageToRunCommand(player, " &6Click here", "Click to Tweet", "/tweetRank " + eloRank.getPrefix(), "&a&lView your ELO value by &b&lTweeting &a&lyour new rank");
 						MessageHandler.sendMessage(player, "");
 					}
 					break;

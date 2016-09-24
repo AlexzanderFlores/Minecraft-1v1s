@@ -58,6 +58,9 @@ public class HubBase extends ProPlugin {
 		new ParkourNPC();
 		new EndlessParkour();
 		new RecentSupporters();
+		if(hubNumber == 1) {
+			new Server();
+		}
 	}
 	
 	public static int getHubNumber() {

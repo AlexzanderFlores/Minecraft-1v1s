@@ -84,6 +84,7 @@ public enum DB {
 	PLAYERS_HARDCORE_ELIMINATION_VOTES("uuid VARCHAR(40), votes INT, PRIMARY KEY(uuid)"),
 	// Twitter
 	PLAYERS_TWITTER_AUTH_URLS("address VARCHAR(40), url VARCHAR(250), PRIMARY KEY(address)"),
+	PLAYERS_TWITTER_API_KEYS("uuid VARCHAR(40), access_token VARCHAR(50), access_secret VARCHAR(50), PRIMARY KEY(uuid)"),
 	
 	NETWORK_PROXIES("server VARCHAR(25), PRIMARY KEY(server)"),
 	NETWORK_POPULATIONS("server VARCHAR(25), population INT, PRIMARY KEY(server)"),
