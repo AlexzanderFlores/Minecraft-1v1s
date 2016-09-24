@@ -31,6 +31,8 @@ import network.server.util.FileHandler;
 import network.server.util.ImageMap;
 
 public class OnevsOnes extends ProPlugin {
+	private static String oldPlayerCount = null;
+	
 	public OnevsOnes() {
 		super("1v1");
 		setAllowEntityDamage(true);
@@ -71,17 +73,20 @@ public class OnevsOnes extends ProPlugin {
 				new StatDisplayer(locations);
 			}
 		}, 20);*/
+        oldPlayerCount = "";
         Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
         	@Override
         	public void update(Player player) {
-        		if(ServerLogger.updatePlayerCount()) {
-					removeScore(11);
-				}
 				int size = ProPlugin.getPlayers().size();
+        		String playerCount = "&b" + size + " &7/&b " + Network.getMaxPlayers();
+        		if(!oldPlayerCount.equals(playerCount)) {
+        			oldPlayerCount = playerCount;
+        			removeScore(11);
+        		}
 				setText(new String [] {
 					" ",
 					"&e&lPlaying",
-					"&b" + size + " &7/&b " + Network.getMaxPlayers(),
+					playerCount,
 					"  ",
 					"&e&lQueue Times",
 					Ranks.PLAYER.getColor() + "Default: &b5s",

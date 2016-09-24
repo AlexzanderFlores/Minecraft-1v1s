@@ -295,6 +295,7 @@ commands:
 
   battle:
     usage: /battle <name of opponent>
+    aliases: [duel]
 
   quit:
     usage: /quit

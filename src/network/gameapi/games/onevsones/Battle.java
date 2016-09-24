@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -174,7 +175,7 @@ public class Battle implements Listener {
 
     public void end(Player loser) {
     	Player winner = getCompetitor(loser);
-    	EloHandler.calculateWin(winner, loser, 2);
+    	EloHandler.calculateWin(winner, loser, 1);
         playerOne.setFireTicks(0);
         playerTwo.setFireTicks(0);
         List<Location> maps = MapProvider.openMaps.get(getMapNumber());
@@ -336,6 +337,11 @@ public class Battle implements Listener {
     	} else if(itemStack.getType() == Material.LAVA_BUCKET || itemStack.getType() == Material.WATER_BUCKET) {
     		event.setCancelled(false);
     	}
+    }
+    
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+    	event.setCancelled(false);
     }
 
     @EventHandler

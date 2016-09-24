@@ -55,6 +55,7 @@ import network.server.tasks.DelayedTask;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
 import network.server.util.ItemUtil;
+import network.staff.StaffMode;
 import npc.NPCEntity;
 
 public class SpectatorHandler implements Listener {
@@ -239,6 +240,9 @@ public class SpectatorHandler implements Listener {
 			PlayerSpectatorEvent spectateEndEvent = new PlayerSpectatorEvent(player, SpectatorState.END);
 			Bukkit.getPluginManager().callEvent(spectateEndEvent);
 			if(!spectateEndEvent.isCancelled()) {
+				if(StaffMode.contains(player)) {
+					StaffMode.toggle(player);
+				}
 				spectators.remove(player.getName());
 				ProPlugin.resetPlayer(player);
 				for(Player online : Bukkit.getOnlinePlayers()) {

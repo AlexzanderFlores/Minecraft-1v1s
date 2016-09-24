@@ -93,7 +93,9 @@ public class LobbyHandler implements Listener {
         player.getInventory().setLeggings(new ItemStack(Material.AIR));
         player.getInventory().setBoots(new ItemStack(Material.AIR));
         player.getInventory().setHeldItemSlot(0);
-        player.getInventory().setItem(0, kitSelector);
+        for(int a = 0; a < 9; ++a) {
+        	player.getInventory().setItem(a, kitSelector);
+        }
         player.updateInventory();
     }
 
@@ -303,8 +305,9 @@ public class LobbyHandler implements Listener {
 
     @EventHandler
     public void onPlayerAFK(PlayerAFKEvent event) {
-        if(Bukkit.getOnlinePlayers().size() >= Bukkit.getMaxPlayers()) {
-            ProPlugin.sendPlayerToServer(event.getPlayer(), "hub");
+        Player player = event.getPlayer();
+        if(isInLobby(player)) {
+        	spawn(player);
         }
     }
 

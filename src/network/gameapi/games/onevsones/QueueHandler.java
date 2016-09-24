@@ -16,6 +16,7 @@ import network.customevents.player.PlayerSpectatorEvent;
 import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.PlayerSpectatorEvent.SpectatorState;
 import network.customevents.player.PlayerStaffModeEvent.StaffModeEventType;
+import network.gameapi.games.onevsones.events.BattleEndEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.player.TitleDisplayer;
@@ -158,6 +159,12 @@ public class QueueHandler implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerLeaveEvent event) {
         remove(event.getPlayer());
+    }
+    
+    @EventHandler
+    public void onBattleEnd(BattleEndEvent event) {
+    	remove(event.getWinner());
+    	remove(event.getLoser());
     }
 
     public static class QueueData {
