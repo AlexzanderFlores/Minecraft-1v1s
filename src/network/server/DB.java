@@ -82,6 +82,8 @@ public enum DB {
 	PLAYERS_KEY_FRAGMENTS("uuid VARCHAR(40), amount INT, PRIMARY KEY(uuid)"),
 	// Speed UHC
 	PLAYERS_HARDCORE_ELIMINATION_VOTES("uuid VARCHAR(40), votes INT, PRIMARY KEY(uuid)"),
+	// Twitter
+	PLAYERS_TWITTER_AUTH_URLS("address VARCHAR(40), url VARCHAR(250), PRIMARY KEY(address)"),
 	
 	NETWORK_PROXIES("server VARCHAR(25), PRIMARY KEY(server)"),
 	NETWORK_POPULATIONS("server VARCHAR(25), population INT, PRIMARY KEY(server)"),
