@@ -160,6 +160,7 @@ public class StatsHandler implements Listener {
 	
 	private static Map<String, GameStats> gameStats = null;
 	private static Map<String, String> combatTagged = null;
+	private static List<UUID> queue = null;
 	public static enum StatTypes {RANK, WINS, LOSSES, KILLS, DEATHS};
 	public static enum StatTimes {
 		LIFETIME, MONTHLY, WEEKLY;
@@ -194,17 +195,32 @@ public class StatsHandler implements Listener {
 		if(lifetime == null) {
 			new CommandBase("stats", -1) {
 				@Override
-				public boolean execute(CommandSender sender, String[] arguments) {
+				public boolean execute(CommandSender sender, String [] arguments) {
 					MessageHandler.sendMessage(sender, "&cYou can only use this command on a game server");
 					return true;
 				}
 			};
 		} else {
 			enabled = true;
+			queue = new ArrayList<UUID>();
 			wins = "Wins";
 			losses = "Losses";
 			kills = "Kills";
 			deaths = "Deaths";
+			Bukkit.getScheduler().runTaskTimerAsynchronously(Network.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					if(queue != null && !queue.isEmpty()) {
+						UUID uuid = queue.get(0);
+						queue.remove(0);
+						Player player = Bukkit.getPlayer(uuid);
+						if(player != null) {
+							save(player);
+							Bukkit.getLogger().info("\tSaving stats for " + player.getName());
+						}
+					}
+				}
+			}, 20, 20);
 			new CommandBase("stats", 0, 1) {
 				@Override
 				public boolean execute(CommandSender sender, String[] arguments) {
@@ -350,6 +366,9 @@ public class StatsHandler implements Listener {
 		for(StatTimes time : StatTimes.values()) {
 			gameStats.get(player.getName()).addWins(time);
 		}
+		if(!queue.contains(player.getUniqueId())) {
+			queue.add(player.getUniqueId());
+		}
 	}
 	
 	public static void addLoss(Player player) {
@@ -359,6 +378,9 @@ public class StatsHandler implements Listener {
 		loadStats(player);
 		for(StatTimes time : StatTimes.values()) {
 			gameStats.get(player.getName()).addLosses(time);
+		}
+		if(!queue.contains(player.getUniqueId())) {
+			queue.add(player.getUniqueId());
 		}
 	}
 	
@@ -370,6 +392,9 @@ public class StatsHandler implements Listener {
 		for(StatTimes time : StatTimes.values()) {
 			gameStats.get(player.getName()).addKills(time);
 		}
+		if(!queue.contains(player.getUniqueId())) {
+			queue.add(player.getUniqueId());
+		}
 	}
 	
 	public static void addDeath(Player player) {
@@ -380,6 +405,9 @@ public class StatsHandler implements Listener {
 		for(StatTimes time : StatTimes.values()) {
 			gameStats.get(player.getName()).addDeaths(time);
 		}
+		if(!queue.contains(player.getUniqueId())) {
+			queue.add(player.getUniqueId());
+		}
 	}
 	
 	public static void removeDeath(Player player) {
@@ -388,6 +416,9 @@ public class StatsHandler implements Listener {
 		}
 		loadStats(player);
 		gameStats.get(player.getName()).removeDeath();
+		if(!queue.contains(player.getUniqueId())) {
+			queue.add(player.getUniqueId());
+		}
 	}
 	
 	public static void save(Player player) {
