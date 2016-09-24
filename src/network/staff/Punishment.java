@@ -80,6 +80,7 @@ public class Punishment implements Listener {
 		new StaffMode();
 		new ShadowMuteHandler();
 		new BanListener();
+		new StaffChat();
 	}
 	
 	public Punishment(String name) {
