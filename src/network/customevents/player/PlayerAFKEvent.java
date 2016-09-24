@@ -72,7 +72,7 @@ public class PlayerAFKEvent extends Event implements Listener {
 				if(counters.containsKey(player.getName())) {
 					counters.put(player.getName(), counters.get(player.getName()) + 1);
 					if(player.getTicksLived() >= (20 * 10) && counters.get(player.getName()) % 30 == 0) {
-						Bukkit.getPluginManager().callEvent(new PlayerAFKEvent(player, counters.get(player.getName())));
+						Bukkit.getPluginManager().callEvent(new PlayerAFKEvent(player, counters.get(player.getName()), true));
 					}
 				} else {
 					counters.put(player.getName(), 1);

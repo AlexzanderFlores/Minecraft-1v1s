@@ -93,9 +93,7 @@ public class LobbyHandler implements Listener {
         player.getInventory().setLeggings(new ItemStack(Material.AIR));
         player.getInventory().setBoots(new ItemStack(Material.AIR));
         player.getInventory().setHeldItemSlot(0);
-        for(int a = 0; a < 9; ++a) {
-        	player.getInventory().setItem(a, kitSelector);
-        }
+        player.getInventory().setItem(0, kitSelector);
         player.updateInventory();
     }
 
@@ -216,7 +214,7 @@ public class LobbyHandler implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if(!Ranks.OWNER.hasRank(player)) {
-            Location to = event.getTo();
+        	Location to = event.getTo();
             if(player.isFlying() && to.getY() >= 23) {
                 event.setTo(event.getFrom());
             }
@@ -306,7 +304,7 @@ public class LobbyHandler implements Listener {
     @EventHandler
     public void onPlayerAFK(PlayerAFKEvent event) {
         Player player = event.getPlayer();
-        if(isInLobby(player)) {
+        if(!event.getAFK() && isInLobby(player)) {
         	spawn(player);
         }
     }

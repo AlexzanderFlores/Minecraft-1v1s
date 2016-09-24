@@ -33,6 +33,7 @@ import network.player.account.PlaytimeTracker;
 import network.player.scoreboard.BelowNameScoreboardUtil;
 import network.player.scoreboard.SidebarScoreboardUtil;
 import network.server.AlertHandler;
+import network.server.Alerts;
 import network.server.AutoAlerts;
 import network.server.CommandDispatcher;
 import network.server.DB;
@@ -179,7 +180,7 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		new AutoAlerts();
 		new CommandDispatcher();
 		new DefaultChatColor();
-		//new RankAds();
+		new Alerts();
 		new CommandRepeater();
 		Glow.register();
 	}

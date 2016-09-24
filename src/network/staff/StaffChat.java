@@ -32,7 +32,7 @@ public class StaffChat implements Listener {
 				}
 				for(Player player : Bukkit.getOnlinePlayers()) {
 					if(Ranks.isStaff(player)) {
-						MessageHandler.sendMessage(player, "&bStaff: " + rank.getColor() + staff + ": " + StringUtil.color(message.substring(0, message.length() - 1)));
+						MessageHandler.sendMessage(player, "&bStaff: " + rank.getColor() + staff + ": &f" + StringUtil.color(message.substring(0, message.length() - 1)));
 					}
 				}
 				return true;
