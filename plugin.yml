@@ -5,6 +5,9 @@ softdepend: [NPC, Votifier, EffectLib]
 authors: [Leet_Gamer]
 commands:
 # Global Commands
+  killAura:
+    usage: /killaura <name> [tp]
+
   autoJoin:
     usage: /autoJoin
 

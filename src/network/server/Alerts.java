@@ -15,9 +15,10 @@ public class Alerts implements Listener {
 	
 	public Alerts() {
 		alerts = new String [] {
-			"Follow us on Twitter: http://twitter.com/1v1sNetwork",
-			"Vote every day for advantages: /vote",
-			"Visit our store: /buy"
+			"Follow us on Twitter: &bhttp://twitter.com/1v1sNetwork",
+			"Vote every day for advantages: &b/vote",
+			"Join our discord: &bhttps://discord.gg/bMDx8",
+			"Visit our store: &b/buy"
 		};
 		EventUtil.register(this);
 	}
@@ -29,7 +30,7 @@ public class Alerts implements Listener {
 	@EventHandler
 	public void onTime(TimeEvent event) {
 		long ticks = event.getTicks();
-		if(ticks == 20 * 60) {
+		if(ticks == 20 * 60 * 5) {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				MessageHandler.sendMessage(player, "&a&l[TIP] &x" + alerts[counter]);
 			}

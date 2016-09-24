@@ -189,50 +189,46 @@ public class GameSelector extends HubItemBase {
 						if(watching.get(name) == plugin) {
 							Player player = ProPlugin.getPlayer(name);
 							if(player != null) {
-								if(serverNumbers.size() == 1) {
-									ProPlugin.sendPlayerToServer(player, plugin.getServer() + serverNumbers.get(0));
-								} else {
-									InventoryView inventoryView = player.getOpenInventory();
-									String title = inventoryView.getTitle();
-									if(title != null && title.equals(plugin.getDisplay())) {
-										for(int a = 0; a < serverNumbers.size() && a < inventoryView.getTopInventory().getSize(); ++a) {
-											int serverNumber = serverNumbers.get(a);
-											String server = "&b" + plugin.getServer() + serverNumber;
-											byte data = getWoolColor(priorities.get(a));
-											if(plugin == Plugins.HUB) {
-												if(HubBase.getHubNumber() == serverNumber) {
-													data = (byte) 3;
-												} else {
-													data = (byte) 5;
-												}
-											}
-											int currentPlayers = playerCounts.get(a);
-											int maxPlayerCount = maxPlayers.get(a);
-											int percentage = (int) (currentPlayers * 100.0 / maxPlayerCount + 0.5);
-											String [] lore = null;
-											if(plugin == Plugins.HUB) {
-												lore = new String [] {
-													"",
-													data == 3 ? "&7You are on this hub" : "&7Click to join &eHub #" + serverNumber,
-													"",
-													"&e" + currentPlayers + "&8/&e" + maxPlayerCount + " &7(&e" + percentage + "% Full&7)",
-													""
-												};
+								InventoryView inventoryView = player.getOpenInventory();
+								String title = inventoryView.getTitle();
+								if(title != null && title.equals(plugin.getDisplay())) {
+									for(int a = 0; a < serverNumbers.size() && a < inventoryView.getTopInventory().getSize(); ++a) {
+										int serverNumber = serverNumbers.get(a);
+										String server = "&b" + plugin.getServer() + serverNumber;
+										byte data = getWoolColor(priorities.get(a));
+										if(plugin == Plugins.HUB) {
+											if(HubBase.getHubNumber() == serverNumber) {
+												data = (byte) 3;
 											} else {
-												 lore = new String [] {
-													"",
-													"&7Click to play &e" + plugin.getDisplay() + "&7!",
-													"",
-													"&e" + currentPlayers + "&8/&e" + maxPlayerCount + " &7(&e" + percentage + "% Full&7)",
-													""
-												};
+												data = (byte) 5;
 											}
-											inventoryView.setItem(a, new ItemCreator(Material.WOOL, data).setAmount(serverNumber).setName(server).setLores(lore).getItemStack());
 										}
-										for(int a = serverNumbers.size(); a < (plugin == Plugins.HUB ? ItemUtil.getInventorySize(ProPlugin.getNumberOfHubs()) : 9); ++a) {
-											if(inventoryView.getItem(a).getType() == Material.WOOL) {
-												inventoryView.setItem(a, new ItemStack(Material.AIR));
-											}
+										int currentPlayers = playerCounts.get(a);
+										int maxPlayerCount = maxPlayers.get(a);
+										int percentage = (int) (currentPlayers * 100.0 / maxPlayerCount + 0.5);
+										String [] lore = null;
+										if(plugin == Plugins.HUB) {
+											lore = new String [] {
+												"",
+												data == 3 ? "&7You are on this hub" : "&7Click to join &eHub #" + serverNumber,
+												"",
+												"&e" + currentPlayers + "&8/&e" + maxPlayerCount + " &7(&e" + percentage + "% Full&7)",
+												""
+											};
+										} else {
+											 lore = new String [] {
+												"",
+												"&7Click to play &e" + plugin.getDisplay() + "&7!",
+												"",
+												"&e" + currentPlayers + "&8/&e" + maxPlayerCount + " &7(&e" + percentage + "% Full&7)",
+												""
+											};
+										}
+										inventoryView.setItem(a, new ItemCreator(Material.WOOL, data).setAmount(serverNumber).setName(server).setLores(lore).getItemStack());
+									}
+									for(int a = serverNumbers.size(); a < (plugin == Plugins.HUB ? ItemUtil.getInventorySize(ProPlugin.getNumberOfHubs()) : 9); ++a) {
+										if(inventoryView.getItem(a).getType() == Material.WOOL) {
+											inventoryView.setItem(a, new ItemStack(Material.AIR));
 										}
 									}
 								}

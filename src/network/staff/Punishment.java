@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import network.ProPlugin;
+import network.anticheat.AntiCheatBase;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
@@ -81,6 +82,7 @@ public class Punishment implements Listener {
 		new ShadowMuteHandler();
 		new BanListener();
 		new StaffChat();
+		new AntiCheatBase();
 	}
 	
 	public Punishment(String name) {
