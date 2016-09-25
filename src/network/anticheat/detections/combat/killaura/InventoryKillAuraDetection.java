@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import network.anticheat.AntiCheatBase;
 import network.customevents.TimeEvent;
 import network.customevents.player.PlayerLeaveEvent;
+import network.gameapi.games.onevsones.events.BattleEndEvent;
 import network.server.PerformanceHandler;
 import network.server.util.EventUtil;
 
@@ -106,6 +107,14 @@ public class InventoryKillAuraDetection extends AntiCheatBase {
             secondsLived.put(event.getPlayer().getName(), 0);
             spawningLocation.put(event.getPlayer().getName(), event.getRespawnLocation());
         }
+    }
+    
+    @EventHandler
+    public void onBattleEnd(BattleEndEvent event) {
+    	if(isEnabled()) {
+    		secondsLived.put(event.getWinner().getName(), 0);
+    		spawningLocation.put(event.getWinner().getName(), event.getWinner().getWorld().getSpawnLocation());
+    	}
     }
 
     @EventHandler
