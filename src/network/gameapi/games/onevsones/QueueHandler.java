@@ -187,6 +187,9 @@ public class QueueHandler implements Listener {
         public boolean canJoin(QueueData data) {
             Player playerOne = ProPlugin.getPlayer(player);
             Player playerTwo = ProPlugin.getPlayer(data.getPlayer());
+            if(playerOne == null || playerTwo == null) {
+            	return false;
+            }
             if(playerOne.getAddress().getAddress().getHostAddress().equals(playerTwo.getAddress().getAddress().getHostAddress())) {
             	if(AccountHandler.getRank(playerOne) != Ranks.OWNER && AccountHandler.getRank(playerTwo) != Ranks.OWNER) {
             		return false;
