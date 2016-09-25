@@ -17,7 +17,7 @@ public class Alerts implements Listener {
 		alerts = new String [] {
 			"Follow us on Twitter: &bhttp://twitter.com/1v1sNetwork",
 			"Vote every day for advantages: &b/vote",
-			"Join our discord: &bhttps://discord.gg/bMDx8",
+			"Join our discord: &bhttps://discord.gg/Srra2dR",
 			"Visit our store: &b/buy"
 		};
 		EventUtil.register(this);
