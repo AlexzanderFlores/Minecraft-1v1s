@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,8 +12,8 @@ import network.ProPlugin;
 import network.customevents.TimeEvent;
 import network.customevents.player.PlayerLeaveEvent;
 import network.customevents.player.PlayerSpectatorEvent;
-import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.PlayerSpectatorEvent.SpectatorState;
+import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.PlayerStaffModeEvent.StaffModeEventType;
 import network.gameapi.games.onevsones.events.BattleEndEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
@@ -36,13 +35,24 @@ public class QueueHandler implements Listener {
         EventUtil.register(this);
     }
 
-    public static void add(Player player, OneVsOneKit kit) {
+    public static void add(final Player player, final OneVsOneKit kit) {
         remove(player);
         PrivateBattleHandler.removeAllInvitesFromPlayer(player);
-        new QueueData(player, null, kit);
-        new TitleDisplayer(player, "&e" + kit.getName(), "&cRanked Queue").display();
-        MessageHandler.sendMessage(player, "&e" + kit.getName() + " &cRanked Queue");
+        final boolean ranked = RankedHandler.getMatches(player) > 0;
+        new TitleDisplayer(player, "&e" + kit.getName(), ranked ? "&cRanked Queue" : "&cUnranked Queue &b/vote").display();
+        MessageHandler.sendMessage(player, "&e" + kit.getName() + (ranked ? " &cRanked Queue" : " &cUnranked Queue &b/vote"));
         OneVsOneKit.givePlayersKit(player, kit);
+        if(Ranks.VIP.hasRank(player)) {
+        	new QueueData(player, null, true, kit);
+        } else {
+        	MessageHandler.sendMessage(player, "&a&l[TIP] " + Ranks.VIP.getPrefix() + "&cPerk: &e5x faster queuing time &b/buy");
+        	new DelayedTask(new Runnable() {
+				@Override
+				public void run() {
+					new QueueData(player, null, ranked, kit);
+				}
+			}, 20 * 5);
+        }
     }
 
     public static void remove(Player player) {
@@ -79,15 +89,7 @@ public class QueueHandler implements Listener {
             @Override
             public void run() {
             	for(final QueueData data : queueData) {
-        			if(!data.isPrioirty() && data.getCounter() < 5) {
-                        Bukkit.getLogger().info("skipping " + data.getPlayer() + " due not being in queue for only " + data.getCounter() + "s");
-                        continue;
-                    }
         			for(final QueueData comparingData : queueData) {
-        				if(!comparingData.isPrioirty() && comparingData.getCounter() < 5) {
-                            Bukkit.getLogger().info("skipping " + comparingData.getPlayer() + " due not being in queue for only " + comparingData.getCounter() + "s");
-                            continue;
-                        }
                         if((data.isPrioirty() == priority || comparingData.isPrioirty() == priority) && data.canJoin(comparingData)) {
                         	final Player playerOne;
                             final Player playerTwo;
@@ -99,13 +101,6 @@ public class QueueHandler implements Listener {
                             } else {
                                 playerOne = ProPlugin.getPlayer(data.getPlayer());
                                 playerTwo = ProPlugin.getPlayer(comparingData.getPlayer());
-                            }
-                            String text = Ranks.VIP.getPrefix() + "&cPerk: &e5x faster queuing time &b/buy";
-                            if(AccountHandler.getRank(playerOne) == Ranks.PLAYER) {
-                                MessageHandler.sendMessage(playerOne, text);
-                            }
-                            if(AccountHandler.getRank(playerTwo) == Ranks.PLAYER) {
-                                MessageHandler.sendMessage(playerTwo, text);
                             }
                             remove(playerOne);
                             remove(playerTwo);
@@ -163,18 +158,20 @@ public class QueueHandler implements Listener {
     
     @EventHandler
     public void onBattleEnd(BattleEndEvent event) {
-    	remove(event.getWinner());
-    	remove(event.getLoser());
+    	for(Player player : event.getBattle().getPlayers()) {
+    		remove(player);
+    	}
     }
 
     public static class QueueData {
         private boolean priority = false;
         private String player = null;
         private String forcedPlayer = null;
+        private boolean ranked = false;
         private OneVsOneKit kit = null;
         private int counter = 0;
 
-        public QueueData(Player player, Player playerTwo, OneVsOneKit kit) {
+        public QueueData(Player player, Player playerTwo, boolean ranked, OneVsOneKit kit) {
             if(Ranks.VIP.hasRank(player) || Ranks.VIP.hasRank(playerTwo)) {
                 priority = true;
             }
@@ -182,6 +179,7 @@ public class QueueHandler implements Listener {
             if(playerTwo != null) {
                 this.forcedPlayer = playerTwo.getName();
             }
+            this.ranked = ranked;
             this.kit = kit;
             queueData.add(this);
         }
@@ -213,6 +211,10 @@ public class QueueHandler implements Listener {
             return this.forcedPlayer;
         }
 
+        public boolean isRanked() {
+        	return this.ranked;
+        }
+        
         public OneVsOneKit getKit() {
             return this.kit;
         }

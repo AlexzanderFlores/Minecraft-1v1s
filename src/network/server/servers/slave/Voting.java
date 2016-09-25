@@ -137,6 +137,8 @@ public class Voting implements Listener {
 						DB.HUB_PARKOUR_CHECKPOINTS.insert("'" + uuid + "', '" + toAdd + "'");
 					}
 					Bukkit.getLogger().info("voting: giving exp");
+					CommandDispatcher.sendToGame("ONEVSONE", "addRankedMatches " + name + " 20");
+					Bukkit.getLogger().info("voting: +20 ranked matches");
 					CommandDispatcher.sendToAll("say &e" + name + " has voted for advantages. Run command &a/vote");
 				}
 			}

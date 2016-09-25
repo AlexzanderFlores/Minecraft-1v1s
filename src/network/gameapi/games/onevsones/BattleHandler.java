@@ -33,7 +33,6 @@ import network.Network.Plugins;
 import network.ProPlugin;
 import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.events.BattleEndEvent;
-import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.server.CommandBase;
 import network.server.util.DoubleUtil;
@@ -135,7 +134,7 @@ public class BattleHandler implements Listener {
         Player player = event.getEntity();
         EffectUtil.playSound(player, Sound.ZOMBIE_DEATH);
         Player killer = player.getKiller();
-        Bukkit.getPluginManager().callEvent(new BattleEndEvent(killer, player, OneVsOneKit.getPlayersKit(player), playerBattles.get(player.getName())));
+        Bukkit.getPluginManager().callEvent(new BattleEndEvent(playerBattles.get(player.getName())));
         if(killer == null) {
             if(Network.getPlugin() == Plugins.ONEVSONE) {
                 player.sendMessage(event.getDeathMessage());
@@ -213,7 +212,7 @@ public class BattleHandler implements Listener {
     
     @EventHandler
     public void onBattleEnd(BattleEndEvent event) {
-    	for(Player player : new Player [] {event.getWinner(), event.getLoser()}) {
+    	for(Player player : event.getBattle().getPlayers()) {
     		List<Block> blocks = playersPlaced.get(player.getName());
         	if(blocks != null) {
         		int range = 5;

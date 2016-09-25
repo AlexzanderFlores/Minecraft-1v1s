@@ -112,8 +112,10 @@ public class InventoryKillAuraDetection extends AntiCheatBase {
     @EventHandler
     public void onBattleEnd(BattleEndEvent event) {
     	if(isEnabled()) {
-    		secondsLived.put(event.getWinner().getName(), 0);
-    		spawningLocation.put(event.getWinner().getName(), event.getWinner().getWorld().getSpawnLocation());
+    		for(Player player : event.getBattle().getPlayers()) {
+    			secondsLived.put(player.getName(), 0);
+        		spawningLocation.put(player.getName(), player.getWorld().getSpawnLocation());
+    		}
     	}
     }
 

@@ -41,6 +41,7 @@ import network.customevents.player.PlayerStaffModeEvent;
 import network.customevents.player.StatsChangeEvent;
 import network.gameapi.competitive.EloHandler;
 import network.gameapi.games.onevsones.events.BattleEndEvent;
+import network.gameapi.games.onevsones.events.BattleStartEvent;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
 import network.player.MessageHandler;
 import network.server.tasks.DelayedTask;
@@ -125,6 +126,10 @@ public class Battle implements Listener {
             return playerOne;
         }
     }
+    
+    public Player [] getPlayers() {
+    	return new Player [] {playerOne, playerTwo};
+    }
 
     public List<Block> getPlacedBlocks() {
         return this.placedBlocks;
@@ -170,6 +175,7 @@ public class Battle implements Listener {
                 playerTwo.setHealth(1.0d);
             }
         }
+        Bukkit.getPluginManager().callEvent(new BattleStartEvent(this));
     }
 
     public boolean isStarted() {
@@ -178,7 +184,7 @@ public class Battle implements Listener {
 
     public void end(Player loser) {
     	Player winner = getCompetitor(loser);
-    	Bukkit.getPluginManager().callEvent(new BattleEndEvent(winner, loser, getKit(), this));
+    	Bukkit.getPluginManager().callEvent(new BattleEndEvent(this));
     	if(ranked) {
         	EloHandler.calculateWin(winner, loser, 1);
     	}

@@ -64,6 +64,7 @@ public class OnevsOnes extends ProPlugin {
         new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
         new MultiplayerNPCs();
         new GoldenHead();
+        new RankedHandler();
         new DelayedTask(new Runnable() {
 			@Override
 			public void run() {
