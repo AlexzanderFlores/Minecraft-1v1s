@@ -78,11 +78,12 @@ public class BanHandler extends Punishment implements Listener {
 								staffUUID = player.getUniqueId().toString();
 							}
 							// Compile the message and proof strings
+							String address = AccountHandler.getAddress(uuid);
 							final String message = getReason(AccountHandler.getRank(sender), arguments, reason.toString(), result);
 							String time = TimeUtil.getTime();
 							String date = time.substring(0, 7);
 							int day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-							DB.STAFF_BAN.insert("'" + uuid.toString() + "', 'null', '" + staffUUID + "', 'null',  '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+							DB.STAFF_BAN.insert("'" + uuid.toString() + "', '" + address + "', 'null', '" + staffUUID + "', 'null',  '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 							int id = DB.STAFF_BAN.getInt(keys, values, "id");
 							String proof = (arguments.length == 2 ? "none" : arguments[2]);
 							DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
@@ -90,7 +91,7 @@ public class BanHandler extends Punishment implements Listener {
 							MessageHandler.alert(message);
 							// Ban other accounts attached to the IP
 							int counter = 0;
-							for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", AccountHandler.getAddress(uuid))) {
+							for(String uuidString : DB.PLAYERS_ACCOUNTS.getAllStrings("uuid", "address", address)) {
 								if(!uuidString.equals(uuid.toString())) {
 									final Player player = Bukkit.getPlayer(UUID.fromString(uuidString));
 									if(player != null) {
@@ -104,7 +105,7 @@ public class BanHandler extends Punishment implements Listener {
 									keys = new String [] {"uuid", "active"};
 									values = new String [] {uuidString, "1"};
 									if(!DB.STAFF_BAN.isKeySet(keys, values)) {
-										DB.STAFF_BAN.insert("'" + uuidString + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
+										DB.STAFF_BAN.insert("'" + uuidString + "', '" + address + "', '" + uuid.toString() + "', '" + uuidString + "', '" + staffUUID + "', 'null' '" + arguments[1] + "', '" + date + "', '" + time + "', 'null', 'null', '" + day + "', '1'");
 									}
 									id = DB.STAFF_BAN.getInt(keys, values, "id");
 									DB.STAFF_BAN_PROOF.insert("'" + id + "', '" + proof + "'");
@@ -158,14 +159,15 @@ public class BanHandler extends Punishment implements Listener {
 	
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
-		if(checkForBanned(event.getPlayer())) {
+		if(checkForBanned(event.getPlayer(), event.getAddress().getHostAddress())) {
 			event.setKickMessage(ChatColor.RED + "You are banned");
 			event.setResult(Result.KICK_OTHER);
 		}
 	}
 	
-	public static boolean checkForBanned(Player player) {
-		return DB.STAFF_BAN.isKeySet(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"});
+	public static boolean checkForBanned(Player player, String address) {
+		return DB.STAFF_BAN.isKeySet(new String [] {"uuid", "active"}, new String [] {player.getUniqueId().toString(), "1"}) || 
+			   DB.STAFF_BAN.isKeySet(new String [] {"address", "active"}, new String [] {address, "1"});
 	}
 	
 	private static void display(final UUID uuid, final Player viewer) {

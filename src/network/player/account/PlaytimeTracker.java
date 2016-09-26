@@ -13,8 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import network.Network;
-import network.ProPlugin;
 import network.Network.Plugins;
+import network.ProPlugin;
 import network.customevents.TimeEvent;
 import network.customevents.player.AsyncPlayerLeaveEvent;
 import network.customevents.player.NewPlayerJoinEvent;
@@ -26,7 +26,6 @@ import network.customevents.player.timed.PlayerHourOfPlaytimeEvent;
 import network.server.DB;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.EventUtil;
-import network.staff.ban.BanHandler;
 
 public class PlaytimeTracker implements Listener {
 	public static class Playtime {
@@ -259,9 +258,6 @@ public class PlaytimeTracker implements Listener {
 		if(ticks == 20) {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				if((afk != null && afk.contains(player.getName())) || player.getVehicle() != null || player.getTicksLived() <= 40) {
-					continue;
-				}
-				if(Network.getPlugin() == Plugins.HUB && BanHandler.checkForBanned(player)) {
 					continue;
 				}
 				if(playtime.containsKey(player.getName())) {

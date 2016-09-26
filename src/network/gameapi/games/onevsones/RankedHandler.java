@@ -83,7 +83,11 @@ public class RankedHandler implements Listener {
 	public void onAsyncPlayerLeave(AsyncPlayerLeaveEvent event) {
 		String name = event.getName();
 		if(matches.containsKey(name)) {
-			DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.updateInt("amount", matches.get(name), "uuid", event.getUUID().toString());
+			int amount = matches.get(name);
+			if(amount < 0) {
+				amount = 0;
+			}
+			DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.updateInt("amount", amount, "uuid", event.getUUID().toString());
 			matches.remove(name);
 		}
 	}
