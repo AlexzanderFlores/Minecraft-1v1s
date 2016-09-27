@@ -90,7 +90,7 @@ public class QueueHandler implements Listener {
             public void run() {
             	for(final QueueData data : queueData) {
         			for(final QueueData comparingData : queueData) {
-                        if((data.isPrioirty() == priority || comparingData.isPrioirty() == priority) && data.canJoin(comparingData)) {
+                        if((data.isPrioirty() == priority || comparingData.isPrioirty() == priority) && data.canJoin(comparingData) && data.isRanked() == comparingData.isRanked()) {
                         	final Player playerOne;
                             final Player playerTwo;
                             if(data.getForcedPlayer() != null && comparingData.getForcedPlayer() != null) {
