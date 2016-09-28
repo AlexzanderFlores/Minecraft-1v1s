@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +31,7 @@ import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
 import network.server.DB.Databases;
 import network.server.tasks.DelayedTask;
+import network.server.util.EffectUtil;
 import network.server.util.EventUtil;
 import network.server.util.StringUtil;
 import network.server.util.UnicodeUtil;
@@ -189,7 +191,13 @@ public class GeneralEvents implements Listener {
 			for(Databases database : Databases.values()) {
 				database.connect();
 			}
-		}
+		} else if(ticks == 20 * 60 * 10) {
+        	MessageHandler.alert("");
+        	MessageHandler.alert("&c&l25% OFF SALE! &bGet unlimited &6Ranked &bmatches:");
+        	MessageHandler.alert("http://store.1v1s.org/category/759467");
+        	MessageHandler.alert("");
+        	EffectUtil.playSound(Sound.LEVEL_UP);
+    	}
 	}
 	
 	@EventHandler
