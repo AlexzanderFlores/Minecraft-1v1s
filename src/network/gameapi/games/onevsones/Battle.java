@@ -116,7 +116,11 @@ public class Battle implements Listener {
     }
 
     public boolean contains(Player player) {
-        return playerOne.getName().equals(player.getName()) || playerTwo.getName().equals(player.getName());
+        try {
+        	return playerOne.getName().equals(player.getName()) || playerTwo.getName().equals(player.getName());
+        } catch(NullPointerException e) {
+        	return false;
+        }
     }
 
     public Player getCompetitor(Player player) {

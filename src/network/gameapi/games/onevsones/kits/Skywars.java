@@ -22,7 +22,7 @@ public class Skywars extends OneVsOneKit {
         setItem(3, new ItemCreator(Material.BOW).addEnchantment(Enchantment.ARROW_DAMAGE).getItemStack());
         setItem(4, new ItemStack(Material.GOLDEN_APPLE, 3));
         setItem(6, new ItemStack(Material.WOOD, 8));
-        Potion fire = new Potion(PotionType.FIRE_RESISTANCE, 1, false);
+        Potion fire = new Potion(PotionType.REGEN, 1, false);
         setItem(5, fire.toItemStack(1));
         setItem(8, new ItemStack(Material.ARROW, 12));
     }

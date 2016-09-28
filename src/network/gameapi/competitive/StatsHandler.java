@@ -216,7 +216,6 @@ public class StatsHandler implements Listener {
 						Player player = Bukkit.getPlayer(uuid);
 						if(player != null) {
 							save(player);
-							Bukkit.getLogger().info("\tSaving stats for " + player.getName());
 						}
 					}
 				}
@@ -359,7 +358,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addWin(Player player) {
-		if(!canEditStats(player)) {
+		if(!canEditStats(player) || player == null || !player.isOnline()) {
 			return;
 		}
 		loadStats(player);
@@ -372,7 +371,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addLoss(Player player) {
-		if(!canEditStats(player)) {
+		if(!canEditStats(player) || player == null || !player.isOnline()) {
 			return;
 		}
 		loadStats(player);
@@ -385,7 +384,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addKill(Player player) {
-		if(!canEditStats(player)) {
+		if(!canEditStats(player) || player == null || !player.isOnline()) {
 			return;
 		}
 		loadStats(player);
@@ -398,7 +397,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void addDeath(Player player) {
-		if(!canEditStats(player)) {
+		if(!canEditStats(player) || player == null || !player.isOnline()) {
 			return;
 		}
 		loadStats(player);
@@ -411,7 +410,7 @@ public class StatsHandler implements Listener {
 	}
 	
 	public static void removeDeath(Player player) {
-		if(!canEditStats(player)) {
+		if(!canEditStats(player) || player == null || !player.isOnline()) {
 			return;
 		}
 		loadStats(player);

@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 
 import network.ProPlugin;
 import network.customevents.player.AsyncPlayerJoinEvent;
@@ -18,12 +21,15 @@ import network.player.account.AccountHandler.Ranks;
 import network.server.CommandBase;
 import network.server.DB;
 import network.server.util.EventUtil;
+import network.server.util.ItemCreator;
 import network.server.util.TimeUtil;
 
 public class RankedHandler implements Listener {
 	private static Map<String, Integer> matches = null;
+	private static String name = null;
 	
 	public RankedHandler() {
+		name = "Ranked Selector";
 		matches = new HashMap<String, Integer>();
 		new CommandBase("addRankedMatches", 2) {
 			@Override
@@ -43,6 +49,13 @@ public class RankedHandler implements Listener {
 	
 	public static int getMatches(Player player) {
 		return matches == null || !matches.containsKey(player.getName()) ? 0 : matches.get(player.getName());
+	}
+	
+	public static void open(Player player) {
+		Inventory inventory = Bukkit.createInventory(player, 9 * 3, name);
+		inventory.setItem(11, new ItemCreator(Material.STAINED_GLASS_PANE, 5).setName("&aRanked Queue").getItemStack());
+		inventory.setItem(13, new ItemCreator(Material.STAINED_GLASS_PANE, 14).setName("&aUnranked Queue").getItemStack());
+		player.openInventory(inventory);
 	}
 	
 	@EventHandler

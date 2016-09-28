@@ -48,12 +48,12 @@ import network.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class LobbyHandler implements Listener {
-    private static ItemStack rankedMatches = null;
+	private static ItemStack rankedQueue = null;
     private static List<String> disabledRequests = null;
     private static List<String> watching = null;
 
     public LobbyHandler() {
-    	rankedMatches = new ItemCreator(Material.ARROW).setName("&aRanked Matches").getItemStack();
+    	rankedQueue = new ItemCreator(Material.ARROW).setName("&aKit Selector").getItemStack();
         disabledRequests = new ArrayList<String>();
         watching = new ArrayList<String>();
         EventUtil.register(this);
@@ -92,7 +92,7 @@ public class LobbyHandler implements Listener {
         player.getInventory().setLeggings(new ItemStack(Material.AIR));
         player.getInventory().setBoots(new ItemStack(Material.AIR));
         player.getInventory().setHeldItemSlot(0);
-        player.getInventory().setItem(0, rankedMatches);
+        player.getInventory().setItem(0, rankedQueue);
         player.getInventory().setItem(1, HotbarEditor.getItem());
         player.updateInventory();
     }
@@ -230,7 +230,7 @@ public class LobbyHandler implements Listener {
         Player player = event.getPlayer();
         if(isInLobby(player)) {
             ItemStack item = player.getItemInHand();
-            if(item.equals(rankedMatches)) {
+            if(item.equals(rankedQueue)) {
             	if(RankedHandler.getMatches(player) > 0 || Ranks.VIP.hasRank(player)) {
             		openKitSelection(player);
             	} else {
