@@ -20,6 +20,8 @@ import network.gameapi.competitive.StatsHandler;
 import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.BuildUHC;
 import network.gameapi.games.onevsones.kits.NoDebuff;
+import network.gameapi.games.onevsones.kits.Skywars;
+import network.gameapi.games.onevsones.kits.SpeedUHC;
 import network.gameapi.games.onevsones.kits.SurvivalGames;
 import network.player.TeamScoreboardHandler;
 import network.player.account.AccountHandler.Ranks;
@@ -111,6 +113,8 @@ public class OnevsOnes extends ProPlugin {
         new Archer();
         new BuildUHC();
         new NoDebuff();
+        new Skywars();
+        new SpeedUHC();
 	}
 	
 	@Override

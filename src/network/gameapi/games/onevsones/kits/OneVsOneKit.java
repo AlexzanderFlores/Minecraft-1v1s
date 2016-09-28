@@ -18,7 +18,6 @@ import org.bukkit.potion.PotionType;
 
 import network.ProPlugin;
 import network.gameapi.games.onevsones.HotbarEditor;
-import network.player.account.AccountHandler.Ranks;
 import network.server.tasks.AsyncDelayedTask;
 import network.server.util.ConfigurationUtil;
 import network.server.util.ItemCreator;
@@ -37,7 +36,7 @@ public class OneVsOneKit {
 
     public OneVsOneKit(String name, ItemStack icon) {
         this.name = name;
-        ItemCreator itemCreator = new ItemCreator(icon).setAmount(0).setName("&e" + name).setLores(new String [] {"", "&7Left Click to &aPlay", "&7Right Click to &aPreview &7or &aEdit &7Kit"});
+        ItemCreator itemCreator = new ItemCreator(icon).setAmount(0).setName("&e" + name);
         if(!icon.getType().toString().contains("SWORD")) {
         	itemCreator.addLore("");
         }
@@ -141,7 +140,7 @@ public class OneVsOneKit {
     		inventory.setItem(slot, items.get(slot));
         }
     	inventory.setItem(inventory.getSize() - 1, new ItemCreator(Material.WOOD_DOOR).setGlow(true).setName("&bBack").getItemStack());
-    	inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.NAME_TAG).setGlow(true).setName("&aEdit Kit").setLores(new String [] {"", "&7Edit your hotbar layout", ""}).getItemStack());
+    	//inventory.setItem(inventory.getSize() - 3, new ItemCreator(Material.NAME_TAG).setGlow(true).setName("&aEdit Kit").setLores(new String [] {"", "&7Edit your hotbar layout", ""}).getItemStack());
     	player.openInventory(inventory);
     }
 
@@ -159,40 +158,38 @@ public class OneVsOneKit {
                 if(player != null) {
                     player.getInventory().clear();
                     boolean hotbarSetup = false;
-                    if(Ranks.VIP.hasRank(player)) {
-                    	String path = HotbarEditor.getPath().replace("%", name);
-                        File file = new File(path, kitName);
-                    	if(file.exists()) {
-                    		hotbarSetup = true;
-                            ConfigurationUtil config = new ConfigurationUtil(path);
-                            for(String key : config.getConfig().getKeys(false)) {
-                                String item = config.getConfig().getString(key);
-                                String [] itemData = item.split(":");
-                                int id = Integer.valueOf(itemData[0]);
-                                byte data = Byte.valueOf(itemData[1]);
-                                int amount = Integer.valueOf(itemData[2]);
-                                String typeName = itemData[3];
-                                if(typeName.equals("NULL")) {
-                                    ItemStack itemStack = new ItemStack(id, amount, data);
-                                    if(itemData.length > 6) {
-                                        for(int a = 6; a < itemData.length; ++a) {
-                                            if(a % 2 == 0) {
-                                                Enchantment enchant = Enchantment.getByName(itemData[a]);
-                                                int level = Integer.valueOf(itemData[a + 1]);
-                                                itemStack.addEnchantment(enchant, level);
-                                            }
+                    String path = HotbarEditor.getPath().replace("%", name);
+                    File file = new File(path, kitName);
+                	if(file.exists()) {
+                		hotbarSetup = true;
+                        ConfigurationUtil config = new ConfigurationUtil(path);
+                        for(String key : config.getConfig().getKeys(false)) {
+                            String item = config.getConfig().getString(key);
+                            String [] itemData = item.split(":");
+                            int id = Integer.valueOf(itemData[0]);
+                            byte data = Byte.valueOf(itemData[1]);
+                            int amount = Integer.valueOf(itemData[2]);
+                            String typeName = itemData[3];
+                            if(typeName.equals("NULL")) {
+                                ItemStack itemStack = new ItemStack(id, amount, data);
+                                if(itemData.length > 6) {
+                                    for(int a = 6; a < itemData.length; ++a) {
+                                        if(a % 2 == 0) {
+                                            Enchantment enchant = Enchantment.getByName(itemData[a]);
+                                            int level = Integer.valueOf(itemData[a + 1]);
+                                            itemStack.addEnchantment(enchant, level);
                                         }
                                     }
-                                    player.getInventory().setItem(Integer.valueOf(key), itemStack);
-                                } else {
-                                    PotionType type = PotionType.valueOf(typeName);
-                                    int level = Integer.valueOf(itemData[4]);
-                                    boolean splash = itemData[5].equals("1");
-                                    player.getInventory().setItem(Integer.valueOf(key), new Potion(type, level, splash).toItemStack(amount));
                                 }
+                                player.getInventory().setItem(Integer.valueOf(key), itemStack);
+                            } else {
+                                PotionType type = PotionType.valueOf(typeName);
+                                int level = Integer.valueOf(itemData[4]);
+                                boolean splash = itemData[5].equals("1");
+                                player.getInventory().setItem(Integer.valueOf(key), new Potion(type, level, splash).toItemStack(amount));
                             }
-                    	}
-                    }
+                        }
+                	}
                     if(!hotbarSetup) {
                         for(int slot : items.keySet()) {
                             player.getInventory().setItem(slot, items.get(slot));

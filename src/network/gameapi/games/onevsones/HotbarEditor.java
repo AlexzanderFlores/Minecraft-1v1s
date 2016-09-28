@@ -19,6 +19,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import network.customevents.player.InventoryItemClickEvent;
+import network.customevents.player.MouseClickEvent;
 import network.customevents.player.PlayerLeaveEvent;
 import network.gameapi.GoldenHead;
 import network.gameapi.games.onevsones.kits.OneVsOneKit;
@@ -30,13 +31,21 @@ import network.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class HotbarEditor implements Listener {
+	private static String name = null;
+	private static ItemStack item = null;
     private static Map<String, OneVsOneKit> kits = null;
     private static String path = null;
 
     public HotbarEditor() {
+    	name = "Hotbar Editor";
+    	item = new ItemCreator(Material.NAME_TAG).setName("&a" + name).getItemStack();
         kits = new HashMap<String, OneVsOneKit>();
         path = "/root/resources/1v1/hotbars/%/";
         EventUtil.register(this);
+    }
+    
+    public static ItemStack getItem() {
+    	return item;
     }
 
     public static void open(Player player, OneVsOneKit kit) {
@@ -45,7 +54,7 @@ public class HotbarEditor implements Listener {
             MessageHandler.sendMessage(player, "&cYou have been removed from the queue");
         }
     	PrivateBattleHandler.removeAllInvitesFromPlayer(player);
-    	Inventory inventory = Bukkit.createInventory(player, 9 * 5, "Edit kit " + kit.getName());
+    	Inventory inventory = Bukkit.createInventory(player, 9 * 5, "Edit " + kit.getName());
     	Map<Integer, ItemStack> items = new HashMap<Integer, ItemStack>(kit.getItems());
     	for(int slot : items.keySet()) {
     		if(slot < 9 * 4) {
@@ -115,7 +124,7 @@ public class HotbarEditor implements Listener {
         if(item != null) {
             int id = item.getTypeId();
             byte data = item.getData().getData();
-            if(item.getType() == Material.GOLDEN_APPLE && item.getAmount() == 3) {
+            if(item.getType() == Material.GOLDEN_APPLE && (item.getAmount() == 3 || item.getAmount() == 1)) {
             	data = -1;
             }
             int amount = item.getAmount();
@@ -136,9 +145,27 @@ public class HotbarEditor implements Listener {
     }
     
     @EventHandler
+    public void onMouseClick(MouseClickEvent event) {
+    	Player player = event.getPlayer();
+    	ItemStack item = player.getItemInHand();
+    	if(item != null && item.equals(HotbarEditor.item)) {
+    		player.openInventory(LobbyHandler.getKitSelectorInventory(player, name, false));
+    		event.setCancelled(true);
+    	}
+    }
+    
+    @EventHandler
     public void onInventoryItemClick(InventoryItemClickEvent event) {
     	Player player = event.getPlayer();
-    	if(kits.containsKey(player.getName())) {
+    	if(event.getInventory().getName().equals(name)) {
+    		OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
+    		if(kit == null) {
+    			MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
+    		} else {
+    			HotbarEditor.open(player, kit);
+    		}
+    		event.setCancelled(true);
+    	} else if(kits.containsKey(player.getName())) {
     		if(event.getItem().getType() == Material.WEB) {
     			String name = kits.get(player.getName()).getName();
         		File dir = new File(path.replace("%", player.getName()));

@@ -117,9 +117,13 @@ public class CommandDispatcher implements Listener {
 				@Override
 				public void run() {
 					String server = Network.getServerName();
-					for(String command : DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.getAllStrings("command", "server", server)) {
-						Bukkit.getLogger().info("Command Dispatcher: Running \"" + command + "\" for \"" + server + "\"");
-						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+					try {
+						for(String command : DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.getAllStrings("command", "server", server)) {
+							Bukkit.getLogger().info("Command Dispatcher: Running \"" + command + "\" for \"" + server + "\"");
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+						}
+					} catch(Exception e) {
+						e.printStackTrace();
 					}
 					DB.NETWORK_BUKKIT_COMMAND_DISPATCHER.delete("server", server);
 				}

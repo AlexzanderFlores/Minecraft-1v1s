@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -49,12 +48,12 @@ import network.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")
 public class LobbyHandler implements Listener {
-    private static ItemStack kitSelector = null;
+    private static ItemStack rankedMatches = null;
     private static List<String> disabledRequests = null;
     private static List<String> watching = null;
 
     public LobbyHandler() {
-        kitSelector = new ItemCreator(Material.ARROW).setName("&aKit Selector").getItemStack();
+    	rankedMatches = new ItemCreator(Material.ARROW).setName("&aRanked Matches").getItemStack();
         disabledRequests = new ArrayList<String>();
         watching = new ArrayList<String>();
         EventUtil.register(this);
@@ -93,7 +92,8 @@ public class LobbyHandler implements Listener {
         player.getInventory().setLeggings(new ItemStack(Material.AIR));
         player.getInventory().setBoots(new ItemStack(Material.AIR));
         player.getInventory().setHeldItemSlot(0);
-        player.getInventory().setItem(0, kitSelector);
+        player.getInventory().setItem(0, rankedMatches);
+        player.getInventory().setItem(1, HotbarEditor.getItem());
         player.updateInventory();
     }
 
@@ -170,8 +170,6 @@ public class LobbyHandler implements Listener {
             OneVsOneKit kit = OneVsOneKit.getKit(event.getItem());
             if(kit == null) {
                 MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
-            } else if(event.getClickType() == ClickType.RIGHT) {
-            	kit.preview(player);
             } else {
             	run(kit, player);
             }
@@ -192,14 +190,6 @@ public class LobbyHandler implements Listener {
         	Material type = event.getItem().getType();
         	if(type == Material.WOOD_DOOR) {
         		openKitSelection(player);
-        	} else if(type == Material.NAME_TAG) {
-        		event.setCancelled(true);
-        		OneVsOneKit kit = OneVsOneKit.getKit(event.getTitle().replace("Preview of ", ""));
-                if(kit == null) {
-                	MessageHandler.sendMessage(player, "&cAn error occured when selecting kit, please try again");
-                } else {
-            		HotbarEditor.open(player, kit);
-                }
         	}
         	event.setCancelled(true);
         }
@@ -240,8 +230,14 @@ public class LobbyHandler implements Listener {
         Player player = event.getPlayer();
         if(isInLobby(player)) {
             ItemStack item = player.getItemInHand();
-            if(item.equals(kitSelector)) {
-            	openKitSelection(player);
+            if(item.equals(rankedMatches)) {
+            	if(RankedHandler.getMatches(player) > 0 || Ranks.VIP.hasRank(player)) {
+            		openKitSelection(player);
+            	} else {
+            		MessageHandler.sendMessage(player, "&cYou are out of ranked matches!");
+            		MessageHandler.sendMessage(player, "&cGet more by voting: &b/vote");
+            		MessageHandler.sendMessage(player, "&cGet unlimited ranked matches with " + Ranks.VIP.getPrefix() + "&b/buy");
+            	}
             }
         }
     }
