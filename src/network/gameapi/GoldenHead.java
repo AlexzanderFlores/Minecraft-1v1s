@@ -28,7 +28,7 @@ public class GoldenHead implements Listener {
 	}
 	
 	public static ItemStack get(int amount) {
-		return new ItemCreator(item).setAmount(amount).getItemStack();
+		return new ItemCreator(item.clone()).setAmount(amount).getItemStack();
 	}
 	
 	public static String getName() {
