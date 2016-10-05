@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,13 +57,22 @@ public class QueueHandler implements Listener {
     }
 
     public static void remove(Player player) {
-        Iterator<QueueData> iterator = queueData.iterator();
-        while(iterator.hasNext()) {
-            if(iterator.next().getPlayer().equals(player.getName())) {
-                iterator.remove();
-                MessageHandler.sendMessage(player, "Removed you from your last game search");
-                break;
+        try {
+        	Iterator<QueueData> iterator = queueData.iterator();
+            while(iterator.hasNext()) {
+                if(iterator.next().getPlayer().equals(player.getName())) {
+                    iterator.remove();
+                    MessageHandler.sendMessage(player, "Removed you from your last game search");
+                    break;
+                }
             }
+        } catch(Exception e) {
+        	e.printStackTrace();
+        	for(Player online : Bukkit.getOnlinePlayers()) {
+        		if(Ranks.isStaff(online)) {
+        			MessageHandler.sendMessage(online, "&c&lPLEASE TELL LEET OR PAUL THAT AN EXCEPTION OCCURED FROM QUEUEHANDLER.JAVA (&7" + e.getMessage() + "&c&l)");
+        		}
+        	}
         }
         waitingForMap.remove(player.getName());
     }
