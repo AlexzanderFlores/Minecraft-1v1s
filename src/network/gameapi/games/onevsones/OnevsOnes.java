@@ -1,14 +1,18 @@
 package network.gameapi.games.onevsones;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
+import de.inventivegames.hologram.Hologram;
+import de.inventivegames.hologram.HologramAPI;
 import network.Network;
 import network.ProPlugin;
 import network.gameapi.GoldenHead;
@@ -17,6 +21,7 @@ import network.gameapi.competitive.EloHandler;
 import network.gameapi.competitive.EloRanking;
 import network.gameapi.competitive.StatDisplayer;
 import network.gameapi.competitive.StatsHandler;
+import network.gameapi.competitive.EloRanking.EloRank;
 import network.gameapi.games.onevsones.kits.Archer;
 import network.gameapi.games.onevsones.kits.BuildUHC;
 import network.gameapi.games.onevsones.kits.NoDebuff;
@@ -32,7 +37,7 @@ import network.server.DB;
 import network.server.ServerLogger;
 import network.server.tasks.DelayedTask;
 import network.server.util.FileHandler;
-import network.server.util.ImageMap;
+import network.server.util.StringUtil;
 
 public class OnevsOnes extends ProPlugin {
 	private static String oldPlayerCount = null;
@@ -62,8 +67,9 @@ public class OnevsOnes extends ProPlugin {
         new HotbarEditor();
         new EloHandler(DB.PLAYERS_ONE_VS_ONE_ELO, 1400);
         new ServerLogger();
-        new EloRanking(Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34)), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
-        new CPSDetector(new Location(world, -18.5, 8, -23.5), target);
+        //Arrays.asList(ImageMap.getItemFrame(world, -16, 10, -34))
+        new EloRanking(new ArrayList<ItemFrame>(), DB.PLAYERS_ONE_VS_ONE_ELO, DB.PLAYERS_ONE_VS_ONE_RANKED);
+        new CPSDetector(new Location(world, -24, 8, -23), target);
         new MultiplayerNPCs();
         new GoldenHead();
         new RankedHandler();
@@ -71,11 +77,22 @@ public class OnevsOnes extends ProPlugin {
 			@Override
 			public void run() {
 				List<Location> locations = Arrays.asList(
-					new Location(world, -3.5, 12.5, -48.5),
-					new Location(world, 4.5, 12.5, -48.5),
-					new Location(world, 0.5, 12.5, -49.5)
+					new Location(world, -5.5, 13.5, -47),
+					new Location(world, 0.5, 13.5, -49),
+					new Location(world, 6.5, 13.5, -47)
 				);
 				new StatDisplayer(locations);
+				List<Hologram> holograms = new ArrayList<Hologram>();
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 12.5, -38.5), StringUtil.color("&e&nElo ranks are based off of")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 12, -38.5), StringUtil.color("&e&nyour percentile of elo value")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 11, -38.5), StringUtil.color(EloRank.BRONZE.getPrefix() + " &aTop " + EloRank.BRONZE.getDisplayPercentage() + "%")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 10.5, -38.5), StringUtil.color(EloRank.SILVER.getPrefix() + " &aTop " + EloRank.SILVER.getDisplayPercentage() + "%")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 10, -38.5), StringUtil.color(EloRank.GOLD.getPrefix() + " &aTop " + EloRank.GOLD.getDisplayPercentage() + "%")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 9.5, -38.5), StringUtil.color(EloRank.DIAMOND.getPrefix() + " &aTop " + EloRank.DIAMOND.getDisplayPercentage() + "%")));
+				holograms.add(HologramAPI.createHologram(new Location(world, -14.5, 9, -38.5), StringUtil.color(EloRank.PLATINUM.getPrefix() + " &aTop " + EloRank.PLATINUM.getDisplayPercentage() + "%")));
+				for(Hologram hologram : holograms) {
+					hologram.spawn();
+				}
 			}
 		}, 20);
         oldPlayerCount = "";
