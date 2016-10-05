@@ -44,6 +44,7 @@ public class GoldenHead implements Listener {
 				double newHealth = event.getPlayer().getHealth() + 4.0d;
 				player.setHealth(newHealth > player.getMaxHealth() ? player.getMaxHealth() : newHealth);
 				player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 8, 1));
 			}
 		}
 	}

@@ -182,18 +182,22 @@ public class BattleHandler implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-    	Player player = event.getPlayer();
-    	Battle battle = getBattle(player);
-    	if(battle != null && !event.isCancelled()) {
-    		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-    		List<Block> blocks = playersPlaced.get(player.getName());
-    		if(blocks == null) {
-    			blocks = new ArrayList<Block>();
-    		}
-    		blocks.add(block);
-    		playersPlaced.put(player.getName(), blocks);
+    	if(event.getBlockClicked().getY() >= 10) {
+    		event.setCancelled(true);
+    	} else {
+    		Player player = event.getPlayer();
+        	Battle battle = getBattle(player);
+        	if(battle != null && !event.isCancelled()) {
+        		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+        		List<Block> blocks = playersPlaced.get(player.getName());
+        		if(blocks == null) {
+        			blocks = new ArrayList<Block>();
+        		}
+        		blocks.add(block);
+        		playersPlaced.put(player.getName(), blocks);
+        	}
     	}
     }
     

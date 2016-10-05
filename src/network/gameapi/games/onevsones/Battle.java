@@ -247,8 +247,8 @@ public class Battle implements Listener {
             Player player = (Player) event.getEntity();
             if(contains(player)) {
                 String name = kit.getName();
-                if((name.equals("Build UHC") || (name.equals("Speed UHC")) && event.getRegainReason() != RegainReason.MAGIC_REGEN)) {
-                    event.setCancelled(true);
+                if((name.equals("Build UHC") || (name.equals("Speed UHC"))) && event.getRegainReason() == RegainReason.SATIATED) {
+                	event.setCancelled(true);
                 }
             }
         }
