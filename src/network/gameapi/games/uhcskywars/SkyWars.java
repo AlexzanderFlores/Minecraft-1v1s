@@ -52,26 +52,28 @@ public class SkyWars extends MiniGame {
 				String countDownLine = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA) + restock;
 				if(!oldCountDownLine.equals(countDownLine)) {
 					oldCountDownLine = countDownLine;
-					removeScore(5);
+					removeScore(7);
 				}
 				if(ServerLogger.updatePlayerCount()) {
-					removeScore(8);
+					removeScore(10);
 				}
 				if(getGameState() != getOldGameState()) {
 					setOldGameState(getGameState());
-					removeScore(6);
+					removeScore(8);
 				}
 				setText(new String [] {
 					" ",
 					"&e&lPlaying",
 					"&b" + size + " &7/&b " + Network.getMaxPlayers(),
 					"  ",
-					"&e&l" + getGameState().getDisplay() + (getGameState() == GameStates.STARTED ? "" : " Stage"),
+					"&e&l" + getGameState().getDisplay(),
 					countDownLine,
 					"   ",
-					"&a&lOutsideTheBlock.org",
-					"&e&lServer &b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
-					"    "
+					"&a&l1v1s.org",
+					"    ",
+					"&e&lServer",
+					"&b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
+					"     "
 				});
 				super.update();
 			}

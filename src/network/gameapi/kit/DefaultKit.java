@@ -27,6 +27,9 @@ public class DefaultKit implements Listener {
 	}
 	
 	public static void setDefaultKit(Player player, KitBase kit) {
+		if(defaultKits == null) {
+			new DefaultKit();
+		}
 		defaultKits.put(player.getName(), kit);
 	}
 	

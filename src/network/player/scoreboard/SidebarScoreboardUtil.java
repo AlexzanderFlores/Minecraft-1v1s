@@ -41,6 +41,10 @@ public class SidebarScoreboardUtil extends ScoreboardBase {
 	
 	public void setText(String text, int score) {
 		text = StringUtil.color(text);
+		if(text.length() > 16) {
+			Bukkit.getLogger().info("\"" + text + "\" is longer than 16 characters");
+			text = text.substring(0, 16);
+		}
 		getObjective().getScore(text).setScore(score);
 		scores.put(text, score);
 	}
