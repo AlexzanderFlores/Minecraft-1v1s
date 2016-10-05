@@ -16,8 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import network.Network;
-import network.ProPlugin;
 import network.Network.Plugins;
+import network.ProPlugin;
 import network.customevents.game.GameKillEvent;
 import network.customevents.game.GameWinEvent;
 import network.customevents.player.AsyncPlayerLeaveEvent;
@@ -27,7 +27,6 @@ import network.player.account.AccountHandler;
 import network.player.account.AccountHandler.Ranks;
 import network.server.CommandBase;
 import network.server.DB;
-import network.server.RankAds;
 import network.server.util.EventUtil;
 import network.server.util.ItemCreator;
 
@@ -178,9 +177,9 @@ public class CoinsHandler implements Listener {
 			msg += " " + message;
 		}
 		MessageHandler.sendMessage(player, msg);
-		if(!Ranks.VIP.hasRank(player)) {
+		/*if(!Ranks.VIP.hasRank(player)) {
 			MessageHandler.sendMessage(player, RankAds.getAlerts()[0]);
-		}
+		}*/
 		if(coins.containsKey(player.getName())) {
 			amount += coins.get(player.getName());
 		}
