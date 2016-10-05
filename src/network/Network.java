@@ -25,6 +25,7 @@ import network.customevents.player.PostPlayerJoinEvent;
 import network.gameapi.MiniGame;
 import network.gameapi.games.kitpvp.KitPVP;
 import network.gameapi.games.onevsones.OnevsOnes;
+import network.gameapi.games.uhcskywars.SkyWars;
 import network.player.ChatLogger;
 import network.player.DefaultChatColor;
 import network.player.LevelHandler;
@@ -61,6 +62,7 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 		HUB("HUB", "hub", "Hub"),
 		KITPVP("KitPVP", "kit_pvp", "Kit PVP"),
 		ONEVSONE("1v1s", "1v1", "1v1s"),
+		UHCSW("UHCSW", "sky_wars", "UHC Sky Wars"),
 		BUILDING("Building", "building"),
 		SLAVE("Slave", "slave"),
 		WORKER("Worker", "worker");
@@ -146,6 +148,9 @@ public class Network extends JavaPlugin implements PluginMessageListener {
 				break;
 			case ONEVSONE:
 				proPlugin = new OnevsOnes();
+				break;
+			case UHCSW:
+				proPlugin = new SkyWars();
 				break;
 			case BUILDING:
 				proPlugin = new Building();

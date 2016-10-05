@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-import network.gameapi.GoldenHead;
+import network.gameapi.uhc.GoldenHead;
 import network.server.util.ItemCreator;
 
 @SuppressWarnings("deprecation")

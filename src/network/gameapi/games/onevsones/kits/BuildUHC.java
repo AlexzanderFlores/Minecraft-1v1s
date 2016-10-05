@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import network.gameapi.GoldenHead;
+import network.gameapi.uhc.GoldenHead;
 import network.server.util.ItemCreator;
 
 public class BuildUHC extends OneVsOneKit {
