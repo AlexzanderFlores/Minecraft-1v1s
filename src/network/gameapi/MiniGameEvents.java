@@ -62,6 +62,7 @@ public class MiniGameEvents implements Listener {
 				}
 			} else if(gameState == GameStates.VOTING) {
 				if(miniGame.getCounter() <= 0) {
+					getMiniGame().setMap(VotingHandler.loadWinningWorld());
 					miniGame.setGameState(GameStates.STARTING);
 				} else {
 					if(miniGame.getCounter() <= 5) {

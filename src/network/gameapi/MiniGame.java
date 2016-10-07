@@ -87,7 +87,7 @@ public abstract class MiniGame extends ProPlugin {
 		new PostGameStartingEvent(true);
 		new LeaveItem();
 		new MapRating();
-		new VotingHandler();
+		VotingHandler.loadMaps();
 		//new CoinBoosters();
 		new AutoJoinHandler();
 		new TimeOfDay();

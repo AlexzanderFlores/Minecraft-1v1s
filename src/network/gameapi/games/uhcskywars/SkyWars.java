@@ -20,13 +20,10 @@ import network.server.util.CountDownUtil;
 
 public class SkyWars extends MiniGame {
 	private String oldCountDownLine = "";
+	private String oldRestockLine = "";
 	
 	public SkyWars() {
-		this("UHC Sky Wars");
-	}
-	
-	public SkyWars(String name) {
-		super(name);
+		super("UHC Sky Wars");
 		setVotingCounter(45);
 		setStartingCounter(10);
 		setFlintAndSteelUses(4);
@@ -48,33 +45,74 @@ public class SkyWars extends MiniGame {
 			public void update() {
 				int size = ProPlugin.getPlayers().size();
 				int restockCounter = ChestHandler.getRestockCounter();
-				String restock = restockCounter > 0 && getGameState() == GameStates.STARTED ? " &7Chest Refill " + new CountDownUtil(restockCounter).getCounterAsString(ChatColor.GRAY) : "";
-				String countDownLine = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA) + restock;
-				if(!oldCountDownLine.equals(countDownLine)) {
-					oldCountDownLine = countDownLine;
-					removeScore(7);
+				String restock = restockCounter > 0 && getGameState() == GameStates.STARTED ? new CountDownUtil(restockCounter).getCounterAsString(ChatColor.AQUA) : "";
+				if(restock.equals("")) {
+					if(!oldRestockLine.equals(restock)) {
+						oldRestockLine = restock;
+						removeScore(7);
+					}
+					String countDownLine = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA);
+					if(!oldCountDownLine.equals(countDownLine)) {
+						oldCountDownLine = countDownLine;
+						removeScore(7);
+					}
+					if(ServerLogger.updatePlayerCount()) {
+						removeScore(10);
+					}
+					if(getGameState() != getOldGameState()) {
+						setOldGameState(getGameState());
+						removeScore(8);
+					}
+					setText(new String [] {
+						" ",
+						"&e&lPlaying",
+						"&b" + size + " &7/&b " + Network.getMaxPlayers(),
+						"  ",
+						"&e&l" + getGameState().getDisplay(),
+						countDownLine,
+						"   ",
+						"&a&l1v1s.org",
+						"    ",
+						"&e&lServer",
+						"&b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
+						"     "
+					});
+				} else {
+					if(!oldRestockLine.equals(restock)) {
+						oldRestockLine = restock;
+						removeScore(7);
+					}
+					String countDownLine = getGameState() == GameStates.WAITING ? "&b" + size + " &7/&b " + getRequiredPlayers() : CountDownUtil.getCounterAsString(getCounter(), ChatColor.AQUA);
+					if(!oldCountDownLine.equals(countDownLine)) {
+						oldCountDownLine = countDownLine;
+						removeScore(10);
+					}
+					if(ServerLogger.updatePlayerCount()) {
+						removeScore(13);
+					}
+					if(getGameState() != getOldGameState()) {
+						setOldGameState(getGameState());
+						removeScore(11);
+					}
+					
+					setText(new String [] {
+						" ",
+						"&e&lPlaying",
+						"&b" + size + " &7/&b " + Network.getMaxPlayers(),
+						"  ",
+						"&e&l" + getGameState().getDisplay(),
+						countDownLine,
+						"   ",
+						"&e&lRestock In",
+						restock,
+						"    ",
+						"&a&l1v1s.org",
+						"     ",
+						"&e&lServer",
+						"&b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
+						"      "
+					});
 				}
-				if(ServerLogger.updatePlayerCount()) {
-					removeScore(10);
-				}
-				if(getGameState() != getOldGameState()) {
-					setOldGameState(getGameState());
-					removeScore(8);
-				}
-				setText(new String [] {
-					" ",
-					"&e&lPlaying",
-					"&b" + size + " &7/&b " + Network.getMaxPlayers(),
-					"  ",
-					"&e&l" + getGameState().getDisplay(),
-					countDownLine,
-					"   ",
-					"&a&l1v1s.org",
-					"    ",
-					"&e&lServer",
-					"&b&l" + Network.getPlugin().getServer().toUpperCase() + Network.getServerName().replaceAll("[^\\d.]", ""),
-					"     "
-				});
 				super.update();
 			}
 		});
