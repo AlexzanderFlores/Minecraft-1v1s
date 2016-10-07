@@ -129,7 +129,6 @@ public class Events implements Listener {
 				miniGame.setAllowEntityDamage(true);
 			}
 		}, 20 * 5);
-		Network.getSidebar().removeScore(8);
 	}
 	
 	@EventHandler
