@@ -271,7 +271,7 @@ public class GameSelector extends HubItemBase {
 			"&eagainst other players",
 			""
 		}).getItemStack();
-		itemSlots.put(plugin, 11);
+		itemSlots.put(plugin, 10);
 		inventory.setItem(itemSlots.get(plugin), item);
 		plugin = Plugins.KITPVP;
 		item = new ItemCreator(Material.IRON_SWORD).setName("&b" + plugin.getDisplay()).setLores(new String [] {
@@ -279,7 +279,16 @@ public class GameSelector extends HubItemBase {
 			"&eFFA Kit PVP with customizable kits",
 			""
 		}).getItemStack();
-		itemSlots.put(plugin, 13);
+		itemSlots.put(plugin, 12);
+		inventory.setItem(itemSlots.get(plugin), item);
+		plugin = Plugins.UHCSW;
+		item = new ItemCreator(Material.GRASS).setName("&b" + plugin.getDisplay()).setLores(new String [] {
+			"",
+			"&ePlay against 11 other players",
+			"&ein Sky Wars with a UHC twist",
+			""
+		}).getItemStack();
+		itemSlots.put(plugin, 14);
 		inventory.setItem(itemSlots.get(plugin), item);
 		item = new ItemCreator(Material.DIAMOND_BOOTS).setName("&bParkour").setLores(new String [] {
 			"&7Our Unique Parkour Course",
@@ -293,7 +302,7 @@ public class GameSelector extends HubItemBase {
 			"&eWatch out for obstacles though",
 			""
 		}).getItemStack();
-		inventory.setItem(15, item);
+		inventory.setItem(16, item);
 		for(int slot : slots) {
 			try {
 				ItemStack itemStack = inventory.getItem(slot);
