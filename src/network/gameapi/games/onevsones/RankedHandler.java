@@ -64,12 +64,13 @@ public class RankedHandler implements Listener {
 		UUID uuid = player.getUniqueId();
 		int daily = 20;
 		int amount = daily;
-		String date = TimeUtil.getTime().substring(0, 7);
+		String date = TimeUtil.getTime().substring(0, 10);
 		if(DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.isUUIDSet(uuid)) {
 			amount = DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.getInt("uuid", uuid.toString(), "amount");
 			if(!DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.getString("uuid", uuid.toString(), "date").equals(date)) {
 				amount += daily;
 				MessageHandler.sendMessage(player, "+" + daily + " Daily ranked matches, get more with &b/vote");
+				DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.updateString("date", date, "uuid", uuid.toString());
 			}
 		} else {
 			DB.PLAYERS_ONE_VS_ONE_RANKED_MATCHES.insert("'" + uuid.toString() + "', '" + daily + "', '" + date + "'");
