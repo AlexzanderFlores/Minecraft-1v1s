@@ -19,10 +19,10 @@ import network.Network;
 import network.customevents.game.GameStartEvent;
 import network.gameapi.uhc.scenarios.Scenario;
 import network.gameapi.uhc.scenarios.scenarios.Fireless;
+import network.gameapi.uhc.scenarios.scenarios.HeartModifier;
 import network.gameapi.uhc.scenarios.scenarios.Speed;
 import network.gameapi.uhc.scenarios.scenarios.Switcheroo;
 import network.gameapi.uhc.scenarios.scenarios.TimeBomb;
-import network.gameapi.uhc.scenarios.scenarios.TrueLove;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler.Ranks;
 import network.server.util.EventUtil;
@@ -79,7 +79,7 @@ public class ScenarioHandler implements Listener {
 		scenarios.add(TimeBomb.getInstance());
 		scenarios.add(Fireless.getInstance());
 		scenarios.add(Switcheroo.getInstance());
-		scenarios.add(TrueLove.getInstance());
+		scenarios.add(HeartModifier.getInstance("10 Hearts", 20));
 		scenarios.add(Speed.getInstance());
 		for(double a = 0, z = -3.5; a < scenarios.size(); ++a, z += 2) {
 			String name = scenarios.get((int) a).getName();
@@ -105,6 +105,12 @@ public class ScenarioHandler implements Listener {
 			if((winner == null || data.getVotes() > winner.getVotes()) || (data.getVotes() == winner.getVotes() && new Random().nextBoolean())) {
 				winner = data;
 			}
+		}
+		if(!(winner.getName().contains("10 Hearts") && winner.getVotes() > 0)) {
+			new HeartModifier("Double Health", 40);
+		}
+		if(winner.getVotes() == 0) {
+			return;
 		}
 		MessageHandler.alert("");
 		MessageHandler.alert(Ranks.VIP.getPrefix() + "&amodifier selected: " + winner.getName());

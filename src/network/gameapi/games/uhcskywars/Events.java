@@ -69,8 +69,6 @@ public class Events implements Listener {
 			}
 		}
 		for(Player player : players) {
-			player.setMaxHealth(player.getMaxHealth() * 2);
-			player.setHealth(player.getMaxHealth());
 			if(counter >= numberOfSpawns) {
 				counter = 0;
 			}

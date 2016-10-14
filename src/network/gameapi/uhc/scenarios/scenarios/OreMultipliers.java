@@ -28,7 +28,7 @@ public class OreMultipliers extends Scenario {
     }
 
     public static OreMultipliers getInstance(String name, String shortName, int multiplier, ItemStack item) {
-        if (instance == null) {
+        if(instance == null) {
             new OreMultipliers(name, shortName, multiplier, item);
         }
         return instance;
@@ -40,11 +40,11 @@ public class OreMultipliers extends Scenario {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!event.isCancelled()) {
+        if(!event.isCancelled()) {
             Block block = event.getBlock();
-            if (multiplier >= 2 && block.getType().toString().endsWith("_ORE")) {
-                for (int a = 0; a < multiplier - 1; ++a) {
-                    for (ItemStack drop : block.getDrops()) {
+            if(multiplier >= 2 && block.getType().toString().endsWith("_ORE")) {
+                for(int a = 0; a < multiplier - 1; ++a) {
+                    for(ItemStack drop : block.getDrops()) {
                         block.getWorld().dropItem(block.getLocation(), drop);
                     }
                 }
