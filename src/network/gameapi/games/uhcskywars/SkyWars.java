@@ -38,6 +38,7 @@ public class SkyWars extends MiniGame {
 		new LootPassHandler();
 		new SkullPikeUtil();
 		new GoldenHead();
+		new ScenarioHandler();
 		new CutClean().enable(false);
 		Network.setSidebar(new SidebarScoreboardUtil(" &a&l" + getDisplayName() + " ") {
 			@Override

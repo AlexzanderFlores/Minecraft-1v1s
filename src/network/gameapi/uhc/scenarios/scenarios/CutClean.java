@@ -2,23 +2,17 @@ package network.gameapi.uhc.scenarios.scenarios;
 
 import java.util.Random;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import network.gameapi.uhc.scenarios.Scenario;
-import network.server.util.EffectUtil;
 
-@SuppressWarnings("deprecation")
 public class CutClean extends Scenario {
 	private static CutClean instance = null;
 	
@@ -28,6 +22,7 @@ public class CutClean extends Scenario {
 		setInfo("Ores auto smelt and food auto cooks. Breaking the base of a tree breaks the whole tree.");
 		setPrimary(true);
 		enable(true);
+		new Timber();
 	}
 	
 	public static CutClean getInstance() {
@@ -70,27 +65,6 @@ public class CutClean extends Scenario {
 		} else if(material == Material.GRAVEL && new Random().nextBoolean()) {
 			world.dropItem(event.getLocation(), new ItemStack(Material.FLINT));
 			entity.remove();
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockBreak(BlockBreakEvent event) {
-		if(!event.isCancelled()) {
-			Block block = event.getBlock();
-			Material below = block.getRelative(0, -1, 0).getType();
-			if(below == Material.DIRT || below == Material.SAND) {
-				Location location = block.getLocation().clone();
-				int id = block.getTypeId();
-				while(id == 162 || id == 17) {
-					EffectUtil.displayParticles(block.getType(), block.getLocation());
-					for(ItemStack itemStack : block.getDrops()) {
-						block.getWorld().dropItem(location, itemStack);
-					}
-					block.setType(Material.AIR);
-					block = block.getRelative(0, 1, 0);
-					id = block.getTypeId();
-				}
-			}
 		}
 	}
 }
