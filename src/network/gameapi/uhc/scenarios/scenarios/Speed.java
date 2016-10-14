@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import network.ProPlugin;
-import network.customevents.game.GameStartEvent;
+import network.customevents.game.PostGameStartEvent;
 import network.gameapi.uhc.scenarios.Scenario;
 
 public class Speed extends Scenario {
@@ -31,7 +31,7 @@ public class Speed extends Scenario {
     }
     
     @EventHandler
-    public void onGameStart(GameStartEvent event) {
+    public void onPostGameStart(PostGameStartEvent event) {
     	for(Player player : ProPlugin.getPlayers()) {
     		player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999999, 2));
     		player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 999999999, 2));

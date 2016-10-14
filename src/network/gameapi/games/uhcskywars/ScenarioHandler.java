@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,6 +25,7 @@ import network.gameapi.uhc.scenarios.scenarios.TimeBomb;
 import network.gameapi.uhc.scenarios.scenarios.TrueLove;
 import network.player.MessageHandler;
 import network.player.account.AccountHandler.Ranks;
+import network.server.util.EventUtil;
 import npc.NPCEntity;
 
 public class ScenarioHandler implements Listener {
@@ -93,6 +95,7 @@ public class ScenarioHandler implements Listener {
 				}
 			};
 		}
+		EventUtil.register(this);
 	}
 	
 	@EventHandler
@@ -105,7 +108,11 @@ public class ScenarioHandler implements Listener {
 		}
 		MessageHandler.alert("");
 		MessageHandler.alert(Ranks.VIP.getPrefix() + "&amodifier selected: " + winner.getName());
-		MessageHandler.alert("Vote for " + Ranks.VIP.getPrefix() + "&xmodifiers: &b/buy");
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(!Ranks.VIP.hasRank(player)) {
+				MessageHandler.sendMessage(player, "Vote for " + Ranks.VIP.getPrefix() + "&xmodifiers: &b/buy");
+			}
+		}
 		MessageHandler.alert("");
 		winner.setName(ChatColor.stripColor(winner.getName()));
 		for(Scenario scenario : scenarios) {

@@ -35,12 +35,14 @@ public class Switcheroo extends Scenario {
     		if(arrow.getShooter() instanceof Player) {
     			Player player = (Player) event.getEntity();
     			Player shooter = (Player) arrow.getShooter();
-    			Location playerLocation = player.getLocation();
-    			Location shooterLocation = shooter.getLocation();
-    			player.teleport(shooterLocation);
-    			shooter.teleport(playerLocation);
-    			MessageHandler.sendMessage(player, getName() + ": Switching your locations with " + shooter.getName());
-    			MessageHandler.sendMessage(shooter, getName() + ": Switching your locations with " + player.getName());
+    			if(!player.getName().equals(shooter.getName())) {
+    				Location playerLocation = player.getLocation();
+        			Location shooterLocation = shooter.getLocation();
+        			player.teleport(shooterLocation);
+        			shooter.teleport(playerLocation);
+        			MessageHandler.sendMessage(player, getName() + ": Switching your locations with " + shooter.getName());
+        			MessageHandler.sendMessage(shooter, getName() + ": Switching your locations with " + player.getName());
+    			}
     		}
     	}
     }
